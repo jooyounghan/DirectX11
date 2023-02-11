@@ -48,8 +48,8 @@ public:
 	unsigned int m_index_count_ = 0;
 
 public:
-	ComPtr<ID3D11Buffer> m_vertex_cbuffer;
-	ComPtr<ID3D11Buffer> m_pixel_cbuffer;
+	ComPtr<ID3D11Buffer> m_vertex_cbuffer_;
+	ComPtr<ID3D11Buffer> m_pixel_cbuffer_;
 
 	ComPtr<ID3D11Texture2D> m_texture_;
 	ComPtr<ID3D11ShaderResourceView> m_texture_sr_view_;

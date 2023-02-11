@@ -25,14 +25,11 @@ void IMeshGroup::Render(ComPtr<ID3D11DeviceContext>& device_context)
 		device_context->IASetIndexBuffer(mesh->m_index_buffer_.Get(), DXGI_FORMAT_R32_UINT, 0);
 		device_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-		device_context->VSSetConstantBuffers(0, 1, mesh->m_vertex_cbuffer.GetAddressOf());
-		device_context->PSSetConstantBuffers(0, 1, mesh->m_pixel_cbuffer.GetAddressOf());
+		device_context->VSSetConstantBuffers(0, 1, m_vertex_cbuffer_.GetAddressOf());
+		//device_context->PSSetConstantBuffers(0, 1, mesh->m_pixel_cbuffer_.GetAddressOf());
 
-		device_context->PSSetShaderResources(0, 1, mesh->m_texture_sr_view_.GetAddressOf());
-		device_context->PSSetSamplers(0, 1, m_mesh_shader_->m_sampler_state_.GetAddressOf());
+		//device_context->PSSetShaderResources(0, 1, mesh->m_texture_sr_view_.GetAddressOf());
 
 		device_context->DrawIndexed(mesh->m_index_count_, 0, 0);
 	}
 }
-
-// 구조를 다시 생각하고 확실히 잡아야함..

@@ -109,6 +109,7 @@ public:
 		bd.Usage = D3D11_USAGE_DYNAMIC;
 		bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 		bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+		bd.MiscFlags = 0;
 		bd.StructureByteStride = 0;
 
 		D3D11_SUBRESOURCE_DATA ssd;

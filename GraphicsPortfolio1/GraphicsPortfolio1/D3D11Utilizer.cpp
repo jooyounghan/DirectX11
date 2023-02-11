@@ -182,7 +182,7 @@ bool D3D11Utilizer::CreateRasterizerState()
 	rd.FillMode = D3D11_FILL_MODE::D3D11_FILL_SOLID;
 	rd.CullMode = D3D11_CULL_MODE::D3D11_CULL_NONE;
 	rd.FrontCounterClockwise = false;
-	rd.DepthClipEnable = true;
+	rd.DepthClipEnable = false;
 
 	if (FAILED(m_device_->CreateRasterizerState(&rd, temp_rasterizer_state.GetAddressOf())))
 	{
@@ -313,9 +313,11 @@ void D3D11Utilizer::OnResize(WPARAM w_param, LPARAM l_param)
 
 void D3D11Utilizer::Render()
 {
-	float clearColor[4] = { 1.0f, 0.0f, 0.0f, 1.0f };
+	SetViewPort(m_bufffer_width_, m_bufffer_height_);
 
-	m_device_context_->ClearRenderTargetView(m_rt_view_.Get(), clearColor);
+	float clear_color[4] = { 1.0f, 0.0f, 0.0f, 1.0f };
+
+	m_device_context_->ClearRenderTargetView(m_rt_view_.Get(), clear_color);
 	m_device_context_->ClearDepthStencilView(m_ds_view_.Get(),
 		D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL,
 		1.0f, 0);

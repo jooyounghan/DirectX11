@@ -9,8 +9,8 @@ BaseMeshShader::BaseMeshShader(ComPtr<ID3D11Device>& device, const wstring& vs_n
 {
 	vector<D3D11_INPUT_ELEMENT_DESC> input_descs = {
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 3 * sizeof(float), D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 2 * 3 * sizeof(float) , D3D11_INPUT_PER_VERTEX_DATA, 0}
+		{"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 3 * 4, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 2 * 3 * 4 , D3D11_INPUT_PER_VERTEX_DATA, 0}
 	};
 
 	if (FAILED(m_device_->CreateInputLayout(input_descs.data(), UINT(input_descs.size()),
