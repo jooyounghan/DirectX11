@@ -1,0 +1,200 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="소스 파일">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="헤더 파일">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="리소스 파일">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="소스 파일\Command">
+      <UniqueIdentifier>{a2c2c230-2bc8-4d8c-b73a-682de7e4877c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Command">
+      <UniqueIdentifier>{20df541b-a983-488b-b819-2ff7fc3d659d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Application">
+      <UniqueIdentifier>{28d445b4-e68e-469e-b886-98ad6001aa57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Application">
+      <UniqueIdentifier>{e628a8aa-9472-4d76-aa54-42c26ff21322}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\DirectX11">
+      <UniqueIdentifier>{bce4e027-d8f1-4f4a-af70-187a7adfe3e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\DirectX11">
+      <UniqueIdentifier>{48619e45-463a-4534-9131-30872d0121ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Command\Specific Command">
+      <UniqueIdentifier>{bbf7f964-0421-40c8-a59a-c9eac413dd29}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Command\Specific Command">
+      <UniqueIdentifier>{6a86479d-2871-4d69-96e6-c0899b2c8e55}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\ImGui">
+      <UniqueIdentifier>{2ea4fce7-273b-4157-8033-bec0bb1b82dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\ImGui">
+      <UniqueIdentifier>{b701f131-e5e7-4176-8ed6-904e5e3522c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Rendering">
+      <UniqueIdentifier>{8555dd14-b55b-4db3-81f9-ec48c1533cdb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Rendering">
+      <UniqueIdentifier>{47c70c98-6a17-45b9-a2f3-5d7496d16904}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Rendering\Mesh">
+      <UniqueIdentifier>{192aed68-fb6a-427f-a26a-6d6bdc72388b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Rendering\Mesh">
+      <UniqueIdentifier>{699f4bbf-b591-4017-be68-97e95accb5ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Rendering\Mesh\Specific Mesh">
+      <UniqueIdentifier>{966af8eb-1fa5-44b8-951e-5483dbe16754}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Rendering\Mesh\Specific MeshGroup">
+      <UniqueIdentifier>{fa095d78-e92f-4161-a80c-1e5b85ff68b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Rendering\FileReader">
+      <UniqueIdentifier>{facb2f12-9653-4241-8fd5-68e7d99a825f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Rendering\FileReader">
+      <UniqueIdentifier>{410be4aa-687a-4b18-91be-95f948087e3a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Rendering\Shader">
+      <UniqueIdentifier>{1faa22dd-d0c8-4788-aa09-7982e30c15f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Rendering\Shader\HLSL">
+      <UniqueIdentifier>{1a05bd6e-f624-4e1d-b641-f43b9cdf08e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Rendering\Shader">
+      <UniqueIdentifier>{7974715b-e28c-407a-9711-715899c1b469}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Rendering\Light">
+      <UniqueIdentifier>{da24cf7a-0c6d-476c-a1e4-7a55d2f2daa2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Rendering\Light">
+      <UniqueIdentifier>{b97a6b92-de3a-4078-be0b-7cb2b0d9520e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Rendering\Shader\Specific Shader">
+      <UniqueIdentifier>{38538769-eda6-4e01-aa3b-e522fdb472fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Rendering\Shader\Specific Shader">
+      <UniqueIdentifier>{225f3b99-643f-4d78-8006-077769928541}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ICommand.h">
+      <Filter>헤더 파일\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseApp.h">
+      <Filter>헤더 파일\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicsPortfolio1App.h">
+      <Filter>헤더 파일\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D11Utilizer.h">
+      <Filter>헤더 파일\DirectX11</Filter>
+    </ClInclude>
+    <ClInclude Include="CharacterMoveCom.h">
+      <Filter>헤더 파일\Command\Specific Command</Filter>
+    </ClInclude>
+    <ClInclude Include="MouseMoveCom.h">
+      <Filter>헤더 파일\Command\Specific Command</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandManager.h">
+      <Filter>헤더 파일\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGuiManager.h">
+      <Filter>헤더 파일\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="IMeshGroup.h">
+      <Filter>헤더 파일\Rendering\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>헤더 파일\Rendering\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="FileReader.h">
+      <Filter>헤더 파일\Rendering\FileReader</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>헤더 파일\Rendering\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Stage.h">
+      <Filter>헤더 파일\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Light.h">
+      <Filter>헤더 파일\Rendering\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseMeshShader.h">
+      <Filter>헤더 파일\Rendering\Shader\Specific Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshData.h">
+      <Filter>헤더 파일\Rendering\Mesh</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="ICommand.cpp">
+      <Filter>소스 파일\Command</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseApp.cpp">
+      <Filter>소스 파일\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicsPortfolio1App.cpp">
+      <Filter>소스 파일\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="D3D11Utilizer.cpp">
+      <Filter>소스 파일\DirectX11</Filter>
+    </ClCompile>
+    <ClCompile Include="MainConsole.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="CharacterMoveCom.cpp">
+      <Filter>소스 파일\Command\Specific Command</Filter>
+    </ClCompile>
+    <ClCompile Include="MouseMoveCom.cpp">
+      <Filter>소스 파일\Command\Specific Command</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandManager.cpp">
+      <Filter>소스 파일\Command</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGuiManager.cpp">
+      <Filter>소스 파일\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="IMeshGroup.cpp">
+      <Filter>소스 파일\Rendering\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>소스 파일\Rendering\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="FileReader.cpp">
+      <Filter>소스 파일\Rendering\FileReader</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>소스 파일\Rendering\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Light.cpp">
+      <Filter>소스 파일\Rendering\Light</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseMeshShader.cpp">
+      <Filter>소스 파일\Rendering\Shader\Specific Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Stage.cpp">
+      <Filter>소스 파일\Rendering</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="BaseVertexShader.hlsl">
+      <Filter>소스 파일\Rendering\Shader\HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="BasePixelShader.hlsl">
+      <Filter>소스 파일\Rendering\Shader\HLSL</Filter>
+    </FxCompile>
+  </ItemGroup>
+</Project>
