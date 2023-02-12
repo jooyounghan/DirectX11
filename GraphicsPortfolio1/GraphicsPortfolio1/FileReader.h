@@ -26,19 +26,19 @@ struct Image
 class FileReader
 {
 public:
-	static Image GetImage(const string& file_path);
+	static void GetImage(const string& file_path, OUT Image& image);
 
 public:
 	static bool CreateDDSTextureView(const wchar_t* file_name, ComPtr<ID3D11Device>& device,
 		ComPtr<ID3D11ShaderResourceView>& ts_view);
 
 public:
-	static vector<MeshData>	GetMeshData(string file_path);
+	static vector<MeshData>	GetMeshDataFromFile(string base_path, string file_name);
 
 private:
 	static void ProcessNode(OUT vector<MeshData>& result, aiNode* node, const aiScene* scene,
-		DirectX::SimpleMath::Matrix tr);
-	static MeshData ProcessMesh(aiMesh* mesh, const aiScene* scene);
+		DirectX::SimpleMath::Matrix tr, const string& base_path);
+	static MeshData ProcessMesh(aiMesh* mesh, const aiScene* scene, const string& base_path);
 
 };
 

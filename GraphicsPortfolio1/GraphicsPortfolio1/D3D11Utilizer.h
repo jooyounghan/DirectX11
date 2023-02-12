@@ -27,6 +27,7 @@ protected:
 	int& m_bufffer_height_;
 
 public:
+	// App으로 이동하는거 생각하기
 	ComPtr<ID3D11Device>				m_device_;
 	ComPtr<ID3D11DeviceContext>			m_device_context_;
 	ComPtr<ID3D11RenderTargetView>		m_rt_view_;
@@ -139,7 +140,7 @@ public:
 
 		D3D11_SUBRESOURCE_DATA ssd;
 		ssd.pSysMem = texture_data.image_data_.data();
-		ssd.SysMemPitch = texture_data.width * sizeof(uint32_t) * texture_data.channels;
+		ssd.SysMemPitch = texture_data.width * sizeof(uint8_t) * 4;
 
 		if (FAILED(device->CreateTexture2D(&td, &ssd, texture_buffer.GetAddressOf())))
 		{

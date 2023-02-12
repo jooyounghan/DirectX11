@@ -55,12 +55,6 @@
     <Filter Include="헤더 파일\Rendering\Mesh">
       <UniqueIdentifier>{699f4bbf-b591-4017-be68-97e95accb5ed}</UniqueIdentifier>
     </Filter>
-    <Filter Include="헤더 파일\Rendering\Mesh\Specific Mesh">
-      <UniqueIdentifier>{966af8eb-1fa5-44b8-951e-5483dbe16754}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\Rendering\Mesh\Specific MeshGroup">
-      <UniqueIdentifier>{fa095d78-e92f-4161-a80c-1e5b85ff68b8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\Rendering\FileReader">
       <UniqueIdentifier>{facb2f12-9653-4241-8fd5-68e7d99a825f}</UniqueIdentifier>
     </Filter>
@@ -138,6 +132,9 @@
     <ClInclude Include="MeshData.h">
       <Filter>헤더 파일\Rendering\Mesh</Filter>
     </ClInclude>
+    <ClInclude Include="MeshGenerator.h">
+      <Filter>헤더 파일\Rendering\Mesh</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ICommand.cpp">
@@ -187,6 +184,9 @@
     </ClCompile>
     <ClCompile Include="Stage.cpp">
       <Filter>소스 파일\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshGenerator.cpp">
+      <Filter>소스 파일\Rendering\Mesh</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -182,7 +182,7 @@ bool D3D11Utilizer::CreateRasterizerState()
 	rd.FillMode = D3D11_FILL_MODE::D3D11_FILL_SOLID;
 	rd.CullMode = D3D11_CULL_MODE::D3D11_CULL_NONE;
 	rd.FrontCounterClockwise = false;
-	rd.DepthClipEnable = false;
+	rd.DepthClipEnable = true;
 
 	if (FAILED(m_device_->CreateRasterizerState(&rd, temp_rasterizer_state.GetAddressOf())))
 	{

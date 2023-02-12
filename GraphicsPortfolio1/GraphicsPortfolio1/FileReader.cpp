@@ -3,35 +3,36 @@
 #include <directxtk/DDSTextureLoader.h>
 #include <filesystem>
 
+#include "FileReader.h"
+
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
-#include "FileReader.h"
 
 using namespace DirectX;
 using DirectX::SimpleMath::Matrix;
 
-Image FileReader::GetImage(const string& filename)
+void FileReader::GetImage(const string& filename, OUT Image& image)
 {
-    Image img;
-    
-    stbi_uc* file_data = stbi_load(filename.c_str(), &img.width, &img.height, &img.channels, 0);
-    assert(img.channels != 3);
+    int width, height, num_channels;
+    stbi_uc* file_data = stbi_load(filename.c_str(), &width, &height, &num_channels, 0);
 
-    img.image_data_.resize(img.width * img.height * img.channels);
+    image.width = width;
+    image.height = height;
+    image.channels = num_channels;
+    image.image_data_.resize(image.width * image.height * 4);
 
-    const int& area = img.width * img.height;
-    const int& channels = img.channels;
+    const int& area = image.width * image.height;
+    const int& channels = image.channels;
 
     for (size_t i = 0; i < area; ++i)
     {
         for (size_t c = 0; c < channels; ++c)
         {
-            img.image_data_[i * 4 + c] = file_data[i * channels + c];
+            image.image_data_[i * 4 + c] = file_data[i * channels + c];
         }
-        img.image_data_[i * 4 + channels] = 255;
+        image.image_data_[i * 4 + 3] = 255;
     }
-
-    return img;
+    return;
 }
 
 bool FileReader::CreateDDSTextureView(const wchar_t* file_name, ComPtr<ID3D11Device>& device,
@@ -53,28 +54,30 @@ bool FileReader::CreateDDSTextureView(const wchar_t* file_name, ComPtr<ID3D11Dev
     return true;
 }
 
-vector<MeshData> FileReader::GetMeshData(string file_path)
+vector<MeshData> FileReader::GetMeshDataFromFile(string base_path, string file_name)
 {
     vector<MeshData> mesh_data;
 
     Assimp::Importer importer;
 
+    const string& full_path = base_path + file_name;
+
     const aiScene* pScene = importer.ReadFile(
-        file_path,
+        full_path,
         aiProcess_Triangulate | aiProcess_ConvertToLeftHanded);
 
     if (!pScene) {
-        COUTERR("Failed to read file: " + file_path);
+        COUTERR("Failed to read file: " + file_name);
     }
     else {
         Matrix tr; // Initial transformation
-        ProcessNode(mesh_data, pScene->mRootNode, pScene, tr);
+        ProcessNode(mesh_data, pScene->mRootNode, pScene, tr, base_path);
     }
 
     return mesh_data;
 }
 
-void FileReader::ProcessNode(OUT vector<MeshData>& result, aiNode* node, const aiScene* scene, DirectX::SimpleMath::Matrix tr)
+void FileReader::ProcessNode(OUT vector<MeshData>& result, aiNode* node, const aiScene* scene, DirectX::SimpleMath::Matrix tr, const string& base_path)
 {
     Matrix m;
     ai_real* temp = &node->mTransformation.a1;
@@ -87,7 +90,7 @@ void FileReader::ProcessNode(OUT vector<MeshData>& result, aiNode* node, const a
     for (UINT i = 0; i < node->mNumMeshes; i++) {
 
         aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-        MeshData new_mesh = ProcessMesh(mesh, scene);
+        MeshData new_mesh = ProcessMesh(mesh, scene, base_path);
 
         for (auto& v : new_mesh.vertices) {
             v.position = DirectX::SimpleMath::Vector3::Transform(v.position, m);
@@ -97,11 +100,11 @@ void FileReader::ProcessNode(OUT vector<MeshData>& result, aiNode* node, const a
     }
 
     for (UINT i = 0; i < node->mNumChildren; i++) {
-        ProcessNode(result, node->mChildren[i], scene, m);
+        ProcessNode(result, node->mChildren[i], scene, m, base_path);
     }
 }
 
-MeshData FileReader::ProcessMesh(aiMesh* mesh, const aiScene* scene)
+MeshData FileReader::ProcessMesh(aiMesh* mesh, const aiScene* scene, const string& base_path)
 {
     std::vector<Vertex> vertices;
     std::vector<uint32_t> indices;
@@ -146,7 +149,7 @@ MeshData FileReader::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 
             std::string file_name = std::string(
                 std::filesystem::path(filepath.C_Str()).filename().string());
-            new_mesh.base_texture_name = file_name;
+            new_mesh.base_texture_name = base_path + file_name;
         }
     }
 
