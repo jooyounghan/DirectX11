@@ -34,7 +34,7 @@ struct MaterialConstantData
 class Mesh
 {
 public:
-	Mesh();
+	Mesh(ComPtr<ID3D11Device>& device, const MeshData& mesh_data);
 	~Mesh();
 
 public:

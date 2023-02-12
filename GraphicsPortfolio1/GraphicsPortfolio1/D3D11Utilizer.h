@@ -6,6 +6,7 @@
 #include <iostream>
 #include <vector>
 
+#include "FileReader.h"
 #include "Stage.h"
 
 #define COUTERR(String) std::cout << String << "/" << "Error Code : " << GetLastError() << std::endl
@@ -80,8 +81,10 @@ public:
 	}
 
 	template<typename INDICE>
-	static void CreateIndexBuffer(const ComPtr<ID3D11Device>& device, const vector<INDICE>& index_data, ComPtr<ID3D11Buffer>& index_buffer)
+	static void CreateIndexBuffer(const ComPtr<ID3D11Device>& device, const vector<INDICE>& index_data, ComPtr<ID3D11Buffer>& index_buffer, OUT unsigned int& index_count)
 	{
+		index_count = index_data.size();
+
 		D3D11_BUFFER_DESC bd;
 		ZeroMemory(&bd, sizeof(bd));
 		bd.ByteWidth = UINT(sizeof(INDICE) * index_data.size());
@@ -120,6 +123,35 @@ public:
 		if (FAILED(device->CreateBuffer(&bd, &ssd, constant_buffer.GetAddressOf())))
 		{
 			cout << "Creating Constant Buffer Failed" << endl;
+		}
+	}
+
+	static void CreateTexture(const ComPtr<ID3D11Device>& device, const Image& texture_data, ComPtr<ID3D11Texture2D>& texture_buffer, ComPtr<ID3D11ShaderResourceView>& ts_view)
+	{
+		D3D11_TEXTURE2D_DESC td = {};
+		td.Width = texture_data.width;
+		td.Height = texture_data.height;
+		td.MipLevels = td.ArraySize = 1;
+		td.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		td.SampleDesc.Count = 1;
+		td.Usage = D3D11_USAGE_IMMUTABLE;
+		td.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+
+		D3D11_SUBRESOURCE_DATA ssd;
+		ssd.pSysMem = texture_data.image_data_.data();
+		ssd.SysMemPitch = texture_data.width * sizeof(uint32_t) * texture_data.channels;
+
+		if (FAILED(device->CreateTexture2D(&td, &ssd, texture_buffer.GetAddressOf())))
+		{
+			cout << "CreateTexture2D Failed" << endl;
+			return;
+		}
+
+		if (FAILED(device->CreateShaderResourceView(texture_buffer.Get(), nullptr,
+			ts_view.GetAddressOf())))
+		{
+			cout << "CreateShaderResourceView Failed" << endl;
+			return;
 		}
 	}
 

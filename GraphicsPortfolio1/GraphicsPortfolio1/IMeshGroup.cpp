@@ -28,7 +28,7 @@ void IMeshGroup::Render(ComPtr<ID3D11DeviceContext>& device_context)
 		device_context->VSSetConstantBuffers(0, 1, m_vertex_cbuffer_.GetAddressOf());
 		//device_context->PSSetConstantBuffers(0, 1, mesh->m_pixel_cbuffer_.GetAddressOf());
 
-		//device_context->PSSetShaderResources(0, 1, mesh->m_texture_sr_view_.GetAddressOf());
+		device_context->PSSetShaderResources(0, 1, mesh->m_texture_sr_view_.GetAddressOf());
 
 		device_context->DrawIndexed(mesh->m_index_count_, 0, 0);
 	}

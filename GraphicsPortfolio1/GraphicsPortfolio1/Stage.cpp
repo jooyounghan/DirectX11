@@ -29,12 +29,9 @@ Stage::Stage(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& device_c
 	MeshData testData;
 	testData.vertices = vertices;
 	testData.indices = indices;
+	testData.base_texture_name = "C:/GraphicsFiles/wall.jpg";
 
-	shared_ptr<Mesh> mesh = make_shared<Mesh>();
-
-	D3D11Utilizer::CreateVertexBuffer<Vertex>(m_device_, vertices, mesh->m_vertex_buffer_);
-	D3D11Utilizer::CreateIndexBuffer<uint32_t>(m_device_, indices, mesh->m_index_buffer_);
-	mesh->m_index_count_ = indices.size();
+	shared_ptr<Mesh> mesh = make_shared<Mesh>(m_device_, testData);
 
 	shared_ptr<IMeshGroup> i_mesh_group = make_shared<IMeshGroup>();
 	i_mesh_group->m_mesh_shader_ = make_shared<BaseMeshShader>(m_device_, L"BaseVertexShader.hlsl", L"BasePixelShader.hlsl");
