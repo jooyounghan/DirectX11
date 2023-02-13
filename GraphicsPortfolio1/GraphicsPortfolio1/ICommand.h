@@ -4,6 +4,6 @@
 class ICommand
 {
 public:
-	virtual void Command(WPARAM wParam, LPARAM lParam) = 0;
+	virtual void Command(const float& delta_time, WPARAM wParam, LPARAM lParam) = 0;
 };
 

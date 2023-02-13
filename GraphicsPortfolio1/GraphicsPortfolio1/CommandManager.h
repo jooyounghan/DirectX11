@@ -25,11 +25,11 @@ public:
 	shared_ptr<ICommand> dbutton_up_command_ = nullptr;
 
 public:
-	void OnMouseMove(WPARAM wParam, LPARAM lParam);
-	void OnWKeyDown(WPARAM wParam, LPARAM lParam);
-	void OnAKeyDown(WPARAM wParam, LPARAM lParam);
-	void OnSKeyDown(WPARAM wParam, LPARAM lParam);
-	void OnDKeyDown(WPARAM wParam, LPARAM lParam);
+	void OnMouseMove(const float& delta_time, WPARAM wParam, LPARAM lParam);
+	void OnWKeyDown(const float& delta_time, WPARAM wParam, LPARAM lParam);
+	void OnAKeyDown(const float& delta_time, WPARAM wParam, LPARAM lParam);
+	void OnSKeyDown(const float& delta_time, WPARAM wParam, LPARAM lParam);
+	void OnDKeyDown(const float& delta_time, WPARAM wParam, LPARAM lParam);
 
 public:
 	void SetDefaultCommand();

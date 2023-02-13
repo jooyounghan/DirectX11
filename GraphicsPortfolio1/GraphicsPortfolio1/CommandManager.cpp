@@ -14,29 +14,29 @@ CommandManager::~CommandManager()
 {
 }
 
-void CommandManager::OnMouseMove(WPARAM wParam, LPARAM lParam)
+void CommandManager::OnMouseMove(const float& delta_time, WPARAM wParam, LPARAM lParam)
 {
-	mouse_move_command_->Command(wParam, lParam);
+	mouse_move_command_->Command(delta_time, wParam, lParam);
 }
 
-void CommandManager::OnWKeyDown(WPARAM wParam, LPARAM lParam)
+void CommandManager::OnWKeyDown(const float& delta_time, WPARAM wParam, LPARAM lParam)
 {
-	wbutton_up_command_->Command(wParam, lParam);
+	wbutton_up_command_->Command(delta_time, wParam, lParam);
 }
 
-void CommandManager::OnAKeyDown(WPARAM wParam, LPARAM lParam)
+void CommandManager::OnAKeyDown(const float& delta_time, WPARAM wParam, LPARAM lParam)
 {
-	sbutton_up_command_->Command(wParam, lParam);
+	sbutton_up_command_->Command(delta_time, wParam, lParam);
 }
 
-void CommandManager::OnSKeyDown(WPARAM wParam, LPARAM lParam)
+void CommandManager::OnSKeyDown(const float& delta_time, WPARAM wParam, LPARAM lParam)
 {
-	abutton_up_command_->Command(wParam, lParam);
+	abutton_up_command_->Command(delta_time, wParam, lParam);
 }
 
-void CommandManager::OnDKeyDown(WPARAM wParam, LPARAM lParam)
+void CommandManager::OnDKeyDown(const float& delta_time, WPARAM wParam, LPARAM lParam)
 {
-	dbutton_up_command_->Command(wParam, lParam);
+	dbutton_up_command_->Command(delta_time, wParam, lParam);
 }
 
 void CommandManager::SetDefaultCommand()
