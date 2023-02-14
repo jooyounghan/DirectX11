@@ -2,8 +2,8 @@
 #include <Windows.h>
 
 #include "ImGuiManager.h"
-
-
+#include "ImGuiFileDialog.h"
+#include "ImGuiFileDialogConfig.h"
 
 ImGuiManager::ImGuiManager(int& screen_width, int& screen_height)
     : m_screen_width_(screen_width), m_screen_height_(screen_height), m_imgui_width_(0)
@@ -37,6 +37,7 @@ bool ImGuiManager::InitImGui(HWND main_window, ComPtr<ID3D11Device> m_device, Co
     if (!ImGui_ImplWin32_Init(main_window)) {
         return false;
     }
+
 
     return true;
 }
@@ -75,11 +76,22 @@ void ImGuiManager::SetImGui(const float& delta_time)
         1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
 
+    if (ImGui::Button("Open File Dialog"))
+        ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".cpp,.h,.hpp", ".");
+
+    if (ImGuiFileDialog::Instance()->Display("ChooseFileDlgKey"))
+    {
+        // action if OK
+        if (ImGuiFileDialog::Instance()->IsOk())
+        {
+            std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
+            std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
+            // action
+        }
+    }
+
     ImGui::SetWindowPos(ImVec2(0.0f, 0.0f));
     m_imgui_width_ = int(ImGui::GetWindowWidth());
     ImGui::SetWindowSize(
         ImVec2((float)m_imgui_width_, (float)m_screen_height_));
-
-
-
 }

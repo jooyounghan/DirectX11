@@ -28,9 +28,6 @@
     <Filter Include="소스 파일\DirectX11">
       <UniqueIdentifier>{bce4e027-d8f1-4f4a-af70-187a7adfe3e1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="헤더 파일\DirectX11">
-      <UniqueIdentifier>{48619e45-463a-4534-9131-30872d0121ea}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\Command\Specific Command">
       <UniqueIdentifier>{bbf7f964-0421-40c8-a59a-c9eac413dd29}</UniqueIdentifier>
     </Filter>
@@ -81,6 +78,9 @@
     </Filter>
     <Filter Include="소스 파일\Rendering\Shader\Specific Shader">
       <UniqueIdentifier>{225f3b99-643f-4d78-8006-077769928541}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\DirectX11">
+      <UniqueIdentifier>{48619e45-463a-4534-9131-30872d0121ea}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -138,6 +138,12 @@
     <ClInclude Include="GameLoop.h">
       <Filter>헤더 파일\Application</Filter>
     </ClInclude>
+    <ClInclude Include="ImGuiFileDialog.h">
+      <Filter>헤더 파일\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGuiFileDialogConfig.h">
+      <Filter>헤더 파일\ImGui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ICommand.cpp">
@@ -193,6 +199,9 @@
     </ClCompile>
     <ClCompile Include="GameLoop.cpp">
       <Filter>소스 파일\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGuiFileDialog.cpp">
+      <Filter>소스 파일\ImGui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

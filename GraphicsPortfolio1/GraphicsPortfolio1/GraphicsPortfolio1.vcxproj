@@ -139,6 +139,8 @@
     <ClInclude Include="GraphicsPortfolio1App.h" />
     <ClInclude Include="ICommand.h" />
     <ClInclude Include="IMeshGroup.h" />
+    <ClInclude Include="ImGuiFileDialog.h" />
+    <ClInclude Include="ImGuiFileDialogConfig.h" />
     <ClInclude Include="ImGuiManager.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="MeshData.h" />
@@ -159,6 +161,7 @@
     <ClCompile Include="GraphicsPortfolio1App.cpp" />
     <ClCompile Include="ICommand.cpp" />
     <ClCompile Include="IMeshGroup.cpp" />
+    <ClCompile Include="ImGuiFileDialog.cpp" />
     <ClCompile Include="ImGuiManager.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="MainConsole.cpp" />
