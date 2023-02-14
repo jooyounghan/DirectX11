@@ -33,10 +33,10 @@ public:
 	void ReSetImGui();
 
 public:
-	void RecordRendering();
+	void RecordRendering(const float& delta_time);
 	void Render();
 
 public:
-	void SetImGui();
+	void SetImGui(const float& delta_time);
 };
 

@@ -4,8 +4,6 @@
 using std::cout;
 using std::endl;
 
-using namespace std::chrono;
-
 GraphicsPortfolio1App::GraphicsPortfolio1App()
     : BaseApp(),
     m_d3d11_utilizer(m_screen_width_, m_screen_height_),
@@ -96,59 +94,54 @@ LRESULT GraphicsPortfolio1App::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARA
         return true;
     
     const int& imgui_width = m_imgui_manager.GetImGuiWidth();
-
-    if (msg == WM_CREATE)
+    const float delta_time = m_game_loop_.GetElapsed("Message");
+    switch (msg)
     {
-        m_message_time_point_ = system_clock::now();
-    }
-    else
-    {
-        const float delta_time = UpdateAndCalcDt(m_message_time_point_);
-        switch (msg)
+    case WM_CREATE:
+        m_game_loop_.AddTimePoint("Message");
+        return 0;
+    case WM_SIZE:
+        if (m_d3d11_utilizer.IsSwappable())
         {
-        case WM_SIZE:
-            if (m_d3d11_utilizer.IsSwappable())
-            {
-                m_screen_width_ = int(LOWORD(lParam));
-                m_screen_height_ = int(HIWORD(lParam));
-                m_d3d11_utilizer.OnResize(wParam, lParam);
-                m_d3d11_utilizer.SetViewPort((float)(m_screen_height_ - imgui_width) * m_screen_height_, (float)m_screen_height_, (float)imgui_width);
-            }
-            break;
-
-        case WM_SYSCOMMAND:
-            if ((wParam & 0xfff0) == SC_KEYMENU) // Disable ALT application menu
-                return 0;
-            break;
-            // 마우스 시점 변화에 따른 명령
-        case WM_MOUSEMOVE:
-            command_manager_.OnMouseMove(delta_time, wParam, lParam);
-            break;
-
-            // WSAD버튼 클릭에 따른 명령
-        case WM_KEYDOWN:
-            switch (wParam)
-            {
-            case(KEY_W):
-                command_manager_.OnWKeyDown(delta_time, wParam, lParam);
-                break;
-            case(KEY_A):
-                command_manager_.OnAKeyDown(delta_time, wParam, lParam);
-                break;
-            case(KEY_S):
-                command_manager_.OnSKeyDown(delta_time, wParam, lParam);
-                break;
-            case(KEY_D):
-                command_manager_.OnDKeyDown(delta_time, wParam, lParam);
-                break;
-            }
-            break;
-        case WM_DESTROY:
-            ::PostQuitMessage(0);
-            return 0;
+            m_screen_width_ = int(LOWORD(lParam));
+            m_screen_height_ = int(HIWORD(lParam));
+            m_d3d11_utilizer.OnResize(wParam, lParam);
+            m_d3d11_utilizer.SetViewPort((float)(m_screen_height_ - imgui_width) * m_screen_height_, (float)m_screen_height_, (float)imgui_width);
         }
-    }
+        break;
 
+    case WM_SYSCOMMAND:
+        if ((wParam & 0xfff0) == SC_KEYMENU) // Disable ALT application menu
+            return 0;
+        break;
+        // 마우스 시점 변화에 따른 명령
+    case WM_MOUSEMOVE:
+        command_manager_.OnMouseMove(delta_time, wParam, lParam);
+        break;
+
+        // WSAD버튼 클릭에 따른 명령
+    case WM_KEYDOWN:
+        switch (wParam)
+        {
+        case(KEY_W):
+            command_manager_.OnWKeyDown(delta_time, wParam, lParam);
+            break;
+        case(KEY_A):
+            command_manager_.OnAKeyDown(delta_time, wParam, lParam);
+            break;
+        case(KEY_S):
+            command_manager_.OnSKeyDown(delta_time, wParam, lParam);
+            break;
+        case(KEY_D):
+            command_manager_.OnDKeyDown(delta_time, wParam, lParam);
+            break;
+        }
+        break;
+    case WM_DESTROY:
+        ::PostQuitMessage(0);
+        return 0;
+    }
+    m_game_loop_.UpdateTimePoint("Message");
     return ::DefWindowProc(hwnd, msg, wParam, lParam);
 }
 
@@ -158,24 +151,23 @@ float GraphicsPortfolio1App::GetAspectRatio()
     return float(m_screen_width_ - m_imgui_manager.GetImGuiWidth()) / m_screen_height_;
 }
 
-float GraphicsPortfolio1App::UpdateAndCalcDt(system_clock::time_point& time_point)
-{
-    std::chrono::duration<double> dt_duration =  std::chrono::system_clock::now() - time_point;    
-    time_point = std::chrono::system_clock::now();
-    return dt_duration.count();
-}
-
 int GraphicsPortfolio1App::Run()
 {
     MSG msg = { 0 };
+
+    m_game_loop_.AddTimePoint("Main");
+
     while (WM_QUIT != msg.message) {
-        if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
+        if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+        {
             TranslateMessage(&msg);
             DispatchMessage(&msg);
         }
-        else {
-
-            m_imgui_manager.RecordRendering();
+        else
+        {;
+            const float& delta_time = m_game_loop_.GetElapsed("Main");
+            m_game_loop_.UpdateTimePoint("Main");
+            m_imgui_manager.RecordRendering(delta_time);
 
             m_d3d11_utilizer.Render();
 

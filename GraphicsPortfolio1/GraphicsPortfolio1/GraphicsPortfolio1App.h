@@ -1,11 +1,11 @@
 #pragma once
-#include <chrono>
 
 #include "BaseApp.h"
+
+#include "GameLoop.h"
 #include "D3D11Utilizer.h"
 #include "ImGuiManager.h"
 
-using std::chrono::system_clock;
 
 LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -25,14 +25,8 @@ public:
 	virtual LRESULT MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) override;
 	virtual float GetAspectRatio() override;
 
-public:
-	system_clock::time_point m_message_time_point_;
-	system_clock::time_point m_update_time_point_;
-
-public:
-	float UpdateAndCalcDt(system_clock::time_point& time_point);
-
 protected:
+	GameLoop		m_game_loop_;
 	D3D11Utilizer	m_d3d11_utilizer;
 	ImGuiManager	m_imgui_manager;
 

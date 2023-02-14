@@ -48,7 +48,7 @@ void ImGuiManager::ReSetImGui()
     ImGui::DestroyContext();
 }
 
-void ImGuiManager::RecordRendering()
+void ImGuiManager::RecordRendering(const float& delta_time)
 {
     ImGui_ImplDX11_NewFrame(); // GUI 프레임 시작
     ImGui_ImplWin32_NewFrame();
@@ -56,7 +56,7 @@ void ImGuiManager::RecordRendering()
     ImGui::NewFrame(); // 어떤 것들을 렌더링 할지 기록 시작
     ImGui::Begin("Scene Control");
 
-    SetImGui();
+    SetImGui(delta_time);
 
     ImGui::End();
     ImGui::Render(); // 렌더링할 것들 기록 끝
@@ -67,9 +67,11 @@ void ImGuiManager::Render()
     ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData()); // GUI 렌더링
 }
 
-void ImGuiManager::SetImGui()
+void ImGuiManager::SetImGui(const float& delta_time)
 {
-    ImGui::Text("Average %.3f ms/frame (%.1f FPS)",
+    ImGui::Text("Average %.3f ms/frame (%.1f FPS) With Game Loop",
+        delta_time * 1000.0f, 1.f / delta_time);
+    ImGui::Text("Average %.3f ms/frame (%.1f FPS) With ImGui GetIO",
         1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
 
