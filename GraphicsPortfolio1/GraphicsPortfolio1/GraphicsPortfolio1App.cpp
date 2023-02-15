@@ -1,8 +1,23 @@
 #include "GraphicsPortfolio1App.h"
 #include <iostream>
+#include "Observer.h"
 
 using std::cout;
 using std::endl;
+
+void test()
+{
+    cout << " test call back" << endl;
+}
+
+class testclass
+{
+public:
+    void test()
+    {
+        cout << "test member call back:" << endl;
+    }
+};
 
 GraphicsPortfolio1App::GraphicsPortfolio1App()
     : BaseApp(),
@@ -17,6 +32,17 @@ GraphicsPortfolio1App::~GraphicsPortfolio1App()
 
 bool GraphicsPortfolio1App::Initialize()
 {
+    Delegater<void> observer;
+    testclass tc;
+    observer.Add(&test);
+    observer.Add(&tc, &testclass::test);
+    bool test = true;
+
+
+
+
+
+
     if (!InitWindowApp())
     {
         return false;

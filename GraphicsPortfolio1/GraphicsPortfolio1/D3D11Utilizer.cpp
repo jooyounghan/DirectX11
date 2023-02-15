@@ -313,7 +313,7 @@ void D3D11Utilizer::OnResize(WPARAM w_param, LPARAM l_param)
 
 void D3D11Utilizer::Render()
 {
-	SetViewPort(m_bufffer_width_, m_bufffer_height_);
+	SetViewPort((float)m_bufffer_width_, (float)m_bufffer_height_);
 
 	float clear_color[4] = { 1.0f, 0.0f, 0.0f, 1.0f };
 

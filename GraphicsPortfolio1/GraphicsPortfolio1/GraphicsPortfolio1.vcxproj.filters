@@ -82,6 +82,15 @@
     <Filter Include="헤더 파일\DirectX11">
       <UniqueIdentifier>{48619e45-463a-4534-9131-30872d0121ea}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Utility">
+      <UniqueIdentifier>{66b17d47-bf92-499e-9de9-3210df17755a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Utility">
+      <UniqueIdentifier>{49a68a3b-f867-4f35-8563-b7f56560c4bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Utility\Observer">
+      <UniqueIdentifier>{bebc24cd-5945-489b-b357-c4c24d1ddb18}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ICommand.h">
@@ -143,6 +152,9 @@
     </ClInclude>
     <ClInclude Include="ImGuiFileDialogConfig.h">
       <Filter>헤더 파일\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Observer.h">
+      <Filter>헤더 파일\Utility\Observer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

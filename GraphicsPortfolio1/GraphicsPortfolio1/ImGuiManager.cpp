@@ -76,10 +76,10 @@ void ImGuiManager::SetImGui(const float& delta_time)
         1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
 
-    if (ImGui::Button("Open File Dialog"))
-        ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".cpp,.h,.hpp", ".");
+    if (ImGui::Button("Select Modeling File"))
+        ImGuiFileDialog::Instance()->OpenDialog("SelectModel", "Select Model File", ".fbx", ".");
 
-    if (ImGuiFileDialog::Instance()->Display("ChooseFileDlgKey"))
+    if (ImGuiFileDialog::Instance()->Display("SelectModel"))
     {
         // action if OK
         if (ImGuiFileDialog::Instance()->IsOk())
