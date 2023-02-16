@@ -6,7 +6,6 @@
 #include "D3D11Utilizer.h"
 #include "ImGuiManager.h"
 
-
 LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 class GraphicsPortfolio1App : public BaseApp
@@ -32,5 +31,8 @@ protected:
 
 public:
 	virtual int Run() override;
+
+public:
+	void SetImGuiDXDelegate();
 };
 

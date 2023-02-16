@@ -9,6 +9,8 @@
 #include "FileReader.h"
 #include "Stage.h"
 
+#include "Delegator.h"
+
 #define COUTERR(String) std::cout << String << "/" << "Error Code : " << GetLastError() << std::endl
 
 using Microsoft::WRL::ComPtr;
@@ -186,5 +188,8 @@ public:
 
 public:
 	void Render();
+
+public:
+	void AddModel(const string& path);
 };
 

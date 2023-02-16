@@ -88,7 +88,7 @@
     <Filter Include="헤더 파일\Utility">
       <UniqueIdentifier>{49a68a3b-f867-4f35-8563-b7f56560c4bd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="헤더 파일\Utility\Observer">
+    <Filter Include="헤더 파일\Utility\Delegator">
       <UniqueIdentifier>{bebc24cd-5945-489b-b357-c4c24d1ddb18}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -153,8 +153,8 @@
     <ClInclude Include="ImGuiFileDialogConfig.h">
       <Filter>헤더 파일\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="Observer.h">
-      <Filter>헤더 파일\Utility\Observer</Filter>
+    <ClInclude Include="Delegator.h">
+      <Filter>헤더 파일\Utility\Delegator</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

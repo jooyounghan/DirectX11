@@ -77,7 +77,7 @@ void ImGuiManager::SetImGui(const float& delta_time)
 
 
     if (ImGui::Button("Select Modeling File"))
-        ImGuiFileDialog::Instance()->OpenDialog("SelectModel", "Select Model File", ".fbx", ".");
+        ImGuiFileDialog::Instance()->OpenDialog("SelectModel", "Select Model File", ".cpp", ".");
 
     if (ImGuiFileDialog::Instance()->Display("SelectModel"))
     {
@@ -86,9 +86,27 @@ void ImGuiManager::SetImGui(const float& delta_time)
         {
             std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
             std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
+            OnModelFileChanged.Broadcast(filePath);
             // action
         }
     }
+
+    ImGui::ListBoxHeader("MyListbox", ImVec2(300, 400));
+    for (int i = 0; i < items.size(); i++)
+    {
+        bool item_checked = items[i].first;
+        ImGui::PushID(i);
+        if (ImGui::Checkbox("##check", &item_checked))
+        {
+            items[i].first = item_checked;
+        }
+        ImGui::SameLine();
+        ImGui::Text("%s", items[i].second.c_str());
+        ImGui::PopID();
+    }
+    ImGui::ListBoxFooter();
+
+
 
     ImGui::SetWindowPos(ImVec2(0.0f, 0.0f));
     m_imgui_width_ = int(ImGui::GetWindowWidth());

@@ -330,3 +330,9 @@ void D3D11Utilizer::Render()
 
 	m_stage_->Render();
 }
+
+void D3D11Utilizer::AddModel(const string& path)
+{
+	cout << path << endl;
+}
+

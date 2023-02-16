@@ -6,6 +6,11 @@
 
 #include <d3d11.h>
 #include <wrl.h>
+
+#include <string>
+
+#include "Delegator.h"
+
 using Microsoft::WRL::ComPtr;
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -37,5 +42,19 @@ public:
 
 public:
 	void SetImGui(const float& delta_time);
+
+public:
+	std::vector<std::pair<bool, std::string>> items
+	{
+		{false, "Hello1"},
+		{false, "Hello2"},
+		{false, "Hello3"},
+		{false, "Hello4"},
+		{false, "Hello5"},
+		{false, "Hello6"},
+	};
+
+public:
+	Delegator<void, const std::string&> OnModelFileChanged;
 };
 

@@ -147,7 +147,7 @@
     <ClInclude Include="MeshGenerator.h" />
     <ClInclude Include="MouseMoveCom.h" />
     <ClInclude Include="Mesh.h" />
-    <ClInclude Include="Observer.h" />
+    <ClInclude Include="Delegator.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Stage.h" />
   </ItemGroup>
