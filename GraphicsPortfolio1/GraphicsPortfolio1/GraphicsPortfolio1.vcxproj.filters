@@ -52,12 +52,6 @@
     <Filter Include="헤더 파일\Rendering\Mesh">
       <UniqueIdentifier>{699f4bbf-b591-4017-be68-97e95accb5ed}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Rendering\FileReader">
-      <UniqueIdentifier>{facb2f12-9653-4241-8fd5-68e7d99a825f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\Rendering\FileReader">
-      <UniqueIdentifier>{410be4aa-687a-4b18-91be-95f948087e3a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\Rendering\Shader">
       <UniqueIdentifier>{1faa22dd-d0c8-4788-aa09-7982e30c15f3}</UniqueIdentifier>
     </Filter>
@@ -90,6 +84,12 @@
     </Filter>
     <Filter Include="헤더 파일\Utility\Delegator">
       <UniqueIdentifier>{bebc24cd-5945-489b-b357-c4c24d1ddb18}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Utility\FileReader">
+      <UniqueIdentifier>{410be4aa-687a-4b18-91be-95f948087e3a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Utility\FileReader">
+      <UniqueIdentifier>{facb2f12-9653-4241-8fd5-68e7d99a825f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -124,7 +124,7 @@
       <Filter>헤더 파일\Rendering\Mesh</Filter>
     </ClInclude>
     <ClInclude Include="FileReader.h">
-      <Filter>헤더 파일\Rendering\FileReader</Filter>
+      <Filter>헤더 파일\Utility\FileReader</Filter>
     </ClInclude>
     <ClInclude Include="Shader.h">
       <Filter>헤더 파일\Rendering\Shader</Filter>
@@ -192,7 +192,7 @@
       <Filter>소스 파일\Rendering\Mesh</Filter>
     </ClCompile>
     <ClCompile Include="FileReader.cpp">
-      <Filter>소스 파일\Rendering\FileReader</Filter>
+      <Filter>소스 파일\Utility\FileReader</Filter>
     </ClCompile>
     <ClCompile Include="Shader.cpp">
       <Filter>소스 파일\Rendering\Shader</Filter>

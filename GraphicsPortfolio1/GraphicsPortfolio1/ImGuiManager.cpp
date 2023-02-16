@@ -5,6 +5,8 @@
 #include "ImGuiFileDialog.h"
 #include "ImGuiFileDialogConfig.h"
 
+using namespace std;
+
 ImGuiManager::ImGuiManager(int& screen_width, int& screen_height)
     : m_screen_width_(screen_width), m_screen_height_(screen_height), m_imgui_width_(0)
 {
@@ -24,10 +26,11 @@ bool ImGuiManager::InitImGui(HWND main_window, ComPtr<ID3D11Device> m_device, Co
 {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
+
     ImGuiIO& io = ImGui::GetIO();
     (void)io;
     io.DisplaySize = ImVec2(float(m_screen_width_), float(m_screen_height_));
-    ImGui::StyleColorsLight();
+    ImGui::StyleColorsDark();
 
     // Setup Platform/Renderer backends
     if (!ImGui_ImplDX11_Init(m_device.Get(), m_context.Get())) {
@@ -84,28 +87,49 @@ void ImGuiManager::SetImGui(const float& delta_time)
         // action if OK
         if (ImGuiFileDialog::Instance()->IsOk())
         {
-            std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
-            std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
-            OnModelFileChanged.Broadcast(filePath);
-            // action
+            std::string file_path_name = ImGuiFileDialog::Instance()->GetCurrentPath() + "\\";
+            std::string file_name = ImGuiFileDialog::Instance()->GetCurrentFileName();
+
+
+            m_model_files_.emplace_back(false, file_path_name, file_name);
+            m_on_file_changed_.Broadcast(file_path_name, file_name);
+
+            ImGuiFileDialog::Instance()->Close();
         }
     }
 
-    ImGui::ListBoxHeader("MyListbox", ImVec2(300, 400));
-    for (int i = 0; i < items.size(); i++)
+    ImGui::SameLine();
+    if (ImGui::Button("Remove Selected File"))
     {
-        bool item_checked = items[i].first;
-        ImGui::PushID(i);
-        if (ImGui::Checkbox("##check", &item_checked))
+        for (size_t index = 0; index < m_model_files_.size(); ++index)
         {
-            items[i].first = item_checked;
+            if (m_model_files_[index].is_checked == true)
+            {
+                m_model_files_.erase(m_model_files_.begin() + index);
+                index--;
+            }
         }
-        ImGui::SameLine();
-        ImGui::Text("%s", items[i].second.c_str());
-        ImGui::PopID();
     }
-    ImGui::ListBoxFooter();
 
+    ImVec2 listbox_size = ImVec2(-FLT_MIN, 10 * ImGui::GetTextLineHeightWithSpacing());
+    if (ImGui::BeginListBox("##file select listbox", listbox_size))
+    {
+        for (int i = 0; i < m_model_files_.size(); i++)
+        {
+            bool item_checked = m_model_files_[i].is_checked;
+
+            ImGui::PushID(i);
+            if (ImGui::Checkbox("##check", &item_checked))
+            {
+                m_model_files_[i].is_checked = item_checked;
+            }
+            ImGui::SameLine();
+
+            ImGui::Text("%s", m_model_files_[i].file_name.c_str());
+            ImGui::PopID();
+        }
+        ImGui::EndListBox();
+    }
 
 
     ImGui::SetWindowPos(ImVec2(0.0f, 0.0f));

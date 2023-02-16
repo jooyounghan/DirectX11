@@ -86,7 +86,7 @@ public:
 	template<typename INDICE>
 	static void CreateIndexBuffer(const ComPtr<ID3D11Device>& device, const vector<INDICE>& index_data, ComPtr<ID3D11Buffer>& index_buffer, OUT unsigned int& index_count)
 	{
-		index_count = index_data.size();
+		index_count = (unsigned int)index_data.size();
 
 		D3D11_BUFFER_DESC bd;
 		ZeroMemory(&bd, sizeof(bd));
@@ -190,6 +190,6 @@ public:
 	void Render();
 
 public:
-	void AddModel(const string& path);
+	void AddModel(const string& file_path, const string& file_name);
 };
 

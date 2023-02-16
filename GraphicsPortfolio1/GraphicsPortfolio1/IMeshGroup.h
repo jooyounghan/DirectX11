@@ -12,6 +12,7 @@ class IMeshGroup
 {
 public:
 	IMeshGroup();
+	IMeshGroup(ComPtr<ID3D11Device>& device, const vector<MeshData>& mesh_data_vector);
 	~IMeshGroup();
 
 public:

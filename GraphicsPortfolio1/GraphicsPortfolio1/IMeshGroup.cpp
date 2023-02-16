@@ -1,7 +1,18 @@
 #include "IMeshGroup.h"
 
+using namespace std;
+
 IMeshGroup::IMeshGroup()
 {
+}
+
+IMeshGroup::IMeshGroup(ComPtr<ID3D11Device>& device, const vector<MeshData>& mesh_data_vector)
+{
+	for (auto& mesh_data : mesh_data_vector)
+	{
+		shared_ptr<Mesh> mesh = std::make_shared<Mesh>(device, mesh_data);
+		m_meshes_.push_back(mesh);
+	}
 }
 
 IMeshGroup::~IMeshGroup()

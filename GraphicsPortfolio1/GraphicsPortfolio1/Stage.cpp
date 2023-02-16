@@ -12,12 +12,12 @@ Stage::~Stage()
 
 }
 
-inline void Stage::AddMeshGroup(shared_ptr<IMeshGroup> mesh_group)
+void Stage::AddMeshGroup(shared_ptr<IMeshGroup> mesh_group)
 {
 	m_mesh_group.push_back(mesh_group);
 }
 
-inline void Stage::RemoveMeshGroup(const size_t& index)
+void Stage::RemoveMeshGroup(const size_t& index)
 {
 	m_mesh_group.erase(m_mesh_group.begin() + index);
 }

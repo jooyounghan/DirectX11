@@ -315,7 +315,7 @@ void D3D11Utilizer::Render()
 {
 	SetViewPort((float)m_bufffer_width_, (float)m_bufffer_height_);
 
-	float clear_color[4] = { 1.0f, 0.0f, 0.0f, 1.0f };
+	float clear_color[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
 
 	m_device_context_->ClearRenderTargetView(m_rt_view_.Get(), clear_color);
 	m_device_context_->ClearDepthStencilView(m_ds_view_.Get(),
@@ -331,8 +331,11 @@ void D3D11Utilizer::Render()
 	m_stage_->Render();
 }
 
-void D3D11Utilizer::AddModel(const string& path)
+void D3D11Utilizer::AddModel(const string& file_path, const string& file_name)
 {
-	cout << path << endl;
+
+	vector<MeshData> mesh_data = FileReader::GetMeshDataFromFile(file_path, file_name);
+	shared_ptr<IMeshGroup> mesh_group = make_shared<IMeshGroup>(m_device_, mesh_data);
+	m_stage_->AddMeshGroup(mesh_group);
 }
 

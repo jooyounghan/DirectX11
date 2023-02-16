@@ -11,7 +11,16 @@
 
 #include "Delegator.h"
 
+using std::string;
 using Microsoft::WRL::ComPtr;
+
+struct FileListItem
+{
+	bool is_checked;
+	string base_path;
+	string file_name;
+};
+
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -44,17 +53,9 @@ public:
 	void SetImGui(const float& delta_time);
 
 public:
-	std::vector<std::pair<bool, std::string>> items
-	{
-		{false, "Hello1"},
-		{false, "Hello2"},
-		{false, "Hello3"},
-		{false, "Hello4"},
-		{false, "Hello5"},
-		{false, "Hello6"},
-	};
+	std::vector<FileListItem> m_model_files_;
 
 public:
-	Delegator<void, const std::string&> OnModelFileChanged;
+	Delegator<void, const string&, const string&> m_on_file_changed_;
 };
 
