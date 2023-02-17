@@ -13,11 +13,18 @@ struct PixelShaderInput
     float3 color : COLOR; //
 };
 
-cbuffer BasicVertexConstantData : register(b0)
+cbuffer VertexConstantData : register(b0)
+{
+    matrix model;
+    matrix inv_tranpose;
+};
+
+cbuffer MeshGroupConstantData : register(b1)
 {
     matrix view;
     matrix projection;
 };
+
 
 PixelShaderInput main(VertexShaderInput input)
 {

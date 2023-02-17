@@ -73,9 +73,6 @@
     <Filter Include="소스 파일\Rendering\Shader\Specific Shader">
       <UniqueIdentifier>{225f3b99-643f-4d78-8006-077769928541}</UniqueIdentifier>
     </Filter>
-    <Filter Include="헤더 파일\DirectX11">
-      <UniqueIdentifier>{48619e45-463a-4534-9131-30872d0121ea}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\Utility">
       <UniqueIdentifier>{66b17d47-bf92-499e-9de9-3210df17755a}</UniqueIdentifier>
     </Filter>
@@ -91,6 +88,9 @@
     <Filter Include="소스 파일\Utility\FileReader">
       <UniqueIdentifier>{facb2f12-9653-4241-8fd5-68e7d99a825f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="헤더 파일\Rendering\DirectX11">
+      <UniqueIdentifier>{48619e45-463a-4534-9131-30872d0121ea}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ICommand.h">
@@ -103,7 +103,7 @@
       <Filter>헤더 파일\Application</Filter>
     </ClInclude>
     <ClInclude Include="D3D11Utilizer.h">
-      <Filter>헤더 파일\DirectX11</Filter>
+      <Filter>헤더 파일\Rendering\DirectX11</Filter>
     </ClInclude>
     <ClInclude Include="CharacterMoveCom.h">
       <Filter>헤더 파일\Command\Specific Command</Filter>

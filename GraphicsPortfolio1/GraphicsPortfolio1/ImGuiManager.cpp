@@ -80,7 +80,7 @@ void ImGuiManager::SetImGui(const float& delta_time)
 
 
     if (ImGui::Button("Select Modeling File"))
-        ImGuiFileDialog::Instance()->OpenDialog("SelectModel", "Select Model File", ".cpp", ".");
+        ImGuiFileDialog::Instance()->OpenDialog("SelectModel", "Select Model File", ".fbx", ".");
 
     if (ImGuiFileDialog::Instance()->Display("SelectModel"))
     {

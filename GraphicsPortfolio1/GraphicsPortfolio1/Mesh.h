@@ -17,7 +17,7 @@ struct MeshVertexConstantData
 
 struct MeshGroupVertexConstantData
 {
-	Matrix view;					// 16
+	Matrix view;				// 16
 	Matrix projection;			// 16
 };
 

@@ -36,7 +36,10 @@ void IMeshGroup::Render(ComPtr<ID3D11DeviceContext>& device_context)
 		device_context->IASetIndexBuffer(mesh->m_index_buffer_.Get(), DXGI_FORMAT_R32_UINT, 0);
 		device_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-		device_context->VSSetConstantBuffers(0, 1, m_vertex_cbuffer_.GetAddressOf());
+		vector<ID3D11Buffer*> vertex_constant_buffers{ mesh->m_vertex_cbuffer_.Get(), m_vertex_cbuffer_.Get() };
+		//vector<ID3D11Buffer**> pixel_constant_buffers{ mesh->m_vertex_cbuffer_.GetAddressOf(), m_vertex_cbuffer_.GetAddressOf() };
+
+		device_context->VSSetConstantBuffers(0, vertex_constant_buffers.size(), vertex_constant_buffers.data());
 		//device_context->PSSetConstantBuffers(0, 1, mesh->m_pixel_cbuffer_.GetAddressOf());
 
 		device_context->PSSetShaderResources(0, 1, mesh->m_texture_sr_view_.GetAddressOf());

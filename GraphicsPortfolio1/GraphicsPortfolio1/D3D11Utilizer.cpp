@@ -1,11 +1,14 @@
 #include <iostream>
 
 #include "Shader.h"
+#include "BaseMeshShader.h"
+
 #include "D3D11Utilizer.h"
 
 // Test
 #include "FileReader.h"
-
+#include <directxtk/SimpleMath.h>
+using namespace DirectX;
 
 using namespace std;
 
@@ -182,7 +185,8 @@ bool D3D11Utilizer::CreateRasterizerState()
 	rd.FillMode = D3D11_FILL_MODE::D3D11_FILL_SOLID;
 	rd.CullMode = D3D11_CULL_MODE::D3D11_CULL_NONE;
 	rd.FrontCounterClockwise = false;
-	rd.DepthClipEnable = true;
+	rd.DepthClipEnable = false;
+	//rd.DepthClipEnable = true;
 
 	if (FAILED(m_device_->CreateRasterizerState(&rd, temp_rasterizer_state.GetAddressOf())))
 	{
@@ -336,6 +340,19 @@ void D3D11Utilizer::AddModel(const string& file_path, const string& file_name)
 
 	vector<MeshData> mesh_data = FileReader::GetMeshDataFromFile(file_path, file_name);
 	shared_ptr<IMeshGroup> mesh_group = make_shared<IMeshGroup>(m_device_, mesh_data);
+
+	// Test ==============================================================
+	mesh_group->m_vertex_constant_data_.view = Matrix::Identity;
+	const float aspect = (float)m_bufffer_width_ / (float)m_bufffer_height_;
+	float m_projFovAngleY = 70.0f;
+	float m_nearZ = 0.01f;
+	float m_farZ = 100.0f;
+	Matrix projRow = XMMatrixPerspectiveFovLH(XMConvertToRadians(m_projFovAngleY), aspect, m_nearZ, m_farZ);
+	mesh_group->m_vertex_constant_data_.projection = projRow;
+	CreateConstantBuffer(m_device_, mesh_group->m_vertex_constant_data_, mesh_group->m_vertex_cbuffer_);
+	// Test ==============================================================
+
+	mesh_group->m_mesh_shader_ = make_shared<BaseMeshShader>(m_device_, L"BaseVertexShader.hlsl", L"BasePixelShader.hlsl");
 	m_stage_->AddMeshGroup(mesh_group);
 }
 

@@ -24,6 +24,7 @@ public:
 public:
 	MeshGroupVertexConstantData		m_vertex_constant_data_;
 
+
 	ComPtr<ID3D11Buffer> m_vertex_cbuffer_;
 	ComPtr<ID3D11Buffer> m_pixel_cbuffer_;
 
