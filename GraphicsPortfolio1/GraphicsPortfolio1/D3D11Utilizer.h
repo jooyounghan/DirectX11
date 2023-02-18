@@ -21,44 +21,73 @@ using std::endl;
 class D3D11Utilizer
 {
 public:
-	D3D11Utilizer(int& buffer_width, int& buffer_height);
-	~D3D11Utilizer();
-
-protected:
-	int& m_bufffer_width_;
-	int& m_bufffer_height_;
-
-public:
-	// App으로 이동하는거 생각하기
-	ComPtr<ID3D11Device>				m_device_;
-	ComPtr<ID3D11DeviceContext>			m_device_context_;
-	ComPtr<ID3D11RenderTargetView>		m_rt_view_;
-	ComPtr<ID3D11ShaderResourceView>	m_sr_view_;
-	ComPtr<IDXGISwapChain>				m_swap_chain_;
-	ComPtr<ID3D11RasterizerState>		m_rasterizer_state_;
-	ComPtr<ID3D11DepthStencilView>		m_ds_view_;
-	ComPtr<ID3D11DepthStencilState>		m_ds_state_;
-	D3D11_VIEWPORT						m_viewport_;
+	static bool InitDirectX11(
+		HWND window_handler,
+		const int& buffer_width,
+		const int& buffer_height,
+		OUT ComPtr<ID3D11Device>& device,
+		OUT ComPtr<ID3D11DeviceContext>& context,
+		OUT ComPtr<IDXGISwapChain>& swap_chain,
+		OUT ComPtr<ID3D11RenderTargetView>& rt_view,
+		OUT ComPtr<ID3D11ShaderResourceView>& sr_view,
+		OUT ComPtr<ID3D11RasterizerState>& rs_state,
+		OUT ComPtr<ID3D11DepthStencilView>&	ds_view,
+		OUT ComPtr<ID3D11DepthStencilState>	ds_state
+	);
 
 public:
-	ComPtr<ID3D11Device>				GetDevice();
-	ComPtr<ID3D11DeviceContext>			GetDeviceContext();
+	static bool CreateDeviceAndSwapChain(
+		HWND window_handler,
+		const int& buffer_width,
+		const int& buffer_height,
+		OUT ComPtr<ID3D11Device>& device,
+		OUT ComPtr<ID3D11DeviceContext>& context,
+		OUT ComPtr<IDXGISwapChain>& swap_chain
+	);
 
-public:
-	bool IsSwappable();
+	static bool CreateRenderTargetView(
+		ComPtr<ID3D11Device>& device,
+		ComPtr<IDXGISwapChain>& swap_chain,
+		OUT ComPtr<ID3D11RenderTargetView>&	rt_view,
+		OUT ComPtr<ID3D11ShaderResourceView>& sr_view
+	);
 
-public:
-	bool InitDirectX11(HWND window_handler);
+	static bool CreateRasterizerState
+	(
+		ComPtr<ID3D11Device>& device,
+		OUT ComPtr<ID3D11RasterizerState>& rs_state
+	);
+	
+	static bool CreateDepthBuffer(
+		const int& buffer_width,
+		const int& buffer_height,
+		ComPtr<ID3D11Device>& device,
+		OUT ComPtr<ID3D11DepthStencilView>& ds_view
+	);
 
-public:
-	bool CreateDeviceAndSwapChain(HWND window_handler);
-	bool CreateRenderTargetView();
-	bool CreateRasterizerState();
-	bool CreateDepthBuffer();
-	bool CreateDepthStencilState();
+	static bool CreateDepthStencilState(
+		ComPtr<ID3D11Device>& device, 
+		OUT ComPtr<ID3D11DepthStencilState>	ds_state
+	);
 
-public:
-	bool CreateStage();
+	static void SetViewPort(
+		ComPtr<ID3D11DeviceContext>& context,
+		const float& view_port_width,
+		const float& view_port_height,
+		const float& top_leftx,
+		const float& top_lefty,
+		OUT D3D11_VIEWPORT& view_port
+	);
+
+	static void SwapChain(ComPtr<IDXGISwapChain>& swap_chain);
+	static void OnResize(
+		WPARAM w_param,
+		LPARAM l_param,
+		OUT ComPtr<ID3D11RenderTargetView>& rt_view,
+		OUT ComPtr<ID3D11ShaderResourceView>& sr_view,
+		OUT ComPtr<ID3D11DepthStencilView>& ds_view,
+		OUT ComPtr<IDXGISwapChain>& swap_chain
+	);
 
 public:
 	template<typename VERTEX>
@@ -173,23 +202,5 @@ public:
 		memcpy(ms.pData, &update_data, sizeof(update_data));
 		context->Unmap(update_buffer.Get(), NULL);
 	}
-
-public:
-	void SetViewPort(const float& view_port_width, const float& view_port_height, const float& top_leftx = 0.f, const float& top_lefty = 0.f);
-
-public:
-	void SwapChain();
-
-public:
-	void OnResize(WPARAM w_param, LPARAM l_param);
-
-public:
-	shared_ptr<Stage>	m_stage_;
-
-public:
-	void Render();
-
-public:
-	void AddModel(const string& file_path, const string& file_name);
 };
 

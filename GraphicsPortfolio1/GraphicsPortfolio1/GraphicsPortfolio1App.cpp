@@ -180,5 +180,6 @@ int GraphicsPortfolio1App::Run()
 
 void GraphicsPortfolio1App::SetImGuiDXDelegate()
 {
-    m_imgui_manager.m_on_file_changed_.Add(&m_d3d11_utilizer, &D3D11Utilizer::AddModel);
+    m_imgui_manager.m_on_file_added_.Add(&m_d3d11_utilizer, &D3D11Utilizer::AddModel);
+    m_imgui_manager.m_on_file_deleted_.Add(&m_d3d11_utilizer, &D3D11Utilizer::RemoveModel);
 }

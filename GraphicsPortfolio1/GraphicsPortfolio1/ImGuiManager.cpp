@@ -92,8 +92,12 @@ void ImGuiManager::SetImGui(const float& delta_time)
 
 
             m_model_files_.emplace_back(false, file_path_name, file_name);
-            m_on_file_changed_.Broadcast(file_path_name, file_name);
+            m_on_file_added_.Broadcast(file_path_name, file_name);
 
+            ImGuiFileDialog::Instance()->Close();
+        }
+        else
+        {
             ImGuiFileDialog::Instance()->Close();
         }
     }
@@ -106,6 +110,7 @@ void ImGuiManager::SetImGui(const float& delta_time)
             if (m_model_files_[index].is_checked == true)
             {
                 m_model_files_.erase(m_model_files_.begin() + index);
+                m_on_file_deleted_.Broadcast(index);
                 index--;
             }
         }

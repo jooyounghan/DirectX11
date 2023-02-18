@@ -22,11 +22,8 @@ public:
 	shared_ptr<Shader>			m_mesh_shader_;
 
 public:
-	MeshGroupVertexConstantData		m_vertex_constant_data_;
-
-
-	ComPtr<ID3D11Buffer> m_vertex_cbuffer_;
-	ComPtr<ID3D11Buffer> m_pixel_cbuffer_;
+	ComPtr<ID3D11Buffer>& m_vertex_stage_cbuffer_;
+	ComPtr<ID3D11Buffer>& m_pixel_stage_cbuffer_;
 
 public:
 	void Render(ComPtr<ID3D11DeviceContext>& device_context);

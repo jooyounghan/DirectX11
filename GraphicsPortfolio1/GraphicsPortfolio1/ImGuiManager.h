@@ -56,6 +56,7 @@ public:
 	std::vector<FileListItem> m_model_files_;
 
 public:
-	Delegator<void, const string&, const string&> m_on_file_changed_;
+	Delegator<void, const string&, const string&>	m_on_file_added_;
+	Delegator<void, const size_t&>					m_on_file_deleted_;
 };
 

@@ -10,7 +10,6 @@ struct PixelShaderInput
     float4 posProj : SV_POSITION;
     float3 posWorld : POSITION;
     float2 texcoord : TEXCOORD;
-    float3 color : COLOR; //
 };
 
 cbuffer VertexConstantData : register(b0)
@@ -38,8 +37,6 @@ PixelShaderInput main(VertexShaderInput input)
 
     output.posProj = pos;
     output.texcoord = input.texcoord;
-
-    output.color = float3(0.0f, 0.0f, 0.0f);
 
     return output;
 }

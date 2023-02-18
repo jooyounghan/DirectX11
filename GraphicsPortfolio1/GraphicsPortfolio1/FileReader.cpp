@@ -114,7 +114,7 @@ MeshData FileReader::ProcessMesh(aiMesh* mesh, const aiScene* scene, const strin
         Vertex vertex;
 
         vertex.position.x = mesh->mVertices[i].x;
-        vertex.position.y = mesh->mVertices[i].y;
+        vertex.position.y = (mesh->mVertices[i].y);
         vertex.position.z = mesh->mVertices[i].z;
 
         vertex.normal.x = mesh->mNormals[i].x;

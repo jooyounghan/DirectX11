@@ -5,65 +5,47 @@
 
 #include "D3D11Utilizer.h"
 
-// Test
-#include "FileReader.h"
-#include <directxtk/SimpleMath.h>
-using namespace DirectX;
-
 using namespace std;
 
-D3D11Utilizer::D3D11Utilizer(int& buffer_width, int& buffer_height)
-	: m_bufffer_width_(buffer_width), m_bufffer_height_(buffer_height), m_viewport_(D3D11_VIEWPORT{})
-{
-}
 
-D3D11Utilizer::~D3D11Utilizer()
-{
-}
 
-ComPtr<ID3D11Device> D3D11Utilizer::GetDevice()
-{
-	return m_device_;
-}
 
-ComPtr<ID3D11DeviceContext> D3D11Utilizer::GetDeviceContext()
-{
-	return m_device_context_;
-}
 
-bool D3D11Utilizer::IsSwappable()
+bool D3D11Utilizer::InitDirectX11(
+	HWND window_handler,
+	const int& buffer_width,
+	const int& buffer_height,
+	OUT ComPtr<ID3D11Device>& device,
+	OUT ComPtr<ID3D11DeviceContext>& context,
+	OUT ComPtr<IDXGISwapChain>& swap_chain,
+	OUT ComPtr<ID3D11RenderTargetView>& rt_view,
+	OUT ComPtr<ID3D11ShaderResourceView>& sr_view,
+	OUT ComPtr<ID3D11RasterizerState>& rs_state,
+	OUT ComPtr<ID3D11DepthStencilView>& ds_view,
+	OUT ComPtr<ID3D11DepthStencilState>	ds_state
+)
 {
-	return m_swap_chain_ ? true : false;
-}
-
-bool D3D11Utilizer::InitDirectX11(HWND window_handler)
-{
-	if (!CreateDeviceAndSwapChain(window_handler))
+	if (!CreateDeviceAndSwapChain(window_handler, buffer_width, buffer_height, device, context, swap_chain))
 	{
 		return false;
 	}
 
-	if (!CreateStage())
+	if (!CreateRenderTargetView(device, swap_chain, rt_view, sr_view))
 	{
 		return false;
 	}
 
-	if (!CreateRenderTargetView())
+	if (!CreateRasterizerState(device, rs_state))
 	{
 		return false;
 	}
 
-	if (!CreateRasterizerState())
+	if (!CreateDepthBuffer(buffer_width, buffer_height, device, ds_view))
 	{
 		return false;
 	}
 
-	if (!CreateDepthBuffer())
-	{
-		return false;
-	}
-
-	if (!CreateDepthStencilState())
+	if (!CreateDepthStencilState(device, ds_state))
 	{
 		return false;
 	}
@@ -71,7 +53,12 @@ bool D3D11Utilizer::InitDirectX11(HWND window_handler)
 	return true;
 }
 
-bool D3D11Utilizer::CreateDeviceAndSwapChain(HWND window_handler)
+bool D3D11Utilizer::CreateDeviceAndSwapChain(HWND window_handler,
+	const int& buffer_width,
+	const int& buffer_height,
+	OUT ComPtr<ID3D11Device>& device,
+	OUT ComPtr<ID3D11DeviceContext>& context,
+	OUT ComPtr<IDXGISwapChain>& swap_chain)
 {
 	ComPtr<ID3D11Device> temp_device;
 	ComPtr<ID3D11DeviceContext> temp_context;
@@ -85,8 +72,8 @@ bool D3D11Utilizer::CreateDeviceAndSwapChain(HWND window_handler)
 	DXGI_SWAP_CHAIN_DESC sd;
 	ZeroMemory(&sd, sizeof(sd));
 	sd.BufferCount = 2;
-	sd.BufferDesc.Width = m_bufffer_width_;
-	sd.BufferDesc.Height = m_bufffer_height_;
+	sd.BufferDesc.Width = buffer_width;
+	sd.BufferDesc.Height = buffer_height;
 	sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	sd.BufferDesc.RefreshRate.Numerator = 60;
 	sd.BufferDesc.RefreshRate.Denominator = 1;
@@ -118,17 +105,17 @@ bool D3D11Utilizer::CreateDeviceAndSwapChain(HWND window_handler)
 		return false;
 	}
 
-	if (FAILED(temp_device.As(&m_device_))) {
+	if (FAILED(temp_device.As(&device))) {
 		COUTERR("temp_device.As() Failed.");
 		return false;
 	}
 
-	if (FAILED(temp_context.As(&m_device_context_))) {
+	if (FAILED(temp_context.As(&context))) {
 		COUTERR("temp_context.As() Failed.");
 		return false;
 	}
 
-	if (FAILED(temp_swap_chain.As(&m_swap_chain_))) {
+	if (FAILED(temp_swap_chain.As(&swap_chain))) {
 		COUTERR("temp_swap_chain.As() Failed.");
 		return false;
 	}
@@ -136,21 +123,26 @@ bool D3D11Utilizer::CreateDeviceAndSwapChain(HWND window_handler)
 	return true;
 }
 
-bool D3D11Utilizer::CreateRenderTargetView()
+bool D3D11Utilizer::CreateRenderTargetView(
+	ComPtr<ID3D11Device>& device,
+	ComPtr<IDXGISwapChain>& swap_chain,
+	OUT ComPtr<ID3D11RenderTargetView>& rt_view_,
+	OUT ComPtr<ID3D11ShaderResourceView>& sr_view_
+)
 {
 	ComPtr<ID3D11Texture2D> back_buffer;
 	ComPtr<ID3D11RenderTargetView>		temp_rt_view;
 	ComPtr<ID3D11ShaderResourceView>	temp_sr_view;
 
-	m_swap_chain_->GetBuffer(0, IID_PPV_ARGS(back_buffer.GetAddressOf()));
+	swap_chain->GetBuffer(0, IID_PPV_ARGS(back_buffer.GetAddressOf()));
 	if (back_buffer)
 	{
-		if (FAILED(m_device_->CreateRenderTargetView(back_buffer.Get(), nullptr, temp_rt_view.GetAddressOf())))
+		if (FAILED(device->CreateRenderTargetView(back_buffer.Get(), nullptr, temp_rt_view.GetAddressOf())))
 		{
 			COUTERR("CreateRenderTargetView Failed.");
 			return false;
 		}
-		if (FAILED(m_device_->CreateShaderResourceView(back_buffer.Get(), nullptr, temp_sr_view.GetAddressOf())))
+		if (FAILED(device->CreateShaderResourceView(back_buffer.Get(), nullptr, temp_sr_view.GetAddressOf())))
 		{
 			COUTERR("CreateShaderResourceView Failed.");
 			return false;
@@ -162,13 +154,13 @@ bool D3D11Utilizer::CreateRenderTargetView()
 		return false;
 	}
 
-	if (FAILED(temp_rt_view.As(&m_rt_view_)))
+	if (FAILED(temp_rt_view.As(&rt_view_)))
 	{
 		COUTERR("temp_rt_view.As() Failed.");
 		return false;
 	}
 
-	if (FAILED(temp_sr_view.As(&m_sr_view_)))
+	if (FAILED(temp_sr_view.As(&sr_view_)))
 	{
 		COUTERR("temp_sr_view.As() Failed.");
 		return false;
@@ -176,7 +168,10 @@ bool D3D11Utilizer::CreateRenderTargetView()
 	return true;
 }
 
-bool D3D11Utilizer::CreateRasterizerState()
+bool D3D11Utilizer::CreateRasterizerState(
+	ComPtr<ID3D11Device>& device,
+	OUT ComPtr<ID3D11RasterizerState>& rs_state
+	)
 {
 	ComPtr<ID3D11RasterizerState> temp_rasterizer_state;
 
@@ -188,13 +183,13 @@ bool D3D11Utilizer::CreateRasterizerState()
 	rd.DepthClipEnable = false;
 	//rd.DepthClipEnable = true;
 
-	if (FAILED(m_device_->CreateRasterizerState(&rd, temp_rasterizer_state.GetAddressOf())))
+	if (FAILED(device->CreateRasterizerState(&rd, temp_rasterizer_state.GetAddressOf())))
 	{
 		COUTERR("CreateRasterizerState Failed.");
 		return false;
 	}
 
-	if (FAILED(temp_rasterizer_state.As(&m_rasterizer_state_)))
+	if (FAILED(temp_rasterizer_state.As(&rs_state)))
 	{
 		COUTERR("temp_rasterizer_state.As() Failed.");
 		return false;
@@ -203,15 +198,20 @@ bool D3D11Utilizer::CreateRasterizerState()
 	return true;
 }
 
-bool D3D11Utilizer::CreateDepthBuffer()
+bool D3D11Utilizer::CreateDepthBuffer(
+	const int& buffer_width,
+	const int& buffer_height,
+	ComPtr<ID3D11Device>& device,
+	OUT ComPtr<ID3D11DepthStencilView>& ds_view
+)
 {
 	ComPtr<ID3D11Texture2D> depth_buffer;
 	ComPtr<ID3D11DepthStencilView> temp_ds_view;
 
 	D3D11_TEXTURE2D_DESC dd;
 	ZeroMemory(&dd, sizeof(D3D11_TEXTURE2D_DESC));
-	dd.Width = m_bufffer_width_;
-	dd.Height = m_bufffer_height_;
+	dd.Width = buffer_width;
+	dd.Height = buffer_height;
 	dd.MipLevels = 1;
 	dd.ArraySize = 1;
 	dd.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
@@ -222,18 +222,18 @@ bool D3D11Utilizer::CreateDepthBuffer()
 	dd.CPUAccessFlags = 0;
 	dd.MiscFlags = 0;
 
-	if (FAILED(m_device_->CreateTexture2D(&dd, 0, depth_buffer.GetAddressOf())))
+	if (FAILED(device->CreateTexture2D(&dd, 0, depth_buffer.GetAddressOf())))
 	{
 		COUTERR("CreateTexture2D For Depth Buffer Failed.");
 		return false;
 	}
-	if (FAILED(m_device_->CreateDepthStencilView(depth_buffer.Get(), 0, temp_ds_view.GetAddressOf())))
+	if (FAILED(device->CreateDepthStencilView(depth_buffer.Get(), 0, temp_ds_view.GetAddressOf())))
 	{
 		COUTERR("CreateDepthStencilView Failed.");
 		return false;
 	}
 
-	if (FAILED(temp_ds_view.As(&m_ds_view_)))
+	if (FAILED(temp_ds_view.As(&ds_view)))
 	{
 		COUTERR("temp_ds_view.As() Failed.");
 		return false;
@@ -242,7 +242,10 @@ bool D3D11Utilizer::CreateDepthBuffer()
 	return true;
 }
 
-bool D3D11Utilizer::CreateDepthStencilState()
+bool D3D11Utilizer::CreateDepthStencilState(
+	ComPtr<ID3D11Device>& device,
+	OUT ComPtr<ID3D11DepthStencilState>	ds_state
+)
 {
 	ComPtr<ID3D11DepthStencilState>	temp_ds_state_;
 	D3D11_DEPTH_STENCIL_DESC dd;
@@ -252,13 +255,13 @@ bool D3D11Utilizer::CreateDepthStencilState()
 	dd.DepthWriteMask = D3D11_DEPTH_WRITE_MASK::D3D11_DEPTH_WRITE_MASK_ALL;
 	dd.DepthFunc = D3D11_COMPARISON_FUNC::D3D11_COMPARISON_LESS_EQUAL;
 
-	if (FAILED(m_device_->CreateDepthStencilState(&dd, temp_ds_state_.GetAddressOf())))
+	if (FAILED(device->CreateDepthStencilState(&dd, temp_ds_state_.GetAddressOf())))
 	{
 		cout << "CreateDepthStencilState() failed." << endl;
 		return false;
 	}
 
-	if (FAILED(temp_ds_state_.As(&m_ds_state_)))
+	if (FAILED(temp_ds_state_.As(&ds_state)))
 	{
 		COUTERR("temp_ds_state_.As() Failed.");
 		return false;
@@ -267,92 +270,60 @@ bool D3D11Utilizer::CreateDepthStencilState()
 	return true;
 }
 
-bool D3D11Utilizer::CreateStage()
-{
-	m_stage_ = make_shared<Stage>(m_device_, m_device_context_);
-	return m_stage_.get() ? true : false;
-}
 
-
-void D3D11Utilizer::SetViewPort(const float& view_port_width, const float& view_port_height, const float& top_leftx, const float& top_lefty)
+void D3D11Utilizer::SetViewPort(ComPtr<ID3D11DeviceContext>& context,
+	const float& view_port_width,
+	const float& view_port_height,
+	const float& top_leftx,
+	const float& top_lefty,
+	OUT D3D11_VIEWPORT& view_port)
 {
 	// Set the viewport
-	ZeroMemory(&m_viewport_, sizeof(D3D11_VIEWPORT));
-	m_viewport_.TopLeftX = top_leftx;
-	m_viewport_.TopLeftY = top_lefty;
-	m_viewport_.Width = view_port_width;
-	m_viewport_.Height = view_port_height;
-	m_viewport_.MinDepth = 0.0f;
-	m_viewport_.MaxDepth = 1.0f;
+	ZeroMemory(&view_port, sizeof(D3D11_VIEWPORT));
+	view_port.TopLeftX = top_leftx;
+	view_port.TopLeftY = top_lefty;
+	view_port.Width = view_port_width;
+	view_port.Height = view_port_height;
+	view_port.MinDepth = 0.0f;
+	view_port.MaxDepth = 1.0f;
 
-	m_device_context_->RSSetViewports(1, &m_viewport_);
+	context->RSSetViewports(1, &view_port);
 }
 
 
-void D3D11Utilizer::SwapChain()
+void D3D11Utilizer::SwapChain(ComPtr<IDXGISwapChain>& swap_chain)
 {
-	m_swap_chain_->Present(1, 0);
+	swap_chain->Present(1, 0);
 }
 
-void D3D11Utilizer::OnResize(WPARAM w_param, LPARAM l_param)
+void D3D11Utilizer::OnResize(
+	WPARAM w_param,
+	LPARAM l_param,
+	ComPtr<ID3D11Device>& device,
+	OUT ComPtr<ID3D11RenderTargetView>& rt_view,
+	OUT ComPtr<ID3D11ShaderResourceView>& sr_view,
+	OUT ComPtr<ID3D11DepthStencilView>& ds_view,
+	ComPtr<IDXGISwapChain>& swap_chain
+)
 {
-	m_rt_view_->Release();
-	m_rt_view_.Detach();
+	rt_view->Release();
+	rt_view.Detach();
 
-	m_sr_view_->Release();
-	m_sr_view_.Detach();
+	sr_view->Release();
+	sr_view.Detach();
 
-	m_ds_view_->Release();
-	m_ds_view_.Detach();
+	ds_view->Release();
+	ds_view.Detach();
 
-	m_swap_chain_->ResizeBuffers(0,
-		(UINT)LOWORD(l_param),
-		(UINT)HIWORD(l_param),
+	const UINT& buffer_width = (UINT)LOWORD(l_param);
+	const UINT& buffer_height = (UINT)HIWORD(l_param);
+
+	swap_chain->ResizeBuffers(0,
+		buffer_width,
+		buffer_height,
 		DXGI_FORMAT_R8G8B8A8_UNORM,
 		0);
 
-	CreateRenderTargetView();
-	CreateDepthBuffer();
+	CreateRenderTargetView(device, swap_chain, rt_view, sr_view);
+	CreateDepthBuffer(buffer_width, buffer_height, device, ds_view);
 }
-
-void D3D11Utilizer::Render()
-{
-	SetViewPort((float)m_bufffer_width_, (float)m_bufffer_height_);
-
-	float clear_color[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
-
-	m_device_context_->ClearRenderTargetView(m_rt_view_.Get(), clear_color);
-	m_device_context_->ClearDepthStencilView(m_ds_view_.Get(),
-		D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL,
-		1.0f, 0);
-
-	m_device_context_->OMSetRenderTargets(1, m_rt_view_.GetAddressOf(),
-		m_ds_view_.Get());
-
-	m_device_context_->OMSetDepthStencilState(m_ds_state_.Get(), 0);
-	m_device_context_->RSSetState(m_rasterizer_state_.Get());
-
-	m_stage_->Render();
-}
-
-void D3D11Utilizer::AddModel(const string& file_path, const string& file_name)
-{
-
-	vector<MeshData> mesh_data = FileReader::GetMeshDataFromFile(file_path, file_name);
-	shared_ptr<IMeshGroup> mesh_group = make_shared<IMeshGroup>(m_device_, mesh_data);
-
-	// Test ==============================================================
-	mesh_group->m_vertex_constant_data_.view = Matrix::Identity;
-	const float aspect = (float)m_bufffer_width_ / (float)m_bufffer_height_;
-	float m_projFovAngleY = 70.0f;
-	float m_nearZ = 0.01f;
-	float m_farZ = 100.0f;
-	Matrix projRow = XMMatrixPerspectiveFovLH(XMConvertToRadians(m_projFovAngleY), aspect, m_nearZ, m_farZ);
-	mesh_group->m_vertex_constant_data_.projection = projRow;
-	CreateConstantBuffer(m_device_, mesh_group->m_vertex_constant_data_, mesh_group->m_vertex_cbuffer_);
-	// Test ==============================================================
-
-	mesh_group->m_mesh_shader_ = make_shared<BaseMeshShader>(m_device_, L"BaseVertexShader.hlsl", L"BasePixelShader.hlsl");
-	m_stage_->AddMeshGroup(mesh_group);
-}
-
