@@ -23,8 +23,8 @@ class D3D11Utilizer
 public:
 	static bool InitDirectX11(
 		HWND window_handler,
-		const int& buffer_width,
-		const int& buffer_height,
+		const UINT& buffer_width,
+		const UINT& buffer_height,
 		OUT ComPtr<ID3D11Device>& device,
 		OUT ComPtr<ID3D11DeviceContext>& context,
 		OUT ComPtr<IDXGISwapChain>& swap_chain,
@@ -38,8 +38,8 @@ public:
 public:
 	static bool CreateDeviceAndSwapChain(
 		HWND window_handler,
-		const int& buffer_width,
-		const int& buffer_height,
+		const UINT& buffer_width,
+		const UINT& buffer_height,
 		OUT ComPtr<ID3D11Device>& device,
 		OUT ComPtr<ID3D11DeviceContext>& context,
 		OUT ComPtr<IDXGISwapChain>& swap_chain
@@ -59,8 +59,8 @@ public:
 	);
 	
 	static bool CreateDepthBuffer(
-		const int& buffer_width,
-		const int& buffer_height,
+		const UINT& buffer_width,
+		const UINT& buffer_height,
 		ComPtr<ID3D11Device>& device,
 		OUT ComPtr<ID3D11DepthStencilView>& ds_view
 	);
@@ -79,10 +79,10 @@ public:
 		OUT D3D11_VIEWPORT& view_port
 	);
 
-	static void SwapChain(ComPtr<IDXGISwapChain>& swap_chain);
 	static void OnResize(
-		WPARAM w_param,
-		LPARAM l_param,
+		const UINT& width,
+		const UINT& height,
+		ComPtr<ID3D11Device>& device,
 		OUT ComPtr<ID3D11RenderTargetView>& rt_view,
 		OUT ComPtr<ID3D11ShaderResourceView>& sr_view,
 		OUT ComPtr<ID3D11DepthStencilView>& ds_view,

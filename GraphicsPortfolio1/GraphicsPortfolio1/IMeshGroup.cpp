@@ -2,11 +2,19 @@
 
 using namespace std;
 
-IMeshGroup::IMeshGroup()
+IMeshGroup::IMeshGroup(
+	ComPtr<ID3D11Buffer>& vertex_stage_cbuffer,
+	ComPtr<ID3D11Buffer>& pixel_stage_cbuffer
+)	: m_vertex_stage_cbuffer_(vertex_stage_cbuffer), m_pixel_stage_cbuffer_(pixel_stage_cbuffer)
 {
 }
 
-IMeshGroup::IMeshGroup(ComPtr<ID3D11Device>& device, const vector<MeshData>& mesh_data_vector)
+IMeshGroup::IMeshGroup(
+	ComPtr<ID3D11Device>& device,
+	const vector<MeshData>& mesh_data_vector,
+	ComPtr<ID3D11Buffer>& vertex_stage_cbuffer,
+	ComPtr<ID3D11Buffer>& pixel_stage_cbuffer
+)	: m_vertex_stage_cbuffer_(vertex_stage_cbuffer), m_pixel_stage_cbuffer_(pixel_stage_cbuffer)
 {
 	for (auto& mesh_data : mesh_data_vector)
 	{

@@ -4,6 +4,9 @@
 #include <vector>
 #include <directxtk/SimpleMath.h>
 
+using std::string;
+using std::vector;
+
 using DirectX::SimpleMath::Vector2;
 using DirectX::SimpleMath::Vector3;
 

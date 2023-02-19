@@ -1,5 +1,4 @@
 #pragma once
-#include <memory>
 #include "ICommand.h"
 
 #define KEY_W	0x57
@@ -9,7 +8,6 @@
 
 #define COMMAND(Commander, wParam, lParam) if (Commander) Commander->Command(wParam, lParam);
 
-using std::shared_ptr;
 
 class CommandManager
 {
@@ -19,19 +17,26 @@ public:
 
 public:
 	shared_ptr<ICommand> mouse_move_command_ = nullptr;
+
 	shared_ptr<ICommand> wbutton_up_command_ = nullptr;
 	shared_ptr<ICommand> abutton_up_command_ = nullptr;
 	shared_ptr<ICommand> sbutton_up_command_ = nullptr;
 	shared_ptr<ICommand> dbutton_up_command_ = nullptr;
 
-public:
-	void OnMouseMove(const float& delta_time, WPARAM wParam, LPARAM lParam);
-	void OnWKeyDown(const float& delta_time, WPARAM wParam, LPARAM lParam);
-	void OnAKeyDown(const float& delta_time, WPARAM wParam, LPARAM lParam);
-	void OnSKeyDown(const float& delta_time, WPARAM wParam, LPARAM lParam);
-	void OnDKeyDown(const float& delta_time, WPARAM wParam, LPARAM lParam);
+	shared_ptr<ICommand> wbutton_down_command_ = nullptr;
+	shared_ptr<ICommand> abutton_down_command_ = nullptr;
+	shared_ptr<ICommand> sbutton_down_command_ = nullptr;
+	shared_ptr<ICommand> dbutton_down_command_ = nullptr;
 
 public:
-	void SetDefaultCommand();
+	void OnMouseMove(const float& delta_time, WPARAM wParam, LPARAM lParam);
+
+	void OnWKeyUp(const float& delta_time, WPARAM wParam, LPARAM lParam);
+	void OnAKeyUp(const float& delta_time, WPARAM wParam, LPARAM lParam);
+	void OnSKeyUp(const float& delta_time, WPARAM wParam, LPARAM lParam);
+	void OnDKeyUp(const float& delta_time, WPARAM wParam, LPARAM lParam);
+
+public:
+	void SetDefaultCommand(shared_ptr<class Camera> camera);
 };
 

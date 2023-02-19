@@ -1,9 +1,9 @@
 #include "GraphicsPortfolio1App.h"
-#include <iostream>
+#include "D3D11Utilizer.h"
 
 GraphicsPortfolio1App::GraphicsPortfolio1App()
     : BaseApp(),
-    m_d3d11_utilizer(m_screen_width_, m_screen_height_),
+    m_stage_(m_screen_width_, m_screen_height_),
     m_imgui_manager(m_screen_width_, m_screen_height_)
 {
 }
@@ -19,17 +19,19 @@ bool GraphicsPortfolio1App::Initialize()
         return false;
     }
 
-    if (!m_d3d11_utilizer.InitDirectX11(m_main_window_))
+    if (!m_stage_.InitStage(m_main_window_))
     {
         return false;
     }
 
-    if (!m_imgui_manager.InitImGui(m_main_window_, m_d3d11_utilizer.GetDevice().Get(), m_d3d11_utilizer.GetDeviceContext().Get()))
+    if (!m_imgui_manager.InitImGui(m_main_window_, m_stage_.GetDevice().Get(), m_stage_.GetDeviceContext().Get()))
     {
         return false;
     }
 
     SetImGuiDXDelegate();
+
+    command_manager_.SetDefaultCommand(m_stage_.m_main_camera_);
 
     return true;
 }
@@ -92,7 +94,6 @@ LRESULT GraphicsPortfolio1App::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARA
     if (ImGui_ImplWin32_WndProcHandler(hwnd, msg, wParam, lParam))
         return true;
     
-    const int& imgui_width = m_imgui_manager.GetImGuiWidth();
     const float delta_time = m_game_loop_.GetElapsed("Message");
     switch (msg)
     {
@@ -100,12 +101,11 @@ LRESULT GraphicsPortfolio1App::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARA
         m_game_loop_.AddTimePoint("Message");
         return 0;
     case WM_SIZE:
-        if (m_d3d11_utilizer.IsSwappable())
+        if (m_stage_.IsSwappable())
         {
-            m_screen_width_ = int(LOWORD(lParam));
-            m_screen_height_ = int(HIWORD(lParam));
-            m_d3d11_utilizer.OnResize(wParam, lParam);
-            m_d3d11_utilizer.SetViewPort((float)(m_screen_height_ - imgui_width) * m_screen_height_, (float)m_screen_height_, (float)imgui_width);
+            m_screen_width_ = UINT(LOWORD(lParam));
+            m_screen_height_ = UINT(HIWORD(lParam));
+            m_stage_.OnResize();
         }
         break;
 
@@ -118,21 +118,21 @@ LRESULT GraphicsPortfolio1App::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARA
         command_manager_.OnMouseMove(delta_time, wParam, lParam);
         break;
 
-        // WSAD버튼 클릭에 따른 명령
+    case WM_KEYUP:
     case WM_KEYDOWN:
         switch (wParam)
         {
         case(KEY_W):
-            command_manager_.OnWKeyDown(delta_time, wParam, lParam);
+            command_manager_.OnWKeyUp(delta_time, wParam, lParam);
             break;
         case(KEY_A):
-            command_manager_.OnAKeyDown(delta_time, wParam, lParam);
+            command_manager_.OnAKeyUp(delta_time, wParam, lParam);
             break;
         case(KEY_S):
-            command_manager_.OnSKeyDown(delta_time, wParam, lParam);
+            command_manager_.OnSKeyUp(delta_time, wParam, lParam);
             break;
         case(KEY_D):
-            command_manager_.OnDKeyDown(delta_time, wParam, lParam);
+            command_manager_.OnDKeyUp(delta_time, wParam, lParam);
             break;
         }
         break;
@@ -168,11 +168,13 @@ int GraphicsPortfolio1App::Run()
             m_game_loop_.UpdateTimePoint("Main");
             m_imgui_manager.RecordRendering(delta_time);
 
-            m_d3d11_utilizer.Render();
+            m_stage_.Update();
+
+            m_stage_.Render();
 
             m_imgui_manager.Render();
 
-            m_d3d11_utilizer.SwapChain();
+            m_stage_.m_swap_chain_->Present(1, 0);
         }
     }
     return 0;
@@ -180,6 +182,6 @@ int GraphicsPortfolio1App::Run()
 
 void GraphicsPortfolio1App::SetImGuiDXDelegate()
 {
-    m_imgui_manager.m_on_file_added_.Add(&m_d3d11_utilizer, &D3D11Utilizer::AddModel);
-    m_imgui_manager.m_on_file_deleted_.Add(&m_d3d11_utilizer, &D3D11Utilizer::RemoveModel);
+    m_imgui_manager.m_on_file_added_.Add(&m_stage_, &Stage::AddModel);
+    m_imgui_manager.m_on_file_deleted_.Add(&m_stage_, &Stage::RemoveModel);
 }

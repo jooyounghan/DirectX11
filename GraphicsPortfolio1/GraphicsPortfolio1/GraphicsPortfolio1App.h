@@ -1,10 +1,10 @@
 #pragma once
 
 #include "BaseApp.h"
-
+#include "CommandManager.h"
 #include "GameLoop.h"
-#include "D3D11Utilizer.h"
 #include "ImGuiManager.h"
+#include "Stage.h"
 
 LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -26,8 +26,11 @@ public:
 
 protected:
 	GameLoop		m_game_loop_;
-	D3D11Utilizer	m_d3d11_utilizer;
+	Stage			m_stage_;
 	ImGuiManager	m_imgui_manager;
+
+protected:
+	CommandManager command_manager_;
 
 public:
 	virtual int Run() override;

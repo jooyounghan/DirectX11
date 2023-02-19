@@ -8,13 +8,10 @@
 using namespace std;
 
 
-
-
-
 bool D3D11Utilizer::InitDirectX11(
 	HWND window_handler,
-	const int& buffer_width,
-	const int& buffer_height,
+	const UINT& buffer_width,
+	const UINT& buffer_height,
 	OUT ComPtr<ID3D11Device>& device,
 	OUT ComPtr<ID3D11DeviceContext>& context,
 	OUT ComPtr<IDXGISwapChain>& swap_chain,
@@ -54,8 +51,8 @@ bool D3D11Utilizer::InitDirectX11(
 }
 
 bool D3D11Utilizer::CreateDeviceAndSwapChain(HWND window_handler,
-	const int& buffer_width,
-	const int& buffer_height,
+	const UINT& buffer_width,
+	const UINT& buffer_height,
 	OUT ComPtr<ID3D11Device>& device,
 	OUT ComPtr<ID3D11DeviceContext>& context,
 	OUT ComPtr<IDXGISwapChain>& swap_chain)
@@ -199,8 +196,8 @@ bool D3D11Utilizer::CreateRasterizerState(
 }
 
 bool D3D11Utilizer::CreateDepthBuffer(
-	const int& buffer_width,
-	const int& buffer_height,
+	const UINT& buffer_width,
+	const UINT& buffer_height,
 	ComPtr<ID3D11Device>& device,
 	OUT ComPtr<ID3D11DepthStencilView>& ds_view
 )
@@ -290,20 +287,14 @@ void D3D11Utilizer::SetViewPort(ComPtr<ID3D11DeviceContext>& context,
 	context->RSSetViewports(1, &view_port);
 }
 
-
-void D3D11Utilizer::SwapChain(ComPtr<IDXGISwapChain>& swap_chain)
-{
-	swap_chain->Present(1, 0);
-}
-
 void D3D11Utilizer::OnResize(
-	WPARAM w_param,
-	LPARAM l_param,
+	const UINT& width,
+	const UINT& height,
 	ComPtr<ID3D11Device>& device,
 	OUT ComPtr<ID3D11RenderTargetView>& rt_view,
 	OUT ComPtr<ID3D11ShaderResourceView>& sr_view,
 	OUT ComPtr<ID3D11DepthStencilView>& ds_view,
-	ComPtr<IDXGISwapChain>& swap_chain
+	OUT ComPtr<IDXGISwapChain>& swap_chain
 )
 {
 	rt_view->Release();
@@ -315,15 +306,12 @@ void D3D11Utilizer::OnResize(
 	ds_view->Release();
 	ds_view.Detach();
 
-	const UINT& buffer_width = (UINT)LOWORD(l_param);
-	const UINT& buffer_height = (UINT)HIWORD(l_param);
-
 	swap_chain->ResizeBuffers(0,
-		buffer_width,
-		buffer_height,
+		width,
+		height,
 		DXGI_FORMAT_R8G8B8A8_UNORM,
 		0);
 
 	CreateRenderTargetView(device, swap_chain, rt_view, sr_view);
-	CreateDepthBuffer(buffer_width, buffer_height, device, ds_view);
+	CreateDepthBuffer(width, height, device, ds_view);
 }

@@ -131,6 +131,7 @@
   <ItemGroup>
     <ClInclude Include="BaseApp.h" />
     <ClInclude Include="BaseMeshShader.h" />
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="CharacterMoveCom.h" />
     <ClInclude Include="CommandManager.h" />
     <ClInclude Include="D3D11Utilizer.h" />
@@ -145,7 +146,7 @@
     <ClInclude Include="Light.h" />
     <ClInclude Include="MeshData.h" />
     <ClInclude Include="MeshGenerator.h" />
-    <ClInclude Include="MouseMoveCom.h" />
+    <ClInclude Include="CameraRotCom.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Delegator.h" />
     <ClInclude Include="Shader.h" />
@@ -154,6 +155,7 @@
   <ItemGroup>
     <ClCompile Include="BaseApp.cpp" />
     <ClCompile Include="BaseMeshShader.cpp" />
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CharacterMoveCom.cpp" />
     <ClCompile Include="CommandManager.cpp" />
     <ClCompile Include="D3D11Utilizer.cpp" />
@@ -167,7 +169,7 @@
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="MainConsole.cpp" />
     <ClCompile Include="MeshGenerator.cpp" />
-    <ClCompile Include="MouseMoveCom.cpp" />
+    <ClCompile Include="CameraRotCom.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Stage.cpp" />

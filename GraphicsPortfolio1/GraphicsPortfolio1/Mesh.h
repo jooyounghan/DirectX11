@@ -15,12 +15,6 @@ struct MeshVertexConstantData
 	Matrix inv_tranpose;			// 16
 };
 
-struct MeshGroupVertexConstantData
-{
-	Matrix view;				// 16
-	Matrix projection;			// 16
-};
-
 struct MaterialConstantData
 {	
 	Vector3 ambient = Vector3(0.0f);  // 12

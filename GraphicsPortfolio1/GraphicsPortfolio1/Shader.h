@@ -6,10 +6,8 @@
 #include <wrl.h>
 
 #include <string>
-#include <vector>
 
 using std::wstring;
-using std::vector;
 using Microsoft::WRL::ComPtr;
 
 class Shader
@@ -30,8 +28,6 @@ public:
 
 	ComPtr<ID3D10Blob> m_vs_blob_;
 	ComPtr<ID3D10Blob> m_ps_blob_;
-
-
 
 };
 

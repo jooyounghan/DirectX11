@@ -7,7 +7,7 @@
 
 using namespace std;
 
-ImGuiManager::ImGuiManager(int& screen_width, int& screen_height)
+ImGuiManager::ImGuiManager(UINT& screen_width, UINT& screen_height)
     : m_screen_width_(screen_width), m_screen_height_(screen_height), m_imgui_width_(0)
 {
 }

@@ -1,20 +1,18 @@
 #pragma once
-#include <memory>
-#include <wrl.h>
-
 
 #include "IMeshGroup.h"
 #include "Light.h"
-
-using std::shared_ptr;
-using Microsoft::WRL::ComPtr;
+#include "Camera.h"
 
 class Stage
 {
 public:
-	Stage(int& buffer_width, int& buffer_height);
+	Stage(UINT& buffer_width, UINT& buffer_height);
 	~Stage();
 	
+public:
+	bool InitStage(HWND window_handle);
+
 public:
 	ComPtr<ID3D11Device>				m_device_;
 	ComPtr<ID3D11DeviceContext>			m_device_context_;
@@ -31,40 +29,27 @@ public:
 	ComPtr<ID3D11Device>				GetDevice();
 	ComPtr<ID3D11DeviceContext>			GetDeviceContext();
 
-	public:
+public:
 	bool IsSwappable();
-
-
+	void OnResize();
 
 protected:
-	int& m_bufffer_width_;
-	int& m_bufffer_height_;
-
-public:
-	ComPtr<ID3D11Device>& m_device_;
-	ComPtr<ID3D11DeviceContext>& m_device_context_;
+	UINT& m_buffer_width_;
+	UINT& m_buffer_height_;
 
 public:
 	vector<shared_ptr<IMeshGroup>>	m_mesh_group_;
 	vector<LightConstantData>		m_lights_group_;
-
+	
 public:
-	MeshGroupVertexConstantData m_stage_vertex_constant_;
-
-public:
-	ComPtr<ID3D11Buffer> m_vertex_stage_cbuffer_;
-	ComPtr<ID3D11Buffer> m_pixel_stage_cbuffer_;
-
+	shared_ptr<Camera> m_main_camera_;
 
 public:
 	void AddModel(const string& file_path, const string& file_name);
 	void RemoveModel(const size_t& index);
 
 public:
-	void AddMeshGroup(shared_ptr<IMeshGroup> mesh_group);
-	void RemoveMeshGroup(const size_t& index);
-
-public:
+	void Update();
 	void Render();
 };
 

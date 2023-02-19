@@ -1,5 +1,9 @@
 #pragma once
+
+#include <memory>
 #include <Windows.h>
+
+using std::shared_ptr;
 
 class ICommand
 {

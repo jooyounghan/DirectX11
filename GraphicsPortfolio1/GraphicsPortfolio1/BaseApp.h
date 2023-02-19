@@ -1,8 +1,6 @@
 #pragma once
 #include <Windows.h>
 
-#include "CommandManager.h"
-
 class BaseApp
 {
 public:
@@ -16,8 +14,8 @@ protected:
 	virtual bool InitWindowApp() = 0;
 
 protected:
-	int	m_screen_width_;
-	int	m_screen_height_;
+	UINT	m_screen_width_;
+	UINT	m_screen_height_;
 	HWND m_main_window_;
 
 public:
@@ -26,8 +24,5 @@ public:
 
 public:
 	virtual int Run() = 0;
-
-protected:
-	CommandManager command_manager_;
 };
 

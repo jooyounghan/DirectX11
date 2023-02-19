@@ -27,12 +27,12 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg
 class ImGuiManager
 {
 public:
-	ImGuiManager(int& imgui_width, int& imgui_height);
+	ImGuiManager(UINT& imgui_width, UINT& imgui_height);
 	~ImGuiManager();
 
 public:
-	int& m_screen_width_;
-	int& m_screen_height_;
+	UINT& m_screen_width_;
+	UINT& m_screen_height_;
 
 public:
 	int m_imgui_width_;

@@ -1,18 +1,24 @@
 #pragma once
-#include <vector>
 #include <memory>
 
 #include "Mesh.h"
 #include "Shader.h"
 
-using std::vector;
 using std::shared_ptr;
 
 class IMeshGroup
 {
 public:
-	IMeshGroup();
-	IMeshGroup(ComPtr<ID3D11Device>& device, const vector<MeshData>& mesh_data_vector);
+	IMeshGroup(
+		ComPtr<ID3D11Buffer>& vertex_stage_cbuffer,
+		ComPtr<ID3D11Buffer>& pixel_stage_cbuffer
+	);
+	IMeshGroup(
+		ComPtr<ID3D11Device>& device,
+		const vector<MeshData>& mesh_data_vector,
+		ComPtr<ID3D11Buffer>& vertex_stage_cbuffer,
+		ComPtr<ID3D11Buffer>& pixel_stage_cbuffer
+	);
 	~IMeshGroup();
 
 public:
