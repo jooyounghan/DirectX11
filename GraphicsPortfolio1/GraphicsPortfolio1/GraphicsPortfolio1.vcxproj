@@ -136,7 +136,6 @@
     <ClInclude Include="CommandManager.h" />
     <ClInclude Include="D3D11Utilizer.h" />
     <ClInclude Include="FileReader.h" />
-    <ClInclude Include="GameLoop.h" />
     <ClInclude Include="GraphicsPortfolio1App.h" />
     <ClInclude Include="ICommand.h" />
     <ClInclude Include="IMeshGroup.h" />
@@ -160,7 +159,6 @@
     <ClCompile Include="CommandManager.cpp" />
     <ClCompile Include="D3D11Utilizer.cpp" />
     <ClCompile Include="FileReader.cpp" />
-    <ClCompile Include="GameLoop.cpp" />
     <ClCompile Include="GraphicsPortfolio1App.cpp" />
     <ClCompile Include="ICommand.cpp" />
     <ClCompile Include="IMeshGroup.cpp" />

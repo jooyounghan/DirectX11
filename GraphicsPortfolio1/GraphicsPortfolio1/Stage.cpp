@@ -6,7 +6,7 @@
 using namespace DirectX;
 using namespace std;
 
-Stage::Stage(UINT& buffer_width, UINT& buffer_height)
+Stage::Stage(int& buffer_width, int& buffer_height)
 	: m_buffer_width_(buffer_width), m_buffer_height_(buffer_height), m_viewport_()
 {
 

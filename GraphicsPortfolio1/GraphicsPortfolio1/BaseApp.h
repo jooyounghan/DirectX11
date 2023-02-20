@@ -14,8 +14,8 @@ protected:
 	virtual bool InitWindowApp() = 0;
 
 protected:
-	UINT	m_screen_width_;
-	UINT	m_screen_height_;
+	int	m_screen_width_;
+	int	m_screen_height_;
 	HWND m_main_window_;
 
 public:

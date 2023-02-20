@@ -7,7 +7,7 @@
 class Stage
 {
 public:
-	Stage(UINT& buffer_width, UINT& buffer_height);
+	Stage(int& buffer_width, int& buffer_height);
 	~Stage();
 	
 public:
@@ -34,8 +34,8 @@ public:
 	void OnResize();
 
 protected:
-	UINT& m_buffer_width_;
-	UINT& m_buffer_height_;
+	int& m_buffer_width_;
+	int& m_buffer_height_;
 
 public:
 	vector<shared_ptr<IMeshGroup>>	m_mesh_group_;

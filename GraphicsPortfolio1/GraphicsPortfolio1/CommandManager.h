@@ -29,12 +29,12 @@ public:
 	shared_ptr<ICommand> dbutton_down_command_ = nullptr;
 
 public:
-	void OnMouseMove(const float& delta_time, WPARAM wParam, LPARAM lParam);
+	void OnMouseMove(HWND hwnd, const float& delta_time, WPARAM wParam, LPARAM lParam);
 
-	void OnWKeyUp(const float& delta_time, WPARAM wParam, LPARAM lParam);
-	void OnAKeyUp(const float& delta_time, WPARAM wParam, LPARAM lParam);
-	void OnSKeyUp(const float& delta_time, WPARAM wParam, LPARAM lParam);
-	void OnDKeyUp(const float& delta_time, WPARAM wParam, LPARAM lParam);
+	void OnWKeyUp(HWND hwnd, const float& delta_time, WPARAM wParam, LPARAM lParam);
+	void OnAKeyUp(HWND hwnd, const float& delta_time, WPARAM wParam, LPARAM lParam);
+	void OnSKeyUp(HWND hwnd, const float& delta_time, WPARAM wParam, LPARAM lParam);
+	void OnDKeyUp(HWND hwnd, const float& delta_time, WPARAM wParam, LPARAM lParam);
 
 public:
 	void SetDefaultCommand(shared_ptr<class Camera> camera);

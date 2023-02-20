@@ -15,15 +15,18 @@ struct CameraVertexConstantData
 
 class Camera
 {
+	friend class CameraRotCom;
+
 public:
-	Camera(ComPtr<ID3D11Device>& device, UINT& buffer_width, UINT& buffer_height);
+	Camera(ComPtr<ID3D11Device>& device, int& buffer_width, int& buffer_height);
 
 protected:
-	UINT& m_buffer_width_;
-	UINT& m_buffer_height_;
+	int& m_buffer_width_;
+	int& m_buffer_height_;
 
 public:
-	float m_rotation_responsiveness_ = 1000.f;
+	float m_rotation_responsiveness_ = 30.f;
+	float m_translation_responsiveness_ = 1.f;
 
 public:
 	Matrix m_total_rotation;

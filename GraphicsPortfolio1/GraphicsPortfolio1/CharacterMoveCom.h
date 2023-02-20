@@ -12,7 +12,7 @@ public:
 	shared_ptr<Camera> m_camera_;
 
 public:
-	virtual void Command(const float& delta_time, WPARAM wParam, LPARAM lParam);
+	virtual void Command(HWND hwnd, const float& delta_time, WPARAM wParam, LPARAM lParam);
 };
 
 class MoveBackWardCom : public ICommand
@@ -24,7 +24,7 @@ public:
 	shared_ptr<Camera> m_camera_;
 
 public:
-	virtual void Command(const float& delta_time, WPARAM wParam, LPARAM lParam);
+	virtual void Command(HWND hwnd, const float& delta_time, WPARAM wParam, LPARAM lParam);
 };
 
 class MoveRightCom : public ICommand
@@ -36,7 +36,7 @@ public:
 	shared_ptr<Camera> m_camera_;
 
 public:
-	virtual void Command(const float& delta_time, WPARAM wParam, LPARAM lParam);
+	virtual void Command(HWND hwnd, const float& delta_time, WPARAM wParam, LPARAM lParam);
 };
 
 class MoveLeftCom : public ICommand
@@ -48,5 +48,5 @@ public:
 	shared_ptr<Camera> m_camera_;
 
 public:
-	virtual void Command(const float& delta_time, WPARAM wParam, LPARAM lParam);
+	virtual void Command(HWND hwnd, const float& delta_time, WPARAM wParam, LPARAM lParam);
 };

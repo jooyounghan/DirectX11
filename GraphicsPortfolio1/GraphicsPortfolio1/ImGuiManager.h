@@ -8,11 +8,13 @@
 #include <wrl.h>
 
 #include <string>
+#include <atomic>
 
 #include "Delegator.h"
 
 using std::string;
 using Microsoft::WRL::ComPtr;
+using std::atomic;
 
 struct FileListItem
 {
@@ -27,12 +29,12 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg
 class ImGuiManager
 {
 public:
-	ImGuiManager(UINT& imgui_width, UINT& imgui_height);
+	ImGuiManager(int& imgui_width, int& imgui_height);
 	~ImGuiManager();
 
 public:
-	UINT& m_screen_width_;
-	UINT& m_screen_height_;
+	int& m_screen_width_;
+	int& m_screen_height_;
 
 public:
 	int m_imgui_width_;
@@ -46,7 +48,7 @@ public:
 	void ReSetImGui();
 
 public:
-	void RecordRendering(const float& delta_time);
+	void RecordRendering(IN OUT atomic<float>& delta_time);
 	void Render();
 
 public:

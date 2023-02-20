@@ -4,7 +4,8 @@
 GraphicsPortfolio1App::GraphicsPortfolio1App()
     : BaseApp(),
     m_stage_(m_screen_width_, m_screen_height_),
-    m_imgui_manager(m_screen_width_, m_screen_height_)
+    m_imgui_manager(m_screen_width_, m_screen_height_),
+    m_delta_time_(0.f)
 {
 }
 
@@ -79,9 +80,6 @@ bool GraphicsPortfolio1App::InitWindowApp()
         return false;
     }
 
-    // Set Timer for Managing Update Delta Time
-    SetTimer(m_main_window_, 0, 16, NULL);
-
     ShowWindow(m_main_window_, SW_SHOWDEFAULT);
     UpdateWindow(m_main_window_);
 
@@ -93,18 +91,14 @@ LRESULT GraphicsPortfolio1App::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARA
 
     if (ImGui_ImplWin32_WndProcHandler(hwnd, msg, wParam, lParam))
         return true;
-    
-    const float delta_time = m_game_loop_.GetElapsed("Message");
+
     switch (msg)
     {
-    case WM_CREATE:
-        m_game_loop_.AddTimePoint("Message");
-        return 0;
     case WM_SIZE:
         if (m_stage_.IsSwappable())
         {
-            m_screen_width_ = UINT(LOWORD(lParam));
-            m_screen_height_ = UINT(HIWORD(lParam));
+            m_screen_width_ = int(LOWORD(lParam));
+            m_screen_height_ = int(HIWORD(lParam));
             m_stage_.OnResize();
         }
         break;
@@ -114,8 +108,13 @@ LRESULT GraphicsPortfolio1App::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARA
             return 0;
         break;
         // 마우스 시점 변화에 따른 명령
+    case WM_MBUTTONDOWN:
+    case WM_MBUTTONUP:
+        cout << "hi" << endl;
+        break;
+
     case WM_MOUSEMOVE:
-        command_manager_.OnMouseMove(delta_time, wParam, lParam);
+        command_manager_.OnMouseMove(hwnd, m_delta_time_.load(), wParam, lParam);
         break;
 
     case WM_KEYUP:
@@ -123,24 +122,24 @@ LRESULT GraphicsPortfolio1App::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARA
         switch (wParam)
         {
         case(KEY_W):
-            command_manager_.OnWKeyUp(delta_time, wParam, lParam);
+            command_manager_.OnWKeyUp(hwnd, m_delta_time_.load(), wParam, lParam);
             break;
         case(KEY_A):
-            command_manager_.OnAKeyUp(delta_time, wParam, lParam);
+            command_manager_.OnAKeyUp(hwnd, m_delta_time_.load(), wParam, lParam);
             break;
         case(KEY_S):
-            command_manager_.OnSKeyUp(delta_time, wParam, lParam);
+            command_manager_.OnSKeyUp(hwnd, m_delta_time_.load(), wParam, lParam);
             break;
         case(KEY_D):
-            command_manager_.OnDKeyUp(delta_time, wParam, lParam);
+            command_manager_.OnDKeyUp(hwnd, m_delta_time_.load(), wParam, lParam);
             break;
         }
         break;
+
     case WM_DESTROY:
         ::PostQuitMessage(0);
         return 0;
     }
-    m_game_loop_.UpdateTimePoint("Message");
     return ::DefWindowProc(hwnd, msg, wParam, lParam);
 }
 
@@ -154,7 +153,6 @@ int GraphicsPortfolio1App::Run()
 {
     MSG msg = { 0 };
 
-    m_game_loop_.AddTimePoint("Main");
 
     while (WM_QUIT != msg.message) {
         if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
@@ -164,9 +162,7 @@ int GraphicsPortfolio1App::Run()
         }
         else
         {;
-            const float& delta_time = m_game_loop_.GetElapsed("Main");
-            m_game_loop_.UpdateTimePoint("Main");
-            m_imgui_manager.RecordRendering(delta_time);
+            m_imgui_manager.RecordRendering(m_delta_time_);
 
             m_stage_.Update();
 

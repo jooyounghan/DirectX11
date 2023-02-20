@@ -2,9 +2,9 @@
 
 #include "BaseApp.h"
 #include "CommandManager.h"
-#include "GameLoop.h"
 #include "ImGuiManager.h"
 #include "Stage.h"
+
 
 LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -25,9 +25,11 @@ public:
 	virtual float GetAspectRatio() override;
 
 protected:
-	GameLoop		m_game_loop_;
 	Stage			m_stage_;
 	ImGuiManager	m_imgui_manager;
+
+public:
+	atomic<float>	m_delta_time_;
 
 protected:
 	CommandManager command_manager_;

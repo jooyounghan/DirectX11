@@ -13,11 +13,11 @@ public:
 	shared_ptr<Camera> m_camera_;
 
 public:
-	virtual void Command(const float& delta_time, WPARAM wParam, LPARAM lParam);
+	virtual void Command(HWND hwnd, const float& delta_time, WPARAM wParam, LPARAM lParam);
 
 public:
-	UINT m_x_pos_ = 0;
-	UINT m_y_pos_ = 0;
+	int m_x_pos_ = 0;
+	int m_y_pos_ = 0;
 
 public:
 	bool m_init_flag = true;

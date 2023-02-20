@@ -4,21 +4,20 @@
 using std::cout;
 using std::endl;
 
-/*
-lParam狼 HIWORD(lParam)啊
-0x00?? 老 版快 keydown
-0x40?? 老 版快 key keep down
-0xC0?? 老 版快 keyup
-*/
+using DirectX::SimpleMath::Vector3;
+using DirectX::SimpleMath::Vector4;
 
 MoveForwardCom::MoveForwardCom(shared_ptr<Camera> camera)
 	: m_camera_(camera)
 {
 }
 
-void MoveForwardCom::Command(const float& delta_time, WPARAM wParam, LPARAM lParam)
+void MoveForwardCom::Command(HWND hwnd, const float& delta_time, WPARAM wParam, LPARAM lParam)
 {
-	cout << "Move Forward : " << LOWORD(wParam) << "/" << HIWORD(wParam) << " // " << LOWORD(lParam) << "/" << HIWORD(lParam) << '\n';
+	Vector3 forward_vector = m_camera_->m_total_rotation.Invert().Forward();
+	forward_vector *= m_camera_->m_translation_responsiveness_;
+
+	m_camera_->m_total_translation *= Matrix::CreateTranslation(forward_vector);
 }
 
 MoveBackWardCom::MoveBackWardCom(shared_ptr<Camera> camera)
@@ -26,9 +25,12 @@ MoveBackWardCom::MoveBackWardCom(shared_ptr<Camera> camera)
 {
 }
 
-void MoveBackWardCom::Command(const float& delta_time, WPARAM wParam, LPARAM lParam)
+void MoveBackWardCom::Command(HWND hwnd, const float& delta_time, WPARAM wParam, LPARAM lParam)
 {
-	cout << "Move Backward : " << LOWORD(wParam) << "/" << HIWORD(wParam) << " // " << LOWORD(lParam) << "/" << HIWORD(lParam) << '\n';
+	Vector3 backward_vector = m_camera_->m_total_rotation.Backward();
+	backward_vector *= m_camera_->m_translation_responsiveness_;
+
+	m_camera_->m_total_translation *= Matrix::CreateTranslation(backward_vector);
 }
 
 MoveRightCom::MoveRightCom(shared_ptr<Camera> camera)
@@ -36,9 +38,12 @@ MoveRightCom::MoveRightCom(shared_ptr<Camera> camera)
 {
 }
 
-void MoveRightCom::Command(const float& delta_time, WPARAM wParam, LPARAM lParam)
+void MoveRightCom::Command(HWND hwnd, const float& delta_time, WPARAM wParam, LPARAM lParam)
 {
-	cout << "Move Right : " << LOWORD(wParam) << "/" << HIWORD(wParam) << " // " << LOWORD(lParam) << "/" << HIWORD(lParam) << '\n';
+	Vector3 rightward_vector = m_camera_->m_total_rotation.Right();
+	rightward_vector *= m_camera_->m_translation_responsiveness_;
+
+	m_camera_->m_total_translation *= Matrix::CreateTranslation(rightward_vector);
 }
 
 MoveLeftCom::MoveLeftCom(shared_ptr<Camera> camera)
@@ -46,7 +51,10 @@ MoveLeftCom::MoveLeftCom(shared_ptr<Camera> camera)
 {
 }
 
-void MoveLeftCom::Command(const float& delta_time, WPARAM wParam, LPARAM lParam)
+void MoveLeftCom::Command(HWND hwnd, const float& delta_time, WPARAM wParam, LPARAM lParam)
 {
-	cout << "Move Left : " << LOWORD(wParam) << "/" << HIWORD(wParam) << " // " << LOWORD(lParam) << "/" << HIWORD(lParam) << '\n';
+	Vector3 leftward_vector = m_camera_->m_total_rotation.Left();
+	leftward_vector *= m_camera_->m_translation_responsiveness_;
+
+	m_camera_->m_total_translation *= Matrix::CreateTranslation(leftward_vector);
 }

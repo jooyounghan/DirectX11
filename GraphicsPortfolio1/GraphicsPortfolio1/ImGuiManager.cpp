@@ -7,7 +7,7 @@
 
 using namespace std;
 
-ImGuiManager::ImGuiManager(UINT& screen_width, UINT& screen_height)
+ImGuiManager::ImGuiManager(int& screen_width, int& screen_height)
     : m_screen_width_(screen_width), m_screen_height_(screen_height), m_imgui_width_(0)
 {
 }
@@ -52,7 +52,7 @@ void ImGuiManager::ReSetImGui()
     ImGui::DestroyContext();
 }
 
-void ImGuiManager::RecordRendering(const float& delta_time)
+void ImGuiManager::RecordRendering(IN OUT atomic<float>& delta_time)
 {
     ImGui_ImplDX11_NewFrame(); // GUI 프레임 시작
     ImGui_ImplWin32_NewFrame();
@@ -60,7 +60,9 @@ void ImGuiManager::RecordRendering(const float& delta_time)
     ImGui::NewFrame(); // 어떤 것들을 렌더링 할지 기록 시작
     ImGui::Begin("Scene Control");
 
-    SetImGui(delta_time);
+    delta_time.store(1.f / ImGui::GetIO().Framerate);
+
+    SetImGui(delta_time.load());
 
     ImGui::End();
     ImGui::Render(); // 렌더링할 것들 기록 끝
@@ -73,10 +75,8 @@ void ImGuiManager::Render()
 
 void ImGuiManager::SetImGui(const float& delta_time)
 {
-    ImGui::Text("Average %.3f ms/frame (%.1f FPS) With Game Loop",
-        delta_time * 1000.0f, 1.f / delta_time);
     ImGui::Text("Average %.3f ms/frame (%.1f FPS) With ImGui GetIO",
-        1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+        1000.0f * delta_time, 1.f / delta_time);
 
 
     if (ImGui::Button("Select Modeling File"))

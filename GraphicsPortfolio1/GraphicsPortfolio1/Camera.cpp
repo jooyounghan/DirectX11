@@ -3,10 +3,10 @@
 
 using namespace DirectX;
 
-Camera::Camera(ComPtr<ID3D11Device>& device, UINT& buffer_width, UINT& buffer_height)
+Camera::Camera(ComPtr<ID3D11Device>& device, int& buffer_width, int& buffer_height)
 	: m_buffer_width_(buffer_width), m_buffer_height_(buffer_height)
 {
-	m_total_translation = Matrix::CreateTranslation(0.0f, 50.0f, 50).Transpose();
+	m_total_translation = Matrix::CreateTranslation(0.0f, 0.0f, 10.f);
 
 	const float aspect = (float)m_buffer_width_ / (float)m_buffer_height_;
 	float m_projFovAngleY = 70.0f;
@@ -21,7 +21,7 @@ Camera::Camera(ComPtr<ID3D11Device>& device, UINT& buffer_width, UINT& buffer_he
 
 void Camera::UpdateCamera(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context)
 {
-	m_stage_vertex_constant_.view = (m_total_rotation * m_total_translation).Transpose();
+	m_stage_vertex_constant_.view = (m_total_translation * m_total_rotation).Transpose();
 	D3D11Utilizer::UpdateBuffer(device, context, m_stage_vertex_constant_, m_vertex_stage_cbuffer_);
 }
 
