@@ -3,6 +3,8 @@
 
 using namespace std;
 
+using namespace DirectX::SimpleMath;
+
 CameraRotCom::CameraRotCom(shared_ptr<Camera> camera)
 	: m_camera_(camera)
 {
@@ -26,6 +28,7 @@ void CameraRotCom::Command(HWND hwnd, const float& delta_time, WPARAM wParam, LP
 
 	int new_x_pos = (int)LOWORD(lParam);
 	int new_y_pos = (int)HIWORD(lParam);
+
 	const int& delta_yaw_factor = new_x_pos - m_x_pos_;
 	const int& delta_pitch_factor = new_y_pos - m_y_pos_;
 
@@ -48,8 +51,8 @@ void CameraRotCom::Command(HWND hwnd, const float& delta_time, WPARAM wParam, LP
 			const float& delta_yaw = delta_yaw_factor * m_camera_->m_rotation_responsiveness_;
 			const float& delta_pitch = delta_pitch_factor * m_camera_->m_rotation_responsiveness_;
 
-			m_camera_->m_total_rotation *= Matrix::CreateRotationY(-delta_time * delta_yaw * 3.141592 / 360.f);
-			m_camera_->m_total_rotation *= Matrix::CreateRotationX(-delta_time * delta_pitch * 3.141592 / 360.f);
+			m_camera_->m_total_x_rotation_ *= Matrix::CreateRotationX(-delta_time * delta_pitch);
+			m_camera_->m_total_y_rotation_ *= Matrix::CreateRotationY(-delta_time * delta_yaw);
 		}
 		else
 		{

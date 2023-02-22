@@ -322,13 +322,13 @@ void D3D11Utilizer::Orthonormalize(Vector3& v1, Vector3& v2, Vector3& v3)
 	v1.Normalize();
 
 	// Project the second vector onto the first vector and subtract it to make it orthogonal.
-	v2 -= v1 * v1.Dot(v2);
+	v2 -= v1 * v2.Dot(v1);
 
 	// Normalize the second vector.
 	v2.Normalize();
 
 	// Project the third vector onto the first and second vectors and subtract it to make it orthogonal.
-	v3 -= v1 * v1.Dot(v3) + v2 * v2.Dot(v3);
+	v3 -= (v3 * v3.Dot(v1) + v2 * v3.Dot(v2));
 
 	// Normalize the third vector.
 	v3.Normalize();
@@ -349,5 +349,6 @@ void D3D11Utilizer::GramSchmidt(IN OUT Matrix& matrix)
 		matrix._11 = xRow.x; matrix._12 = xRow.y; matrix._13 = xRow.z;
 		matrix._21 = yRow.x; matrix._22 = yRow.y; matrix._23 = yRow.z;
 		matrix._31 = zRow.x; matrix._32 = zRow.y; matrix._33 = zRow.z;
+
 }
 

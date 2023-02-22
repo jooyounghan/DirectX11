@@ -32,12 +32,17 @@ protected:
 	int& m_buffer_height_;
 
 public:
-	float m_rotation_responsiveness_ = 30.f;
+	const float& GetAspectRatio();
+
+public:
+	float m_rotation_responsiveness_ = 1.f;
 	float m_translation_responsiveness_ = 0.1f;
 
 public:
-	Matrix m_total_rotation;
-	Matrix m_total_translation;
+	Matrix m_total_x_rotation_;
+	Matrix m_total_y_rotation_;
+	Matrix m_total_rotation_;
+	Matrix m_total_translation_;
 
 public:
 	CameraVertexConstantData m_stage_vertex_constant_;

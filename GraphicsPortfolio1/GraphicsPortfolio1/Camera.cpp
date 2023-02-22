@@ -6,7 +6,8 @@ using namespace DirectX;
 Camera::Camera(ComPtr<ID3D11Device>& device, int& buffer_width, int& buffer_height)
 	: m_buffer_width_(buffer_width), m_buffer_height_(buffer_height), m_camera_move_flag_(false)
 {
-	m_total_translation = Matrix::CreateTranslation(0.0f, 0.0f, 10.f);
+	m_total_rotation_ = Matrix::Identity;
+	m_total_translation_ = Matrix::CreateTranslation(0.0f, 0.0f, 10.f);
 
 	const float aspect = (float)m_buffer_width_ / (float)m_buffer_height_;
 	float m_projFovAngleY = 70.0f;
@@ -17,6 +18,11 @@ Camera::Camera(ComPtr<ID3D11Device>& device, int& buffer_width, int& buffer_heig
 	m_stage_vertex_constant_.projection = projRow.Transpose();
 
 	D3D11Utilizer::CreateConstantBuffer(device, m_stage_vertex_constant_, m_vertex_stage_cbuffer_);
+}
+
+const float& Camera::GetAspectRatio()
+{
+	return (float)m_buffer_width_ / (float)m_buffer_height_;
 }
 
 void Camera::SetOnCameraMoveFlag(const CameraMoveFlag& flag)
@@ -32,31 +38,34 @@ void Camera::SetOffCameraMoveFlag(const CameraMoveFlag& flag)
 
 void Camera::UpdateCamera(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context)
 {
+	m_total_rotation_ = m_total_y_rotation_ * m_total_x_rotation_;
+	m_stage_vertex_constant_.view = (m_total_translation_ * m_total_rotation_).Transpose();
+
 	if (m_camera_move_flag_ & CAMERA_MOVE_FORWARD)
 	{
-		const Vector3& rightward_vector = m_total_rotation.Invert().Forward() * m_translation_responsiveness_;
-		m_total_translation *= Matrix::CreateTranslation(rightward_vector);
+		const Vector3& rightward_vector = m_total_rotation_.Invert().Forward() * m_translation_responsiveness_;
+		m_total_translation_ *= Matrix::CreateTranslation(rightward_vector);
 	}
 
 	if (m_camera_move_flag_ & CAMERA_MOVE_BACKWARD)
 	{
-		const Vector3& rightward_vector = m_total_rotation.Invert().Backward() * m_translation_responsiveness_;
-		m_total_translation *= Matrix::CreateTranslation(rightward_vector);
+		const Vector3& rightward_vector = m_total_rotation_.Invert().Backward() * m_translation_responsiveness_;
+		m_total_translation_ *= Matrix::CreateTranslation(rightward_vector);
 	}
 
 	if (m_camera_move_flag_ & CAMERA_MOVE_RIGHT)
 	{
-		const Vector3& rightward_vector = m_total_rotation.Invert().Left() * m_translation_responsiveness_;
-		m_total_translation *= Matrix::CreateTranslation(rightward_vector);
+		const Vector3& rightward_vector = m_total_rotation_.Invert().Left() * m_translation_responsiveness_;
+		m_total_translation_ *= Matrix::CreateTranslation(rightward_vector);
 	}
 
 	if (m_camera_move_flag_ & CAMERA_MOVE_LEFT)
 	{
-		const Vector3& rightward_vector = m_total_rotation.Invert().Right() * m_translation_responsiveness_;
-		m_total_translation *= Matrix::CreateTranslation(rightward_vector);
+		const Vector3& rightward_vector = m_total_rotation_.Invert().Right() * m_translation_responsiveness_;
+		m_total_translation_ *= Matrix::CreateTranslation(rightward_vector);
 	}
 
-	m_stage_vertex_constant_.view = (m_total_translation * m_total_rotation).Transpose();
+
 	D3D11Utilizer::UpdateBuffer(device, context, m_stage_vertex_constant_, m_vertex_stage_cbuffer_);
 }
 
