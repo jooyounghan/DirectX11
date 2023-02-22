@@ -20,9 +20,9 @@ Camera::Camera(ComPtr<ID3D11Device>& device, int& buffer_width, int& buffer_heig
 	D3D11Utilizer::CreateConstantBuffer(device, m_stage_vertex_constant_, m_vertex_stage_cbuffer_);
 }
 
-const float& Camera::GetAspectRatio()
+const float Camera::GetAspectRatio()
 {
-	return (float)m_buffer_width_ / (float)m_buffer_height_;
+	return (float)m_buffer_width_ / m_buffer_height_;
 }
 
 void Camera::SetOnCameraMoveFlag(const CameraMoveFlag& flag)

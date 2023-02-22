@@ -7,8 +7,9 @@
 
 using namespace std;
 
-ImGuiManager::ImGuiManager(int& screen_width, int& screen_height)
-    : m_screen_width_(screen_width), m_screen_height_(screen_height), m_imgui_width_(0)
+ImGuiManager::ImGuiManager()
+    : m_translation_{0.f, 0.f, 0.f}, m_rotation_{ 0.f, 0.f, 0.f }, m_scaling_{ 0.f, 0.f, 0.f },
+    m_model_transfrom_flag_(false)
 {
 }
 
@@ -17,10 +18,6 @@ ImGuiManager::~ImGuiManager()
 
 }
 
-int ImGuiManager::GetImGuiWidth()
-{
-    return m_imgui_width_;
-}
 
 bool ImGuiManager::InitImGui(HWND main_window, ComPtr<ID3D11Device> m_device, ComPtr<ID3D11DeviceContext> m_context)
 {
@@ -29,7 +26,6 @@ bool ImGuiManager::InitImGui(HWND main_window, ComPtr<ID3D11Device> m_device, Co
 
     ImGuiIO& io = ImGui::GetIO();
     (void)io;
-    io.DisplaySize = ImVec2(float(m_screen_width_), float(m_screen_height_));
     ImGui::StyleColorsDark();
 
     // Setup Platform/Renderer backends
@@ -54,17 +50,13 @@ void ImGuiManager::ReSetImGui()
 
 void ImGuiManager::RecordRendering(IN OUT atomic<float>& delta_time)
 {
+    delta_time.store(1.f / ImGui::GetIO().Framerate);
+
     ImGui_ImplDX11_NewFrame(); // GUI 프레임 시작
     ImGui_ImplWin32_NewFrame();
 
-    ImGui::NewFrame(); // 어떤 것들을 렌더링 할지 기록 시작
-    ImGui::Begin("Scene Control");
+    CreateModelSelectFrame(delta_time.load());
 
-    delta_time.store(1.f / ImGui::GetIO().Framerate);
-
-    SetImGui(delta_time.load());
-
-    ImGui::End();
     ImGui::Render(); // 렌더링할 것들 기록 끝
 }
 
@@ -73,11 +65,13 @@ void ImGuiManager::Render()
     ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData()); // GUI 렌더링
 }
 
-void ImGuiManager::SetImGui(const float& delta_time)
+void ImGuiManager::CreateModelSelectFrame(const float& delta_time)
 {
+    ImGui::NewFrame();
+    ImGui::Begin("Mdoeling");
+
     ImGui::Text("Average %.3f ms/frame (%.1f FPS) With ImGui GetIO",
         1000.0f * delta_time, 1.f / delta_time);
-
 
     if (ImGui::Button("Select Modeling File"))
         ImGuiFileDialog::Instance()->OpenDialog("SelectModel", "Select Model File", ".fbx", ".");
@@ -91,7 +85,7 @@ void ImGuiManager::SetImGui(const float& delta_time)
             std::string file_name = ImGuiFileDialog::Instance()->GetCurrentFileName();
 
 
-            m_model_files_.emplace_back(false, file_path_name, file_name);
+            m_model_files_.emplace_back(make_shared<ModelData>(false, file_path_name, file_name));
             m_on_file_added_.Broadcast(file_path_name, file_name);
 
             ImGuiFileDialog::Instance()->Close();
@@ -107,7 +101,7 @@ void ImGuiManager::SetImGui(const float& delta_time)
     {
         for (size_t index = 0; index < m_model_files_.size(); ++index)
         {
-            if (m_model_files_[index].is_checked == true)
+            if (m_model_files_[index]->is_checked == true)
             {
                 m_model_files_.erase(m_model_files_.begin() + index);
                 m_on_file_deleted_.Broadcast(index);
@@ -116,29 +110,85 @@ void ImGuiManager::SetImGui(const float& delta_time)
         }
     }
 
+    ImGui::SameLine();
+    HelpMarker("How?",
+        "You can add and delete Modeling File(.fbx) from this scene.\n"
+        "Also, You can make model's transfromation by checking box and\n"
+        "  manipulating the each scroll bar(Rotating, etc...)");
+
     ImVec2 listbox_size = ImVec2(-FLT_MIN, 10 * ImGui::GetTextLineHeightWithSpacing());
     if (ImGui::BeginListBox("##file select listbox", listbox_size))
     {
-        for (int i = 0; i < m_model_files_.size(); i++)
+        for (int idx = 0; idx < m_model_files_.size(); idx++)
         {
-            bool item_checked = m_model_files_[i].is_checked;
-
-            ImGui::PushID(i);
+            bool item_checked = m_model_files_[idx] == m_selected_model_;
+            ImGui::PushID(idx);
             if (ImGui::Checkbox("##check", &item_checked))
             {
-                m_model_files_[i].is_checked = item_checked;
+                if (item_checked)
+                {
+                    m_selected_model_ = m_model_files_[idx];
+                }
+                else
+                {
+                    m_selected_model_ = nullptr;
+                }
+           }
+            else
+            {
+                bool test = true;
             }
-            ImGui::SameLine();
 
-            ImGui::Text("%s", m_model_files_[i].file_name.c_str());
+            ImGui::SameLine();
+            ImGui::Text("%s", m_model_files_[idx]->file_name.c_str());
             ImGui::PopID();
         }
         ImGui::EndListBox();
     }
 
+// Checkbox가 바뀌면 초기화 슬라이드 바 초기화 시키기
 
-    ImGui::SetWindowPos(ImVec2(0.0f, 0.0f));
-    m_imgui_width_ = int(ImGui::GetWindowWidth());
-    ImGui::SetWindowSize(
-        ImVec2((float)m_imgui_width_, (float)m_screen_height_));
+    ImGui::BeginDisabled(m_selected_model_ == nullptr);
+    ImGui::Text("Translation");
+    ImGui::PushItemWidth(-FLT_MIN);
+    if (ImGui::SliderFloat3("Translation", &m_translation_[0], 0.0f, 10.0f, "%.3f"))
+    {
+
+    }
+    ImGui::PopItemWidth();
+
+    ImGui::Text("Rotation");
+    ImGui::PushItemWidth(-FLT_MIN);
+    if (ImGui::SliderFloat3("Rotation", &m_rotation_[0], 0.0f, 10.0f, "%.3f"))
+    {
+
+    }
+    ImGui::PopItemWidth();
+
+    ImGui::Text("Scaling");
+    ImGui::PushItemWidth(-FLT_MIN);
+    if (ImGui::SliderFloat3("Scaling", &m_scaling_[0], 0.0f, 10.0f, "%.3f"))
+    {
+
+    }
+    float* test1 = m_translation_;
+    float* test2 = m_rotation_;
+    float* test3 = m_scaling_;
+    ImGui::PopItemWidth();
+    ImGui::EndDisabled();
+
+    ImGui::End();
+}
+
+void ImGuiManager::HelpMarker(const char* marker_text, const char* desc)
+{
+    ImGui::TextDisabled(marker_text);
+    if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayShort))
+    {
+        ImGui::BeginTooltip();
+        ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
+        ImGui::TextUnformatted(desc);
+        ImGui::PopTextWrapPos();
+        ImGui::EndTooltip();
+    }
 }

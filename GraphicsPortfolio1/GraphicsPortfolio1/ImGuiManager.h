@@ -9,38 +9,32 @@
 
 #include <string>
 #include <atomic>
+#include <memory>
 
 #include "Delegator.h"
 
 using std::string;
 using Microsoft::WRL::ComPtr;
 using std::atomic;
+using std::shared_ptr;
 
-struct FileListItem
+struct ModelData
 {
-	bool is_checked;
+	bool is_checked = false;
 	string base_path;
 	string file_name;
+	float model_translation[3]{ 0.f, 0.f, 0.f };
+	float model_rotation[3]{ 0.f, 0.f, 0.f };
+	float model_scaling[3]{ 0.f, 0.f, 0.f };
 };
-
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 class ImGuiManager
 {
 public:
-	ImGuiManager(int& imgui_width, int& imgui_height);
+	ImGuiManager();
 	~ImGuiManager();
-
-public:
-	int& m_screen_width_;
-	int& m_screen_height_;
-
-public:
-	int m_imgui_width_;
-
-public:
-	int GetImGuiWidth();
 
 public:
 	bool InitImGui(HWND main_window, ComPtr<ID3D11Device> m_device, ComPtr<ID3D11DeviceContext> m_context);
@@ -52,13 +46,26 @@ public:
 	void Render();
 
 public:
-	void SetImGui(const float& delta_time);
+	void CreateModelSelectFrame(const float& delta_time);
 
 public:
-	std::vector<FileListItem> m_model_files_;
+	static void HelpMarker(const char* marker_text, const char* desc);
+
+public:
+	std::vector<shared_ptr<ModelData>>	m_model_files_;
+	shared_ptr<ModelData>				m_selected_model_;
+
+public:
+	float m_translation_[3];
+	float m_rotation_[3];
+	float m_scaling_[3];
 
 public:
 	Delegator<void, const string&, const string&>	m_on_file_added_;
 	Delegator<void, const size_t&>					m_on_file_deleted_;
+
+public:
+	bool											m_model_transfrom_flag_;
+	//Delegator<void, const size_t&>					m_on_file_deleted_;
 };
 

@@ -32,7 +32,7 @@ protected:
 	int& m_buffer_height_;
 
 public:
-	const float& GetAspectRatio();
+	const float GetAspectRatio();
 
 public:
 	float m_rotation_responsiveness_ = 1.f;

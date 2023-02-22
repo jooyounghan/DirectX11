@@ -4,7 +4,7 @@
 GraphicsPortfolio1App::GraphicsPortfolio1App()
     : BaseApp(),
     m_stage_(m_screen_width_, m_screen_height_),
-    m_imgui_manager(m_screen_width_, m_screen_height_),
+    m_imgui_manager(),
     m_delta_time_(0.f)
 {
 }
@@ -143,7 +143,7 @@ LRESULT GraphicsPortfolio1App::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARA
 
 float GraphicsPortfolio1App::GetAspectRatio()
 {
-    return float(m_screen_width_ - m_imgui_manager.GetImGuiWidth()) / m_screen_height_;
+    return float(m_screen_width_) / m_screen_height_;
 }
 
 int GraphicsPortfolio1App::Run()
