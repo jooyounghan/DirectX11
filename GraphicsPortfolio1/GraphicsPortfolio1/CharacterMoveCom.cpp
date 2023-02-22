@@ -4,9 +4,6 @@
 using std::cout;
 using std::endl;
 
-using DirectX::SimpleMath::Vector3;
-using DirectX::SimpleMath::Vector4;
-
 MoveForwardCom::MoveForwardCom(shared_ptr<Camera> camera)
 	: m_camera_(camera)
 {
@@ -14,10 +11,18 @@ MoveForwardCom::MoveForwardCom(shared_ptr<Camera> camera)
 
 void MoveForwardCom::Command(HWND hwnd, const float& delta_time, WPARAM wParam, LPARAM lParam)
 {
-	Vector3 forward_vector = m_camera_->m_total_rotation.Invert().Forward();
-	forward_vector *= m_camera_->m_translation_responsiveness_;
+	if (GET_CLICK_STATE(lParam,ON_CLICKSTART))
+	{
+		m_camera_->SetOnCameraMoveFlag(CAMERA_MOVE_FORWARD);
+	}
+	else if (GET_CLICK_STATE(lParam, ON_CLICKED))
+	{
 
-	m_camera_->m_total_translation *= Matrix::CreateTranslation(forward_vector);
+	}
+	else if (GET_CLICK_STATE(lParam, ON_CLICKFINISH))
+	{
+		m_camera_->SetOffCameraMoveFlag(CAMERA_MOVE_FORWARD);
+	}
 }
 
 MoveBackWardCom::MoveBackWardCom(shared_ptr<Camera> camera)
@@ -27,10 +32,18 @@ MoveBackWardCom::MoveBackWardCom(shared_ptr<Camera> camera)
 
 void MoveBackWardCom::Command(HWND hwnd, const float& delta_time, WPARAM wParam, LPARAM lParam)
 {
-	Vector3 backward_vector = m_camera_->m_total_rotation.Backward();
-	backward_vector *= m_camera_->m_translation_responsiveness_;
+	if (GET_CLICK_STATE(lParam, ON_CLICKSTART))
+	{
+		m_camera_->SetOnCameraMoveFlag(CAMERA_MOVE_BACKWARD);
+	}
+	else if (GET_CLICK_STATE(lParam, ON_CLICKED))
+	{
 
-	m_camera_->m_total_translation *= Matrix::CreateTranslation(backward_vector);
+	}
+	else if (GET_CLICK_STATE(lParam, ON_CLICKFINISH))
+	{
+		m_camera_->SetOffCameraMoveFlag(CAMERA_MOVE_BACKWARD);
+	}
 }
 
 MoveRightCom::MoveRightCom(shared_ptr<Camera> camera)
@@ -40,10 +53,18 @@ MoveRightCom::MoveRightCom(shared_ptr<Camera> camera)
 
 void MoveRightCom::Command(HWND hwnd, const float& delta_time, WPARAM wParam, LPARAM lParam)
 {
-	Vector3 rightward_vector = m_camera_->m_total_rotation.Right();
-	rightward_vector *= m_camera_->m_translation_responsiveness_;
+	if (GET_CLICK_STATE(lParam, ON_CLICKSTART))
+	{
+		m_camera_->SetOnCameraMoveFlag(CAMERA_MOVE_RIGHT);
+	}
+	else if (GET_CLICK_STATE(lParam, ON_CLICKED))
+	{
 
-	m_camera_->m_total_translation *= Matrix::CreateTranslation(rightward_vector);
+	}
+	else if (GET_CLICK_STATE(lParam, ON_CLICKFINISH))
+	{
+		m_camera_->SetOffCameraMoveFlag(CAMERA_MOVE_RIGHT);
+	}
 }
 
 MoveLeftCom::MoveLeftCom(shared_ptr<Camera> camera)
@@ -53,8 +74,17 @@ MoveLeftCom::MoveLeftCom(shared_ptr<Camera> camera)
 
 void MoveLeftCom::Command(HWND hwnd, const float& delta_time, WPARAM wParam, LPARAM lParam)
 {
-	Vector3 leftward_vector = m_camera_->m_total_rotation.Left();
-	leftward_vector *= m_camera_->m_translation_responsiveness_;
 
-	m_camera_->m_total_translation *= Matrix::CreateTranslation(leftward_vector);
+	if (GET_CLICK_STATE(lParam, ON_CLICKSTART))
+	{
+		m_camera_->SetOnCameraMoveFlag(CAMERA_MOVE_LEFT);
+	}
+	else if (GET_CLICK_STATE(lParam, ON_CLICKED))
+	{
+
+	}
+	else if (GET_CLICK_STATE(lParam, ON_CLICKFINISH))
+	{
+		m_camera_->SetOffCameraMoveFlag(CAMERA_MOVE_LEFT);
+	}
 }

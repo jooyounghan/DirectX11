@@ -110,9 +110,6 @@ LRESULT GraphicsPortfolio1App::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARA
         // 마우스 시점 변화에 따른 명령
     case WM_MBUTTONDOWN:
     case WM_MBUTTONUP:
-        cout << "hi" << endl;
-        break;
-
     case WM_MOUSEMOVE:
         command_manager_.OnMouseMove(hwnd, m_delta_time_.load(), wParam, lParam);
         break;

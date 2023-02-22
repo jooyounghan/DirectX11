@@ -315,3 +315,39 @@ void D3D11Utilizer::OnResize(
 	CreateRenderTargetView(device, swap_chain, rt_view, sr_view);
 	CreateDepthBuffer(width, height, device, ds_view);
 }
+
+void D3D11Utilizer::Orthonormalize(Vector3& v1, Vector3& v2, Vector3& v3)
+{
+	// Normalize the first vector.
+	v1.Normalize();
+
+	// Project the second vector onto the first vector and subtract it to make it orthogonal.
+	v2 -= v1 * v1.Dot(v2);
+
+	// Normalize the second vector.
+	v2.Normalize();
+
+	// Project the third vector onto the first and second vectors and subtract it to make it orthogonal.
+	v3 -= v1 * v1.Dot(v3) + v2 * v2.Dot(v3);
+
+	// Normalize the third vector.
+	v3.Normalize();
+}
+
+
+void D3D11Utilizer::GramSchmidt(IN OUT Matrix& matrix)
+{
+		// Extract the three rows of the matrix that correspond to the x, y, and z axes.
+		Vector3 xRow(matrix._11, matrix._12, matrix._13);
+		Vector3 yRow(matrix._21, matrix._22, matrix._23);
+		Vector3 zRow(matrix._31, matrix._32, matrix._33);
+
+		// Orthonormalize the rows using the Gram-Schmidt process.
+		Orthonormalize(xRow, yRow, zRow);
+
+		// Store the orthonormalized rows back into the matrix.
+		matrix._11 = xRow.x; matrix._12 = xRow.y; matrix._13 = xRow.z;
+		matrix._21 = yRow.x; matrix._22 = yRow.y; matrix._23 = yRow.z;
+		matrix._31 = zRow.x; matrix._32 = zRow.y; matrix._33 = zRow.z;
+}
+

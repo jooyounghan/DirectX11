@@ -22,4 +22,3 @@ public:
 public:
 	bool m_init_flag = true;
 };
-

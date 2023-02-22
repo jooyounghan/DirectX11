@@ -6,6 +6,8 @@
 #include <iostream>
 #include <vector>
 
+#include <directxtk/SimpleMath.h>
+
 #include "FileReader.h"
 #include "Stage.h"
 
@@ -14,6 +16,10 @@
 #define COUTERR(String) std::cout << String << "/" << "Error Code : " << GetLastError() << std::endl
 
 using Microsoft::WRL::ComPtr;
+using DirectX::SimpleMath::Matrix;
+using DirectX::SimpleMath::Vector3;
+using DirectX::SimpleMath::Vector4;
+
 using std::vector;
 using std::cout;
 using std::endl;
@@ -202,5 +208,9 @@ public:
 		memcpy(ms.pData, &update_data, sizeof(update_data));
 		context->Unmap(update_buffer.Get(), NULL);
 	}
+
+public:
+	static void Orthonormalize(IN OUT Vector3& x_row, IN OUT Vector3& y_row, IN OUT Vector3& z_row);
+	static void GramSchmidt(IN OUT Matrix& matrix);
 };
 

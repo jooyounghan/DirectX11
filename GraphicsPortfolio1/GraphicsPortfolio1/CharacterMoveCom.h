@@ -1,7 +1,13 @@
 #pragma once
 
 #include "ICommand.h"
-#include "Camera.h"
+#include "Camera.h" 
+
+#define GET_CLICK_STATE(lParam, check_state)	((HIWORD(lParam) & 0xFF00) == check_state)
+
+#define ON_CLICKSTART		0x0000
+#define ON_CLICKED			0x4000
+#define ON_CLICKFINISH		0xC000
 
 class MoveForwardCom : public ICommand
 {
