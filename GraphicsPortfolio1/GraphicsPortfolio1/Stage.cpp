@@ -78,9 +78,33 @@ void Stage::RemoveModel(const size_t& index)
 	m_mesh_group_.erase(m_mesh_group_.begin() + index);
 }
 
+void Stage::SetModelTransformed(const size_t& index, float* translation_ptr, float* rotation_ptr, float* scaling_ptr)
+{
+	const Vector3 translation = Vector3(translation_ptr[0], translation_ptr[1], translation_ptr[2]);
+	const Vector3 scaling = Vector3(scaling_ptr[0], scaling_ptr[1], scaling_ptr[2]);
+
+	Matrix transformation = Matrix::CreateScale(scaling) *
+		Matrix::CreateRotationX(rotation_ptr[0]) *
+		Matrix::CreateRotationY(rotation_ptr[1]) *
+		Matrix::CreateRotationZ(rotation_ptr[2]) *
+		Matrix::CreateTranslation(translation);
+
+	for (size_t idx = 0; idx < m_mesh_group_[index]->m_meshes_.size(); ++idx)
+	{
+		m_mesh_group_[index]->m_meshes_[idx]->SetVertexConstantData(transformation);
+		m_mesh_group_[index]->m_meshes_[idx]->UpdateMesh(m_device_, m_device_context_);
+	}
+}
+
+
 void Stage::Update()
 {
 	m_main_camera_->UpdateCamera(m_device_, m_device_context_);
+
+	for (auto& meshgroup : m_mesh_group_)
+	{
+		meshgroup->Update(m_device_, m_device_context_);
+	}
 }
 
 void Stage::Render()

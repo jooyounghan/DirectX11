@@ -55,3 +55,12 @@ void IMeshGroup::Render(ComPtr<ID3D11DeviceContext>& device_context)
 		device_context->DrawIndexed(mesh->m_index_count_, 0, 0);
 	}
 }
+
+void IMeshGroup::Update(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context)
+{
+	for (auto& mesh : m_meshes_)
+	{
+		mesh->UpdateMesh(device, context);
+	}
+}
+

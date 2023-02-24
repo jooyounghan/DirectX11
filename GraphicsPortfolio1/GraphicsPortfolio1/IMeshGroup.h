@@ -33,6 +33,7 @@ public:
 
 public:
 	void Render(ComPtr<ID3D11DeviceContext>& device_context);
+	void Update(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context);
 };
 
 /*

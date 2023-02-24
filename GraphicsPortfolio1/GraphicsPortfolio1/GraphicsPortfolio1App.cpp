@@ -150,7 +150,6 @@ int GraphicsPortfolio1App::Run()
 {
     MSG msg = { 0 };
 
-
     while (WM_QUIT != msg.message) {
         if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
         {
@@ -177,4 +176,8 @@ void GraphicsPortfolio1App::SetImGuiDXDelegate()
 {
     m_imgui_manager.m_on_file_added_.Add(&m_stage_, &Stage::AddModel);
     m_imgui_manager.m_on_file_deleted_.Add(&m_stage_, &Stage::RemoveModel);
+
+    m_imgui_manager.m_on_model_transformed.Add(&m_stage_, &Stage::SetModelTransformed);
+
+
 }

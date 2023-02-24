@@ -8,7 +8,6 @@
 #include <wrl.h>
 
 #include <string>
-#include <atomic>
 #include <memory>
 
 #include "Delegator.h"
@@ -20,12 +19,11 @@ using std::shared_ptr;
 
 struct ModelData
 {
-	bool is_checked = false;
 	string base_path;
 	string file_name;
 	float model_translation[3]{ 0.f, 0.f, 0.f };
 	float model_rotation[3]{ 0.f, 0.f, 0.f };
-	float model_scaling[3]{ 0.f, 0.f, 0.f };
+	float model_scaling[3]{ 1.f, 1.f, 1.f };
 };
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -42,7 +40,7 @@ public:
 	void ReSetImGui();
 
 public:
-	void RecordRendering(IN OUT atomic<float>& delta_time);
+	void RecordRendering(IN OUT struct atomic<float>& delta_time);
 	void Render();
 
 public:
@@ -54,6 +52,11 @@ public:
 public:
 	std::vector<shared_ptr<ModelData>>	m_model_files_;
 	shared_ptr<ModelData>				m_selected_model_;
+	int selected_model_idx = -1;
+
+public:
+	void SetSelection(const int& idx);
+	void ResetSelection();
 
 public:
 	float m_translation_[3];
@@ -65,7 +68,6 @@ public:
 	Delegator<void, const size_t&>					m_on_file_deleted_;
 
 public:
-	bool											m_model_transfrom_flag_;
-	//Delegator<void, const size_t&>					m_on_file_deleted_;
+	Delegator<void, const size_t&, float*, float*, float*>	m_on_model_transformed;
 };
 

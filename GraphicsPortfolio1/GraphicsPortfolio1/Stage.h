@@ -48,6 +48,8 @@ public:
 	void AddModel(const string& file_path, const string& file_name);
 	void RemoveModel(const size_t& index);
 
+	void SetModelTransformed(const size_t& index, float* translation_ptr, float* rotation_ptr, float* scaling_ptr);
+
 public:
 	void Update();
 	void Render();

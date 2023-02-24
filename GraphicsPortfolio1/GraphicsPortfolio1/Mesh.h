@@ -28,7 +28,6 @@ struct MaterialConstantData
 class Mesh
 {
 public:
-	Mesh();
 	Mesh(ComPtr<ID3D11Device>& device, const MeshData& mesh_data);
 	~Mesh();
 
@@ -50,10 +49,10 @@ public:
 	ComPtr<ID3D11ShaderResourceView> m_texture_sr_view_;
 
 public:
-	void InitConstantData();
+	void InitConstantData(ComPtr<ID3D11Device>& device);
 	void SetVertexConstantData(const Matrix& model_tranform);
 	void SetMaterialConstantData(const Vector3& ambient, const Vector3& diffuse, const Vector3& specular, const float shininess);
 
 public:
-	void UpdateMesh(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context, const float& dt);
+	void UpdateMesh(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context);
 };
