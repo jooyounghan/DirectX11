@@ -17,24 +17,20 @@ class LightSelectDialog
 public:
 	LightSelectDialog();
 
-public:
+protected:
 	const float& m_vmax_ = 10.f;
 	const float& m_vzero_ = 0.f;
 	const float& m_vmin_ = -10.f;
 
-public:
-	enum LightType
-	{
-		Directional,
-		Point,
-		Spot
-	};
-
+protected:
 	enum GridProp
 	{
+		Selected,
 		LightType,
+		Color,
 		Position,
 		Direction,
+		LightPower,
 		FallOff,
 		SpotPower
 	};
@@ -43,17 +39,25 @@ public:
 	bool& is_directional_light_ = m_selected_light_type_[0];
 	bool& is_point_light_ = m_selected_light_type_[1];
 	bool& is_spot_light_ = m_selected_light_type_[2];
-	float m_ligth_position_[3];
 	float m_ligth_color_[3];
+	float m_ligth_position_[3];
+	float m_ligth_direction_[3];
+	float m_light_power_;
+
 	float m_fall_off_[2];
 	float m_spot_power_;
 
-public:
+protected:
 	float m_light_translation_[3];
 
+protected:
+	vector<shared_ptr<LightConstantData>> m_lights_;
+	int m_selected_light_idx_ = -1;
+
 public:
-	vector<shared_ptr<LightConstantData>> lights;
-	int selected_light_idx = -1;
+	Delegator<void, const LightConstantData&>		m_on_light_added_;
+	Delegator<void, const size_t&>					m_on_light_deleted_;
+
 
 public:
 	void CreateLightSelector(const float& delta_time);

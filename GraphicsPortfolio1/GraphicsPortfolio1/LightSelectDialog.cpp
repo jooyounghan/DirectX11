@@ -1,7 +1,13 @@
+#include <directxtk/SimpleMath.h>
+
 #include "LightSelectDialog.h"
+
+using namespace std;
+using DirectX::SimpleMath::Vector3;
 
 LightSelectDialog::LightSelectDialog()
     : m_selected_light_type_{ false, false, false }, m_ligth_position_{ 0.f, 0.f, 0.f },
+    m_light_power_(0.f), m_ligth_direction_{0.f, 0.f, 0.f},
     m_ligth_color_{ 0.f, 0.f, 0.f }, m_fall_off_{ 0.f, 0.f }, m_spot_power_(0),
     m_light_translation_{ 0.f, 0.f, 0.f }
 {
@@ -36,13 +42,21 @@ void LightSelectDialog::CreateLightSelector(const float& delta_time)
     const bool& is_light_on = is_directional_light_ || is_point_light_ || is_spot_light_;
 
     ImGui::BeginDisabled(!is_light_on);
-    ImGui::SliderFloat3("Light Position", (float*)&m_ligth_position_, m_vmin_, m_vmax_);
-    ImGui::ColorEdit3("Light Color", (float*)&m_ligth_color_);
+    ImGui::ColorEdit3("Light Color", &m_ligth_color_[0]);
+    ImGui::SliderFloat3("Light Position", &m_ligth_position_[0], m_vmin_, m_vmax_);
+    ImGui::EndDisabled();
+
+    ImGui::BeginDisabled(!is_directional_light_);
+    ImGui::SliderFloat3("Light Direction", &m_ligth_direction_[0], -1.f, 1.f);
+    ImGui::EndDisabled();
+
+    ImGui::BeginDisabled(!is_light_on);
+    ImGui::SliderFloat("Light Power", &m_light_power_, 0.f, 1.f);
     ImGui::EndDisabled();
 
     ImGui::BeginDisabled(!(is_point_light_ || is_spot_light_));
-    ImGui::SliderScalar("Fall Off Start", ImGuiDataType_Float, &m_fall_off_[0], &m_vmin_, &m_vmax_, "%.3f");
-    ImGui::SliderScalar("Fall Off End", ImGuiDataType_Float, &m_fall_off_[1], &m_vmin_, &m_vmax_, "%.3f");
+    ImGui::SliderScalar("Fall Off Start", ImGuiDataType_Float, &m_fall_off_[0], &m_vzero_, &m_vmax_, "%.3f");
+    ImGui::SliderScalar("Fall Off End", ImGuiDataType_Float, &m_fall_off_[1], &m_vzero_, &m_vmax_, "%.3f");
     ImGui::EndDisabled();
 
     ImGui::BeginDisabled(!is_spot_light_);
@@ -56,7 +70,31 @@ void LightSelectDialog::CreateLightSelector(const float& delta_time)
     ImGui::SetCursorPosX(add_light_btn_pos);
     if (ImGui::Button("Add Light", ImVec2(0.4f * window_width, 0)))
     {
-
+        if (is_directional_light_)
+        {
+            m_lights_.push_back(make_shared<LightConstantData>(Light::CreateDriectionalLightData(
+                Vector3(m_ligth_color_[0], m_ligth_color_[1], m_ligth_color_[2]),
+                Vector3(m_ligth_position_[0], m_ligth_position_[1], m_ligth_position_[2]),
+                Vector3(m_ligth_direction_[0], m_ligth_direction_[1], m_ligth_direction_[2]),
+                m_light_power_)));
+        }
+        else if (is_point_light_)
+        {
+            m_lights_.push_back(make_shared<LightConstantData>(Light::CreatePointLightData(
+                Vector3(m_ligth_color_[0], m_ligth_color_[1], m_ligth_color_[2]),
+                Vector3(m_ligth_position_[0], m_ligth_position_[1], m_ligth_position_[2]),
+                m_light_power_, m_fall_off_[0], m_fall_off_[1])));
+        }
+        else if (is_spot_light_)
+        {
+            m_lights_.push_back(make_shared<LightConstantData>(Light::CreateSpotLightData(
+                Vector3(m_ligth_color_[0], m_ligth_color_[1], m_ligth_color_[2]),
+                Vector3(m_ligth_position_[0], m_ligth_position_[1], m_ligth_position_[2]),
+                m_light_power_, m_fall_off_[0], m_fall_off_[1],
+                m_spot_power_)));
+        }
+        else;
+        m_on_light_added_.Broadcast(*(m_lights_.back()).get());
     }
     ImGui::EndDisabled();
 
@@ -65,31 +103,56 @@ void LightSelectDialog::CreateLightSelector(const float& delta_time)
     ImGui::SetCursorPosX(add_light_btn_pos * 2.f + 0.4f * window_width);
     if (ImGui::Button("Delete Light", ImVec2(0.4f * window_width, 0)))
     {
-
+        if (m_selected_light_idx_ >= 0)
+        {
+            m_lights_.erase(m_lights_.begin() + m_selected_light_idx_);
+            m_on_light_deleted_.Broadcast(m_selected_light_idx_);
+            m_selected_light_idx_ = -1;
+        }
     }
     ImGui::EndDisabled();
 
     static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable;
 
-    if (ImGui::BeginTable("Ligths Status", 5, flags))
+    const int& row_num = 8;
+    if (ImGui::BeginTable("Ligths Status", row_num, flags))
     {
+        ImGui::TableSetupColumn("Select");
         ImGui::TableSetupColumn("Light Type");
+        ImGui::TableSetupColumn("Color");
         ImGui::TableSetupColumn("Position");
         ImGui::TableSetupColumn("Direction");
+        ImGui::TableSetupColumn("Light Power");
         ImGui::TableSetupColumn("Fall Off Start/End");
         ImGui::TableSetupColumn("Spot Power");
-        ImGui::TableHeadersRow();
 
-        for (int row = 0; row < lights.size(); row++)
+        ImGui::TableHeadersRow();
+        for (int row = 0; row < m_lights_.size(); row++)
         {
             ImGui::TableNextRow();
-            for (int column = 0; column < 5; column++)
+            bool light_checked = (row == m_selected_light_idx_);
+            for (int column = 0; column < row_num; column++)
             {
                 ImGui::TableSetColumnIndex(column);
                 switch (column)
                 {
-                case GridProp::LightType: // Light Type
-                    switch (lights[row]->light_type)
+                case GridProp::Selected:
+                    ImGui::PushID(row);
+                    if (ImGui::Checkbox("##check", &light_checked))
+                    {
+                        if (light_checked)
+                        {
+                            m_selected_light_idx_ = row;
+                        }
+                        else
+                        {
+                            m_selected_light_idx_ = -1;
+                        }
+                    }
+                    ImGui::PopID();
+                    break;
+                case GridProp::LightType:
+                    switch (m_lights_[row]->light_type)
                     {
                     case LightType::Directional:
                         ImGui::TextUnformatted("Directional");
@@ -103,16 +166,49 @@ void LightSelectDialog::CreateLightSelector(const float& delta_time)
                     }
                     break;
                 case GridProp::Position:
-
+                    ImGui::Text("X : %.3f\tY : %.3f\tZ : %.3f", m_lights_[row]->position.x, m_lights_[row]->position.y, m_lights_[row]->position.z);
                     break;
                 case GridProp::Direction:
-
+                    switch (m_lights_[row]->light_type)
+                    {
+                    case LightType::Directional:
+                        ImGui::Text("X : %.3f\tY : %.3f\tZ : %.3f", m_lights_[row]->direction.x, m_lights_[row]->direction.y, m_lights_[row]->direction.z);
+                        break;
+                    case LightType::Point:
+                    case LightType::Spot:
+                        ImGui::TextUnformatted("-");
+                        break;
+                    }
                     break;
-                case GridProp::FallOff: 
-
+                case GridProp::Color:
+                    ImGui::Text("X : %.3f\tY : %.3f\tZ : %.3f", m_lights_[row]->light_color.x, m_lights_[row]->light_color.y, m_lights_[row]->light_color.z);
+                    break;
+                case GridProp::LightPower:
+                    ImGui::Text("%.3f", m_lights_[row]->light_power);
+                    break;
+                case GridProp::FallOff:
+                    switch (m_lights_[row]->light_type)
+                    {
+                    case LightType::Directional:
+                        ImGui::TextUnformatted("-");
+                        break;
+                    case LightType::Point:
+                    case LightType::Spot:
+                        ImGui::Text("Start : %.3f\tEnd : %.3f", m_lights_[row]->fall_off_start, m_lights_[row]->fall_off_end);
+                        break;
+                    }
                     break;
                 case GridProp::SpotPower:
-
+                    switch (m_lights_[row]->light_type)
+                    {
+                    case LightType::Directional:
+                    case LightType::Point:
+                        ImGui::TextUnformatted("-");
+                        break;
+                    case LightType::Spot:
+                        ImGui::Text("%.3f", m_lights_[row]->spot_power);
+                        break;
+                    }
                     break;
                 }
             }

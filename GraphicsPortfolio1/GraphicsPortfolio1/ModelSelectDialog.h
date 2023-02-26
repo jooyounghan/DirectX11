@@ -28,11 +28,11 @@ class ModelSelectDialog
 public:
 	ModelSelectDialog();
 
-public:
+protected:
 	std::vector<shared_ptr<ModelData>>	m_model_files_;
 	int selected_model_idx = -1;
 
-public:
+protected:
 	float m_translation_[3];
 	float m_rotation_[3];
 	float m_scaling_[3];
