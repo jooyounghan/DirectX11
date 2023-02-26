@@ -129,4 +129,9 @@ void Stage::Render()
 	{
 		mesh->Render(m_device_context_);
 	}
+
+	for (auto& mesh : m_mesh_group_)
+	{
+		mesh->Render(m_device_context_);
+	}
 }

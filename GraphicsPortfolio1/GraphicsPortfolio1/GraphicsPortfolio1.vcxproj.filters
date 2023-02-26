@@ -91,6 +91,12 @@
     <Filter Include="헤더 파일\DirectX11">
       <UniqueIdentifier>{48619e45-463a-4534-9131-30872d0121ea}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\ImGui\Dialog">
+      <UniqueIdentifier>{815786b9-cd8b-4a26-99b5-d73dfb2e485b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\ImGui\Dialog">
+      <UniqueIdentifier>{84f046d6-9053-4eef-8d8e-9936c4f2966d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ICommand.h">
@@ -144,17 +150,23 @@
     <ClInclude Include="MeshGenerator.h">
       <Filter>헤더 파일\Rendering\Mesh</Filter>
     </ClInclude>
-    <ClInclude Include="ImGuiFileDialog.h">
-      <Filter>헤더 파일\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="ImGuiFileDialogConfig.h">
-      <Filter>헤더 파일\ImGui</Filter>
-    </ClInclude>
     <ClInclude Include="Delegator.h">
       <Filter>헤더 파일\Utility\Delegator</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>헤더 파일\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGuiFileDialog.h">
+      <Filter>헤더 파일\ImGui\Dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGuiFileDialogConfig.h">
+      <Filter>헤더 파일\ImGui\Dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelSelectDialog.h">
+      <Filter>헤더 파일\ImGui\Dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="LightSelectDialog.h">
+      <Filter>헤더 파일\ImGui\Dialog</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -209,11 +221,17 @@
     <ClCompile Include="MeshGenerator.cpp">
       <Filter>소스 파일\Rendering\Mesh</Filter>
     </ClCompile>
-    <ClCompile Include="ImGuiFileDialog.cpp">
-      <Filter>소스 파일\ImGui</Filter>
-    </ClCompile>
     <ClCompile Include="Camera.cpp">
       <Filter>소스 파일\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelSelectDialog.cpp">
+      <Filter>소스 파일\ImGui\Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGuiFileDialog.cpp">
+      <Filter>소스 파일\ImGui\Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="LightSelectDialog.cpp">
+      <Filter>소스 파일\ImGui\Dialog</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

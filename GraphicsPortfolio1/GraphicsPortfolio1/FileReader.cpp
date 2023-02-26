@@ -74,6 +74,34 @@ vector<MeshData> FileReader::GetMeshDataFromFile(string base_path, string file_n
         ProcessNode(mesh_data, pScene->mRootNode, pScene, tr, base_path);
     }
 
+    // Normalize vertices
+    Vector3 vmin(D3D11_FLOAT32_MAX, D3D11_FLOAT32_MAX, D3D11_FLOAT32_MAX);
+    Vector3 vmax(-D3D11_FLOAT32_MAX, -D3D11_FLOAT32_MAX, -D3D11_FLOAT32_MAX);
+
+    for (auto& mesh : mesh_data) {
+        for (auto& v : mesh.vertices) {
+            vmin.x = XMMin(vmin.x, v.position.x);
+            vmin.y = XMMin(vmin.y, v.position.y);
+            vmin.z = XMMin(vmin.z, v.position.z);
+            vmax.x = XMMax(vmax.x, v.position.x);
+            vmax.y = XMMax(vmax.y, v.position.y);
+            vmax.z = XMMax(vmax.z, v.position.z);
+        }
+    }
+
+    float dx = vmax.x - vmin.x, dy = vmax.y - vmin.y, dz = vmax.z - vmin.z;
+    float dl = XMMax(XMMax(dx, dy), dz);
+    float cx = (vmax.x + vmin.x) * 0.5f, cy = (vmax.y + vmin.y) * 0.5f,
+        cz = (vmax.z + vmin.z) * 0.5f;
+
+    for (auto& mesh : mesh_data) {
+        for (auto& v : mesh.vertices) {
+            v.position.x = (v.position.x - cx) / dl;
+            v.position.y = (v.position.y - cy) / dl;
+            v.position.z = (v.position.z - cz) / dl;
+        }
+    }
+
     return mesh_data;
 }
 

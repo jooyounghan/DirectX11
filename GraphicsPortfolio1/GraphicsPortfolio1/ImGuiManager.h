@@ -1,30 +1,15 @@
 #pragma once
 
-#include <imgui.h>
-#include <imgui_impl_dx11.h>
-#include <imgui_impl_win32.h>
+
 
 #include <d3d11.h>
 #include <wrl.h>
 
-#include <string>
-#include <memory>
+#include "ModelSelectDialog.h"
+#include "LightSelectDialog.h"
 
-#include "Delegator.h"
-
-using std::string;
 using Microsoft::WRL::ComPtr;
 using std::atomic;
-using std::shared_ptr;
-
-struct ModelData
-{
-	string base_path;
-	string file_name;
-	float model_translation[3]{ 0.f, 0.f, 0.f };
-	float model_rotation[3]{ 0.f, 0.f, 0.f };
-	float model_scaling[3]{ 1.f, 1.f, 1.f };
-};
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -44,30 +29,10 @@ public:
 	void Render();
 
 public:
-	void CreateModelSelectFrame(const float& delta_time);
+	ModelSelectDialog m_model_select_dialog_;
+	LightSelectDialog m_light_select_dialog_;
 
 public:
-	static void HelpMarker(const char* marker_text, const char* desc);
 
-public:
-	std::vector<shared_ptr<ModelData>>	m_model_files_;
-	shared_ptr<ModelData>				m_selected_model_;
-	int selected_model_idx = -1;
-
-public:
-	void SetSelection(const int& idx);
-	void ResetSelection();
-
-public:
-	float m_translation_[3];
-	float m_rotation_[3];
-	float m_scaling_[3];
-
-public:
-	Delegator<void, const string&, const string&>	m_on_file_added_;
-	Delegator<void, const size_t&>					m_on_file_deleted_;
-
-public:
-	Delegator<void, const size_t&, float*, float*, float*>	m_on_model_transformed;
 };
 

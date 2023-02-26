@@ -7,7 +7,7 @@ Camera::Camera(ComPtr<ID3D11Device>& device, int& buffer_width, int& buffer_heig
 	: m_buffer_width_(buffer_width), m_buffer_height_(buffer_height), m_camera_move_flag_(false)
 {
 	m_total_rotation_ = Matrix::Identity;
-	m_total_translation_ = Matrix::CreateTranslation(0.0f, 0.0f, 10.f);
+	m_total_translation_ = Matrix::CreateTranslation(0.0f, 0.0f, 2.f);
 
 	const float aspect = (float)m_buffer_width_ / (float)m_buffer_height_;
 	float m_projFovAngleY = 70.0f;

@@ -143,11 +143,13 @@
     <ClInclude Include="ImGuiFileDialogConfig.h" />
     <ClInclude Include="ImGuiManager.h" />
     <ClInclude Include="Light.h" />
+    <ClInclude Include="LightSelectDialog.h" />
     <ClInclude Include="MeshData.h" />
     <ClInclude Include="MeshGenerator.h" />
     <ClInclude Include="CameraRotCom.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Delegator.h" />
+    <ClInclude Include="ModelSelectDialog.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Stage.h" />
   </ItemGroup>
@@ -165,10 +167,12 @@
     <ClCompile Include="ImGuiFileDialog.cpp" />
     <ClCompile Include="ImGuiManager.cpp" />
     <ClCompile Include="Light.cpp" />
+    <ClCompile Include="LightSelectDialog.cpp" />
     <ClCompile Include="MainConsole.cpp" />
     <ClCompile Include="MeshGenerator.cpp" />
     <ClCompile Include="CameraRotCom.cpp" />
     <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="ModelSelectDialog.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Stage.cpp" />
   </ItemGroup>

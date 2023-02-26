@@ -17,12 +17,15 @@ using std::shared_ptr;
 
 struct LightConstantData
 {
-	Vector3 strength = Vector3(0.0f);				// 12
+	//Vector3 strength = Vector3(0.0f);				// 12
 	Vector3 position = Vector3(0.0f);				// 12
 	Vector3 direction = Vector3(0.0f);				// 12
 	float fall_off_start = 0.0f;					// 4
 	float fall_off_end = 10.0f;						// 4
 	float spot_power = 100.0f;						// 4
+
+	int light_type = -1;							// 4
+	float dummy[2];									// 8
 };
 
 class Light
@@ -32,9 +35,9 @@ public:
 	~Light();
 
 public:
-	static Light CreateSpotLight(const Vector3 from, const Vector3 direction, const Vector3 strength);
-	static Light CreatePointLight(const Vector3 from, const Vector3 strength, const float& fall_off_start, const float& fall_off_end);
-	static Light CreateDriectionalLight(const Vector3 from, const Vector3 strength, const float& fall_off_start, const float& fall_off_end, const float& spot_power);
+	//static Light CreateSpotLight(const Vector3 from, const Vector3 direction, const Vector3 strength);
+	//static Light CreatePointLight(const Vector3 from, const Vector3 strength, const float& fall_off_start, const float& fall_off_end);
+	//static Light CreateDriectionalLight(const Vector3 from, const Vector3 strength, const float& fall_off_start, const float& fall_off_end, const float& spot_power);
 
 private:
 	LightConstantData		m_light_constant_data_;
