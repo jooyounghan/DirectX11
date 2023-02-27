@@ -65,10 +65,9 @@ void Stage::OnResize()
 }
 
 
-void Stage::AddModel(const string& file_path, const string& file_name)
+void Stage::AddModel(const ModelData& model_data)
 {
-	vector<MeshData> mesh_data = FileReader::GetMeshDataFromFile(file_path, file_name);
-	shared_ptr<IMeshGroup> mesh_group = make_shared<IMeshGroup>(m_device_, mesh_data, m_main_camera_->m_vertex_stage_cbuffer_, m_main_camera_->m_pixel_stage_cbuffer_);
+	shared_ptr<IMeshGroup> mesh_group = make_shared<IMeshGroup>(m_device_, model_data.mesh_data);
 	mesh_group->m_mesh_shader_ = make_shared<BaseMeshShader>(m_device_, L"BaseVertexShader.hlsl", L"BasePixelShader.hlsl");
 	m_mesh_group_.emplace_back(mesh_group);
 }
@@ -78,15 +77,15 @@ void Stage::RemoveModel(const size_t& index)
 	m_mesh_group_.erase(m_mesh_group_.begin() + index);
 }
 
-void Stage::SetModelTransformed(const size_t& index, float* translation_ptr, float* rotation_ptr, float* scaling_ptr)
-{
-	const Vector3 translation = Vector3(translation_ptr[0], translation_ptr[1], translation_ptr[2]);
-	const Vector3 scaling = Vector3(scaling_ptr[0], scaling_ptr[1], scaling_ptr[2]);
+void Stage::SetModelTransformed(const size_t& index, const ModelData& model_data)
+{	
+	const Vector3 translation = Vector3(model_data.model_translation[0], model_data.model_translation[1], model_data.model_translation[2]);
+	const Vector3 scaling = Vector3(model_data.model_scaling[0], model_data.model_scaling[1], model_data.model_scaling[2]);
 
 	Matrix transformation = Matrix::CreateScale(scaling) *
-		Matrix::CreateRotationX(rotation_ptr[0]) *
-		Matrix::CreateRotationY(rotation_ptr[1]) *
-		Matrix::CreateRotationZ(rotation_ptr[2]) *
+		Matrix::CreateRotationX(model_data.model_rotation[0]) *
+		Matrix::CreateRotationY(model_data.model_rotation[1]) *
+		Matrix::CreateRotationZ(model_data.model_rotation[2]) *
 		Matrix::CreateTranslation(translation);
 
 	for (size_t idx = 0; idx < m_mesh_group_[index]->m_meshes_.size(); ++idx)
@@ -94,6 +93,16 @@ void Stage::SetModelTransformed(const size_t& index, float* translation_ptr, flo
 		m_mesh_group_[index]->m_meshes_[idx]->SetVertexConstantData(transformation);
 		m_mesh_group_[index]->m_meshes_[idx]->UpdateMesh(m_device_, m_device_context_);
 	}
+}
+
+void Stage::AddLight(LightConstantData& light_data)
+{
+
+}
+
+void Stage::RemoveLight(const size_t& index)
+{
+	m_lights_group_.erase(m_lights_group_.begin() + index);
 }
 
 
@@ -127,11 +136,7 @@ void Stage::Render()
 
 	for (auto& mesh : m_mesh_group_)
 	{
-		mesh->Render(m_device_context_);
+		mesh->Render(m_device_context_, m_lights_group_);
 	}
 
-	for (auto& mesh : m_mesh_group_)
-	{
-		mesh->Render(m_device_context_);
-	}
 }

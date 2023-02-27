@@ -17,7 +17,7 @@ Camera::Camera(ComPtr<ID3D11Device>& device, int& buffer_width, int& buffer_heig
 	Matrix projRow = XMMatrixPerspectiveFovLH(XMConvertToRadians(m_projFovAngleY), aspect, m_nearZ, m_farZ);
 	m_stage_vertex_constant_.projection = projRow.Transpose();
 
-	D3D11Utilizer::CreateConstantBuffer(device, m_stage_vertex_constant_, m_vertex_stage_cbuffer_);
+	D3D11Utilizer::CreateConstantBuffer(device, m_stage_vertex_constant_, m_vertex_camera_cbuffer_);
 }
 
 const float Camera::GetAspectRatio()
@@ -66,7 +66,7 @@ void Camera::UpdateCamera(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceConte
 	}
 
 
-	D3D11Utilizer::UpdateBuffer(device, context, m_stage_vertex_constant_, m_vertex_stage_cbuffer_);
+	D3D11Utilizer::UpdateBuffer(device, context, m_stage_vertex_constant_, m_vertex_camera_cbuffer_);
 }
 
 

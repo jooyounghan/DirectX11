@@ -1,6 +1,7 @@
 #include "Light.h"
 
 Light::Light()
+    : m_light_buffers_data_()
 {
 }
 
@@ -43,4 +44,15 @@ LightConstantData Light::CreateSpotLightData(const Vector3 color, const Vector3 
     light_constant_data.fall_off_end = fall_off_end;
     light_constant_data.spot_power = spot_power;
     return light_constant_data;
+}
+
+void Light::AddLightConstantData(const LightConstantData& light_constant_data)
+{
+    m_light_buffers_data_.light_constant_data[m_light_buffers_data_.num_lights] = light_constant_data;
+    m_light_buffers_data_.num_lights += 1;
+}
+
+void Light::RemoveLightConstantData(const size_t& light_constant_data)
+{
+
 }

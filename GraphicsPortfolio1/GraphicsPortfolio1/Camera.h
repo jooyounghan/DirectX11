@@ -48,8 +48,7 @@ public:
 	CameraVertexConstantData m_stage_vertex_constant_;
 
 public:
-	ComPtr<ID3D11Buffer> m_vertex_stage_cbuffer_;
-	ComPtr<ID3D11Buffer> m_pixel_stage_cbuffer_;
+	ComPtr<ID3D11Buffer> m_vertex_camera_cbuffer_;
 
 public:
 	CameraMoveFlag m_camera_move_flag_;

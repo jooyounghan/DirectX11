@@ -1,6 +1,9 @@
 #include "ModelSelectDialog.h"
 #include "ImGuiFileDialog.h"
 #include "ImGuiFileDialogConfig.h"
+#include "FileReader.h"
+
+using namespace std;
 
 ModelSelectDialog::ModelSelectDialog()
     : m_translation_{ 0.f, 0.f, 0.f }, m_rotation_{ 0.f, 0.f, 0.f }, m_scaling_{ 1.f, 1.f, 1.f }
@@ -21,12 +24,13 @@ void ModelSelectDialog::CreateModelSelector(const float& delta_time)
         // action if OK
         if (ImGuiFileDialog::Instance()->IsOk())
         {
+
+            shared_ptr<ModelData> model_data = make_shared<ModelData>();
             std::string file_path_name = ImGuiFileDialog::Instance()->GetCurrentPath() + "\\";
-            std::string file_name = ImGuiFileDialog::Instance()->GetCurrentFileName();
-
-
-            m_model_files_.emplace_back(make_shared<ModelData>(file_path_name, file_name));
-            m_on_file_added_.Broadcast(file_path_name, file_name);
+            model_data->file_name = ImGuiFileDialog::Instance()->GetCurrentFileName();
+            model_data->mesh_data = FileReader::GetMeshDataFromFile(file_path_name, model_data->file_name);
+            m_model_files_.emplace_back(model_data);
+            m_on_file_added_.Broadcast(*(m_model_files_.back()));
 
             ImGuiFileDialog::Instance()->Close();
         }
@@ -118,7 +122,7 @@ void ModelSelectDialog::CreateModelSelector(const float& delta_time)
 
     if (is_checked && is_transformed)
     {
-        m_on_model_transformed.Broadcast(selected_model_idx, m_translation_, m_rotation_, m_scaling_);
+        m_on_model_transformed.Broadcast(selected_model_idx, *(m_model_files_[selected_model_idx]));
     }
 
     ImGui::PopItemWidth();

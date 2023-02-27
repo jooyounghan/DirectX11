@@ -70,31 +70,42 @@ void LightSelectDialog::CreateLightSelector(const float& delta_time)
     ImGui::SetCursorPosX(add_light_btn_pos);
     if (ImGui::Button("Add Light", ImVec2(0.4f * window_width, 0)))
     {
+        LightConstantData light_data;
         if (is_directional_light_)
         {
-            m_lights_.push_back(make_shared<LightConstantData>(Light::CreateDriectionalLightData(
+            light_data = Light::CreateDriectionalLightData(
                 Vector3(m_ligth_color_[0], m_ligth_color_[1], m_ligth_color_[2]),
                 Vector3(m_ligth_position_[0], m_ligth_position_[1], m_ligth_position_[2]),
                 Vector3(m_ligth_direction_[0], m_ligth_direction_[1], m_ligth_direction_[2]),
-                m_light_power_)));
+                m_light_power_);
         }
         else if (is_point_light_)
         {
-            m_lights_.push_back(make_shared<LightConstantData>(Light::CreatePointLightData(
+            light_data = Light::CreatePointLightData(
                 Vector3(m_ligth_color_[0], m_ligth_color_[1], m_ligth_color_[2]),
                 Vector3(m_ligth_position_[0], m_ligth_position_[1], m_ligth_position_[2]),
-                m_light_power_, m_fall_off_[0], m_fall_off_[1])));
+                m_light_power_, m_fall_off_[0], m_fall_off_[1]);
         }
         else if (is_spot_light_)
         {
-            m_lights_.push_back(make_shared<LightConstantData>(Light::CreateSpotLightData(
+            light_data = Light::CreateSpotLightData(
                 Vector3(m_ligth_color_[0], m_ligth_color_[1], m_ligth_color_[2]),
                 Vector3(m_ligth_position_[0], m_ligth_position_[1], m_ligth_position_[2]),
                 m_light_power_, m_fall_off_[0], m_fall_off_[1],
-                m_spot_power_)));
+                m_spot_power_);
         }
         else;
-        m_on_light_added_.Broadcast(*(m_lights_.back()).get());
+
+        /*
+        TODO
+        1. LightSelectDialog의 Slider 조절을 통하여 조명의 특성을 동적으로 조절할 수 있어야한다.
+        2. LightConstantData들을 정적으로 관리하는 Light의 멤버변수 LigthBufferData	m_light_buffers_data_에 데이터가 저장되어야 한다.
+        
+
+
+        */
+
+        m_on_light_added_.Broadcast(light_data);
     }
     ImGui::EndDisabled();
 

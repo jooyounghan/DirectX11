@@ -1,7 +1,6 @@
 #pragma once
 
 #include "IMeshGroup.h"
-#include "Light.h"
 #include "Camera.h"
 
 class Stage
@@ -39,16 +38,18 @@ protected:
 
 public:
 	vector<shared_ptr<IMeshGroup>>	m_mesh_group_;
-	vector<LightConstantData>		m_lights_group_;
-	
-public:
-	shared_ptr<Camera> m_main_camera_;
 
 public:
-	void AddModel(const string& file_path, const string& file_name);
+	shared_ptr<Camera>	m_main_camera_;
+	shared_ptr<Light>	m_ights_;
+public:
+	void AddModel(const ModelData& model_data);
 	void RemoveModel(const size_t& index);
+	void SetModelTransformed(const size_t& index, const ModelData& model_data);
 
-	void SetModelTransformed(const size_t& index, float* translation_ptr, float* rotation_ptr, float* scaling_ptr);
+public:
+	void AddLight(LightConstantData& light_data);
+	void RemoveLight(const size_t& index);
 
 public:
 	void Update();

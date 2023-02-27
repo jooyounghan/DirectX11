@@ -15,6 +15,8 @@ using DirectX::SimpleMath::Vector3;
 
 using std::shared_ptr;
 
+#define MAX_LIGHT_NUM		100
+
 enum LightType
 {
 	Directional,
@@ -35,6 +37,13 @@ struct LightConstantData
 	float dummy[2];									// 8
 };
 
+struct LigthBufferData
+{
+	LightConstantData	light_constant_data[MAX_LIGHT_NUM];
+	int					num_lights = 0;
+	int					dummy[3]{ 0, 0, 0 };
+};
+
 class Light
 {
 public:
@@ -47,10 +56,14 @@ public:
 	static LightConstantData CreateSpotLightData(const Vector3 color, const Vector3 from, const float& power, const float& fall_off_start, const float& fall_off_end, const float& spot_power);
 
 private:
-	LightConstantData		m_light_constant_data_;
+	LigthBufferData			m_light_buffers_data_;
 
 public:
-	ComPtr<ID3D11Buffer> m_light_cbuffer;
+	void AddLightConstantData(const LightConstantData& light_constant_data);
+	void RemoveLightConstantData(const size_t& light_constant_data);
+
+public:
+	ComPtr<ID3D11Buffer>	m_light_cbuffer;
 
 public:
 	shared_ptr<Shader>		m_light_shader_;

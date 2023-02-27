@@ -8,20 +8,12 @@
 #include <string>
 #include <memory>
 
+#include "MeshData.h"
 #include "Delegator.h"
 
 using std::string;
 using std::vector;
 using std::shared_ptr;
-
-struct ModelData
-{
-	string base_path;
-	string file_name;
-	float model_translation[3]{ 0.f, 0.f, 0.f };
-	float model_rotation[3]{ 0.f, 0.f, 0.f };
-	float model_scaling[3]{ 1.f, 1.f, 1.f };
-};
 
 class ModelSelectDialog
 {
@@ -38,9 +30,9 @@ protected:
 	float m_scaling_[3];
 
 public:
-	Delegator<void, const string&, const string&>	m_on_file_added_;
-	Delegator<void, const size_t&>					m_on_file_deleted_;
-	Delegator<void, const size_t&, float*, float*, float*>	m_on_model_transformed;
+	Delegator<void, const ModelData&>					m_on_file_added_;
+	Delegator<void, const size_t&>						m_on_file_deleted_;
+	Delegator<void, const size_t&, const ModelData&>	m_on_model_transformed;
 
 public:
 	void CreateModelSelector(const float& delta_time);

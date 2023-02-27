@@ -30,7 +30,7 @@ bool GraphicsPortfolio1App::Initialize()
         return false;
     }
 
-    SetImGuiDXDelegate();
+    SetDelegation();
 
     command_manager_.SetDefaultCommand(m_stage_.m_main_camera_);
 
@@ -172,7 +172,7 @@ int GraphicsPortfolio1App::Run()
     return 0;
 }
 
-void GraphicsPortfolio1App::SetImGuiDXDelegate()
+void GraphicsPortfolio1App::SetDelegation()
 {
     m_imgui_manager.m_model_select_dialog_.m_on_file_added_.Add(&m_stage_, &Stage::AddModel);
     m_imgui_manager.m_model_select_dialog_.m_on_file_deleted_.Add(&m_stage_, &Stage::RemoveModel);

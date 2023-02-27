@@ -38,6 +38,6 @@ public:
 	virtual int Run() override;
 
 public:
-	void SetImGuiDXDelegate();
+	void SetDelegation();
 };
 
