@@ -51,12 +51,12 @@ protected:
 	float m_light_translation_[3];
 
 protected:
-	vector<LightConstantData&> m_lights_;
+	vector<LightConstantData*>	m_light_constant_data_;
 	int m_selected_light_idx_ = -1;
 
 public:
-	Delegator<void, const LightConstantData&>		m_on_light_added_;
-	Delegator<void, const size_t&>					m_on_light_deleted_;
+	Delegator<void, const LightConstantData&, OUT LightConstantData*&>	m_on_light_added_;
+	Delegator<void, const size_t&>										m_on_light_deleted_;
 
 public:
 	void CreateLightSelector(const float& delta_time);

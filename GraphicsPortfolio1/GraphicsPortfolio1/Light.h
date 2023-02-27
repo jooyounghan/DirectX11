@@ -44,6 +44,8 @@ struct LigthBufferData
 	int					dummy[3]{ 0, 0, 0 };
 };
 
+
+
 class Light
 {
 public:
@@ -59,13 +61,10 @@ private:
 	LigthBufferData			m_light_buffers_data_;
 
 public:
-	void AddLightConstantData(const LightConstantData& light_constant_data);
-	void RemoveLightConstantData(const size_t& light_constant_data);
+	void	AddLightConstantData(const LightConstantData& light_constant_data, OUT LightConstantData*& light_ptr);
+	void	DeleteLightConstantData(const size_t& light_index);
 
 public:
 	ComPtr<ID3D11Buffer>	m_light_cbuffer;
-
-public:
-	shared_ptr<Shader>		m_light_shader_;
 };
 

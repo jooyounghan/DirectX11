@@ -41,15 +41,11 @@ public:
 
 public:
 	shared_ptr<Camera>	m_main_camera_;
-	shared_ptr<Light>	m_ights_;
+	shared_ptr<Light>	m_lights_;
 public:
 	void AddModel(const ModelData& model_data);
 	void RemoveModel(const size_t& index);
 	void SetModelTransformed(const size_t& index, const ModelData& model_data);
-
-public:
-	void AddLight(LightConstantData& light_data);
-	void RemoveLight(const size_t& index);
 
 public:
 	void Update();

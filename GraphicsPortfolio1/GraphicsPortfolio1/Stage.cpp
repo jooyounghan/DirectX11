@@ -39,7 +39,7 @@ bool Stage::InitStage(HWND window_handle)
 	}
 
 	m_main_camera_ = make_shared<Camera>(m_device_, m_buffer_width_, m_buffer_height_);
-
+	m_lights_ = make_shared<Light>();
 	return result;
 }
 
@@ -95,16 +95,6 @@ void Stage::SetModelTransformed(const size_t& index, const ModelData& model_data
 	}
 }
 
-void Stage::AddLight(LightConstantData& light_data)
-{
-
-}
-
-void Stage::RemoveLight(const size_t& index)
-{
-	m_lights_group_.erase(m_lights_group_.begin() + index);
-}
-
 
 void Stage::Update()
 {
@@ -136,7 +126,7 @@ void Stage::Render()
 
 	for (auto& mesh : m_mesh_group_)
 	{
-		mesh->Render(m_device_context_, m_lights_group_);
+		mesh->Render(m_device_context_, m_main_camera_->m_vertex_camera_cbuffer_, m_lights_->m_light_cbuffer);
 	}
 
 }

@@ -96,16 +96,10 @@ void LightSelectDialog::CreateLightSelector(const float& delta_time)
         }
         else;
 
-        /*
-        TODO
-        1. LightSelectDialog의 Slider 조절을 통하여 조명의 특성을 동적으로 조절할 수 있어야한다.
-        2. LightConstantData들을 정적으로 관리하는 Light의 멤버변수 LigthBufferData	m_light_buffers_data_에 데이터가 저장되어야 한다.
-        
+        LightConstantData* inserted_light_constant_data;
+        m_on_light_added_.Broadcast(light_data, inserted_light_constant_data);
+        m_light_constant_data_.push_back(inserted_light_constant_data);
 
-
-        */
-
-        m_on_light_added_.Broadcast(light_data);
     }
     ImGui::EndDisabled();
 
@@ -116,7 +110,7 @@ void LightSelectDialog::CreateLightSelector(const float& delta_time)
     {
         if (m_selected_light_idx_ >= 0)
         {
-            m_lights_.erase(m_lights_.begin() + m_selected_light_idx_);
+            m_light_constant_data_.erase(m_light_constant_data_.begin() + m_selected_light_idx_);
             m_on_light_deleted_.Broadcast(m_selected_light_idx_);
             m_selected_light_idx_ = -1;
         }
@@ -138,7 +132,7 @@ void LightSelectDialog::CreateLightSelector(const float& delta_time)
         ImGui::TableSetupColumn("Spot Power");
 
         ImGui::TableHeadersRow();
-        for (int row = 0; row < m_lights_.size(); row++)
+        for (int row = 0; row < m_light_constant_data_.size(); row++)
         {
             ImGui::TableNextRow();
             bool light_checked = (row == m_selected_light_idx_);
@@ -163,7 +157,7 @@ void LightSelectDialog::CreateLightSelector(const float& delta_time)
                     ImGui::PopID();
                     break;
                 case GridProp::LightType:
-                    switch (m_lights_[row]->light_type)
+                    switch (m_light_constant_data_[row]->light_type)
                     {
                     case LightType::Directional:
                         ImGui::TextUnformatted("Directional");
@@ -177,13 +171,13 @@ void LightSelectDialog::CreateLightSelector(const float& delta_time)
                     }
                     break;
                 case GridProp::Position:
-                    ImGui::Text("X : %.3f\tY : %.3f\tZ : %.3f", m_lights_[row]->position.x, m_lights_[row]->position.y, m_lights_[row]->position.z);
+                    ImGui::Text("X : %.3f\tY : %.3f\tZ : %.3f", m_light_constant_data_[row]->position.x, m_light_constant_data_[row]->position.y, m_light_constant_data_[row]->position.z);
                     break;
                 case GridProp::Direction:
-                    switch (m_lights_[row]->light_type)
+                    switch (m_light_constant_data_[row]->light_type)
                     {
                     case LightType::Directional:
-                        ImGui::Text("X : %.3f\tY : %.3f\tZ : %.3f", m_lights_[row]->direction.x, m_lights_[row]->direction.y, m_lights_[row]->direction.z);
+                        ImGui::Text("X : %.3f\tY : %.3f\tZ : %.3f", m_light_constant_data_[row]->direction.x, m_light_constant_data_[row]->direction.y, m_light_constant_data_[row]->direction.z);
                         break;
                     case LightType::Point:
                     case LightType::Spot:
@@ -192,32 +186,32 @@ void LightSelectDialog::CreateLightSelector(const float& delta_time)
                     }
                     break;
                 case GridProp::Color:
-                    ImGui::Text("X : %.3f\tY : %.3f\tZ : %.3f", m_lights_[row]->light_color.x, m_lights_[row]->light_color.y, m_lights_[row]->light_color.z);
+                    ImGui::Text("X : %.3f\tY : %.3f\tZ : %.3f", m_light_constant_data_[row]->light_color.x, m_light_constant_data_[row]->light_color.y, m_light_constant_data_[row]->light_color.z);
                     break;
                 case GridProp::LightPower:
-                    ImGui::Text("%.3f", m_lights_[row]->light_power);
+                    ImGui::Text("%.3f", m_light_constant_data_[row]->light_power);
                     break;
                 case GridProp::FallOff:
-                    switch (m_lights_[row]->light_type)
+                    switch (m_light_constant_data_[row]->light_type)
                     {
                     case LightType::Directional:
                         ImGui::TextUnformatted("-");
                         break;
                     case LightType::Point:
                     case LightType::Spot:
-                        ImGui::Text("Start : %.3f\tEnd : %.3f", m_lights_[row]->fall_off_start, m_lights_[row]->fall_off_end);
+                        ImGui::Text("Start : %.3f\tEnd : %.3f", m_light_constant_data_[row]->fall_off_start, m_light_constant_data_[row]->fall_off_end);
                         break;
                     }
                     break;
                 case GridProp::SpotPower:
-                    switch (m_lights_[row]->light_type)
+                    switch (m_light_constant_data_[row]->light_type)
                     {
                     case LightType::Directional:
                     case LightType::Point:
                         ImGui::TextUnformatted("-");
                         break;
                     case LightType::Spot:
-                        ImGui::Text("%.3f", m_lights_[row]->spot_power);
+                        ImGui::Text("%.3f", m_light_constant_data_[row]->spot_power);
                         break;
                     }
                     break;

@@ -178,5 +178,6 @@ void GraphicsPortfolio1App::SetDelegation()
     m_imgui_manager.m_model_select_dialog_.m_on_file_deleted_.Add(&m_stage_, &Stage::RemoveModel);
     m_imgui_manager.m_model_select_dialog_.m_on_model_transformed.Add(&m_stage_, &Stage::SetModelTransformed);
 
-    //m_imgui_manager.m_light_select_dialog_.m_on_light_added_.Add(&m_stage_)
+    m_imgui_manager.m_light_select_dialog_.m_on_light_added_.Add(m_stage_.m_lights_.get(), &Light::AddLightConstantData);
+    m_imgui_manager.m_light_select_dialog_.m_on_light_deleted_.Add(m_stage_.m_lights_.get(), &Light::DeleteLightConstantData);
 }

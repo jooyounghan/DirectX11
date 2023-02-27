@@ -46,13 +46,29 @@ LightConstantData Light::CreateSpotLightData(const Vector3 color, const Vector3 
     return light_constant_data;
 }
 
-void Light::AddLightConstantData(const LightConstantData& light_constant_data)
+void Light::AddLightConstantData(const LightConstantData& light_constant_data, OUT LightConstantData*& light_ptr)
 {
+    light_ptr = &m_light_buffers_data_.light_constant_data[m_light_buffers_data_.num_lights];
     m_light_buffers_data_.light_constant_data[m_light_buffers_data_.num_lights] = light_constant_data;
-    m_light_buffers_data_.num_lights += 1;
+    m_light_buffers_data_.num_lights++;
 }
 
-void Light::RemoveLightConstantData(const size_t& light_constant_data)
+void Light::DeleteLightConstantData(const size_t& light_index)
 {
+    if (m_light_buffers_data_.num_lights > 0)
+    {
+        if (light_index == (MAX_LIGHT_NUM - 1))
+        {
 
+        }
+        else if (light_index > 0)
+        {
+            memcpy(&m_light_buffers_data_.light_constant_data[light_index],
+                &m_light_buffers_data_.light_constant_data[light_index + 1],
+                sizeof(LightConstantData) * (MAX_LIGHT_NUM - light_index - 1));
+        }
+        else;
+
+        m_light_buffers_data_.num_lights--;
+    }
 }

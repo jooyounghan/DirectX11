@@ -24,6 +24,8 @@ public:
 	shared_ptr<Shader>			m_mesh_shader_;
 
 public:
-	void Render(ComPtr<ID3D11DeviceContext>& device_context);
+	void Render(ComPtr<ID3D11DeviceContext>& device_context,
+		const ComPtr<ID3D11Buffer>& vertex_camera_cbuffer_,
+		const ComPtr<ID3D11Buffer>& light_cbuffer);
 	void Update(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context);
 };
