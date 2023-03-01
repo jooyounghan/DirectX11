@@ -49,7 +49,7 @@ struct LigthBufferData
 class Light
 {
 public:
-	Light();
+	Light(ComPtr<ID3D11Device>& device);
 	~Light();
 
 public:
@@ -63,6 +63,9 @@ private:
 public:
 	void	AddLightConstantData(const LightConstantData& light_constant_data, OUT LightConstantData*& light_ptr);
 	void	DeleteLightConstantData(const size_t& light_index);
+
+public:
+	void UpdateLight(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context);
 
 public:
 	ComPtr<ID3D11Buffer>	m_light_cbuffer;

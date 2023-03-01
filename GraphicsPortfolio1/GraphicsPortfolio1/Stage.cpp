@@ -39,7 +39,7 @@ bool Stage::InitStage(HWND window_handle)
 	}
 
 	m_main_camera_ = make_shared<Camera>(m_device_, m_buffer_width_, m_buffer_height_);
-	m_lights_ = make_shared<Light>();
+	m_lights_ = make_shared<Light>(m_device_);
 	return result;
 }
 
@@ -99,7 +99,7 @@ void Stage::SetModelTransformed(const size_t& index, const ModelData& model_data
 void Stage::Update()
 {
 	m_main_camera_->UpdateCamera(m_device_, m_device_context_);
-
+	m_lights_->UpdateLight(m_device_, m_device_context_);
 	for (auto& meshgroup : m_mesh_group_)
 	{
 		meshgroup->Update(m_device_, m_device_context_);
