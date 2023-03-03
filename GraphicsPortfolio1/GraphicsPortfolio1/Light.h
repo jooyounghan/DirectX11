@@ -15,7 +15,7 @@ using DirectX::SimpleMath::Vector3;
 
 using std::shared_ptr;
 
-#define MAX_LIGHT_NUM		100
+#define MAX_LIGHT_NUM		50
 
 enum LightType
 {
@@ -41,7 +41,7 @@ struct LigthBufferData
 {
 	LightConstantData	light_constant_data[MAX_LIGHT_NUM];
 	int					num_lights = 0;
-	int					dummy[3]{ 0, 0, 0 };
+	Vector3				dummy{ 0, 0, 0 };
 };
 
 
