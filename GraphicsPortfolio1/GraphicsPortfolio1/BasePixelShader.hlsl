@@ -1,82 +1,47 @@
+#include "BaseShaderCommon.hlsli"
+
 Texture2D g_texture0 : register(t0);
 SamplerState g_sampler : register(s0);
 
-struct PixelShaderInput
-{
-    float4 posProj : SV_POSITION;
-    float3 posWorld : POSITION;
-    float2 texcoord : TEXCOORD;
-};
-
-struct LightConstantData
-{
-	int light_type;
-	float3 light_color;
-	float3 position;
-	float3 direction;
-	float light_power;
-	float fall_off_start;
-	float fall_off_end;
-	float spot_power;
-	float dummy[2];
-};
-
 cbuffer LigthBufferData : register(b0)
 {
-	LightConstantData	light_constant_data[50];
+	LightConstantData	light_constant_data[MAX_LIGHT_NUM];
 	int					num_lights;
 	float3				dummy;
 };
 
 float4 main(PixelShaderInput input) : SV_TARGET
 {
-	int test1 = num_lights - 1;
-	float3 test3 = dummy;
-	float4 test2 = (light_constant_data[test1].light_color, 1.f);
-	
-	// 빛 색이 잘 들어가는지 확인 및 HLSL 디버깅 방법 확인
-	 
+	if (num_lights > 0)
+	{
+		[loop]
+		for (int light_idx = 0; light_idx < num_lights; ++light_idx)
+		{
+            float3 to_eyes = normalize(input.eye_world_pos - input.pos_world);
+            float3 to_light = normalize(light_constant_data[light_idx].position - input.pos_world);
 
-	return g_texture0.Sample(g_sampler, input.texcoord) * test2 * test1;
+			float3 halfway = to_eyes + to_light;
+            halfway = normalize(halfway);
+            float specular = dot(halfway, input.normal_model);
+			
+			
+			[branch]
+			switch (light_constant_data[light_idx].light_type)
+			{
+			case DIRECT_LIGHT:
+				break;
+			case POINT_LIGHT:
+				break;
+			case SPOT_LIGHT:
+				break;
+			}
+            float4 new_color = float4(light_constant_data[light_idx].light_color, 1.f) * specular;
+			return g_texture0.Sample(g_sampler, input.tex_coord) * new_color;
+		}
 
+	}
+	else
+	{
+		return g_texture0.Sample(g_sampler, input.tex_coord);
+	}
 }
-
-
-//struct LightConstantData
-//{
-//    int light_type;
-//    float3 light_color;
-//    float3 position;
-//    float3 direction;
-//    float light_power;
-//    float fall_off_start;
-//    float fall_off_end;
-//    float spot_power;
-//    float dummy[2];
-//};
-//
-//StructuredBuffer<LightConstantData> light_constant_data_buffer : register(t0);
-//
-//cbuffer PixelConstantBuffer : register(b0)
-//{
-//    float4 Color;
-//    float4 AmbientColor;
-//    float3 LightDirection;
-//    float3 CameraPosition;
-//    float3 LightColor;
-//    float SpecularPower;
-//    float SpecularIntensity;
-//    int NumLights;
-//    float3 Dummy;
-//};
-//
-//void main()
-//{
-//    // Access the LightConstantData array using the light_constant_data_buffer.
-//    // You can index into the buffer using the SV_PrimitiveID semantic,
-//    // which contains the index of the current primitive being rendered.
-//    LightConstantData light = light_constant_data_buffer[SV_PrimitiveID];
-//
-//    // Perform lighting calculations using the data in the constant buffer.
-//    // ...
-//}

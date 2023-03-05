@@ -6,6 +6,7 @@
 
 using Microsoft::WRL::ComPtr;
 using DirectX::SimpleMath::Matrix;
+using DirectX::SimpleMath::Vector3;
 
 typedef char CameraMoveFlag;
 
@@ -18,6 +19,8 @@ struct CameraVertexConstantData
 {
 	Matrix view;
 	Matrix projection;
+	Vector3 eye_world_pos;
+	float	dummy;
 };
 
 class Camera

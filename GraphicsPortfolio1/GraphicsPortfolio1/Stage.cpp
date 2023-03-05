@@ -88,11 +88,8 @@ void Stage::SetModelTransformed(const size_t& index, const ModelData& model_data
 		Matrix::CreateRotationZ(model_data.model_rotation[2]) *
 		Matrix::CreateTranslation(translation);
 
-	for (size_t idx = 0; idx < m_mesh_group_[index]->m_meshes_.size(); ++idx)
-	{
-		m_mesh_group_[index]->m_meshes_[idx]->SetVertexConstantData(transformation);
-		m_mesh_group_[index]->m_meshes_[idx]->UpdateMesh(m_device_, m_device_context_);
-	}
+	m_mesh_group_[index]->SetVertexConstantData(transformation);
+	m_mesh_group_[index]->Update(m_device_, m_device_context_);
 }
 
 

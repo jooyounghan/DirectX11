@@ -242,4 +242,9 @@
       <Filter>소스 파일\Rendering\Shader\HLSL</Filter>
     </FxCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="BaseShaderCommon.hlsli">
+      <Filter>소스 파일\Rendering\Shader\HLSL</Filter>
+    </None>
+  </ItemGroup>
 </Project>

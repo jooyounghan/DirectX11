@@ -68,7 +68,7 @@ void LightSelectDialog::CreateLightSelector(const float& delta_time)
     ImGui::BeginDisabled(!is_light_on);
     const float& add_light_btn_pos = (ImGui::GetWindowWidth() - 0.4f * window_width * 2.f) / 3.f;
     ImGui::SetCursorPosX(add_light_btn_pos);
-    if (ImGui::Button("Add Light", ImVec2(0.4f * window_width, 0)))
+    if (ImGui::Button("Add Light", ImVec2(0.4f * window_width, 0)) && (m_light_cnt_ < MAX_LIGHT_NUM))
     {
         LightConstantData light_data;
         if (is_directional_light_)

@@ -32,27 +32,14 @@ public:
 	~Mesh();
 
 public:
-	MeshVertexConstantData		m_vertex_constant_data_;
-	MaterialConstantData		m_material_constant_data_;
-
 	ComPtr<ID3D11Buffer> m_vertex_buffer_;
 	ComPtr<ID3D11Buffer> m_index_buffer_;
 
 public:
 	unsigned int m_index_count_ = 0;
 
-public:
-	ComPtr<ID3D11Buffer> m_vertex_cbuffer_;
-	ComPtr<ID3D11Buffer> m_pixel_cbuffer_;
-
 	ComPtr<ID3D11Texture2D> m_texture_;
 	ComPtr<ID3D11ShaderResourceView> m_texture_sr_view_;
 
-public:
-	void InitConstantData(ComPtr<ID3D11Device>& device);
-	void SetVertexConstantData(const Matrix& model_tranform);
-	void SetMaterialConstantData(const Vector3& ambient, const Vector3& diffuse, const Vector3& specular, const float shininess);
 
-public:
-	void UpdateMesh(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context);
 };

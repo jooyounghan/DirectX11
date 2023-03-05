@@ -15,7 +15,7 @@ using DirectX::SimpleMath::Vector3;
 
 using std::shared_ptr;
 
-#define MAX_LIGHT_NUM		50
+#define MAX_LIGHT_NUM		10
 
 enum LightType
 {
@@ -26,25 +26,27 @@ enum LightType
 
 struct LightConstantData
 {
-	int light_type = -1;							// 4
 	Vector3 light_color = Vector3(0.0f);			// 12
+	float	dummy1 = 0.f;							// 4
 	Vector3 position = Vector3(0.0f);				// 12
+	float	dummy2 = 0.f;							// 4
 	Vector3 direction = Vector3(0.0f);				// 12
 	float light_power = 0.f;						// 4
+	float spot_power = 100.0f;						// 4
 	float fall_off_start = 0.0f;					// 4
 	float fall_off_end = 10.0f;						// 4
-	float spot_power = 100.0f;						// 4
-	float dummy[2];									// 8
+	int light_type = -1;							// 4
 };
 
 struct LigthBufferData
 {
 	LightConstantData	light_constant_data[MAX_LIGHT_NUM];
 	int					num_lights = 0;
-	Vector3				dummy{ 0, 0, 0 };
+	Vector3				dummy;
 };
 
-
+static_assert((sizeof(LigthBufferData) % 16) == 0,
+	"Constant Buffer size must be 16-byte aligned");
 
 class Light
 {

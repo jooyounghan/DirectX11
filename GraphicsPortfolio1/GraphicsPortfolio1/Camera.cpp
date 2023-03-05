@@ -38,8 +38,6 @@ void Camera::SetOffCameraMoveFlag(const CameraMoveFlag& flag)
 
 void Camera::UpdateCamera(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context)
 {
-	m_total_rotation_ = m_total_y_rotation_ * m_total_x_rotation_;
-	m_stage_vertex_constant_.view = (m_total_translation_ * m_total_rotation_).Transpose();
 
 	if (m_camera_move_flag_ & CAMERA_MOVE_FORWARD)
 	{
@@ -64,6 +62,11 @@ void Camera::UpdateCamera(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceConte
 		const Vector3& rightward_vector = m_total_rotation_.Invert().Right() * m_translation_responsiveness_;
 		m_total_translation_ *= Matrix::CreateTranslation(rightward_vector);
 	}
+
+	m_total_rotation_ = m_total_y_rotation_ * m_total_x_rotation_;
+	m_stage_vertex_constant_.view = (m_total_translation_ * m_total_rotation_);
+	m_stage_vertex_constant_.eye_world_pos = Vector3::Transform(Vector3(0.f, 0.f, 0.f), m_stage_vertex_constant_.view);
+	m_stage_vertex_constant_.view = (m_total_translation_ * m_total_rotation_).Transpose();
 
 
 	D3D11Utilizer::UpdateBuffer(device, context, m_stage_vertex_constant_, m_vertex_camera_cbuffer_);
