@@ -29,7 +29,7 @@ BasePixelShaderInput main(BaseVertexShaderInput input)
     output.pos_proj = pos;
     output.eye_world_pos = eye_world_pos;
     output.tex_coord = input.tex_coord;
-    output.normal_model = input.normal_model;
+    output.normal_model = mul(float4(input.normal_model, 0.f), inv_tranpose);
 
     return output;
 }

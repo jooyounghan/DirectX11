@@ -8,13 +8,6 @@
 using Microsoft::WRL::ComPtr;
 using DirectX::SimpleMath::Matrix;
 
-
-struct MeshVertexConstantData
-{
-	Matrix model;					// 16
-	Matrix inv_tranpose;			// 16
-};
-
 class Mesh
 {
 public:

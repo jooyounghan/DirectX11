@@ -5,6 +5,20 @@
 #include "Shader.h"
 #include "Light.h"
 
+struct MeshPixelConstantData
+{
+	float diffuse;
+	float specular;
+	float shininess;
+	float dummy;
+};
+
+struct MeshVertexConstantData
+{
+	Matrix model;					// 16
+	Matrix inv_tranpose;			// 16
+};
+
 class MeshGroup : public IRenderable
 {
 public:
@@ -20,6 +34,7 @@ public:
 
 public:
 	MeshVertexConstantData		m_vertex_constant_data_;
+	MeshPixelConstantData		m_pixel_constant_data_;
 
 public:
 	void AddMeshData(const std::vector<MeshData>& mesh_data_vector);
@@ -27,6 +42,7 @@ public:
 public:
 	void InitConstantData(ComPtr<ID3D11Device>& device);
 	void SetVertexConstantData(const Matrix& model_tranform);
+	void SetPixelConstantData(const float& diffuse, const float& specular, const float& shininess);
 
 public:
 	std::shared_ptr<IRenderable> m_camera_;

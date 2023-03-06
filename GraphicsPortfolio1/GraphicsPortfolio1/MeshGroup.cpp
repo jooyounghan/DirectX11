@@ -32,12 +32,26 @@ void MeshGroup::InitConstantData(ComPtr<ID3D11Device>& device)
 	m_vertex_constant_data_.model = Matrix::Identity;
 	m_vertex_constant_data_.inv_tranpose = Matrix::Identity;
 	D3D11Utilizer::CreateConstantBuffer<MeshVertexConstantData>(device, m_vertex_constant_data_, m_vertex_cbuffer_);
+
+	m_pixel_constant_data_.diffuse = 0.f;
+	m_pixel_constant_data_.specular = 0.f;
+	m_pixel_constant_data_.shininess = 0.f;
+	D3D11Utilizer::CreateConstantBuffer<MeshPixelConstantData>(device, m_pixel_constant_data_, m_pixel_cbuffer_);
 }
 
 void MeshGroup::SetVertexConstantData(const Matrix& model_tranform)
 {
-	m_vertex_constant_data_.model = model_tranform.Transpose();
+	m_vertex_constant_data_.model = model_tranform;
 	m_vertex_constant_data_.inv_tranpose = m_vertex_constant_data_.model.Invert().Transpose();
+	m_vertex_constant_data_.model = m_vertex_constant_data_.model.Transpose();
+	m_vertex_constant_data_.inv_tranpose = m_vertex_constant_data_.inv_tranpose.Transpose();
+}
+
+void MeshGroup::SetPixelConstantData(const float& diffuse, const float& specular, const float& shininess)
+{
+	m_pixel_constant_data_.diffuse = diffuse;
+	m_pixel_constant_data_.specular = specular;
+	m_pixel_constant_data_.shininess = shininess;
 }
 
 void MeshGroup::Render()
@@ -58,7 +72,7 @@ void MeshGroup::Render()
 		m_device_context_->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 		vector<ID3D11Buffer*>	vertex_constant_buffers{ m_vertex_cbuffer_.Get(), m_camera_->m_vertex_cbuffer_.Get() };
-		vector<ID3D11Buffer*>	pixel_constant_buffers = { m_light_->m_pixel_cbuffer_.Get() };
+		vector<ID3D11Buffer*>	pixel_constant_buffers = { m_pixel_cbuffer_.Get(), m_light_->m_pixel_cbuffer_.Get() };
 
 		m_device_context_->VSSetConstantBuffers(0, (UINT)vertex_constant_buffers.size(), vertex_constant_buffers.data());
 		m_device_context_->PSSetConstantBuffers(0, (UINT)pixel_constant_buffers.size(), pixel_constant_buffers.data());
@@ -72,4 +86,5 @@ void MeshGroup::Render()
 void MeshGroup::Update()
 {
 	D3D11Utilizer::UpdateBuffer(m_device_, m_device_context_, m_vertex_constant_data_, m_vertex_cbuffer_);
+	D3D11Utilizer::UpdateBuffer(m_device_, m_device_context_, m_pixel_constant_data_, m_pixel_cbuffer_);
 }

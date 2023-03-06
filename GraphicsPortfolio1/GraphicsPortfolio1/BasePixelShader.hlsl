@@ -3,11 +3,19 @@
 Texture2D g_texture0 : register(t0);
 SamplerState g_sampler : register(s0);
 
-cbuffer LigthBufferData : register(b0)
+cbuffer MeshPixelConstantData : register(b0)
+{
+	float diffuse;
+	float specular;
+	float shininess;
+	float dummy1;
+};
+
+cbuffer LigthBufferData : register(b1)
 {
 	LightConstantData	light_constant_data[MAX_LIGHT_NUM];
 	int					num_lights;
-	float3				dummy;
+	float3				dummy2;
 };
 
 float4 main(BasePixelShaderInput input) : SV_TARGET
@@ -48,7 +56,6 @@ float4 main(BasePixelShaderInput input) : SV_TARGET
 			light_constant_data[light_idx].spot_power);
 			break;
 		}
-        //color += light_constant_data[light_idx].light_color * specular;
 	}
 	
     return g_texture0.Sample(g_sampler, input.tex_coord) * color;

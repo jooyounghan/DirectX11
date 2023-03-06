@@ -37,6 +37,11 @@ struct LightConstantData
 	int light_type;
 };
 
+float GetAtten(float start, float end, float distance, float fall_off_start, float fall_off_end)
+{
+	return lerp(start, end, (clamp(distance, fall_off_start, fall_off_end) - fall_off_start) / (fall_off_end - fall_off_start));
+}
+
 float4 GetDirectionalSpecular(float3 eye_pos, float3 obj_pos, float3 obj_normal, float3 light_direction, float4 light_color, float light_power)
 {
     float3 to_eyes = normalize(eye_pos - obj_pos);
@@ -49,14 +54,14 @@ float4 GetDirectionalSpecular(float3 eye_pos, float3 obj_pos, float3 obj_normal,
 float4 GetPointSpecular(float3 eye_pos, float3 obj_pos, float3 obj_normal, float3 light_pos, float4 light_color, float light_power, float fall_off_start, float fall_off_end)
 {
     float3 to_eyes = normalize(eye_pos - obj_pos);
-
     float3 to_light = normalize(light_pos - obj_pos);
-    float distance = length(light_pos - obj_pos);
+
+	float distance = length(light_pos - obj_pos);
 	
-    float atten = lerp(0.f, 1.f, (clamp(distance, fall_off_start, fall_off_end) - fall_off_start) / (fall_off_end - fall_off_start));
+	float atten = GetAtten(1.f, 0.f, distance, fall_off_start, fall_off_end);
     float3 halfway = normalize(to_eyes + to_light) * light_power * atten;
 	
-    return light_color * dot(halfway, obj_normal);
+    return light_color * max(dot(halfway, obj_normal), 0.f);
 }
 
 float4 GetSpotSpecular(float3 eye_pos, float3 obj_pos, float3 obj_normal, float3 light_direction, float3 light_pos, float4 light_color, float light_power, float fall_off_start, float fall_off_end, float spot_power)
@@ -66,7 +71,7 @@ float4 GetSpotSpecular(float3 eye_pos, float3 obj_pos, float3 obj_normal, float3
     float3 to_light = normalize(light_pos - obj_pos);
     float distance = length(light_pos - obj_pos);
 	
-    float atten = lerp(0.f, 1.f, (clamp(distance, fall_off_start, fall_off_end) - fall_off_start) / (fall_off_end - fall_off_start));
+	float atten = GetAtten(1.f, 0.f, distance, fall_off_start, fall_off_end);
     atten *= pow(dot(normalize(light_direction), -to_light), spot_power);
 
     float3 halfway = normalize(to_eyes + to_light) * light_power * atten;	
