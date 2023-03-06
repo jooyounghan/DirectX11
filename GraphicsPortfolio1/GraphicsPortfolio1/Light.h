@@ -1,19 +1,14 @@
 #pragma once
-#include <d3d11.h>
 #include <directxtk/SimpleMath.h>
 #include <windows.h>
-#include <wrl.h>
-#include <memory>
 
 #include "Shader.h"
+#include "IRenderable.h"
 
-using Microsoft::WRL::ComPtr;
 using DirectX::SimpleMath::Matrix;
-
 using DirectX::SimpleMath::Vector2;
 using DirectX::SimpleMath::Vector3;
-
-using std::shared_ptr;
+using DirectX::SimpleMath::Vector4;
 
 #define MAX_LIGHT_NUM		10
 
@@ -26,10 +21,9 @@ enum LightType
 
 struct LightConstantData
 {
-	Vector3 light_color = Vector3(0.0f);			// 12
-	float	dummy1 = 0.f;							// 4
+	Vector4 light_color = Vector4(0.0f);			// 12
 	Vector3 position = Vector3(0.0f);				// 12
-	float	dummy2 = 0.f;							// 4
+	float	dummy = 0.f;							// 4
 	Vector3 direction = Vector3(0.0f);				// 12
 	float light_power = 0.f;						// 4
 	float spot_power = 100.0f;						// 4
@@ -48,16 +42,16 @@ struct LigthBufferData
 static_assert((sizeof(LigthBufferData) % 16) == 0,
 	"Constant Buffer size must be 16-byte aligned");
 
-class Light
+class Light : public IRenderable
 {
 public:
-	Light(ComPtr<ID3D11Device>& device);
+	Light(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& device_context);
 	~Light();
 
 public:
-	static LightConstantData CreateDriectionalLightData(const Vector3 color, const Vector3 from, const Vector3 direction, const float& power);
-	static LightConstantData CreatePointLightData(const Vector3 color, const Vector3 from, const float& power, const float& fall_off_start, const float& fall_off_end);
-	static LightConstantData CreateSpotLightData(const Vector3 color, const Vector3 from, const float& power, const float& fall_off_start, const float& fall_off_end, const float& spot_power);
+	static LightConstantData CreateDriectionalLightData(const Vector4 color, const Vector3 from, const Vector3 direction, const float& power);
+	static LightConstantData CreatePointLightData(const Vector4 color, const Vector3 from, const float& power, const float& fall_off_start, const float& fall_off_end);
+	static LightConstantData CreateSpotLightData(const Vector4 color, const Vector3 from, const float& power, const float& fall_off_start, const float& fall_off_end, const float& spot_power);
 
 private:
 	LigthBufferData			m_light_buffers_data_;
@@ -67,9 +61,7 @@ public:
 	void	DeleteLightConstantData(const size_t& light_index);
 
 public:
-	void UpdateLight(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context);
-
-public:
-	ComPtr<ID3D11Buffer>	m_light_cbuffer;
+	virtual void Render() override;
+	virtual void Update() override;
 };
 

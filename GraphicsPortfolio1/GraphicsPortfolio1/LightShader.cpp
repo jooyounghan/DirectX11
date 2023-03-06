@@ -1,9 +1,9 @@
-#include "BaseMeshShader.h"
+#include "LightShader.h"
 
 using namespace std;
 
-BaseMeshShader::BaseMeshShader(ComPtr<ID3D11Device>& device)
-	: Shader(device, L"BaseVertexShader.hlsl", L"BasePixelShader.hlsl")
+LightShader::LightShader(ComPtr<ID3D11Device>& device)
+	: Shader(device, L"LightVertexShader.hlsl", L"LightPixelShader.hlsl")
 {
 	vector<D3D11_INPUT_ELEMENT_DESC> input_descs = {
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
@@ -34,6 +34,6 @@ BaseMeshShader::BaseMeshShader(ComPtr<ID3D11Device>& device)
 	}
 }
 
-BaseMeshShader::~BaseMeshShader()
+LightShader::~LightShader()
 {
 }

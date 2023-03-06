@@ -27,18 +27,16 @@ protected:
 	{
 		Selected,
 		LightType,
-		Color,
-		Position,
-		Direction,
-		LightPower,
-		FallOff,
-		SpotPower
+		Color
 	};
 
+protected:
 	bool m_selected_light_type_[3];
 	bool& is_directional_light_ = m_selected_light_type_[0];
 	bool& is_point_light_ = m_selected_light_type_[1];
 	bool& is_spot_light_ = m_selected_light_type_[2];
+
+protected:
 	float m_ligth_color_[3];
 	float m_ligth_position_[3];
 	float m_ligth_direction_[3];
@@ -55,6 +53,16 @@ protected:
 	int					m_light_cnt_ = 0;
 	int					m_selected_light_idx_ = -1;
 
+protected:
+	void SwitchOffLightType();
+	void SwitchOffSelectedLight();
+
+protected:
+	const bool IsDirectionalLightReady(LightConstantData* selected_light_constant_data);
+	const bool IsPointLightReady(LightConstantData* selected_light_constant_data);
+	const bool IsSpotLightReady(LightConstantData* selected_light_constant_data);
+	const bool IsCreatingLight();
+	const bool IsLightSelected();
 public:
 	Delegator<void, const LightConstantData&, OUT LightConstantData*&>	m_on_light_added_;
 	Delegator<void, const size_t&>				m_on_light_deleted_;

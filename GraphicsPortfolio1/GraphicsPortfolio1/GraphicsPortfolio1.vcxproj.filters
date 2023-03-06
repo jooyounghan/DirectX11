@@ -52,27 +52,6 @@
     <Filter Include="헤더 파일\Rendering\Mesh">
       <UniqueIdentifier>{699f4bbf-b591-4017-be68-97e95accb5ed}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Rendering\Shader">
-      <UniqueIdentifier>{1faa22dd-d0c8-4788-aa09-7982e30c15f3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\Rendering\Shader\HLSL">
-      <UniqueIdentifier>{1a05bd6e-f624-4e1d-b641-f43b9cdf08e3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\Rendering\Shader">
-      <UniqueIdentifier>{7974715b-e28c-407a-9711-715899c1b469}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\Rendering\Light">
-      <UniqueIdentifier>{da24cf7a-0c6d-476c-a1e4-7a55d2f2daa2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\Rendering\Light">
-      <UniqueIdentifier>{b97a6b92-de3a-4078-be0b-7cb2b0d9520e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\Rendering\Shader\Specific Shader">
-      <UniqueIdentifier>{38538769-eda6-4e01-aa3b-e522fdb472fa}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\Rendering\Shader\Specific Shader">
-      <UniqueIdentifier>{225f3b99-643f-4d78-8006-077769928541}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\Utility">
       <UniqueIdentifier>{66b17d47-bf92-499e-9de9-3210df17755a}</UniqueIdentifier>
     </Filter>
@@ -96,6 +75,21 @@
     </Filter>
     <Filter Include="헤더 파일\ImGui\Dialog">
       <UniqueIdentifier>{84f046d6-9053-4eef-8d8e-9936c4f2966d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Shader">
+      <UniqueIdentifier>{7974715b-e28c-407a-9711-715899c1b469}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Shader\Specific Shader">
+      <UniqueIdentifier>{38538769-eda6-4e01-aa3b-e522fdb472fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Shader">
+      <UniqueIdentifier>{1faa22dd-d0c8-4788-aa09-7982e30c15f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Shader\HLSL">
+      <UniqueIdentifier>{1a05bd6e-f624-4e1d-b641-f43b9cdf08e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Shader\Specific Shader">
+      <UniqueIdentifier>{225f3b99-643f-4d78-8006-077769928541}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -123,7 +117,7 @@
     <ClInclude Include="ImGuiManager.h">
       <Filter>헤더 파일\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="IMeshGroup.h">
+    <ClInclude Include="MeshGroup.h">
       <Filter>헤더 파일\Rendering\Mesh</Filter>
     </ClInclude>
     <ClInclude Include="Mesh.h">
@@ -133,21 +127,15 @@
       <Filter>헤더 파일\Utility\FileReader</Filter>
     </ClInclude>
     <ClInclude Include="Shader.h">
-      <Filter>헤더 파일\Rendering\Shader</Filter>
+      <Filter>헤더 파일\Shader</Filter>
     </ClInclude>
     <ClInclude Include="Stage.h">
       <Filter>헤더 파일\Rendering</Filter>
     </ClInclude>
-    <ClInclude Include="Light.h">
-      <Filter>헤더 파일\Rendering\Light</Filter>
-    </ClInclude>
     <ClInclude Include="BaseMeshShader.h">
-      <Filter>헤더 파일\Rendering\Shader\Specific Shader</Filter>
+      <Filter>헤더 파일\Shader\Specific Shader</Filter>
     </ClInclude>
     <ClInclude Include="MeshData.h">
-      <Filter>헤더 파일\Rendering\Mesh</Filter>
-    </ClInclude>
-    <ClInclude Include="MeshGenerator.h">
       <Filter>헤더 파일\Rendering\Mesh</Filter>
     </ClInclude>
     <ClInclude Include="Delegator.h">
@@ -167,6 +155,12 @@
     </ClInclude>
     <ClInclude Include="LightSelectDialog.h">
       <Filter>헤더 파일\ImGui\Dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="Light.h">
+      <Filter>헤더 파일\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="IRenderable.h">
+      <Filter>헤더 파일\Rendering</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -197,7 +191,7 @@
     <ClCompile Include="ImGuiManager.cpp">
       <Filter>소스 파일\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="IMeshGroup.cpp">
+    <ClCompile Include="MeshGroup.cpp">
       <Filter>소스 파일\Rendering\Mesh</Filter>
     </ClCompile>
     <ClCompile Include="Mesh.cpp">
@@ -207,19 +201,13 @@
       <Filter>소스 파일\Utility\FileReader</Filter>
     </ClCompile>
     <ClCompile Include="Shader.cpp">
-      <Filter>소스 파일\Rendering\Shader</Filter>
-    </ClCompile>
-    <ClCompile Include="Light.cpp">
-      <Filter>소스 파일\Rendering\Light</Filter>
+      <Filter>소스 파일\Shader</Filter>
     </ClCompile>
     <ClCompile Include="BaseMeshShader.cpp">
-      <Filter>소스 파일\Rendering\Shader\Specific Shader</Filter>
+      <Filter>소스 파일\Shader\Specific Shader</Filter>
     </ClCompile>
     <ClCompile Include="Stage.cpp">
       <Filter>소스 파일\Rendering</Filter>
-    </ClCompile>
-    <ClCompile Include="MeshGenerator.cpp">
-      <Filter>소스 파일\Rendering\Mesh</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
       <Filter>소스 파일\Rendering</Filter>
@@ -233,18 +221,24 @@
     <ClCompile Include="LightSelectDialog.cpp">
       <Filter>소스 파일\ImGui\Dialog</Filter>
     </ClCompile>
+    <ClCompile Include="Light.cpp">
+      <Filter>소스 파일\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="IRenderable.cpp">
+      <Filter>소스 파일\Rendering</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="BaseVertexShader.hlsl">
-      <Filter>소스 파일\Rendering\Shader\HLSL</Filter>
+      <Filter>소스 파일\Shader\HLSL</Filter>
     </FxCompile>
     <FxCompile Include="BasePixelShader.hlsl">
-      <Filter>소스 파일\Rendering\Shader\HLSL</Filter>
+      <Filter>소스 파일\Shader\HLSL</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="BaseShaderCommon.hlsli">
-      <Filter>소스 파일\Rendering\Shader\HLSL</Filter>
+      <Filter>소스 파일\Shader\HLSL</Filter>
     </None>
   </ItemGroup>
 </Project>

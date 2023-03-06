@@ -10,38 +10,46 @@ cbuffer LigthBufferData : register(b0)
 	float3				dummy;
 };
 
-float4 main(PixelShaderInput input) : SV_TARGET
+float4 main(BasePixelShaderInput input) : SV_TARGET
 {
-	if (num_lights > 0)
-	{
-		[loop]
-		for (int light_idx = 0; light_idx < num_lights; ++light_idx)
+    float4 color = float4(0.f, 0.f, 0.f, 0.f);
+	
+	[loop]
+	for (int light_idx = 0; light_idx < num_lights; ++light_idx)
+	{			
+		[branch]
+		switch (light_constant_data[light_idx].light_type)
 		{
-            float3 to_eyes = normalize(input.eye_world_pos - input.pos_world);
-            float3 to_light = normalize(light_constant_data[light_idx].position - input.pos_world);
-
-			float3 halfway = to_eyes + to_light;
-            halfway = normalize(halfway);
-            float specular = dot(halfway, input.normal_model);
-			
-			
-			[branch]
-			switch (light_constant_data[light_idx].light_type)
-			{
-			case DIRECT_LIGHT:
-				break;
-			case POINT_LIGHT:
-				break;
-			case SPOT_LIGHT:
-				break;
-			}
-            float4 new_color = float4(light_constant_data[light_idx].light_color, 1.f) * specular;
-			return g_texture0.Sample(g_sampler, input.tex_coord) * new_color;
+		case DIRECT_LIGHT:
+                color += GetDirectionalSpecular(input.eye_world_pos,
+			input.pos_world, input.normal_model,
+			light_constant_data[light_idx].direction,
+			light_constant_data[light_idx].light_color,
+			light_constant_data[light_idx].light_power);
+			break;
+		case POINT_LIGHT:
+                color += GetPointSpecular(input.eye_world_pos,
+			input.pos_world, input.normal_model,
+			light_constant_data[light_idx].position,
+			light_constant_data[light_idx].light_color,
+			light_constant_data[light_idx].light_power,
+			light_constant_data[light_idx].fall_off_start,
+			light_constant_data[light_idx].fall_off_end);
+			break;
+		case SPOT_LIGHT:
+                color += GetSpotSpecular(input.eye_world_pos,
+			input.pos_world, input.normal_model,
+			light_constant_data[light_idx].direction,
+			light_constant_data[light_idx].position,
+			light_constant_data[light_idx].light_color,
+			light_constant_data[light_idx].light_power,
+			light_constant_data[light_idx].fall_off_start,
+			light_constant_data[light_idx].fall_off_end,
+			light_constant_data[light_idx].spot_power);
+			break;
 		}
-
+        //color += light_constant_data[light_idx].light_color * specular;
 	}
-	else
-	{
-		return g_texture0.Sample(g_sampler, input.tex_coord);
-	}
+	
+    return g_texture0.Sample(g_sampler, input.tex_coord) * color;
 }

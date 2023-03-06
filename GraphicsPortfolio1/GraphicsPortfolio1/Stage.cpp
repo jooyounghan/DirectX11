@@ -1,6 +1,5 @@
 #include "Stage.h"
 #include "FileReader.h"
-#include "BaseMeshShader.h"
 #include "D3D11Utilizer.h"
 
 using namespace DirectX;
@@ -38,8 +37,11 @@ bool Stage::InitStage(HWND window_handle)
 		COUTERR("Initializing DirectX11 For Stage Failed.");
 	}
 
-	m_main_camera_ = make_shared<Camera>(m_device_, m_buffer_width_, m_buffer_height_);
-	m_lights_ = make_shared<Light>(m_device_);
+	m_main_camera_ = make_shared<Camera>(m_device_, m_device_context_, m_buffer_width_, m_buffer_height_);
+	m_lights_ = make_shared<Light>(m_device_, m_device_context_);
+
+	m_renderable_group_.push_back(m_main_camera_);
+	m_renderable_group_.push_back(m_lights_);
 	return result;
 }
 
@@ -67,14 +69,23 @@ void Stage::OnResize()
 
 void Stage::AddModel(const ModelData& model_data)
 {
-	shared_ptr<IMeshGroup> mesh_group = make_shared<IMeshGroup>(m_device_, model_data.mesh_data);
-	mesh_group->m_mesh_shader_ = make_shared<BaseMeshShader>(m_device_, L"BaseVertexShader.hlsl", L"BasePixelShader.hlsl");
+	shared_ptr<MeshGroup> mesh_group = make_shared<MeshGroup>(m_device_, m_device_context_, m_main_camera_, m_lights_);
+	mesh_group->AddMeshData(model_data.mesh_data);
+	m_renderable_group_.emplace_back(mesh_group);
 	m_mesh_group_.emplace_back(mesh_group);
 }
 
 void Stage::RemoveModel(const size_t& index)
 {
 	m_mesh_group_.erase(m_mesh_group_.begin() + index);
+	for (int idx = 0; idx < m_renderable_group_.size(); ++idx)
+	{
+		if (m_renderable_group_[idx].expired())
+		{
+			m_renderable_group_.erase(m_renderable_group_.begin() + idx);
+			idx--;
+		}
+	}
 }
 
 void Stage::SetModelTransformed(const size_t& index, const ModelData& model_data)
@@ -89,17 +100,18 @@ void Stage::SetModelTransformed(const size_t& index, const ModelData& model_data
 		Matrix::CreateTranslation(translation);
 
 	m_mesh_group_[index]->SetVertexConstantData(transformation);
-	m_mesh_group_[index]->Update(m_device_, m_device_context_);
+	m_mesh_group_[index]->Update();
 }
 
 
 void Stage::Update()
 {
-	m_main_camera_->UpdateCamera(m_device_, m_device_context_);
-	m_lights_->UpdateLight(m_device_, m_device_context_);
-	for (auto& meshgroup : m_mesh_group_)
+	for (auto& renderable : m_renderable_group_)
 	{
-		meshgroup->Update(m_device_, m_device_context_);
+		if (!renderable.expired())
+		{
+			renderable.lock()->Update();
+		}
 	}
 }
 
@@ -121,9 +133,12 @@ void Stage::Render()
 	m_device_context_->RSSetState(m_rasterizer_state_.Get());
 
 
-	for (auto& mesh : m_mesh_group_)
+	for (auto& renderable : m_renderable_group_)
 	{
-		mesh->Render(m_device_context_, m_main_camera_->m_vertex_camera_cbuffer_, m_lights_->m_light_cbuffer);
+		if (!renderable.expired())
+		{
+			renderable.lock()->Render();
+		}
 	}
 
 }

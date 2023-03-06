@@ -4,16 +4,16 @@
 #include <d3dcompiler.h>
 
 #include <wrl.h>
-
+#include <iostream>
+#include <vector>
 #include <string>
 
-using std::wstring;
 using Microsoft::WRL::ComPtr;
 
 class Shader
 {
 public:
-	Shader(ComPtr<ID3D11Device>& device, const wstring& vs_name, const wstring& ps_name);
+	Shader(ComPtr<ID3D11Device>& device, const std::wstring& vs_name, const std::wstring& ps_name);
 	~Shader();
 
 protected:

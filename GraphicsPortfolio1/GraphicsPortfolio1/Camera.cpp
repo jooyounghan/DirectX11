@@ -3,8 +3,8 @@
 
 using namespace DirectX;
 
-Camera::Camera(ComPtr<ID3D11Device>& device, int& buffer_width, int& buffer_height)
-	: m_buffer_width_(buffer_width), m_buffer_height_(buffer_height), m_camera_move_flag_(false)
+Camera::Camera(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& device_context, int& buffer_width, int& buffer_height)
+	: IRenderable(device, device_context), m_buffer_width_(buffer_width), m_buffer_height_(buffer_height), m_camera_move_flag_(false)
 {
 	m_total_rotation_ = Matrix::Identity;
 	m_total_translation_ = Matrix::CreateTranslation(0.0f, 0.0f, 2.f);
@@ -17,7 +17,7 @@ Camera::Camera(ComPtr<ID3D11Device>& device, int& buffer_width, int& buffer_heig
 	Matrix projRow = XMMatrixPerspectiveFovLH(XMConvertToRadians(m_projFovAngleY), aspect, m_nearZ, m_farZ);
 	m_stage_vertex_constant_.projection = projRow.Transpose();
 
-	D3D11Utilizer::CreateConstantBuffer(device, m_stage_vertex_constant_, m_vertex_camera_cbuffer_);
+	D3D11Utilizer::CreateConstantBuffer(m_device_, m_stage_vertex_constant_, m_vertex_cbuffer_);
 }
 
 const float Camera::GetAspectRatio()
@@ -35,10 +35,13 @@ void Camera::SetOffCameraMoveFlag(const CameraMoveFlag& flag)
 	m_camera_move_flag_ &= ~flag;
 }
 
-
-void Camera::UpdateCamera(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context)
+void Camera::Render()
 {
 
+}
+
+void Camera::Update()
+{
 	if (m_camera_move_flag_ & CAMERA_MOVE_FORWARD)
 	{
 		const Vector3& rightward_vector = m_total_rotation_.Invert().Forward() * m_translation_responsiveness_;
@@ -69,7 +72,7 @@ void Camera::UpdateCamera(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceConte
 	m_stage_vertex_constant_.view = (m_total_translation_ * m_total_rotation_).Transpose();
 
 
-	D3D11Utilizer::UpdateBuffer(device, context, m_stage_vertex_constant_, m_vertex_camera_cbuffer_);
+	D3D11Utilizer::UpdateBuffer(m_device_, m_device_context_, m_stage_vertex_constant_, m_vertex_cbuffer_);
 }
 
 

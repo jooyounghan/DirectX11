@@ -1,10 +1,8 @@
 #pragma once
-#include <d3d11.h>
-#include <wrl.h>
+
 #include <directxtk/SimpleMath.h>
+#include "IRenderable.h"
 
-
-using Microsoft::WRL::ComPtr;
 using DirectX::SimpleMath::Matrix;
 using DirectX::SimpleMath::Vector3;
 
@@ -23,12 +21,12 @@ struct CameraVertexConstantData
 	float	dummy;
 };
 
-class Camera
+class Camera : public IRenderable
 {
 	friend class CameraRotCom;
 
 public:
-	Camera(ComPtr<ID3D11Device>& device, int& buffer_width, int& buffer_height);
+	Camera(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& device_context, int& buffer_width, int& buffer_height);
 
 protected:
 	int& m_buffer_width_;
@@ -51,9 +49,6 @@ public:
 	CameraVertexConstantData m_stage_vertex_constant_;
 
 public:
-	ComPtr<ID3D11Buffer> m_vertex_camera_cbuffer_;
-
-public:
 	CameraMoveFlag m_camera_move_flag_;
 
 public:
@@ -61,8 +56,7 @@ public:
 	void SetOffCameraMoveFlag(const CameraMoveFlag& flag);
 
 public:
-	void UpdateCamera(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context);
-
-
+	virtual void Render() override;
+	virtual void Update() override;
 };
 

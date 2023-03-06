@@ -1,22 +1,8 @@
 #include "BaseShaderCommon.hlsli"
 
-cbuffer VertexConstantData : register(b0)
+PixelShaderInput main(VertexShaderInput input)
 {
-    matrix model;
-    matrix inv_tranpose;
-};
-
-cbuffer MeshGroupConstantData : register(b1)
-{
-    matrix  view;
-    matrix  projection;
-    float3  eye_world_pos;
-    float   dummy;
-};
-
-BasePixelShaderInput main(BaseVertexShaderInput input)
-{
-    BasePixelShaderInput output;
+    PixelShaderInput output;
     
     float4 pos = float4(input.pos_model, 1.0f);
     output.pos_world = pos.xyz;

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "IMeshGroup.h"
+#include "MeshGroup.h"
 #include "Camera.h"
 
 class Stage
@@ -37,11 +37,15 @@ protected:
 	int& m_buffer_height_;
 
 public:
-	vector<shared_ptr<IMeshGroup>>	m_mesh_group_;
+	vector<std::shared_ptr<MeshGroup>>	m_mesh_group_;
 
 public:
-	shared_ptr<Camera>	m_main_camera_;
-	shared_ptr<Light>	m_lights_;
+	std::shared_ptr<Camera>	m_main_camera_;
+	std::shared_ptr<Light>	m_lights_;
+
+public:
+	vector<std::weak_ptr<IRenderable>> m_renderable_group_;
+
 public:
 	void AddModel(const ModelData& model_data);
 	void RemoveModel(const size_t& index);

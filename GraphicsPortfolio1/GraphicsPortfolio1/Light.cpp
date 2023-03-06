@@ -1,20 +1,21 @@
 #include "Light.h"
 #include "D3D11Utilizer.h"
+#include "LightShader.h"
 
 using namespace DirectX;
 using namespace std;
 
-Light::Light(ComPtr<ID3D11Device>& device)
-    : m_light_buffers_data_()
+Light::Light(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& device_context)
+    : IRenderable(device, device_context), m_light_buffers_data_()
 {
-    D3D11Utilizer::CreateConstantBuffer(device, m_light_buffers_data_, m_light_cbuffer);
+    D3D11Utilizer::CreateConstantBuffer(m_device_, m_light_buffers_data_, m_pixel_cbuffer_);
 }
 
 Light::~Light()
 {
 }
 
-LightConstantData Light::CreateDriectionalLightData(const Vector3 color, const Vector3 from, const Vector3 direction, const float& power)
+LightConstantData Light::CreateDriectionalLightData(const Vector4 color, const Vector3 from, const Vector3 direction, const float& power)
 {
     LightConstantData light_constant_data;
     light_constant_data.light_type = LightType::Directional;
@@ -25,7 +26,7 @@ LightConstantData Light::CreateDriectionalLightData(const Vector3 color, const V
     return light_constant_data;
 }
 
-LightConstantData Light::CreatePointLightData(const Vector3 color, const Vector3 from, const float& power, const float& fall_off_start, const float& fall_off_end)
+LightConstantData Light::CreatePointLightData(const Vector4 color, const Vector3 from, const float& power, const float& fall_off_start, const float& fall_off_end)
 {
     LightConstantData light_constant_data;
     light_constant_data.light_type = LightType::Point;
@@ -38,7 +39,7 @@ LightConstantData Light::CreatePointLightData(const Vector3 color, const Vector3
     return light_constant_data;
 }
 
-LightConstantData Light::CreateSpotLightData(const Vector3 color, const Vector3 from, const float& power, const float& fall_off_start, const float& fall_off_end, const float& spot_power)
+LightConstantData Light::CreateSpotLightData(const Vector4 color, const Vector3 from, const float& power, const float& fall_off_start, const float& fall_off_end, const float& spot_power)
 {
     LightConstantData light_constant_data;
     light_constant_data.light_type = LightType::Spot;
@@ -78,7 +79,11 @@ void Light::DeleteLightConstantData(const size_t& light_index)
     }
 }
 
-void Light::UpdateLight(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context)
+void Light::Render()
 {
-    D3D11Utilizer::UpdateBuffer(device, context, m_light_buffers_data_, m_light_cbuffer);
+}
+
+void Light::Update()
+{
+    D3D11Utilizer::UpdateBuffer(m_device_, m_device_context_, m_light_buffers_data_, m_pixel_cbuffer_);
 }

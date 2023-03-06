@@ -2,16 +2,20 @@
 #define __COMMON_HLSLI__
 
 
+#define DIRECT_LIGHT	0
+#define POINT_LIGHT		1
+#define SPOT_LIGHT		2
+
 #define MAX_LIGHT_NUM 10
 
-struct VertexShaderInput
+struct BaseVertexShaderInput
 {
 	float3 pos_model	: POSITION;
 	float3 normal_model	: NORMAL;
 	float2 tex_coord	: TEXCOORD;
 };
 
-struct PixelShaderInput
+struct BasePixelShaderInput
 {
 	float4 pos_proj			: SV_POSITION;
 	float3 pos_world		: POSITION0;
@@ -22,8 +26,7 @@ struct PixelShaderInput
 
 struct LightConstantData
 {
-	float3 light_color;
-	float dummy1;
+	float4 light_color;
 	float3 position;
 	float dummy2;
 	float3 direction;
@@ -34,8 +37,39 @@ struct LightConstantData
 	int light_type;
 };
 
-#define DIRECT_LIGHT	0
-#define POINT_LIGHT		1
-#define SPOT_LIGHT		2
+float4 GetDirectionalSpecular(float3 eye_pos, float3 obj_pos, float3 obj_normal, float3 light_direction, float4 light_color, float light_power)
+{
+    float3 to_eyes = normalize(eye_pos - obj_pos);
+    float3 to_light = -normalize(light_direction);
 
+    float3 halfway = normalize(to_eyes + to_light) * light_power;
+    return light_color * dot(halfway, obj_normal);
+}
+
+float4 GetPointSpecular(float3 eye_pos, float3 obj_pos, float3 obj_normal, float3 light_pos, float4 light_color, float light_power, float fall_off_start, float fall_off_end)
+{
+    float3 to_eyes = normalize(eye_pos - obj_pos);
+
+    float3 to_light = normalize(light_pos - obj_pos);
+    float distance = length(light_pos - obj_pos);
+	
+    float atten = lerp(0.f, 1.f, (clamp(distance, fall_off_start, fall_off_end) - fall_off_start) / (fall_off_end - fall_off_start));
+    float3 halfway = normalize(to_eyes + to_light) * light_power * atten;
+	
+    return light_color * dot(halfway, obj_normal);
+}
+
+float4 GetSpotSpecular(float3 eye_pos, float3 obj_pos, float3 obj_normal, float3 light_direction, float3 light_pos, float4 light_color, float light_power, float fall_off_start, float fall_off_end, float spot_power)
+{
+    float3 to_eyes = normalize(eye_pos - obj_pos);
+
+    float3 to_light = normalize(light_pos - obj_pos);
+    float distance = length(light_pos - obj_pos);
+	
+    float atten = lerp(0.f, 1.f, (clamp(distance, fall_off_start, fall_off_end) - fall_off_start) / (fall_off_end - fall_off_start));
+    atten *= pow(dot(normalize(light_direction), -to_light), spot_power);
+
+    float3 halfway = normalize(to_eyes + to_light) * light_power * atten;	
+    return light_color * dot(halfway, obj_normal);
+}
 #endif // __COMMON_HLSLI__

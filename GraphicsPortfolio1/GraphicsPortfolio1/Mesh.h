@@ -15,16 +15,6 @@ struct MeshVertexConstantData
 	Matrix inv_tranpose;			// 16
 };
 
-struct MaterialConstantData
-{	
-	Vector3 ambient = Vector3(0.0f);  // 12
-	Vector3 diffuse = Vector3(0.0f);  // 12
-	Vector3 specular = Vector3(1.0f); // 12
-	float shininess = 0.01f;          // 4
-	float dummy1;                     // 4
-	float dummy2;                     // 4
-};
-
 class Mesh
 {
 public:
