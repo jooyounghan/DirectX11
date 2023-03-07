@@ -29,11 +29,14 @@ protected:
 	float m_rotation_[3];
 	float m_scaling_[3];
 
+protected:
+	float m_material[3];
+
 public:
 	Delegator<void, const ModelData&>					m_on_file_added_;
 	Delegator<void, const size_t&>						m_on_file_deleted_;
 	Delegator<void, const size_t&, const ModelData&>	m_on_model_transformed;
-
+	Delegator<void, const size_t&, const ModelData&>	m_on_material_changed;
 public:
 	void CreateModelSelector(const float& delta_time);
 };

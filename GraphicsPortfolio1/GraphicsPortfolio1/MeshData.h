@@ -32,4 +32,5 @@ struct ModelData
 	float model_translation[3]{ 0.f, 0.f, 0.f };
 	float model_rotation[3]{ 0.f, 0.f, 0.f };
 	float model_scaling[3]{ 1.f, 1.f, 1.f };
+	float model_material[3]{ 0.f, 0.f, 0.f };
 };

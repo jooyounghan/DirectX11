@@ -92,6 +92,7 @@ void ModelSelectDialog::CreateModelSelector(const float& delta_time)
     }
 
     bool is_transformed = false;
+    bool material_changed = false;
 
     ImGui::BeginDisabled(selected_model_idx < 0);
     ImGui::Text("Translation");
@@ -119,13 +120,47 @@ void ModelSelectDialog::CreateModelSelector(const float& delta_time)
         memcpy(&m_model_files_[selected_model_idx]->model_scaling[0], &m_scaling_[0], sizeof(float) * 3);
         is_transformed |= true;
     }
+    ImGui::PopItemWidth();
 
-    if (is_checked && is_transformed)
+    if (is_transformed)
     {
         m_on_model_transformed.Broadcast(selected_model_idx, *(m_model_files_[selected_model_idx]));
     }
 
+    // ===========================================================================================
+
+    ImGui::Text("Diffuse");
+    ImGui::PushItemWidth(-FLT_MIN);
+    if (ImGui::SliderFloat("Diffuse", &m_material[0], 0, 3.f, "%.3f"))
+    {
+        m_model_files_[selected_model_idx]->model_material[0] = m_material[0];
+        material_changed |= true;
+    }
     ImGui::PopItemWidth();
+
+    ImGui::Text("Specular");
+    ImGui::PushItemWidth(-FLT_MIN);
+    if (ImGui::SliderFloat("Specular", &m_material[1], 0, 3.f, "%.3f"))
+    {
+        m_model_files_[selected_model_idx]->model_material[1] = m_material[1];
+        material_changed |= true;
+    }
+    ImGui::PopItemWidth();
+
+    ImGui::Text("Shininess");
+    ImGui::PushItemWidth(-FLT_MIN);
+    if (ImGui::SliderFloat("Shininess", &m_material[2], 0.f, 20.f, "%.3f"))
+    {
+        m_model_files_[selected_model_idx]->model_material[2] = m_material[2];
+        material_changed |= true;
+    }
+    ImGui::PopItemWidth();
+    
+    if (material_changed)
+    {
+        m_on_material_changed.Broadcast(selected_model_idx, *(m_model_files_[selected_model_idx]));
+    }
+
     ImGui::EndDisabled();
 
     ImGui::End();

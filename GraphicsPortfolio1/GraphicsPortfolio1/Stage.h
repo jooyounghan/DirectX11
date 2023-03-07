@@ -50,6 +50,7 @@ public:
 	void AddModel(const ModelData& model_data);
 	void RemoveModel(const size_t& index);
 	void SetModelTransformed(const size_t& index, const ModelData& model_data);
+	void SetModelMaterial(const size_t& index, const ModelData& model_data);
 
 public:
 	void Update();

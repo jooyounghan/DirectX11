@@ -103,6 +103,12 @@ void Stage::SetModelTransformed(const size_t& index, const ModelData& model_data
 	m_mesh_group_[index]->Update();
 }
 
+void Stage::SetModelMaterial(const size_t& index, const ModelData& model_data)
+{
+	m_mesh_group_[index]->SetPixelConstantData(model_data.model_material[0], model_data.model_material[1], model_data.model_material[2]);
+	m_mesh_group_[index]->Update();
+}
+
 
 void Stage::Update()
 {
