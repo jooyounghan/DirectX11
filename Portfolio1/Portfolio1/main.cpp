@@ -2,7 +2,6 @@
 #include <iostream>
 #include <memory>
 
-#include "ImguiManager.h"
 #include "PortfolioApp.h"
 
 LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -33,7 +32,7 @@ int main() {
     AdjustWindowRect(&rWindowRect, WS_OVERLAPPEDWINDOW, FALSE);
 
 
-    HWND hwnd = CreateWindow(wc.lpszClassName, L"Joo YH / Portfolio1",
+    HWND hWindow = CreateWindow(wc.lpszClassName, L"Joo YH / Portfolio1",
         WS_OVERLAPPEDWINDOW,
         0,
         0,
@@ -41,16 +40,11 @@ int main() {
         rWindowRect.bottom - rWindowRect.top,
         NULL, NULL, wc.hInstance, NULL);
 
-    ShowWindow(hwnd, SW_SHOWDEFAULT);
-    UpdateWindow(hwnd);
+    ShowWindow(hWindow, SW_SHOWDEFAULT);
+    UpdateWindow(hWindow);
 
     // 포트폴리오 어플리케이션 생성
-    PortfolioApp pApp;
-
-    // Imgui 생성
-    // 포트폴리오 어플 안에 Imgui와 ID3D11 관련된 클래스를 넣으면?
-    ImguiManager imgui(iWidth, iHeight);
-    imgui.InitImgui(pApp.GetDevice(), pApp.GetDeviceContext(), hwnd);
+    PortfolioApp pApp = PortfolioApp(hWindow, iWidth, iHeight);
 
     // Main message loop
     MSG msg = {};
@@ -60,15 +54,13 @@ int main() {
             DispatchMessage(&msg);
         }
         else {
-            imgui.SetRender();
             pApp.Update();
             pApp.Render();
-            imgui.Render();
             pApp.SwapChain();
         }
     }
 
-    DestroyWindow(hwnd);
+    DestroyWindow(hWindow);
     UnregisterClass(wc.lpszClassName, wc.hInstance);
 
     return 0;
