@@ -1,16 +1,24 @@
 
 #include <iostream>
 #include <memory>
+#include <mutex>
 
 #include "PortfolioApp.h"
 
+
 LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-constexpr int iWidth = 1280;
-constexpr int iHeight = 960;
+std::mutex mtxConsole;
+void Console(const char* text)
+{
+    std::lock_guard<std::mutex> lockGuard(mtxConsole);
+    std::cout << text << std::endl;
+}
 
 int main() {
 
+    int iWidth = 1280;
+    int iHeight = 960;
 
     WNDCLASSEX wc = { sizeof(WNDCLASSEX),
                      CS_CLASSDC,
@@ -45,6 +53,7 @@ int main() {
 
     // 포트폴리오 어플리케이션 생성
     PortfolioApp pApp = PortfolioApp(hWindow, iWidth, iHeight);
+    pApp.Init();
 
     // Main message loop
     MSG msg = {};
