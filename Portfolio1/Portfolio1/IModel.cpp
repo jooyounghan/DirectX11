@@ -46,14 +46,14 @@ void IModel::Render()
 	};
 	ui32IndexCount = UINT(vIndex.size());
 	vector<Vertex> vVertex{
-		{-0.1f, -0.1f, 0.0f, 1.0f},
-		{0.1f, -0.1f, 0.0f, 1.0f},
-		{0.1f, 0.1f, 0.0f, 1.0f},
-		{-0.1f, 0.1f, 0.0f, 1.0f},
-		{-0.1f, -0.1f, 0.1f, 1.0f},
-		{0.1f, -0.1f, 0.1f, 1.0f},
-		{0.1f, 0.1f, 0.1f, 1.0f},
-		{-0.1f, 0.1f, 0.1f, 1.0f},
+		{-1.f, -1.f, -1.0f, 1.0f},
+		{1.f, -1.f, -1.0f, 1.0f},
+		{1.f, 1.f, -1.0f, 1.0f},
+		{-1.f, 1.f, -1.0f, 1.0f},
+		{-1.f, -1.f, 1.f, 1.0f},
+		{1.f, -1.f, 1.f, 1.0f},
+		{1.f, 1.f, 1.f, 1.0f},
+		{-1.f, 1.f, 1.f, 1.0f},
 	};
 
 	ID3D11Helper::CreateBuffer(cpDevice.Get(), vIndex, D3D11_USAGE_IMMUTABLE, D3D11_BIND_INDEX_BUFFER, 0, 0, cpIndexBuffer.GetAddressOf());

@@ -42,6 +42,25 @@ public:
 		OUT ID3D11Buffer** ppBuffer
 	);
 
+	template<typename T>
+	static void CreateBuffer(
+		IN ID3D11Device* pDevice,
+		IN const T data,
+		IN D3D11_USAGE eUsage,
+		IN UINT /*D3D11_BIND_FLAG*/ uiBindFlag,
+		IN UINT /*D3D11_CPU_ACCESS_FLAG*/ eCpuAccess,
+		IN UINT /*D3D11_RESOURCE_MISC_FLAG*/ eMiscFlag,
+		OUT ID3D11Buffer** ppBuffer
+	);
+
+	template<typename T>
+	static void UpdateBuffer(
+		IN ID3D11DeviceContext* pDeviceContext,
+		IN const T& data,
+		IN D3D11_MAP mapFlag,
+		OUT ID3D11Resource* pResource
+	);
+
 	static void GetBackBuffer(
 		IN IDXGISwapChain* pSwapChain,
 		OUT ID3D11Texture2D** ppTexture2D
@@ -133,4 +152,50 @@ void ID3D11Helper::CreateBuffer(
 	{
 		Console("버퍼를 생성하는데 실패하였습니다.");
 	}
+}
+
+template<typename T>
+void ID3D11Helper::CreateBuffer(
+	IN ID3D11Device* pDevice,
+	IN const T data,
+	IN D3D11_USAGE eUsage,
+	IN UINT uiBindFlag,
+	IN UINT eCpuAccess,
+	IN UINT eMiscFlag,
+	OUT ID3D11Buffer** ppBuffer)
+{
+	D3D11_BUFFER_DESC sBufferDesc;
+	AutoZeroMemory(sBufferDesc);
+	sBufferDesc.ByteWidth = sizeof(T);
+	sBufferDesc.Usage = eUsage;
+	sBufferDesc.BindFlags = uiBindFlag;
+	sBufferDesc.CPUAccessFlags = eCpuAccess;
+	sBufferDesc.MiscFlags = eMiscFlag;
+	sBufferDesc.StructureByteStride = 0;
+
+	D3D11_SUBRESOURCE_DATA sSubResourceData;
+	AutoZeroMemory(sSubResourceData);
+	sSubResourceData.pSysMem = &data;
+	sSubResourceData.SysMemPitch = 0;
+	sSubResourceData.SysMemSlicePitch = 0;
+
+	HRESULT hResult = pDevice->CreateBuffer(&sBufferDesc, &sSubResourceData, ppBuffer);
+	if (FAILED(hResult))
+	{
+		Console("버퍼를 생성하는데 실패하였습니다.");
+	}
+}
+
+template<typename T>
+void ID3D11Helper::UpdateBuffer(
+	IN ID3D11DeviceContext* pDeviceContext,
+	IN const T& data,
+	IN D3D11_MAP mapFlag,
+	OUT ID3D11Resource* pResource
+)
+{
+	D3D11_MAPPED_SUBRESOURCE ms;
+	pDeviceContext->Map(pResource, NULL, mapFlag, NULL, &ms);
+	memcpy(ms.pData, &data, sizeof(decltype(data)));
+	pDeviceContext->Unmap(pResource, NULL);
 }

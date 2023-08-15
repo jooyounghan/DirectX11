@@ -87,7 +87,7 @@ void ID3D11Helper::CreateVSInputLayOut(IN ID3D11Device* pDevice, IN LPCWSTR pFil
 		return;
 	}
 
-	hResult = pDevice->CreateInputLayout(vInputElementDescs.data(), vInputElementDescs.size(), cpShaderBlob->GetBufferPointer(), cpShaderBlob->GetBufferSize(), ppInputLayout);
+	hResult = pDevice->CreateInputLayout(vInputElementDescs.data(), (UINT)vInputElementDescs.size(), cpShaderBlob->GetBufferPointer(), cpShaderBlob->GetBufferSize(), ppInputLayout);
 	if (FAILED(hResult))
 	{
 		Console("InputLayout을 생성하는데 실패하였습니다.");
