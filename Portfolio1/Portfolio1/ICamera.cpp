@@ -1,4 +1,5 @@
 #include "ICamera.h"
+#include "EnumBuffer.h"
 
 #include <memory>
 
@@ -21,7 +22,7 @@ ICamera::ICamera(ComPtr<ID3D11Device>& cpDeviceIn,
 	
 	AutoZeroMemory(sCameraInfo);
 	sCameraInfo.xmvCameraPosition = XMVectorSet(0.f, 0.f, -10.f, 0.f);
-	sCameraInfo.xmvCameraDirection = XMVectorSet(0.3f, 0.f, 1.f, 0.f);
+	sCameraInfo.xmvCameraDirection = XMVectorSet(0.f, 0.f, 1.f, 0.f);
 	sCameraInfo.xmvCameraUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
 	sCameraInfo.fFovAngle = XMConvertToRadians(70.f);
 	sCameraInfo.fAspectRatio = fAspectRatio;
@@ -46,7 +47,7 @@ void ICamera::Update()
 	XMMATRIX xmmViewProjTransposed = GetViewProjTransposed();
 	ID3D11Helper::UpdateBuffer(cpDeviceContext.Get(), xmmViewProjTransposed, D3D11_MAP::D3D11_MAP_WRITE_DISCARD, cpCameraConstantBuffer.Get());
 
-	cpDeviceContext->VSSetConstantBuffers(0, 1, cpCameraConstantBuffer.GetAddressOf());
+	cpDeviceContext->VSSetConstantBuffers(ViewProjMatrix, 1, cpCameraConstantBuffer.GetAddressOf());
 }
 
 void ICamera::WipeOut(const float fcolor[4])
@@ -60,13 +61,21 @@ XMMATRIX ICamera::GetViewProjTransposed()
 {
 	XMMATRIX test = XMMatrixLookToLH(sCameraInfo.xmvCameraPosition, sCameraInfo.xmvCameraDirection, sCameraInfo.xmvCameraUp);
 
-	// 위치 좌표 벡터에 모델 -> 뷰 -> 프로젝션 행렬의 순서로 연산이 되어야 한다.
 	// DirectX11에서는 Row Major Order가 사용되기 때문에,
 	// 위치 좌표 벡터 * 모델 행렬 * 뷰 행렬 * 프로젝션 행렬의 형태가 되어야 한다.
-	// DirectX11에서 사용하던 Row Major Order가 쉐이더에서는 Column Major Order로 변환되므로,
-	// 프로젝션 행렬 * 뷰 행렬 * 모델 행렬 * 위치 좌표 벡터의 형태가 되어야 한다.
+	// L * M * V * P(Row Major)
 
-	return XMMatrixLookToLH(sCameraInfo.xmvCameraPosition, sCameraInfo.xmvCameraDirection, sCameraInfo.xmvCameraUp) * 
-		XMMatrixPerspectiveFovLH(sCameraInfo.fFovAngle, sCameraInfo.fAspectRatio, sCameraInfo.fNearZ, sCameraInfo.fFarZ)
-	;
+	// DirectX11에서 사용하던 Row Major Order 형태의 데이터가 HLSL로 넘어가면서
+	// Column Major Order의 데이터로 저장되므로,
+	// DirectX11에서 기존 행렬에 전치를 해주어야 HLSL로 넘어갔을때 동일하게 연산할 수 있다.
+
+	// 기존의 L 벡터, M, V, P 행렬을 전치할 경우하여 HLSL에 보내주었다고 할때,
+	// HLSL에서 프로젝션 행렬 * 뷰 행렬 * 모델 행렬 * 위치 좌표 벡터의 형태가 되어야 한다.
+	// P_T * V_T * M_T * L_T (Column Major)
+
+	// (V * P)_T = P_T * V_T 이므로,
+	// CPU(DirectX11)에서 V * P를 계산하고 전치를 처리해준 다음에 GPU(HLSL)로 보내준다.
+
+	return XMMatrixTranspose(XMMatrixLookToLH(sCameraInfo.xmvCameraPosition, sCameraInfo.xmvCameraDirection, sCameraInfo.xmvCameraUp) *
+		XMMatrixPerspectiveFovLH(sCameraInfo.fFovAngle, sCameraInfo.fAspectRatio, sCameraInfo.fNearZ, sCameraInfo.fFarZ));
 }

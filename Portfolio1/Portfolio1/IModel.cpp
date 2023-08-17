@@ -1,16 +1,15 @@
 #include "IModel.h"
 #include "ID3D11Helper.h"
+#include "EnumBuffer.h"
+#include "MathematicalHelper.h"
 #include <atomic>
+
+using namespace DirectX;
 
 std::atomic_bool IModel::bBaseInitialized = false;
 ComPtr<ID3D11InputLayout>	IModel::cpBaseInputLayout;
 ComPtr<ID3D11VertexShader>	IModel::cpBaseVertexShader;
 ComPtr<ID3D11PixelShader>	IModel::cpBasePixelShader;
-
-struct Vertex
-{
-	float x, y, z, w;
-};
 
 IModel::IModel(ComPtr<ID3D11Device>& cpDeviceIn, ComPtr<ID3D11DeviceContext>& cpDeviceContextIn)
 	: cpDevice(cpDeviceIn), cpDeviceContext(cpDeviceContextIn)
@@ -26,23 +25,31 @@ IModel::IModel(ComPtr<ID3D11Device>& cpDeviceIn, ComPtr<ID3D11DeviceContext>& cp
 
 		bBaseInitialized.store(true);
 	}
-}
 
-void IModel::Render()
-{
+	ModelTransform::Init(&sModelTransformation);
+	ID3D11Helper::CreateBuffer(
+		cpDevice.Get(),
+		ModelTransform::GetAffineTransformMatrix(&sModelTransformation),
+		D3D11_USAGE_DYNAMIC,
+		D3D11_BIND_CONSTANT_BUFFER,
+		D3D11_CPU_ACCESS_WRITE,
+		0,
+		cpModelMatrixBuffer.GetAddressOf()
+	);
+
 	vector<uint32_t> vIndex{
-		0, 3, 1,
-		1, 3, 2,
-		1, 2, 5,
-		2, 6, 5,
-		0, 7, 3,
-		0, 4, 7,
-		4, 5, 7,
-		7, 5, 6,
-		0, 1, 5,
-		0, 5, 4,
-		3, 7, 2,
-		2, 7, 6
+	0, 3, 1,
+	1, 3, 2,
+	1, 2, 5,
+	2, 6, 5,
+	0, 7, 3,
+	0, 4, 7,
+	4, 5, 7,
+	7, 5, 6,
+	0, 1, 5,
+	0, 5, 4,
+	3, 7, 2,
+	2, 7, 6
 	};
 	ui32IndexCount = UINT(vIndex.size());
 	vector<Vertex> vVertex{
@@ -60,7 +67,21 @@ void IModel::Render()
 	ID3D11Helper::CreateBuffer(cpDevice.Get(), vVertex, D3D11_USAGE_IMMUTABLE, D3D11_BIND_VERTEX_BUFFER, 0, 0, cpVertexBuffer.GetAddressOf());
 
 	cpDeviceContext->IASetInputLayout(cpBaseInputLayout.Get());
+}
 
+void IModel::Update()
+{
+	ID3D11Helper::UpdateBuffer(
+		cpDeviceContext.Get(),
+		ModelTransform::GetAffineTransformMatrix(&sModelTransformation),
+		D3D11_MAP_WRITE_DISCARD,
+		cpModelMatrixBuffer.Get()
+	);
+	cpDeviceContext->VSSetConstantBuffers(VSConstBuffer::ModelMatrix, 1, cpModelMatrixBuffer.GetAddressOf());
+};
+
+void IModel::Render()
+{
 	UINT stride = sizeof(Vertex);
 	UINT offset = 0;
 

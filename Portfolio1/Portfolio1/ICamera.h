@@ -35,6 +35,8 @@ public:
 public:
 	const float&					fAspectRatio;
 	CameraInfo						sCameraInfo;
+
+public:
 	DirectX::XMMATRIX GetViewProjTransposed();
 
 public:

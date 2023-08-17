@@ -1,5 +1,6 @@
 #pragma once
 #include "ID3D11Helper.h"
+#include "StructVar.h"
 
 namespace std {
 	template<typename T>
@@ -15,12 +16,17 @@ public:
 	~IModel() {};
 
 public:
+	void Update();
 	void Render();
 
 public:
 	ComPtr<ID3D11Buffer>	cpIndexBuffer;
 	uint32_t				ui32IndexCount;
 	ComPtr<ID3D11Buffer>	cpVertexBuffer;
+
+public:
+	ModelTransform			sModelTransformation;
+	ComPtr<ID3D11Buffer>	cpModelMatrixBuffer;
 
 private:
 	static std::atomic_bool		bBaseInitialized;

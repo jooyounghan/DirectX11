@@ -28,7 +28,7 @@ void PortfolioApp::Init()
 
 	if (ICamera::DefaultCamera == nullptr)
 	{
-		ICamera::DefaultCamera = make_shared<ICamera>(cpDevice, cpDeviceContext, cpSwapChain, iWidth / iHeight);
+		ICamera::DefaultCamera = make_shared<ICamera>(cpDevice, cpDeviceContext, cpSwapChain, float(iWidth) / iHeight);
 	}
 	pMainCamera = ICamera::DefaultCamera.get();
 	vModels.push_back(IModel(cpDevice, cpDeviceContext));
@@ -37,6 +37,11 @@ void PortfolioApp::Init()
 void PortfolioApp::Update()
 {
 	pMainCamera->Update();
+
+	for (auto& model : vModels)
+	{
+		model.Update();
+	}
 }
 
 void PortfolioApp::Render()

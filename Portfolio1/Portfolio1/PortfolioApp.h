@@ -11,7 +11,7 @@ public:
 
 public:
 	void Init();
-	void Update();;
+	void Update();
 	void Render();
 	void SwapChain();
 

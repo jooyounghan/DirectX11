@@ -5,12 +5,12 @@
 #include <wrl/client.h> 
 #include <vector>
 
+#include "DefineVar.h"
+
 using Microsoft::WRL::ComPtr;
 using std::vector;
 
 extern void Console(const char*);
-
-#define AutoZeroMemory(a) ZeroMemory(&a, sizeof(decltype(a)));
 
 class ID3D11Helper
 {
@@ -34,7 +34,7 @@ public:
 	template<typename T>
 	static void CreateBuffer(
 		IN ID3D11Device* pDevice,
-		IN const vector<T> vData,
+		IN const vector<T>& vData,
 		IN D3D11_USAGE eUsage,
 		IN UINT /*D3D11_BIND_FLAG*/ uiBindFlag,
 		IN UINT /*D3D11_CPU_ACCESS_FLAG*/ eCpuAccess,
@@ -45,7 +45,7 @@ public:
 	template<typename T>
 	static void CreateBuffer(
 		IN ID3D11Device* pDevice,
-		IN const T data,
+		IN const T& data,
 		IN D3D11_USAGE eUsage,
 		IN UINT /*D3D11_BIND_FLAG*/ uiBindFlag,
 		IN UINT /*D3D11_CPU_ACCESS_FLAG*/ eCpuAccess,
@@ -124,7 +124,7 @@ public:
 template<typename T>
 void ID3D11Helper::CreateBuffer(
 	IN ID3D11Device* pDevice,
-	IN const vector<T> vData,
+	IN const vector<T>& vData,
 	IN D3D11_USAGE eUsage,
 	IN UINT /*D3D11_BIND_FLAG*/ uiBindFlag,
 	IN UINT /*D3D11_CPU_ACCESS_FLAG*/ eCpuAccess,
@@ -157,7 +157,7 @@ void ID3D11Helper::CreateBuffer(
 template<typename T>
 void ID3D11Helper::CreateBuffer(
 	IN ID3D11Device* pDevice,
-	IN const T data,
+	IN const T& data,
 	IN D3D11_USAGE eUsage,
 	IN UINT uiBindFlag,
 	IN UINT eCpuAccess,

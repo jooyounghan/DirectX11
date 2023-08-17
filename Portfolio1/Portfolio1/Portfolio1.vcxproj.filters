@@ -28,6 +28,12 @@
     <Filter Include="헤더 파일\Camera">
       <UniqueIdentifier>{47ae801e-4006-47d0-ae05-548fa357667e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="헤더 파일\Utils">
+      <UniqueIdentifier>{01a8406d-c4d9-4975-a5ba-ece06fa4b3bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Utils">
+      <UniqueIdentifier>{ac0113e6-afd1-4f90-9078-03771388cce5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -39,14 +45,20 @@
     <ClCompile Include="PortfolioApp.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="ID3D11Helper.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="IModel.cpp">
       <Filter>소스 파일\Model</Filter>
     </ClCompile>
     <ClCompile Include="ICamera.cpp">
       <Filter>소스 파일\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="ID3D11Helper.cpp">
+      <Filter>소스 파일\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="MathematicalHelper.cpp">
+      <Filter>소스 파일\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="StructVar.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -56,14 +68,26 @@
     <ClInclude Include="PortfolioApp.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="ID3D11Helper.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="IModel.h">
       <Filter>헤더 파일\Model</Filter>
     </ClInclude>
     <ClInclude Include="ICamera.h">
       <Filter>헤더 파일\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="ID3D11Helper.h">
+      <Filter>헤더 파일\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="EnumBuffer.h">
+      <Filter>헤더 파일\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="MathematicalHelper.h">
+      <Filter>헤더 파일\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="DefineVar.h">
+      <Filter>헤더 파일\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="StructVar.h">
+      <Filter>헤더 파일\Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
