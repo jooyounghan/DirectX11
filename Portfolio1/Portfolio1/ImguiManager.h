@@ -7,7 +7,7 @@
 class ImguiManager
 {
 public:
-	ImguiManager(const int& iWidthIn, const int& iHeightIn);
+	ImguiManager(const UINT& iWidthIn, const UINT& iHeightIn);
     ~ImguiManager();
 
 public:
@@ -16,7 +16,7 @@ public:
     void Render();
 
 private:
-    int iWidth;
-    int iHeight;
+    UINT uiWidth;
+    UINT uiHeight;
 };
 

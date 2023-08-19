@@ -1,13 +1,13 @@
 #include "ImguiManager.h"
 
-ImguiManager::ImguiManager(const int& iWidthIn, const int& iHeightIn)
-    : iWidth(iWidthIn), iHeight(iHeightIn)
+ImguiManager::ImguiManager(const UINT& uiWidthIn, const UINT& uiHeightIn)
+    : uiWidth(uiWidthIn), uiHeight(uiHeightIn)
 {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
     (void)io;
-    io.DisplaySize = ImVec2((float)iWidth, (float)iHeight);
+    io.DisplaySize = ImVec2((float)uiWidth, (float)uiHeight);
     ImGui::StyleColorsLight();
 }
 

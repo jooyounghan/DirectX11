@@ -34,17 +34,20 @@
     <Filter Include="소스 파일\Utils">
       <UniqueIdentifier>{ac0113e6-afd1-4f90-9078-03771388cce5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Main">
+      <UniqueIdentifier>{0505c04a-655b-4531-a921-1d69aa6249e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Input">
+      <UniqueIdentifier>{b8a55d37-5adb-4354-8141-d6b7f017b499}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Input">
+      <UniqueIdentifier>{ae3a35f5-7553-4fd7-9e2d-78478bf61124}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Main">
+      <UniqueIdentifier>{3ff67aee-c3a9-48e7-86c3-d503fcb899aa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="ImguiManager.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="PortfolioApp.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="IModel.cpp">
       <Filter>소스 파일\Model</Filter>
     </ClCompile>
@@ -57,17 +60,26 @@
     <ClCompile Include="MathematicalHelper.cpp">
       <Filter>소스 파일\Utils</Filter>
     </ClCompile>
+    <ClCompile Include="TestModel.cpp">
+      <Filter>소스 파일\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="ImguiManager.cpp">
+      <Filter>소스 파일\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>소스 파일\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="PortfolioApp.cpp">
+      <Filter>소스 파일\Main</Filter>
+    </ClCompile>
     <ClCompile Include="StructVar.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="IKeyCommand.cpp">
+      <Filter>소스 파일\Input</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ImguiManager.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="PortfolioApp.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="IModel.h">
       <Filter>헤더 파일\Model</Filter>
     </ClInclude>
@@ -88,6 +100,18 @@
     </ClInclude>
     <ClInclude Include="StructVar.h">
       <Filter>헤더 파일\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="TestModel.h">
+      <Filter>헤더 파일\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="ImguiManager.h">
+      <Filter>헤더 파일\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="IKeyCommand.h">
+      <Filter>헤더 파일\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="PortfolioApp.h">
+      <Filter>헤더 파일\Main</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

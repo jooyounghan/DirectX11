@@ -1,12 +1,17 @@
 #pragma once
 
+#include <memory>
+
+#include "ID3D11Helper.h"
 #include "ImguiManager.h"
-#include "IModel.h"
-#include "ICamera.h"
+
+class ICamera;
+class IModel;
+
 class PortfolioApp
 {
 public:
-	PortfolioApp(HWND hWindowIn, int& iWidthIn, int& iHeightIn);
+	PortfolioApp(const UINT& iWidthIn, const UINT& iHeightIn);
 	~PortfolioApp();
 
 public:
@@ -14,10 +19,19 @@ public:
 	void Update();
 	void Render();
 	void SwapChain();
+	void Run();
+	void Quit();
+
+public:
+	void ResizeSwapChain(const UINT& uiWidthIn, const UINT& uiHeightIn);
 
 private:
-	int& iWidth;
-	int& iHeight;
+	UINT	uiWidth;
+	UINT	uiHeight;
+	float fAspectRatio;
+
+private:
+	WNDCLASSEX wc;
 	HWND hMainWindow;
 
 private:
@@ -33,11 +47,14 @@ private:
 	D3D11_VIEWPORT screenViewport;
 
 private:	
-	ICamera*		pMainCamera;
-	vector<ICamera> vCameras;
-	vector<IModel>	vModels;
+	std::shared_ptr<ICamera>				pMainCamera;
+	vector<std::shared_ptr<ICamera>>		vCameras;
+	vector<std::shared_ptr<IModel>>			vModels;
 
 private:
 	ImguiManager imImgui;
+
+public:
+	LRESULT WINAPI PortfolioProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 };
 

@@ -1,8 +1,8 @@
 #include "ID3D11Helper.h"
 
 void ID3D11Helper::CreateDeviceAndContext(
-	IN const int& iWidth, 
-	IN const int& iHeight,
+	IN const UINT& iWidth,
+	IN const UINT& iHeight,
 	IN bool bWindowed,
 	IN HWND hOutputWindow,
 	OUT IDXGISwapChain** ppSwapChain,

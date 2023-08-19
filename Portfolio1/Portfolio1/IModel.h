@@ -16,8 +16,8 @@ public:
 	~IModel() {};
 
 public:
-	void Update();
-	void Render();
+	virtual void Update() = 0;
+	virtual void Render() = 0;
 
 public:
 	ComPtr<ID3D11Buffer>	cpIndexBuffer;
@@ -28,13 +28,13 @@ public:
 	ModelTransform			sModelTransformation;
 	ComPtr<ID3D11Buffer>	cpModelMatrixBuffer;
 
-private:
+protected:
 	static std::atomic_bool		bBaseInitialized;
 	static ComPtr<ID3D11InputLayout>	cpBaseInputLayout;
 	static ComPtr<ID3D11VertexShader>	cpBaseVertexShader;
 	static ComPtr<ID3D11PixelShader>	cpBasePixelShader;
 
-private:
+protected:
 	ComPtr<ID3D11Device>& cpDevice;
 	ComPtr<ID3D11DeviceContext>& cpDeviceContext;
 };

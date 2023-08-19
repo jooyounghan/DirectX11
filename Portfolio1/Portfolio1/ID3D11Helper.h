@@ -2,7 +2,8 @@
 #include <d3d11.h>
 #include <d3dcompiler.h>
 #include <windows.h>
-#include <wrl/client.h> 
+#include <wrl/client.h>
+
 #include <vector>
 
 #include "DefineVar.h"
@@ -16,8 +17,8 @@ class ID3D11Helper
 {
 public:
 	static void CreateDeviceAndContext(
-		IN const int& iWidth,
-		IN const int& iHeight,
+		IN const UINT& iWidth,
+		IN const UINT& iHeight,
 		IN bool bWindowed,
 		IN HWND hOutputWindow,
 		OUT IDXGISwapChain** ppSwapChain,

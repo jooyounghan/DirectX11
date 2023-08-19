@@ -17,7 +17,7 @@ struct PositionAngle
 struct ModelTransform
 {
 	static void Init(OUT ModelTransform* pModelTransformation);
-	static DirectX::XMMATRIX GetAffineTransformMatrix(IN const ModelTransform* pModelTransformation);
+	static DirectX::XMMATRIX GetAffineTransformMatrix(IN const ModelTransform& pModelTransformation);
 
 	DirectX::XMVECTOR	xmvScale;
 	PositionAngle		sPositionAngle;

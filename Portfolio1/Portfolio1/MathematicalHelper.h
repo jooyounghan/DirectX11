@@ -1,7 +1,6 @@
 #pragma once
 #include <directxmath/DirectXMath.h>
-
-
+#include <algorithm>
 
 class MathematicalHelper
 {

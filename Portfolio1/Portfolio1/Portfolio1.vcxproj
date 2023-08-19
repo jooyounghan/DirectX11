@@ -104,6 +104,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -133,23 +134,27 @@
   <ItemGroup>
     <ClCompile Include="ICamera.cpp" />
     <ClCompile Include="ID3D11Helper.cpp" />
+    <ClCompile Include="IKeyCommand.cpp" />
     <ClCompile Include="ImguiManager.cpp" />
     <ClCompile Include="IModel.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MathematicalHelper.cpp" />
     <ClCompile Include="PortfolioApp.cpp" />
     <ClCompile Include="StructVar.cpp" />
+    <ClCompile Include="TestModel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DefineVar.h" />
     <ClInclude Include="EnumBuffer.h" />
     <ClInclude Include="ICamera.h" />
     <ClInclude Include="ID3D11Helper.h" />
+    <ClInclude Include="IKeyCommand.h" />
     <ClInclude Include="ImguiManager.h" />
     <ClInclude Include="IModel.h" />
     <ClInclude Include="MathematicalHelper.h" />
     <ClInclude Include="PortfolioApp.h" />
     <ClInclude Include="StructVar.h" />
+    <ClInclude Include="TestModel.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="BaseModelPS.hlsl">

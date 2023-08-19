@@ -11,25 +11,26 @@ void ModelTransform::Init(OUT ModelTransform* pModelTransformation)
 	pModelTransformation->xmvTranslation = DirectX::XMVectorSet(0.f, 0.f, 0.f, 0.f);
 }
 
-DirectX::XMMATRIX ModelTransform::GetAffineTransformMatrix(IN const ModelTransform* pModelTransformation)
+DirectX::XMMATRIX ModelTransform::GetAffineTransformMatrix(IN const ModelTransform& pModelTransformation)
 {
 	DirectX::XMMATRIX xmmScale = DirectX::XMMatrixScaling(
-		pModelTransformation->xmvScale.m128_f32[0],
-		pModelTransformation->xmvScale.m128_f32[1],
-		pModelTransformation->xmvScale.m128_f32[2]
+		pModelTransformation.xmvScale.m128_f32[0],
+		pModelTransformation.xmvScale.m128_f32[1],
+		pModelTransformation.xmvScale.m128_f32[2]
 	);
 
 	DirectX::XMMATRIX xmmRotation = DirectX::XMMatrixRotationRollPitchYaw(
-		pModelTransformation->sPositionAngle.fPitch,
-		pModelTransformation->sPositionAngle.fYaw,
-		pModelTransformation->sPositionAngle.fRoll
+		pModelTransformation.sPositionAngle.fPitch,
+		pModelTransformation.sPositionAngle.fYaw,
+		pModelTransformation.sPositionAngle.fRoll
 	);
 
 	DirectX::XMMATRIX xmmTranslation = DirectX::XMMatrixTranslation(
-		pModelTransformation->xmvTranslation.m128_f32[0],
-		pModelTransformation->xmvTranslation.m128_f32[1],
-		pModelTransformation->xmvTranslation.m128_f32[2]
+		pModelTransformation.xmvTranslation.m128_f32[0],
+		pModelTransformation.xmvTranslation.m128_f32[1],
+		pModelTransformation.xmvTranslation.m128_f32[2]
 	);
 
-	return xmmScale * xmmRotation * xmmTranslation;
+	
+	return DirectX::XMMatrixTranspose(xmmScale * xmmRotation * xmmTranslation);
 }

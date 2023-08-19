@@ -1,22 +1,34 @@
 #pragma once
+
+#include <memory>
+#include "StructVar.h"
 #include "ID3D11Helper.h"
 #include <directxmath/DirectXMath.h>
 
-struct CameraInfo
+class CameraInfo
 {
-	DirectX::XMVECTOR xmvCameraPosition;
-	DirectX::XMVECTOR xmvCameraDirection;
-	DirectX::XMVECTOR xmvCameraUp;
-	float fFovAngle;
-	float fAspectRatio;
-	float fNearZ;
-	float fFarZ;
-};
+public:
+	static CameraInfo CreateCameraInfo(
+		IN const float& fPosX,
+		IN const float& fPosY,
+		IN const float& fPosZ,
+		IN const float& fFovAngleDegreeIn,
+		IN const float& fAspectRatio,
+		IN const float& fNearZIn = 0.01f ,
+		IN const float& fFarZ = 100.f,
+		IN const float& fMouseMovableAngleDegreeIn = 180.f
+	);
 
-namespace std {
-	template<typename T>
-	class shared_ptr;
-}
+
+public:
+	DirectX::XMVECTOR	xmvCameraPosition;
+	PositionAngle		sCameraPose;
+	float				fFovAngle;
+	float				fAspectRatio;
+	float				fNearZ;
+	float				fFarZ;
+	float				fMouseMovableAngle;
+};
 
 class ICamera
 {
@@ -24,17 +36,22 @@ public:
 	ICamera(ComPtr<ID3D11Device>& cpDeviceIn,
 		ComPtr<ID3D11DeviceContext>& cpDeviceContextIn,
 		ComPtr<IDXGISwapChain>& cpSwapChainIn, 
-		const float& fAspectRatioIn
+		const UINT& uiWidthIn, const UINT& uiHeightIn
 	);
 	~ICamera() {};
 
 public:
 	void Update();
+	void Resize(const float& fAspectRatioIn);
 	void WipeOut(const float fcolor[4] = ICamera::DefaultClearColor);
 
 public:
-	const float&					fAspectRatio;
-	CameraInfo						sCameraInfo;
+	void SetFromMouseXY(const int& iDeltaXIn, const int& iDeltaYIn);
+
+public:
+	UINT			uiWidth;
+	UINT			uiHeight;
+	CameraInfo		sCameraInfo;
 
 public:
 	DirectX::XMMATRIX GetViewProjTransposed();

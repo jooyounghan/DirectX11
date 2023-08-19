@@ -1,36 +1,26 @@
 #include "ICamera.h"
+#include "MathematicalHelper.h"
 #include "EnumBuffer.h"
-
-#include <memory>
 
 std::shared_ptr<ICamera>	ICamera::DefaultCamera = nullptr;
 const float					ICamera::DefaultClearColor[4] = { 0.f, 0.f, 0.f, 1.f };
 
 using namespace DirectX;
 
-ICamera::ICamera(ComPtr<ID3D11Device>& cpDeviceIn, 
+ICamera::ICamera(ComPtr<ID3D11Device>& cpDeviceIn,
 	ComPtr<ID3D11DeviceContext>& cpDeviceContextIn,
-	ComPtr<IDXGISwapChain>& cpSwapChainIn, const float& fAspectRatioIn
-)
+	ComPtr<IDXGISwapChain>& cpSwapChainIn, const UINT& uiWidthIn, const UINT& uiHeightIn)
 	: cpDevice(cpDeviceIn),
 	cpDeviceContext(cpDeviceContextIn),
 	cpSwapChain(cpSwapChainIn),
-	fAspectRatio(fAspectRatioIn)
+	uiWidth(uiWidthIn), uiHeight(uiHeightIn)
 {
 	ID3D11Helper::GetBackBuffer(cpSwapChain.Get(), cpBackBuffer.GetAddressOf());
 	ID3D11Helper::CreateRenderTargetView(cpDevice.Get(), cpBackBuffer.Get(), cpRenderTargetView.GetAddressOf());
-	
-	AutoZeroMemory(sCameraInfo);
-	sCameraInfo.xmvCameraPosition = XMVectorSet(0.f, 0.f, -10.f, 0.f);
-	sCameraInfo.xmvCameraDirection = XMVectorSet(0.f, 0.f, 1.f, 0.f);
-	sCameraInfo.xmvCameraUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
-	sCameraInfo.fFovAngle = XMConvertToRadians(70.f);
-	sCameraInfo.fAspectRatio = fAspectRatio;
-	sCameraInfo.fNearZ = 0.01f;
-	sCameraInfo.fFarZ = 100.f;
 
+
+	sCameraInfo = CameraInfo::CreateCameraInfo(0.f, 0.f, -10.f, 70.f, uiWidth / (float)uiHeight);
 	XMMATRIX xmmViewProjTransposed = GetViewProjTransposed();
-
 	ID3D11Helper::CreateBuffer(
 		cpDevice.Get(),
 		xmmViewProjTransposed,
@@ -50,6 +40,14 @@ void ICamera::Update()
 	cpDeviceContext->VSSetConstantBuffers(ViewProjMatrix, 1, cpCameraConstantBuffer.GetAddressOf());
 }
 
+void ICamera::Resize(const float& fAspectRatioIn)
+{
+	sCameraInfo.fAspectRatio = fAspectRatioIn;
+	ID3D11Helper::GetBackBuffer(cpSwapChain.Get(), cpBackBuffer.GetAddressOf());
+	cpRenderTargetView.Reset();
+	ID3D11Helper::CreateRenderTargetView(cpDevice.Get(), cpBackBuffer.Get(), cpRenderTargetView.GetAddressOf());
+}
+
 void ICamera::WipeOut(const float fcolor[4])
 {
 	cpDeviceContext->ClearRenderTargetView(cpRenderTargetView.Get(), fcolor);
@@ -57,10 +55,25 @@ void ICamera::WipeOut(const float fcolor[4])
 
 }
 
+void ICamera::SetFromMouseXY(const int& iMouseX, const int& iMouseY)
+{
+	float fNdcX = iMouseX * 2.f / uiWidth - 1.f;
+	float fNdcY = iMouseY * 2.f / uiHeight - 1.f;
+
+	fNdcX = std::clamp(fNdcX, -1.f, 1.f);
+	fNdcY = std::clamp(fNdcY, -1.f, 1.f);
+
+	sCameraInfo.sCameraPose.fPitch	= sCameraInfo.fMouseMovableAngle * fNdcY;
+	sCameraInfo.sCameraPose.fYaw	= sCameraInfo.fMouseMovableAngle * fNdcX;
+}
+
 XMMATRIX ICamera::GetViewProjTransposed()
 {
-	XMMATRIX test = XMMatrixLookToLH(sCameraInfo.xmvCameraPosition, sCameraInfo.xmvCameraDirection, sCameraInfo.xmvCameraUp);
-
+	XMMATRIX xmRotationMat = XMMatrixRotationRollPitchYaw(sCameraInfo.sCameraPose.fPitch, sCameraInfo.sCameraPose.fYaw, sCameraInfo.sCameraPose.fRoll);
+	
+	XMVECTOR xmvCameraDirection = XMVector4Transform(XMVectorSet(0.f, 0.f, 1.f, 0.f), xmRotationMat);
+	XMVECTOR xmvCameraUp		= XMVector4Transform(XMVectorSet(0.f, 1.f, 0.f, 0.f), xmRotationMat);
+	
 	// DirectX11에서는 Row Major Order가 사용되기 때문에,
 	// 위치 좌표 벡터 * 모델 행렬 * 뷰 행렬 * 프로젝션 행렬의 형태가 되어야 한다.
 	// L * M * V * P(Row Major)
@@ -76,6 +89,31 @@ XMMATRIX ICamera::GetViewProjTransposed()
 	// (V * P)_T = P_T * V_T 이므로,
 	// CPU(DirectX11)에서 V * P를 계산하고 전치를 처리해준 다음에 GPU(HLSL)로 보내준다.
 
-	return XMMatrixTranspose(XMMatrixLookToLH(sCameraInfo.xmvCameraPosition, sCameraInfo.xmvCameraDirection, sCameraInfo.xmvCameraUp) *
+	return XMMatrixTranspose(XMMatrixLookToLH(sCameraInfo.xmvCameraPosition, xmvCameraDirection, xmvCameraUp) *
 		XMMatrixPerspectiveFovLH(sCameraInfo.fFovAngle, sCameraInfo.fAspectRatio, sCameraInfo.fNearZ, sCameraInfo.fFarZ));
+}
+
+CameraInfo CameraInfo::CreateCameraInfo(
+	IN const float& fPosX, 
+	IN const float& fPosY,
+	IN const float& fPosZ, 
+	IN const float& fFovAngleDegreeIn, 
+	IN const float& fAspectRatio, 
+	IN const float& fNearZIn,
+	IN const float& fFarZ, 
+	IN const float& fMouseMovableAngleDegreeIn
+)
+{
+	CameraInfo sCameraInfo;
+	AutoZeroMemory(sCameraInfo);
+	sCameraInfo.xmvCameraPosition = XMVectorSet(fPosX, fPosY, fPosZ, 0.f);
+	sCameraInfo.sCameraPose.fPitch = 0.f;
+	sCameraInfo.sCameraPose.fRoll = 0.f;
+	sCameraInfo.sCameraPose.fYaw = 0.f;
+	sCameraInfo.fFovAngle = XMConvertToRadians(fFovAngleDegreeIn);
+	sCameraInfo.fAspectRatio = fAspectRatio;
+	sCameraInfo.fNearZ = fNearZIn;
+	sCameraInfo.fFarZ = fFarZ;
+	sCameraInfo.fMouseMovableAngle = XMConvertToRadians(fMouseMovableAngleDegreeIn);
+	return sCameraInfo;
 }
