@@ -16,7 +16,8 @@ public:
 		IN const float& fAspectRatio,
 		IN const float& fNearZIn = 0.01f ,
 		IN const float& fFarZ = 100.f,
-		IN const float& fMouseMovableAngleDegreeIn = 180.f
+		IN const float& fMouseMovablePitchAngleDegreeIn = 90.f,
+		IN const float& fMouseMovableYawAngleDegreeIn = 180.f
 	);
 
 
@@ -27,7 +28,8 @@ public:
 	float				fAspectRatio;
 	float				fNearZ;
 	float				fFarZ;
-	float				fMouseMovableAngle;
+	float				fMouseMovablePitchAngleDegree;
+	float				fMouseMovableYawAngleDegree;
 };
 
 class ICamera
@@ -72,5 +74,11 @@ private:
 public:
 	static std::shared_ptr<ICamera> DefaultCamera;
 	static const float				DefaultClearColor[4];
+
+private:
+	bool bFirstView;
+
+public:
+	void SwitchFirstView();
 };
 

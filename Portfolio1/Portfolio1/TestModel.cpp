@@ -50,8 +50,6 @@ TestModel::TestModel(
 
 void TestModel::Update()
 {
-	sModelTransformation.sPositionAngle.fYaw += 0.1f;
-
 	ID3D11Helper::UpdateBuffer(
 		cpDeviceContext.Get(),
 		ModelTransform::GetAffineTransformMatrix(sModelTransformation),

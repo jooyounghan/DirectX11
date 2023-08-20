@@ -4,67 +4,16 @@
 
 #include "TestModel.h"
 
-#include <iostream>
-#include <string>
-
-#include <Windows.h>
-#include <windowsx.h>
+#include "IKeyCommand.h"
+#include "TempVariable.h"
 
 using namespace std;
 
-PortfolioApp* gPortfolioApp = nullptr;
-
-LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
-	return gPortfolioApp->PortfolioProc(hWnd, msg, wParam, lParam);
-}
 
 PortfolioApp::PortfolioApp(const UINT& uiWidthIn, const UINT& uiHeightIn)
-	: uiWidth(uiWidthIn),
-	uiHeight(uiHeightIn),
-	fAspectRatio(uiWidth / (float)uiHeight),
-	imImgui(uiWidth, uiHeight),
-	pMainCamera(nullptr)
+	: BaseApp(uiWidthIn, uiHeightIn), pMainCamera(nullptr), pSelectedModel(nullptr)
 {
-	gPortfolioApp = this;
-
-	AutoZeroMemory(wc);
-	wc = { sizeof(WNDCLASSEX),
-					 CS_CLASSDC,
-					 WndProc,
-					 0L,
-					 0L,
-					 GetModuleHandle(NULL),
-					 NULL,
-					 NULL,
-					 NULL,
-					 NULL,
-					 L"Portfolio1", // lpszClassName, L-string
-					 NULL };
-
-	RegisterClassEx(&wc);
-
-	RECT rWindowRect = { 0, 0, (LONG)uiWidth, (LONG)uiHeight };
-
-	AdjustWindowRect(&rWindowRect, WS_OVERLAPPEDWINDOW, FALSE);
-
-	const LONG& lTotalWidth = rWindowRect.right - rWindowRect.left;
-	const LONG& lTotalHeight = rWindowRect.bottom - rWindowRect.top;
-
-	HWND hWindow = CreateWindow(wc.lpszClassName, L"Joo YH / Portfolio1",
-		WS_OVERLAPPEDWINDOW,
-		0,
-		0,
-		lTotalWidth,
-		lTotalHeight,
-		NULL, NULL, wc.hInstance, NULL);
-
-	hMainWindow = hWindow;
-
-	ShowWindow(hWindow, SW_SHOWDEFAULT);
-	UpdateWindow(hWindow);
-
-
+	BaseApp::GlobalBaseApp = this;
 }
 
 PortfolioApp::~PortfolioApp()
@@ -74,17 +23,20 @@ PortfolioApp::~PortfolioApp()
 
 void PortfolioApp::Init()
 {
-	ID3D11Helper::CreateDeviceAndContext(uiWidth, uiHeight, true, hMainWindow, cpSwapChain.GetAddressOf(), cpDevice.GetAddressOf(), cpDeviceContext.GetAddressOf());
-	imImgui.InitImgui(cpDevice.Get(), cpDeviceContext.Get(), hMainWindow);
-	ID3D11Helper::SetViewPort(0.f, 0.f, float(uiWidth), float(uiHeight), 0.f, 1.f, cpDeviceContext.Get(), &screenViewport);
+	BaseApp::Init();
+	InitImGUI();
 
 	if (ICamera::DefaultCamera == nullptr)
 	{
 		ICamera::DefaultCamera = std::make_shared<ICamera>(cpDevice, cpDeviceContext, cpSwapChain, uiWidth, uiHeight);
+
 	}
+	// For Testing ==================================================================================
 	pMainCamera = ICamera::DefaultCamera;
 	vModels.push_back(std::make_shared<TestModel>(cpDevice, cpDeviceContext, 0.f, 0.f, 0.f, 2.f));
 	vModels.push_back(std::make_shared<TestModel>(cpDevice, cpDeviceContext, 5.f, 0.f, 5.f, 2.f));
+	pSelectedModel = vModels[1];
+	// ==============================================================================================
 }
 
 void PortfolioApp::Update()
@@ -107,11 +59,6 @@ void PortfolioApp::Render()
 	}
 }
 
-void PortfolioApp::SwapChain()
-{
-	cpSwapChain->Present(1, 0);
-}
-
 void PortfolioApp::Run()
 {
 	// Main message loop
@@ -122,8 +69,13 @@ void PortfolioApp::Run()
 			DispatchMessage(&msg);
 		}
 		else {
+			SetImGUIRendering();
+
 			Update();
 			Render();
+
+			RenderImGUI();
+
 			SwapChain();
 		}
 	}
@@ -131,8 +83,60 @@ void PortfolioApp::Run()
 
 void PortfolioApp::Quit()
 {
-	DestroyWindow(hMainWindow);
-	UnregisterClass(wc.lpszClassName, wc.hInstance);
+	BaseApp::Quit();
+	QuitImGUI();
+}
+
+void PortfolioApp::InitImGUI()
+{
+	IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO();
+    (void)io;
+    io.DisplaySize = ImVec2((float)uiWidth, (float)uiHeight);
+    ImGui::StyleColorsLight();
+
+	ImGui_ImplDX11_Init(cpDevice.Get(), cpDeviceContext.Get());
+    ImGui_ImplWin32_Init(hMainWindow);
+}
+
+void PortfolioApp::SetImGUIRendering()
+{
+	ImGui_ImplDX11_NewFrame();
+    ImGui_ImplWin32_NewFrame();
+    ImGui::NewFrame();
+    ImGui::Begin("Scene Control");
+
+    UpdateGUI(); // 추가적으로 사용할 GUI
+
+    ImGui::End();
+    ImGui::Render();
+}
+
+void PortfolioApp::UpdateGUI()
+{
+	ImGui::Text("Average %.3f ms/frame (%.1f FPS)",
+    1000.0f / ImGui::GetIO().Framerate,
+    ImGui::GetIO().Framerate);
+
+	bool bModelNotSelected = (pSelectedModel == nullptr);
+	ImGui::BeginDisabled(bModelNotSelected);
+	ImGui::SliderFloat3("Scale Vector", bModelNotSelected ? TempVariable::fTempFloat3 : pSelectedModel->sModelTransformation.xmvScale.m128_f32, 0.f, 5.f);
+	ImGui::SliderFloat3("Rotation Vector", bModelNotSelected ? TempVariable::fTempFloat3 : (float*)(&pSelectedModel->sModelTransformation.sPositionAngle), -2.f * DirectX::XM_PI, 2.f * DirectX::XM_PI);
+	ImGui::SliderFloat3("Translation Vector", bModelNotSelected ? TempVariable::fTempFloat3 : pSelectedModel->sModelTransformation.xmvTranslation.m128_f32, -10.f, 10.f);
+	ImGui::EndDisabled();	
+}
+
+void PortfolioApp::RenderImGUI()
+{
+	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+}
+
+void PortfolioApp::QuitImGUI()
+{
+	ImGui_ImplDX11_Shutdown();
+    ImGui_ImplWin32_Shutdown();
+    ImGui::DestroyContext();
 }
 
 void PortfolioApp::ResizeSwapChain(const UINT& uiWidthIn, const UINT& uiHeightIn)
@@ -154,12 +158,8 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd,
 	LPARAM lParam);
 
 
-LRESULT __stdcall PortfolioApp::PortfolioProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT __stdcall PortfolioApp::AppProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-	tagPOINT t;
-	AutoZeroMemory(t);
-
-
 	if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam))
 		return true;
 
@@ -169,6 +169,17 @@ LRESULT __stdcall PortfolioApp::PortfolioProc(HWND hWnd, UINT msg, WPARAM wParam
 		return 0;
 	case WM_MOUSEMOVE:
 		pMainCamera->SetFromMouseXY(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		return 0;
+	case WM_KEYDOWN:
+		switch (wParam) {
+		case KeyCode::W:
+		case KeyCode::A:
+		case KeyCode::S:
+		case KeyCode::D:
+
+		case KeyCode::F:
+			pMainCamera->SwitchFirstView();
+		}
 		return 0;
 	case WM_DESTROY:
 		::PostQuitMessage(0);

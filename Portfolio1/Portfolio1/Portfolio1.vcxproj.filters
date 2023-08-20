@@ -63,9 +63,6 @@
     <ClCompile Include="TestModel.cpp">
       <Filter>소스 파일\Model</Filter>
     </ClCompile>
-    <ClCompile Include="ImguiManager.cpp">
-      <Filter>소스 파일\Utils</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>소스 파일\Main</Filter>
     </ClCompile>
@@ -77,6 +74,12 @@
     </ClCompile>
     <ClCompile Include="IKeyCommand.cpp">
       <Filter>소스 파일\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseApp.cpp">
+      <Filter>소스 파일\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="TempVariable.cpp">
+      <Filter>소스 파일\Utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -104,14 +107,17 @@
     <ClInclude Include="TestModel.h">
       <Filter>헤더 파일\Model</Filter>
     </ClInclude>
-    <ClInclude Include="ImguiManager.h">
-      <Filter>헤더 파일\Utils</Filter>
-    </ClInclude>
     <ClInclude Include="IKeyCommand.h">
       <Filter>헤더 파일\Input</Filter>
     </ClInclude>
     <ClInclude Include="PortfolioApp.h">
       <Filter>헤더 파일\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseApp.h">
+      <Filter>헤더 파일\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="TempVariable.h">
+      <Filter>헤더 파일\Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

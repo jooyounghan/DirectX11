@@ -13,7 +13,8 @@ ICamera::ICamera(ComPtr<ID3D11Device>& cpDeviceIn,
 	: cpDevice(cpDeviceIn),
 	cpDeviceContext(cpDeviceContextIn),
 	cpSwapChain(cpSwapChainIn),
-	uiWidth(uiWidthIn), uiHeight(uiHeightIn)
+	uiWidth(uiWidthIn), uiHeight(uiHeightIn),
+	bFirstView(false)
 {
 	ID3D11Helper::GetBackBuffer(cpSwapChain.Get(), cpBackBuffer.GetAddressOf());
 	ID3D11Helper::CreateRenderTargetView(cpDevice.Get(), cpBackBuffer.Get(), cpRenderTargetView.GetAddressOf());
@@ -63,8 +64,16 @@ void ICamera::SetFromMouseXY(const int& iMouseX, const int& iMouseY)
 	fNdcX = std::clamp(fNdcX, -1.f, 1.f);
 	fNdcY = std::clamp(fNdcY, -1.f, 1.f);
 
-	sCameraInfo.sCameraPose.fPitch	= sCameraInfo.fMouseMovableAngle * fNdcY;
-	sCameraInfo.sCameraPose.fYaw	= sCameraInfo.fMouseMovableAngle * fNdcX;
+	if (bFirstView)
+	{
+		sCameraInfo.sCameraPose.fPitch = sCameraInfo.fMouseMovablePitchAngleDegree * fNdcY;
+		sCameraInfo.sCameraPose.fYaw = sCameraInfo.fMouseMovableYawAngleDegree * fNdcX;
+	}
+	else
+	{
+		sCameraInfo.sCameraPose.fPitch = sCameraInfo.sCameraPose.fPitch;
+		sCameraInfo.sCameraPose.fYaw = sCameraInfo.sCameraPose.fYaw;
+	}
 }
 
 XMMATRIX ICamera::GetViewProjTransposed()
@@ -93,6 +102,11 @@ XMMATRIX ICamera::GetViewProjTransposed()
 		XMMatrixPerspectiveFovLH(sCameraInfo.fFovAngle, sCameraInfo.fAspectRatio, sCameraInfo.fNearZ, sCameraInfo.fFarZ));
 }
 
+void ICamera::SwitchFirstView()
+{
+	bFirstView = !bFirstView;
+}
+
 CameraInfo CameraInfo::CreateCameraInfo(
 	IN const float& fPosX, 
 	IN const float& fPosY,
@@ -101,7 +115,8 @@ CameraInfo CameraInfo::CreateCameraInfo(
 	IN const float& fAspectRatio, 
 	IN const float& fNearZIn,
 	IN const float& fFarZ, 
-	IN const float& fMouseMovableAngleDegreeIn
+	IN const float& fMouseMovablePitchAngleDegreeIn,
+	IN const float& fMouseMovableYawAngleDegreeIn
 )
 {
 	CameraInfo sCameraInfo;
@@ -114,6 +129,7 @@ CameraInfo CameraInfo::CreateCameraInfo(
 	sCameraInfo.fAspectRatio = fAspectRatio;
 	sCameraInfo.fNearZ = fNearZIn;
 	sCameraInfo.fFarZ = fFarZ;
-	sCameraInfo.fMouseMovableAngle = XMConvertToRadians(fMouseMovableAngleDegreeIn);
+	sCameraInfo.fMouseMovablePitchAngleDegree = XMConvertToRadians(fMouseMovablePitchAngleDegreeIn);
+	sCameraInfo.fMouseMovableYawAngleDegree = XMConvertToRadians(fMouseMovableYawAngleDegreeIn);
 	return sCameraInfo;
 }

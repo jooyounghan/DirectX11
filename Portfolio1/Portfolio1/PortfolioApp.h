@@ -1,60 +1,53 @@
 #pragma once
-
 #include <memory>
+#include <imgui.h>
+#include <imgui_impl_dx11.h>
+#include <imgui_impl_win32.h>
 
-#include "ID3D11Helper.h"
-#include "ImguiManager.h"
+#include "BaseApp.h"
 
 class ICamera;
 class IModel;
 
-class PortfolioApp
+class PortfolioApp : public BaseApp
 {
 public:
-	PortfolioApp(const UINT& iWidthIn, const UINT& iHeightIn);
+	PortfolioApp(const UINT& uiWidthIn, const UINT& uiHeightIn);
 	~PortfolioApp();
 
 public:
-	void Init();
-	void Update();
-	void Render();
-	void SwapChain();
-	void Run();
-	void Quit();
+	virtual void Init() override;
+	virtual void Update() override;
+	virtual void Render() override;
+	virtual void Run() override;
+	virtual void Quit() override;
+
+public:
+	void InitImGUI();
+	void SetImGUIRendering();
+	void UpdateGUI();
+	void RenderImGUI();
+	void QuitImGUI();
 
 public:
 	void ResizeSwapChain(const UINT& uiWidthIn, const UINT& uiHeightIn);
 
 private:
-	UINT	uiWidth;
-	UINT	uiHeight;
-	float fAspectRatio;
-
-private:
-	WNDCLASSEX wc;
-	HWND hMainWindow;
-
-private:
-	ComPtr<ID3D11Device> cpDevice;
-	ComPtr<ID3D11DeviceContext> cpDeviceContext;
-	ComPtr<IDXGISwapChain> cpSwapChain;
-
 	ComPtr<ID3D11ShaderResourceView> cpShaderResourceView;
 	ComPtr<ID3D11DepthStencilView> cpDepthStencilView;
 
 	ComPtr<ID3D11RasterizerState> cpRasterizerState;
 	ComPtr<ID3D11DepthStencilState> cpDepthStencilState;
-	D3D11_VIEWPORT screenViewport;
 
 private:	
 	std::shared_ptr<ICamera>				pMainCamera;
+	std::shared_ptr<IModel>					pSelectedModel;
+
+private:
 	vector<std::shared_ptr<ICamera>>		vCameras;
 	vector<std::shared_ptr<IModel>>			vModels;
 
-private:
-	ImguiManager imImgui;
-
 public:
-	LRESULT WINAPI PortfolioProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+	virtual LRESULT WINAPI AppProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) override;
 };
 
