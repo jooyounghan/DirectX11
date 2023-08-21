@@ -21,9 +21,9 @@ public:
 		IN const UINT& iHeight,
 		IN bool bWindowed,
 		IN HWND hOutputWindow,
-		OUT IDXGISwapChain** ppSwapChain,
-		OUT ID3D11Device** ppDevice,
-		OUT ID3D11DeviceContext** ppDeviceContext);
+		OUT ComPtr<IDXGISwapChain>& cpSwapChain,
+		OUT ComPtr<ID3D11Device>& cpDevice,
+		OUT ComPtr<ID3D11DeviceContext>& cpDeviceContext);
 
 	static void CreateVSInputLayOut(
 		IN ID3D11Device* pDevice,

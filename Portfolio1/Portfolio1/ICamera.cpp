@@ -18,7 +18,7 @@ ICamera::ICamera(ComPtr<ID3D11Device>& cpDeviceIn,
 {
 	ID3D11Helper::GetBackBuffer(cpSwapChain.Get(), cpBackBuffer.GetAddressOf());
 	ID3D11Helper::CreateRenderTargetView(cpDevice.Get(), cpBackBuffer.Get(), cpRenderTargetView.GetAddressOf());
-
+	ID3D11Helper::CreateRasterizerState(cpDevice.Get(), D3D11_FILL_MODE::D3D11_FILL_SOLID, D3D11_CULL_MODE::D3D11_CULL_BACK, true, cpRasterizerState.GetAddressOf());
 
 	sCameraInfo = CameraInfo::CreateCameraInfo(0.f, 0.f, -10.f, 70.f, uiWidth / (float)uiHeight);
 	XMMATRIX xmmViewProjTransposed = GetViewProjTransposed();
@@ -37,7 +37,7 @@ void ICamera::Update()
 {
 	XMMATRIX xmmViewProjTransposed = GetViewProjTransposed();
 	ID3D11Helper::UpdateBuffer(cpDeviceContext.Get(), xmmViewProjTransposed, D3D11_MAP::D3D11_MAP_WRITE_DISCARD, cpCameraConstantBuffer.Get());
-
+	cpDeviceContext->RSSetState(cpRasterizerState.Get());
 	cpDeviceContext->VSSetConstantBuffers(ViewProjMatrix, 1, cpCameraConstantBuffer.GetAddressOf());
 }
 

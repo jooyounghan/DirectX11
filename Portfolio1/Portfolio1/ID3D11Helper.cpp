@@ -5,11 +5,67 @@ void ID3D11Helper::CreateDeviceAndContext(
 	IN const UINT& iHeight,
 	IN bool bWindowed,
 	IN HWND hOutputWindow,
-	OUT IDXGISwapChain** ppSwapChain,
-	OUT ID3D11Device** ppDevice,
-	OUT ID3D11DeviceContext** ppDeviceContext
+	OUT ComPtr<IDXGISwapChain>& cpSwapChain,
+	OUT ComPtr<ID3D11Device>& cpDevice,
+	OUT ComPtr<ID3D11DeviceContext>& cpDeviceContext
 )
 {
+	const D3D_DRIVER_TYPE driverType = D3D_DRIVER_TYPE_HARDWARE;
+	UINT createDeviceFlags = 0;
+#if defined(DEBUG) || defined(_DEBUG)
+	createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
+#endif
+
+	const D3D_FEATURE_LEVEL pFeatureLevel[3] = { D3D_FEATURE_LEVEL_11_0 , D3D_FEATURE_LEVEL_10_1, D3D_FEATURE_LEVEL_9_3 };
+	D3D_FEATURE_LEVEL featureLevel;
+
+	ComPtr<ID3D11Device> cpTempDevice;
+	ComPtr<ID3D11DeviceContext> cpTempDeviceContext;
+
+	HRESULT hResult = D3D11CreateDevice(
+		NULL,
+		driverType,
+		NULL,
+		createDeviceFlags,
+		pFeatureLevel,
+		ARRAYSIZE(pFeatureLevel),
+		D3D11_SDK_VERSION,
+		cpTempDevice.GetAddressOf(),
+		&featureLevel,
+		cpTempDeviceContext.GetAddressOf()
+	);
+
+	if (FAILED(hResult))
+	{
+		Console("Device와 Device Context를 생성하는데 실패하였습니다.");
+		return;
+	}
+
+	if (featureLevel != D3D_FEATURE_LEVEL_11_0) {
+		Console("D3D가 11을 지원하지 않습니다.");
+		return;
+	}
+
+	UINT numQualityLevels = 0;
+
+	cpTempDevice->CheckMultisampleQualityLevels(DXGI_FORMAT_R8G8B8A8_UNORM, 4,
+		&numQualityLevels);
+
+
+	hResult = cpTempDevice.As(&cpDevice);
+	if (FAILED(hResult))
+	{
+		Console("임시 Device 객체 As가 실패하였습니다.");
+		return;
+	}
+
+	hResult = cpTempDeviceContext.As(&cpDeviceContext);
+	if (FAILED(hResult))
+	{
+		Console("임시 Device Context 객체 As가 실패하였습니다.");
+		return;
+	}
+
 	DXGI_SWAP_CHAIN_DESC sSwapChainDesc;
 	AutoZeroMemory(sSwapChainDesc);
 	sSwapChainDesc.BufferDesc.Width = iWidth;
@@ -18,33 +74,48 @@ void ID3D11Helper::CreateDeviceAndContext(
 	sSwapChainDesc.BufferDesc.RefreshRate.Denominator = 1;
 	sSwapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 
-	sSwapChainDesc.SampleDesc.Count = 1;
-	/*sSwapChainDesc.SampleDesc.Quality = 0;*/
+	sSwapChainDesc.SampleDesc.Count = numQualityLevels > 0 ? 4 : 1;
+	sSwapChainDesc.SampleDesc.Quality = numQualityLevels > 0 ? numQualityLevels - 1 : 0;
 
 	sSwapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 	sSwapChainDesc.BufferCount = 2;
 	sSwapChainDesc.OutputWindow = hOutputWindow;
 	sSwapChainDesc.Windowed = bWindowed;
 
-	sSwapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+	/*
+	Memo
+	DXGI_SWAP_EFFECT_DISCARD의 경우,
+	새로운 프레임을 화면에 보여주기 전에 현재 화면 버퍼를 폐기하고
+	새로운 렌더링 결과를 새로운 화면 버퍼에 렌더링한다.
+	이전 프레임의 화면 버퍼를 먼저 폐기하기에 약간의 지연이 발생할 수 있다.
+
+	DXGI_SWAP_EFFECT_FLIP_DISCARD의 경우,
+	백 버퍼와 프론트 버퍼(화면에 보여지는 버퍼)를 분리하여 사용하며,
+	백 버퍼의 렌더링 작업이 완료되면 프론트 버퍼와 스왑하는 방식으로 동작한다.
+	이로 인해 백 버퍼의 렌더링 작업과 프론트 버퍼의 화면 표시 작업이 비동기적으로 이루어지므로,
+	더 부드러운 화면 전환을 제공한다.
+	다중 샘플링이나 부분 Present가 불가능하다.
+
+	멀티샘플링을 적용하기 위해서는 멀티샘플링을 적용한 백버퍼를 렌더링한 후,
+	이를 비-멀티샘플링된 백 버퍼에 Resolve한다.
+	이후에 Resolve된 백 버퍼를 프론트 버퍼로 스왑한다.
+	*/
+	sSwapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 	sSwapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG::DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
-
-	//const D3D_FEATURE_LEVEL pFeatureLevel[3] = { D3D_FEATURE_LEVEL_11_0 , D3D_FEATURE_LEVEL_10_1, D3D_FEATURE_LEVEL_9_3 };
-	const D3D_FEATURE_LEVEL pFeatureLevel[1] = { D3D_FEATURE_LEVEL_11_0/* , D3D_FEATURE_LEVEL_10_1, D3D_FEATURE_LEVEL_9_3 */};
-	HRESULT hResult = D3D11CreateDeviceAndSwapChain(
+	hResult = D3D11CreateDeviceAndSwapChain(
 		NULL,
-		D3D_DRIVER_TYPE_HARDWARE,
+		driverType,
 		NULL,
-		D3D11_CREATE_DEVICE_DEBUG,
-		pFeatureLevel /* D3D_FEATURE_LEVEL_11_0, 10_1, 10_0, 9_3, 9_2, 9_1 */,
+		createDeviceFlags,
+		pFeatureLevel,
 		1,
 		D3D11_SDK_VERSION,
 		&sSwapChainDesc,
-		ppSwapChain,
-		ppDevice,
-		NULL,
-		ppDeviceContext
+		cpSwapChain.GetAddressOf(),
+		cpDevice.GetAddressOf(),
+		&featureLevel,
+		cpDeviceContext.GetAddressOf()
 	);
 	
 	if (FAILED(hResult))
