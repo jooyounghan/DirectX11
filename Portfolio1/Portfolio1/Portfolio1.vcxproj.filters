@@ -37,12 +37,6 @@
     <Filter Include="소스 파일\Main">
       <UniqueIdentifier>{0505c04a-655b-4531-a921-1d69aa6249e7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Input">
-      <UniqueIdentifier>{b8a55d37-5adb-4354-8141-d6b7f017b499}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\Input">
-      <UniqueIdentifier>{ae3a35f5-7553-4fd7-9e2d-78478bf61124}</UniqueIdentifier>
-    </Filter>
     <Filter Include="헤더 파일\Main">
       <UniqueIdentifier>{3ff67aee-c3a9-48e7-86c3-d503fcb899aa}</UniqueIdentifier>
     </Filter>
@@ -72,9 +66,6 @@
     <ClCompile Include="StructVar.cpp">
       <Filter>소스 파일\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="IKeyCommand.cpp">
-      <Filter>소스 파일\Input</Filter>
-    </ClCompile>
     <ClCompile Include="BaseApp.cpp">
       <Filter>소스 파일\Main</Filter>
     </ClCompile>
@@ -92,7 +83,7 @@
     <ClInclude Include="ID3D11Helper.h">
       <Filter>헤더 파일\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="EnumBuffer.h">
+    <ClInclude Include="EnumVar.h">
       <Filter>헤더 파일\Utils</Filter>
     </ClInclude>
     <ClInclude Include="MathematicalHelper.h">
@@ -106,9 +97,6 @@
     </ClInclude>
     <ClInclude Include="TestModel.h">
       <Filter>헤더 파일\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="IKeyCommand.h">
-      <Filter>헤더 파일\Input</Filter>
     </ClInclude>
     <ClInclude Include="PortfolioApp.h">
       <Filter>헤더 파일\Main</Filter>

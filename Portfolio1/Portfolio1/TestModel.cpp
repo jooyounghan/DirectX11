@@ -1,5 +1,5 @@
 #include "TestModel.h"
-#include "EnumBuffer.h"
+#include "EnumVar.h"
 
 TestModel::TestModel(
 	ComPtr<ID3D11Device>& cpDeviceIn,

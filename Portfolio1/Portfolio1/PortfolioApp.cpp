@@ -1,11 +1,9 @@
 #include "PortfolioApp.h"
 #include "ICamera.h"
 #include "IModel.h"
+#include "TempVariable.h"
 
 #include "TestModel.h"
-
-#include "IKeyCommand.h"
-#include "TempVariable.h"
 
 using namespace std;
 
@@ -170,15 +168,42 @@ LRESULT __stdcall PortfolioApp::AppProc(HWND hWnd, UINT msg, WPARAM wParam, LPAR
 	case WM_MOUSEMOVE:
 		pMainCamera->SetFromMouseXY(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
 		return 0;
+	case WM_LBUTTONDOWN:
+		// TODO : 모델 선택 관련 로직 추가
+		return 0;
 	case WM_KEYDOWN:
 		switch (wParam) {
 		case KeyCode::W:
+			pMainCamera->StartMove(MoveDir::Forward);
+			break;
 		case KeyCode::A:
+			pMainCamera->StartMove(MoveDir::Left);
+			break;
 		case KeyCode::S:
+			pMainCamera->StartMove(MoveDir::Backward);
+			break;
 		case KeyCode::D:
-
+			pMainCamera->StartMove(MoveDir::Right);
+			break;
 		case KeyCode::F:
 			pMainCamera->SwitchFirstView();
+			break;
+		}
+		return 0;
+	case WM_KEYUP:
+		switch (wParam) {
+		case KeyCode::W:
+			pMainCamera->StopMove(MoveDir::Forward);
+			break;
+		case KeyCode::A:
+			pMainCamera->StopMove(MoveDir::Left);
+			break;
+		case KeyCode::S:
+			pMainCamera->StopMove(MoveDir::Backward);
+			break;
+		case KeyCode::D:
+			pMainCamera->StopMove(MoveDir::Right);
+			break;
 		}
 		return 0;
 	case WM_DESTROY:

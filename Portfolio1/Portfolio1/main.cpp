@@ -13,6 +13,7 @@ void Console(const char* text)
 int main() {
     UINT iWidth = 1280;
     UINT iHeight = 960;
+
     PortfolioApp* App = new PortfolioApp(iWidth, iHeight);
 
     App->Init();
@@ -20,5 +21,6 @@ int main() {
     App->Quit();
 
     delete App;
+
     return 0;
 }

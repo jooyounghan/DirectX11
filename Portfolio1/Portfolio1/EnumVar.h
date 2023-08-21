@@ -1,5 +1,11 @@
 #pragma once
 
+enum VSConstBuffer : unsigned int
+{
+	ModelMatrix,
+	ViewProjMatrix
+};
+
 enum KeyCode
 {
 	Zero = 0x30,
@@ -37,11 +43,15 @@ enum KeyCode
 	W,
 	X,
 	Y,
-	Z
+	Z,
+	NUM_KEY
 };
 
-
-class IKeyCommand
+enum MoveDir
 {
+	Forward,
+	Left,
+	Backward,
+	Right,
+	NUM_DIR
 };
-
