@@ -8,9 +8,30 @@ cbuffer ViewProjMatrix : register(b1)
     matrix mViewProj;
 };
 
-float4 main(float4 input : POSITION) : SV_Position
+struct VertexInput
 {
-    input = mul(input, mModel);
-    input = mul(input, mViewProj);
-    return input;
+    float4 fWorldPos : POSITION;
+    float2 fTexCoord : TEXCOORD;
+    float4 fNorVec : NORMAL;
+};
+    
+struct PixelInput
+{
+    float4 fProjPos : SV_Position;
+    float4 fWorldPos : POSITION;
+    float2 fTexCoord : TEXCOORD;
+    float4 fNorVec : NORMAL;
+};
+
+PixelInput main(VertexInput input)
+{
+    PixelInput result;
+    result.fWorldPos = input.fWorldPos;
+    result.fProjPos = input.fWorldPos;
+    result.fProjPos = mul(result.fProjPos, mModel);
+    result.fProjPos = mul(result.fProjPos, mViewProj);
+    
+    result.fTexCoord = input.fTexCoord;
+    result.fNorVec = input.fNorVec;
+    return result;
 }

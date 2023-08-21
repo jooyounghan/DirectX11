@@ -2,9 +2,32 @@
 #include <windows.h>
 #include <directxmath/DirectXMath.h>
 
+struct PositionVector
+{
+	float x;
+	float y;
+	float z;
+	float w = 1.f;
+};
+
+struct TextureCoord
+{
+	float x, y;
+};
+
+struct NormalVector
+{
+	float x;
+	float y;
+	float z;
+	float w = 0.f;
+};
+
 struct Vertex
 {
-	float x, y, z, w;
+	PositionVector	sPosVec;
+	TextureCoord	sTexCoord;
+	NormalVector	sNorVec;
 };
 
 struct PositionAngle

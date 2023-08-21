@@ -12,18 +12,23 @@ TestModel::TestModel(
 	: IModel(cpDeviceIn, cpDeviceContextIn)
 {
 	vector<uint32_t> vIndex{
-		0, 3, 1,
-		1, 3, 2,
-		1, 2, 5,
-		2, 6, 5,
-		0, 7, 3,
-		0, 4, 7,
-		4, 5, 7,
-		7, 5, 6,
-		0, 1, 5,
-		0, 5, 4,
-		3, 7, 2,
-		2, 7, 6
+		0, 1, 2,
+		3, 4, 5,
+
+		6, 7, 8,
+		9, 10, 11,
+		
+		12, 13, 14,
+		15, 16, 17,
+
+		18, 19, 20,
+		21, 22, 23,
+
+		24, 25, 26,
+		27, 28, 29,
+
+		30, 31, 32,
+		33, 34, 35,
 	};
 	ui32IndexCount = UINT(vIndex.size());
 
@@ -32,14 +37,52 @@ TestModel::TestModel(
 	sModelTransformation.xmvTranslation.m128_f32[2] = fCenterZ;
 
 	vector<Vertex> vVertex{
-		{-fLen / 2.f, -fLen / 2.f, -fLen / 2.f, fLen / 2.f},
-		{fLen / 2.f, -fLen / 2.f, -fLen / 2.f, fLen / 2.f},
-		{fLen / 2.f, fLen / 2.f, -fLen / 2.f, fLen / 2.f},
-		{-fLen / 2.f, fLen / 2.f, -fLen / 2.f, fLen / 2.f},
-		{-fLen / 2.f, -fLen / 2.f, fLen / 2.f, fLen / 2.f},
-		{fLen / 2.f, -fLen / 2.f, fLen / 2.f, fLen / 2.f},
-		{fLen / 2.f, fLen / 2.f, fLen / 2.f, fLen / 2.f},
-		{-fLen / 2.f, fLen / 2.f, fLen / 2.f, fLen / 2.f},
+		{{-fLen / 2.f, -fLen / 2.f, -fLen / 2.f}, {0.f, 1.f}, {0.f, 0.f, -1.f}},
+		{{fLen / 2.f, fLen / 2.f, -fLen / 2.f}, {1.f, 0.f}, {0.f, 0.f, -1.f}},
+		{{fLen / 2.f, -fLen / 2.f, -fLen / 2.f}, {1.f, 1.f},  {0.f, 0.f, -1.f}},
+		{{-fLen / 2.f, -fLen / 2.f, -fLen / 2.f}, {0.f, 1.f},  {0.f, 0.f, -1.f}},
+		{{-fLen / 2.f, fLen / 2.f, -fLen / 2.f}, {0.f, 0.f},  {0.f, 0.f, -1.f}},
+		{{fLen / 2.f, fLen / 2.f, -fLen / 2.f}, {1.f, 0.f},  {0.f, 0.f, -1.f}},
+
+
+		{{fLen / 2.f, -fLen / 2.f, -fLen / 2.f}, {0.f, 1.f}, {1.f, 0.f, 0.f}},
+		{{fLen / 2.f, fLen / 2.f, -fLen / 2.f}, {0.f, 0.f}, {1.f, 0.f, 0.f}},
+		{{fLen / 2.f, -fLen / 2.f, fLen / 2.f}, {1.f, 1.f}, {1.f, 0.f, 0.f}},
+		{{fLen / 2.f, -fLen / 2.f, fLen / 2.f}, {1.f, 1.f}, {1.f, 0.f, 0.f}},
+		{{fLen / 2.f, fLen / 2.f, -fLen / 2.f}, {0.f, 0.f}, {1.f, 0.f, 0.f}},
+		{{fLen / 2.f, fLen / 2.f, fLen / 2.f}, {1.f, 0.f}, {1.f, 0.f, 0.f}},
+
+
+		{{-fLen / 2.f, -fLen / 2.f, -fLen / 2.f}, {1.f, 1.f}, {-1.f, 0.f, 0.f}},
+		{{-fLen / 2.f, -fLen / 2.f, fLen / 2.f}, {0.f, 1.f}, {-1.f, 0.f, 0.f}},
+		{{-fLen / 2.f, fLen / 2.f, -fLen / 2.f}, {1.f, 0.f}, {-1.f, 0.f, 0.f}},
+		{{-fLen / 2.f, -fLen / 2.f, fLen / 2.f}, {0.f, 1.f}, {-1.f, 0.f, 0.f}},
+		{{-fLen / 2.f, fLen / 2.f, fLen / 2.f}, {0.f, 0.f}, {-1.f, 0.f, 0.f}},
+		{{-fLen / 2.f, fLen / 2.f, -fLen / 2.f}, {1.f, 0.f}, {-1.f, 0.f, 0.f}},
+
+
+		{{-fLen / 2.f, -fLen / 2.f, -fLen / 2.f}, {0.f, 0.f}, {0.f, -1.f, 0.f}},
+		{{fLen / 2.f, -fLen / 2.f, -fLen / 2.f}, {1.f, 0.f}, {0.f, -1.f, 0.f}},
+		{{fLen / 2.f, -fLen / 2.f, fLen / 2.f}, {1.f, 1.f}, {0.f, -1.f, 0.f}},
+		{{-fLen / 2.f, -fLen / 2.f, -fLen / 2.f}, {0.f, 0.f}, {0.f, -1.f, 0.f}},
+		{{fLen / 2.f, -fLen / 2.f, fLen / 2.f}, {1.f, 1.f}, {0.f, -1.f, 0.f}},
+		{{-fLen / 2.f, -fLen / 2.f, fLen / 2.f}, {0.f, 1.f}, {0.f, -1.f, 0.f}},
+
+
+		{{-fLen / 2.f, fLen / 2.f, -fLen / 2.f}, {0.f, 1.f}, {0.f, -1.f, 0.f}},
+		{{-fLen / 2.f, fLen / 2.f, fLen / 2.f}, {0.f, 0.f}, {0.f, -1.f, 0.f}},
+		{{fLen / 2.f, fLen / 2.f, fLen / 2.f}, {1.f, 0.f}, {0.f, -1.f, 0.f}},
+		{{-fLen / 2.f, fLen / 2.f, -fLen / 2.f}, {0.f, 1.f}, {0.f, -1.f, 0.f}},
+		{{fLen / 2.f, fLen / 2.f, fLen / 2.f}, {1.f, 0.f}, {0.f, -1.f, 0.f}},
+		{{fLen / 2.f, fLen / 2.f, -fLen / 2.f}, {1.f, 1.f}, {0.f, -1.f, 0.f}},
+
+
+		{{-fLen / 2.f, -fLen / 2.f, fLen / 2.f}, {1.f, 1.f}, {0.f ,0.f, 1.f}},
+		{{fLen / 2.f, -fLen / 2.f, fLen / 2.f}, {0.f, 1.f}, {0.f ,0.f, 1.f}},
+		{{-fLen / 2.f, fLen / 2.f, fLen / 2.f}, {1.f, 0.f}, {0.f ,0.f, 1.f}},
+		{{fLen / 2.f, -fLen / 2.f, fLen / 2.f}, {0.f, 1.f}, {0.f ,0.f, 1.f}},
+		{{fLen / 2.f, fLen / 2.f, fLen / 2.f}, {0.f, 0.f}, {0.f ,0.f, 1.f}},
+		{{-fLen / 2.f, fLen / 2.f, fLen / 2.f}, {1.f, 0.f}, {0.f ,0.f, 1.f}}
 	};
 
 	ID3D11Helper::CreateBuffer(cpDevice.Get(), vIndex, D3D11_USAGE_IMMUTABLE, D3D11_BIND_INDEX_BUFFER, 0, 0, cpIndexBuffer.GetAddressOf());

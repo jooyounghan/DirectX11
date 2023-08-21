@@ -1,4 +1,12 @@
-float4 main(float4 input : SV_Position) : SV_TARGET
+struct PixelInput
 {
-    return float4(input.r / 1000.f, input.g / 1000.f, 1.f, 1.f);
+    float4 fProjPos : SV_Position;
+    float4 fWorldPos : POSITION;
+    float2 fTexCoord : TEXCOORD;
+    float4 fNorVec : NORMAL;
+};
+
+float4 main(PixelInput input) : SV_TARGET
+{
+    return float4(abs(input.fNorVec.rgb), 1.f);
 }
