@@ -9,6 +9,7 @@
 class ICamera;
 class IModel;
 
+
 class PortfolioApp : public BaseApp
 {
 public:
@@ -44,8 +45,8 @@ private:
 	std::shared_ptr<IModel>					pSelectedModel;
 
 private:
-	vector<std::shared_ptr<ICamera>>		vCameras;
-	vector<std::shared_ptr<IModel>>			vModels;
+	std::vector<std::shared_ptr<ICamera>>			vCameras;
+	std::vector<std::shared_ptr<IModel>>			vModels;
 
 public:
 	virtual LRESULT WINAPI AppProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) override;

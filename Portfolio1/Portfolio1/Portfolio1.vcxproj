@@ -133,6 +133,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BaseApp.cpp" />
+    <ClCompile Include="FileLoader.cpp" />
     <ClCompile Include="ICamera.cpp" />
     <ClCompile Include="ID3D11Helper.cpp" />
     <ClCompile Include="IModel.cpp" />
@@ -147,6 +148,7 @@
     <ClInclude Include="BaseApp.h" />
     <ClInclude Include="DefineVar.h" />
     <ClInclude Include="EnumVar.h" />
+    <ClInclude Include="FileLoader.h" />
     <ClInclude Include="ICamera.h" />
     <ClInclude Include="ID3D11Helper.h" />
     <ClInclude Include="IModel.h" />

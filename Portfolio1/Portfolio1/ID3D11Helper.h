@@ -3,13 +3,11 @@
 #include <d3dcompiler.h>
 #include <windows.h>
 #include <wrl/client.h>
-
 #include <vector>
 
 #include "DefineVar.h"
 
 using Microsoft::WRL::ComPtr;
-using std::vector;
 
 extern void Console(const char*);
 
@@ -28,14 +26,14 @@ public:
 	static void CreateVSInputLayOut(
 		IN ID3D11Device* pDevice,
 		IN LPCWSTR pFileName,
-		IN const vector<D3D11_INPUT_ELEMENT_DESC>& vInputElementDescs,
+		IN const std::vector<D3D11_INPUT_ELEMENT_DESC>& vInputElementDescs,
 		OUT ID3D11VertexShader** ppVertexShader,
 		OUT ID3D11InputLayout** ppInputLayout);
 	
 	template<typename T>
 	static void CreateBuffer(
 		IN ID3D11Device* pDevice,
-		IN const vector<T>& vData,
+		IN const std::vector<T>& vData,
 		IN D3D11_USAGE eUsage,
 		IN UINT /*D3D11_BIND_FLAG*/ uiBindFlag,
 		IN UINT /*D3D11_CPU_ACCESS_FLAG*/ eCpuAccess,
@@ -120,12 +118,32 @@ public:
 		IN ID3D11DeviceContext* pDeviceContext,
 		OUT D3D11_VIEWPORT* pScreenViewPort
 	);
+
+	static void CreateSampler(
+		IN D3D11_FILTER					eFilter,
+		IN D3D11_TEXTURE_ADDRESS_MODE	eTextureAddressMode,
+		IN FLOAT						pFloat4[4],
+		IN ID3D11Device*				pDevice,
+		OUT ID3D11SamplerState**		ppSamplerState
+	);
+
+	static void CreateTexture2D(
+
+		IN ID3D11Device*				pDevice,
+		OUT ID3D11Texture2D**			ppTexture2D
+	)
+	{
+		D3D11_TEXTURE2D_DESC sTexture2DDesc;
+		//AutoZeroMemory(sTexture2DDesc);
+
+		//pDevice->CreateTexture2D()
+	}
 };
 
 template<typename T>
 void ID3D11Helper::CreateBuffer(
 	IN ID3D11Device* pDevice,
-	IN const vector<T>& vData,
+	IN const std::vector<T>& vData,
 	IN D3D11_USAGE eUsage,
 	IN UINT /*D3D11_BIND_FLAG*/ uiBindFlag,
 	IN UINT /*D3D11_CPU_ACCESS_FLAG*/ eCpuAccess,

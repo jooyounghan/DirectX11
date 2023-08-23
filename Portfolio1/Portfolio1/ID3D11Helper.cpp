@@ -1,5 +1,7 @@
 #include "ID3D11Helper.h"
 
+using namespace std;
+
 void ID3D11Helper::CreateDeviceAndContext(
 	IN const UINT& iWidth,
 	IN const UINT& iHeight,
@@ -297,4 +299,29 @@ void ID3D11Helper::SetViewPort(
 	screenViewport.MinDepth = fMinDepth;
 	screenViewport.MaxDepth = fMaxDepth;
 	pDeviceContext->RSSetViewports(1, pScreenViewPort);
+}
+
+void ID3D11Helper::CreateSampler(IN D3D11_FILTER eFilter, IN D3D11_TEXTURE_ADDRESS_MODE eTextureAddressMode, IN FLOAT pFloat4[4], IN ID3D11Device* pDevice, OUT ID3D11SamplerState** ppSamplerState)
+{
+	D3D11_SAMPLER_DESC sSamplerDesc;
+	AutoZeroMemory(sSamplerDesc);
+	sSamplerDesc.Filter = eFilter;
+	if (sSamplerDesc.Filter == D3D11_FILTER_ANISOTROPIC || sSamplerDesc.Filter == D3D11_FILTER_COMPARISON_ANISOTROPIC)
+	{
+		sSamplerDesc.MaxAnisotropy = 1;
+	}
+	sSamplerDesc.AddressU = eTextureAddressMode;
+	sSamplerDesc.AddressV = eTextureAddressMode;
+	sSamplerDesc.AddressW = eTextureAddressMode;
+	memcpy(sSamplerDesc.BorderColor, pFloat4, sizeof(FLOAT) * 4);
+	sSamplerDesc.MipLODBias = 0;
+	sSamplerDesc.MinLOD = 0;
+	sSamplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+	sSamplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+	HRESULT hResult = pDevice->CreateSamplerState(&sSamplerDesc, ppSamplerState);
+	if (FAILED(hResult))
+	{
+		Console("샘플러를 생성하는데 실패하였습니다.");
+	}
+
 }

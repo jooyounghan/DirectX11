@@ -1,3 +1,6 @@
+SamplerState Sampler : register(s0);
+Texture2D Texture : register(t0);
+
 struct PixelInput
 {
     float4 fProjPos : SV_Position;
@@ -8,5 +11,5 @@ struct PixelInput
 
 float4 main(PixelInput input) : SV_TARGET
 {
-    return float4(abs(input.fNorVec.rgb), 1.f);
+    return Texture.Sample(Sampler, input.fTexCoord);
 }
