@@ -34,6 +34,8 @@ void PortfolioApp::Init()
 	vModels.push_back(std::make_shared<TestModel>(cpDevice, cpDeviceContext, 0.f, 0.f, 0.f, 2.f));
 	vModels.push_back(std::make_shared<TestModel>(cpDevice, cpDeviceContext, 5.f, 0.f, 5.f, 2.f));
 	pSelectedModel = vModels[1];
+
+	FileLoader::PreLoadFiles();
 	// ==============================================================================================
 }
 

@@ -5,7 +5,7 @@
 
 using namespace std;
 
-atomic_bool			TestModel::bBaseInitialized = false;
+atomic_bool					TestModel::bBaseInitialized = false;
 ComPtr<ID3D11InputLayout>	TestModel::cpBaseInputLayout;
 ComPtr<ID3D11VertexShader>	TestModel::cpBaseVertexShader;
 ComPtr<ID3D11PixelShader>	TestModel::cpBasePixelShader;

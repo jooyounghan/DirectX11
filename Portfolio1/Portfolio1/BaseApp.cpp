@@ -59,6 +59,7 @@ void BaseApp::Init()
 {
 	ID3D11Helper::CreateDeviceAndContext(uiWidth, uiHeight, true, hMainWindow, cpSwapChain, cpDevice, cpDeviceContext);
 	ID3D11Helper::SetViewPort(0.f, 0.f, float(uiWidth), float(uiHeight), 0.f, 1.f, cpDeviceContext.Get(), &screenViewport);
+
 }
 
 void BaseApp::SwapChain()

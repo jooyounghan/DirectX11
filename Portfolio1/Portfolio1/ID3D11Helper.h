@@ -130,14 +130,9 @@ public:
 	static void CreateTexture2D(
 
 		IN ID3D11Device*				pDevice,
+		IN class ImageContainer*		pImageContainer,
 		OUT ID3D11Texture2D**			ppTexture2D
-	)
-	{
-		D3D11_TEXTURE2D_DESC sTexture2DDesc;
-		//AutoZeroMemory(sTexture2DDesc);
-
-		//pDevice->CreateTexture2D()
-	}
+	);
 };
 
 template<typename T>

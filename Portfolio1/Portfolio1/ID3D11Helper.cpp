@@ -1,4 +1,5 @@
 #include "ID3D11Helper.h"
+#include "FileLoader.h"
 
 using namespace std;
 
@@ -324,4 +325,51 @@ void ID3D11Helper::CreateSampler(IN D3D11_FILTER eFilter, IN D3D11_TEXTURE_ADDRE
 		Console("샘플러를 생성하는데 실패하였습니다.");
 	}
 
+}
+
+void ID3D11Helper::CreateTexture2D(IN ID3D11Device* pDevice, IN ImageContainer* pImageContainer, OUT ID3D11Texture2D** ppTexture2D)
+{
+	D3D11_TEXTURE2D_DESC sTexture2DDesc;
+	AutoZeroMemory(sTexture2DDesc);
+	sTexture2DDesc.Width = pImageContainer->uiWidth;
+	sTexture2DDesc.Height = pImageContainer->uiHeight;
+	sTexture2DDesc.MipLevels = 0;
+
+	const unsigned int& uiChannel = pImageContainer->uiChannel;
+	switch (uiChannel)
+	{
+	case 1:
+		break;
+		sTexture2DDesc.Format = DXGI_FORMAT_R8_UINT;
+	case 2:
+		sTexture2DDesc.Format = DXGI_FORMAT_R8G8_UINT;
+		break;
+	case 3:
+		pImageContainer->pData
+	case 4:
+		sTexture2DDesc.Format = DXGI_FORMAT_R8G8B8A8_UINT;
+		break;
+	}
+	if (uiChannel == 1)
+	{
+
+	}
+	else if (uiChannel == 2)
+	{
+
+	}
+	else if (uiChannel == 3
+		)
+	sTexture2DDesc.Format = 
+
+	D3D11_SUBRESOURCE_DATA sSubResource;
+	sSubResource.pSysMem = pImageContainer->pData;
+	sSubResource.SysMemPitch = 0;
+	sSubResource.SysMemSlicePitch = 0;
+
+	HRESULT hResult = pDevice->CreateTexture2D(&sTexture2DDesc, &sSubResource, ppTexture2D);
+	if (FAILED(hResult))
+	{
+		Console("Texture2D를 생성하는데 실패하였습니다.");
+	}
 }
