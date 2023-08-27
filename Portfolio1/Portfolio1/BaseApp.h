@@ -14,7 +14,8 @@ public:
 protected:
 	UINT	uiWidth;
 	UINT	uiHeight;
-	float fAspectRatio;
+	float	fAspectRatio;
+	UINT	uiNumLevelQuality;
 
 protected:
 	WNDCLASSEX wc;

@@ -8,6 +8,7 @@ void ID3D11Helper::CreateDeviceAndContext(
 	IN const UINT& iHeight,
 	IN bool bWindowed,
 	IN HWND hOutputWindow,
+	OUT UINT&	uiNumLevelQuality,
 	OUT ComPtr<IDXGISwapChain>& cpSwapChain,
 	OUT ComPtr<ID3D11Device>& cpDevice,
 	OUT ComPtr<ID3D11DeviceContext>& cpDeviceContext
@@ -49,10 +50,8 @@ void ID3D11Helper::CreateDeviceAndContext(
 		return;
 	}
 
-	UINT numQualityLevels = 0;
-
 	cpTempDevice->CheckMultisampleQualityLevels(DXGI_FORMAT_R8G8B8A8_UNORM, 4,
-		&numQualityLevels);
+		&uiNumLevelQuality);
 
 
 	hResult = cpTempDevice.As(&cpDevice);
@@ -77,8 +76,8 @@ void ID3D11Helper::CreateDeviceAndContext(
 	sSwapChainDesc.BufferDesc.RefreshRate.Denominator = 1;
 	sSwapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 
-	sSwapChainDesc.SampleDesc.Count = numQualityLevels > 0 ? 4 : 1;
-	sSwapChainDesc.SampleDesc.Quality = numQualityLevels > 0 ? numQualityLevels - 1 : 0;
+	sSwapChainDesc.SampleDesc.Count = uiNumLevelQuality > 0 ? 4 : 1;
+	sSwapChainDesc.SampleDesc.Quality = uiNumLevelQuality > 0 ? uiNumLevelQuality - 1 : 0;
 
 	sSwapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 	sSwapChainDesc.BufferCount = 2;
@@ -233,12 +232,42 @@ void ID3D11Helper::CreateShaderResoureView(IN ID3D11Device* pDevice, IN ID3D11Re
 	}
 }
 
-void ID3D11Helper::CreateDepthStencilView(IN ID3D11Device* pDevice, IN ID3D11Resource* pResource, OUT ID3D11DepthStencilView** ppDepthStencilView)
+void ID3D11Helper::CreateDepthStencilView(IN ID3D11Device* pDevice, IN const UINT& uiWidth, IN const UINT& uiHeight, IN const UINT& uiNumQualityLevels, IN OUT ID3D11Texture2D** ppDepthStencilTexture2D,  OUT ID3D11DepthStencilView** ppDepthStencilView)
 {
-	HRESULT hResult = pDevice->CreateDepthStencilView(pResource, NULL, ppDepthStencilView);
+	D3D11_TEXTURE2D_DESC sDepthStencilTextureDesc;
+	AutoZeroMemory(sDepthStencilTextureDesc);
+	sDepthStencilTextureDesc.Width = uiWidth;
+	sDepthStencilTextureDesc.Height = uiHeight;
+	sDepthStencilTextureDesc.MipLevels = 1;
+	sDepthStencilTextureDesc.ArraySize = 1;
+	sDepthStencilTextureDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	if (uiNumQualityLevels > 0) {
+		sDepthStencilTextureDesc.SampleDesc.Count = 4; // how many multisamples
+		sDepthStencilTextureDesc.SampleDesc.Quality = uiNumQualityLevels - 1;
+	}
+	else {
+		sDepthStencilTextureDesc.SampleDesc.Count = 1; // how many multisamples
+		sDepthStencilTextureDesc.SampleDesc.Quality = 0;
+	}
+	sDepthStencilTextureDesc.Usage = D3D11_USAGE_DEFAULT;
+	sDepthStencilTextureDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	sDepthStencilTextureDesc.CPUAccessFlags = 0;
+	sDepthStencilTextureDesc.MiscFlags = 0;
+
+	HRESULT hResult = pDevice->CreateTexture2D(&sDepthStencilTextureDesc, NULL, ppDepthStencilTexture2D);
+
 	if (FAILED(hResult))
 	{
-		Console("Depth Stencil View를 생성하는데 실패하였습니다.");
+		Console("Depth Stencil Texture 2D를 생성하는데 실패하였습니다.");
+		return;
+	}
+
+	hResult = pDevice->CreateDepthStencilView(*ppDepthStencilTexture2D, NULL, ppDepthStencilView);
+
+	if (FAILED(hResult))
+	{
+		Console("Depth Stencil Shader Resource View를 생성하는데 실패하였습니다.");
+		return;
 	}
 }
 
@@ -345,11 +374,7 @@ void ID3D11Helper::CreateTexture2D(IN ID3D11Device* pDevice, IN ImageContainer* 
 	switch (uiChannel)
 	{
 	case 1:
-		break;
-		sTexture2DDesc.Format = DXGI_FORMAT_R8_UINT;
 	case 2:
-		sTexture2DDesc.Format = DXGI_FORMAT_R8G8_UINT;
-		break;
 	case 3:
 		pImageContainer->ExtendChannel(4);
 	case 4:

@@ -14,7 +14,7 @@ const XMVECTOR				ICamera::DefaultRight = XMVectorSet(1.f, 0.f, 0.f, 0.f);
 
 ICamera::ICamera(ComPtr<ID3D11Device>& cpDeviceIn,
 	ComPtr<ID3D11DeviceContext>& cpDeviceContextIn,
-	ComPtr<IDXGISwapChain>& cpSwapChainIn, const UINT& uiWidthIn, const UINT& uiHeightIn)
+	ComPtr<IDXGISwapChain>& cpSwapChainIn, const UINT& uiWidthIn, const UINT& uiHeightIn, const UINT& uiNumLevelQuality)
 	: cpDevice(cpDeviceIn),
 	cpDeviceContext(cpDeviceContextIn),
 	cpSwapChain(cpSwapChainIn),
@@ -23,14 +23,22 @@ ICamera::ICamera(ComPtr<ID3D11Device>& cpDeviceIn,
 {
 	ID3D11Helper::GetBackBuffer(cpSwapChain.Get(), cpBackBuffer.GetAddressOf());
 	ID3D11Helper::CreateRenderTargetView(cpDevice.Get(), cpBackBuffer.Get(), cpRenderTargetView.GetAddressOf());
+	ID3D11Helper::CreateDepthStencilView(cpDevice.Get(), uiWidth, uiHeight, uiNumLevelQuality, cpDepthStencilTexture2D.GetAddressOf(), cpDepthStencilView.GetAddressOf());
+
+	//D3D11_DEPTH_STENCILOP_DESC sDepthOpDesc;
+	//AutoZeroMemory(sDepthOpDesc);
+	//D3D11_DEPTH_STENCILOP_DESC sStencilOpDesc;
+	//AutoZeroMemory(sStencilOpDesc);
+	//ID3D11Helper::CreateDepthStencilState(cpDevice.Get(), TRUE, D3D11_COMPARISON_LESS, TRUE, sDepthOpDesc, sStencilOpDesc, cpDepthStencilState.GetAddressOf());
+
 	ID3D11Helper::CreateRasterizerState(cpDevice.Get(), D3D11_FILL_MODE::D3D11_FILL_SOLID, D3D11_CULL_MODE::D3D11_CULL_BACK, true, cpRasterizerState.GetAddressOf());
 
 	sCameraInfo = CameraInfo::CreateCameraInfo(0.f, 0.f, -10.f, 70.f, uiWidth / (float)uiHeight);
 
-	XMMATRIX xmmViewProjTransposed = GetViewProjTransposed(DefaultDirection, DefaultUp);
+
 	ID3D11Helper::CreateBuffer(
 		cpDevice.Get(),
-		xmmViewProjTransposed,
+		TransformedMatrix::CreateTransfomredMatrix(GetViewProjTransposed(DefaultDirection, DefaultUp)),
 		D3D11_USAGE_DYNAMIC,
 		D3D11_BIND_CONSTANT_BUFFER,
 		D3D11_CPU_ACCESS_WRITE, 0,
@@ -54,12 +62,18 @@ void ICamera::Update()
 	sCameraInfo.xmvCameraPosition = bFirstView && bMoveDirection[MoveDir::Right] ? sCameraInfo.xmvCameraPosition + (sCameraInfo.fMoveSpeed * xmvCameraRight) : sCameraInfo.xmvCameraPosition;
 
 	// Mouse Angle에 대한 카메라 업데이트
-	XMMATRIX xmmViewProjTransposed = GetViewProjTransposed(xmvCameraDirection, xmvCameraUp);
-	ID3D11Helper::UpdateBuffer(cpDeviceContext.Get(), xmmViewProjTransposed, D3D11_MAP::D3D11_MAP_WRITE_DISCARD, cpCameraConstantBuffer.Get());
+	ID3D11Helper::UpdateBuffer(
+		cpDeviceContext.Get(),
+		TransformedMatrix::CreateTransfomredMatrix(GetViewProjTransposed(xmvCameraDirection, xmvCameraUp)),
+		D3D11_MAP::D3D11_MAP_WRITE_DISCARD,
+		cpCameraConstantBuffer.Get()
+	);
 
 	// Camera에 대한 기본 데이터 업데이트
 	cpDeviceContext->RSSetState(cpRasterizerState.Get());
 	cpDeviceContext->VSSetConstantBuffers(ViewProjMatrix, 1, cpCameraConstantBuffer.GetAddressOf());
+	cpDeviceContext->OMSetRenderTargets(1, cpRenderTargetView.GetAddressOf(), cpDepthStencilView.Get());
+	//cpDeviceContext->OMSetDepthStencilState(cpDepthStencilState.Get(), 0);
 }
 
 void ICamera::Resize(const float& fAspectRatioIn)
@@ -73,8 +87,7 @@ void ICamera::Resize(const float& fAspectRatioIn)
 void ICamera::WipeOut(const float fcolor[4])
 {
 	cpDeviceContext->ClearRenderTargetView(cpRenderTargetView.Get(), fcolor);
-	cpDeviceContext->OMSetRenderTargets(1, cpRenderTargetView.GetAddressOf(), nullptr);
-
+	cpDeviceContext->ClearDepthStencilView(cpDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
 }
 
 void ICamera::SetFromMouseXY(const int& iMouseX, const int& iMouseY)

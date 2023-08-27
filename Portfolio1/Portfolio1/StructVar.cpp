@@ -34,3 +34,11 @@ DirectX::XMMATRIX ModelTransform::GetAffineTransformMatrix(IN const ModelTransfo
 	
 	return DirectX::XMMatrixTranspose(xmmScale * xmmRotation * xmmTranslation);
 }
+
+TransformedMatrix TransformedMatrix::CreateTransfomredMatrix(const DirectX::XMMATRIX& xmmInvTransformedMatIn)
+{
+	TransformedMatrix result;
+	result.xmmTransformedMat = xmmInvTransformedMatIn;
+	result.xmmInvTransformedMat = XMMatrixInverse(nullptr, xmmInvTransformedMatIn);
+	return result;
+}

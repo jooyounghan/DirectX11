@@ -49,3 +49,11 @@ struct ModelTransform
 	PositionAngle		sPositionAngle;
 	DirectX::XMVECTOR	xmvTranslation;
 };
+
+struct TransformedMatrix
+{
+	static TransformedMatrix CreateTransfomredMatrix(const DirectX::XMMATRIX& xmmInvTransformedMatIn);
+
+	DirectX::XMMATRIX xmmTransformedMat;
+	DirectX::XMMATRIX xmmInvTransformedMat;
+};

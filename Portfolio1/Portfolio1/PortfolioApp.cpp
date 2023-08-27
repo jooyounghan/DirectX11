@@ -27,7 +27,7 @@ void PortfolioApp::Init()
 
 	if (ICamera::DefaultCamera == nullptr)
 	{
-		ICamera::DefaultCamera = std::make_shared<ICamera>(cpDevice, cpDeviceContext, cpSwapChain, uiWidth, uiHeight);
+		ICamera::DefaultCamera = std::make_shared<ICamera>(cpDevice, cpDeviceContext, cpSwapChain, uiWidth, uiHeight, uiNumLevelQuality);
 
 	}
 	// For Testing ==================================================================================

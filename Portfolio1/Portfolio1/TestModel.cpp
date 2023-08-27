@@ -27,15 +27,13 @@ TestModel::TestModel(
 		vector<D3D11_INPUT_ELEMENT_DESC> vInputElemDesc{
 			{"POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
 			{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 16, D3D11_INPUT_PER_VERTEX_DATA, 0},
-			{"NORMAL", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0},
 		};
 
 		ID3D11Helper::CreateVSInputLayOut(cpDevice.Get(), L"BaseModelVS.hlsl", vInputElemDesc, cpBaseVertexShader.GetAddressOf(), cpBaseInputLayout.GetAddressOf());
 		ID3D11Helper::CreatePS(cpDevice.Get(), L"BaseModelPS.hlsl", cpBasePixelShader.GetAddressOf());
 
 		FLOAT pBorderColor[4]{ 0.f, 0.f, 0.f, 0.f };
-		ID3D11Helper::CreateSampler(D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_CLAMP, pBorderColor, cpDevice.Get(), cpBaseSampler.GetAddressOf());
-	
+		ID3D11Helper::CreateSampler(D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP, pBorderColor, cpDevice.Get(), cpBaseSampler.GetAddressOf());
 		bBaseInitialized.store(true);
 	}
 
@@ -65,59 +63,63 @@ TestModel::TestModel(
 	sModelTransformation.xmvTranslation.m128_f32[2] = fCenterZ;
 
 	vector<Vertex> vVertex{
-		{{-fLen / 2.f, -fLen / 2.f, -fLen / 2.f}, {0.f, 1.f}, {0.f, 0.f, -1.f}},
-		{{fLen / 2.f, fLen / 2.f, -fLen / 2.f}, {1.f, 0.f}, {0.f, 0.f, -1.f}},
-		{{fLen / 2.f, -fLen / 2.f, -fLen / 2.f}, {1.f, 1.f},  {0.f, 0.f, -1.f}},
-		{{-fLen / 2.f, -fLen / 2.f, -fLen / 2.f}, {0.f, 1.f},  {0.f, 0.f, -1.f}},
-		{{-fLen / 2.f, fLen / 2.f, -fLen / 2.f}, {0.f, 0.f},  {0.f, 0.f, -1.f}},
-		{{fLen / 2.f, fLen / 2.f, -fLen / 2.f}, {1.f, 0.f},  {0.f, 0.f, -1.f}},
+		{{-fLen / 2.f, -fLen / 2.f, -fLen / 2.f}, {0.f, 1.f}},
+		{{fLen / 2.f, fLen / 2.f, -fLen / 2.f}, {1.f, 0.f}},
+		{{fLen / 2.f, -fLen / 2.f, -fLen / 2.f}, {1.f, 1.f}},
+		{{-fLen / 2.f, -fLen / 2.f, -fLen / 2.f}, {0.f, 1.f}},
+		{{-fLen / 2.f, fLen / 2.f, -fLen / 2.f}, {0.f, 0.f}},
+		{{fLen / 2.f, fLen / 2.f, -fLen / 2.f}, {1.f, 0.f}},
 
 
-		{{fLen / 2.f, -fLen / 2.f, -fLen / 2.f}, {0.f, 1.f}, {1.f, 0.f, 0.f}},
-		{{fLen / 2.f, fLen / 2.f, -fLen / 2.f}, {0.f, 0.f}, {1.f, 0.f, 0.f}},
-		{{fLen / 2.f, -fLen / 2.f, fLen / 2.f}, {1.f, 1.f}, {1.f, 0.f, 0.f}},
-		{{fLen / 2.f, -fLen / 2.f, fLen / 2.f}, {1.f, 1.f}, {1.f, 0.f, 0.f}},
-		{{fLen / 2.f, fLen / 2.f, -fLen / 2.f}, {0.f, 0.f}, {1.f, 0.f, 0.f}},
-		{{fLen / 2.f, fLen / 2.f, fLen / 2.f}, {1.f, 0.f}, {1.f, 0.f, 0.f}},
+		{{fLen / 2.f, -fLen / 2.f, -fLen / 2.f}, {0.f, 1.f}},
+		{{fLen / 2.f, fLen / 2.f, -fLen / 2.f}, {0.f, 0.f}},
+		{{fLen / 2.f, -fLen / 2.f, fLen / 2.f}, {1.f, 1.f}},
+		{{fLen / 2.f, -fLen / 2.f, fLen / 2.f}, {1.f, 1.f}},
+		{{fLen / 2.f, fLen / 2.f, -fLen / 2.f}, {0.f, 0.f}},
+		{{fLen / 2.f, fLen / 2.f, fLen / 2.f}, {1.f, 0.f}},
 
 
-		{{-fLen / 2.f, -fLen / 2.f, -fLen / 2.f}, {1.f, 1.f}, {-1.f, 0.f, 0.f}},
-		{{-fLen / 2.f, -fLen / 2.f, fLen / 2.f}, {0.f, 1.f}, {-1.f, 0.f, 0.f}},
-		{{-fLen / 2.f, fLen / 2.f, -fLen / 2.f}, {1.f, 0.f}, {-1.f, 0.f, 0.f}},
-		{{-fLen / 2.f, -fLen / 2.f, fLen / 2.f}, {0.f, 1.f}, {-1.f, 0.f, 0.f}},
-		{{-fLen / 2.f, fLen / 2.f, fLen / 2.f}, {0.f, 0.f}, {-1.f, 0.f, 0.f}},
-		{{-fLen / 2.f, fLen / 2.f, -fLen / 2.f}, {1.f, 0.f}, {-1.f, 0.f, 0.f}},
+		{{-fLen / 2.f, -fLen / 2.f, -fLen / 2.f}, {1.f, 1.f}},
+		{{-fLen / 2.f, -fLen / 2.f, fLen / 2.f}, {0.f, 1.f}},
+		{{-fLen / 2.f, fLen / 2.f, -fLen / 2.f}, {1.f, 0.f}},
+		{{-fLen / 2.f, -fLen / 2.f, fLen / 2.f}, {0.f, 1.f}},
+		{{-fLen / 2.f, fLen / 2.f, fLen / 2.f}, {0.f, 0.f}},
+		{{-fLen / 2.f, fLen / 2.f, -fLen / 2.f}, {1.f, 0.f}},
 
 
-		{{-fLen / 2.f, -fLen / 2.f, -fLen / 2.f}, {0.f, 0.f}, {0.f, -1.f, 0.f}},
-		{{fLen / 2.f, -fLen / 2.f, -fLen / 2.f}, {1.f, 0.f}, {0.f, -1.f, 0.f}},
-		{{fLen / 2.f, -fLen / 2.f, fLen / 2.f}, {1.f, 1.f}, {0.f, -1.f, 0.f}},
-		{{-fLen / 2.f, -fLen / 2.f, -fLen / 2.f}, {0.f, 0.f}, {0.f, -1.f, 0.f}},
-		{{fLen / 2.f, -fLen / 2.f, fLen / 2.f}, {1.f, 1.f}, {0.f, -1.f, 0.f}},
-		{{-fLen / 2.f, -fLen / 2.f, fLen / 2.f}, {0.f, 1.f}, {0.f, -1.f, 0.f}},
+		{{-fLen / 2.f, -fLen / 2.f, -fLen / 2.f}, {0.f, 0.f}},
+		{{fLen / 2.f, -fLen / 2.f, -fLen / 2.f}, {1.f, 0.f}},
+		{{fLen / 2.f, -fLen / 2.f, fLen / 2.f}, {1.f, 1.f}},
+		{{-fLen / 2.f, -fLen / 2.f, -fLen / 2.f}, {0.f, 0.f}},
+		{{fLen / 2.f, -fLen / 2.f, fLen / 2.f}, {1.f, 1.f}},
+		{{-fLen / 2.f, -fLen / 2.f, fLen / 2.f}, {0.f, 1.f}},
 
 
-		{{-fLen / 2.f, fLen / 2.f, -fLen / 2.f}, {0.f, 1.f}, {0.f, -1.f, 0.f}},
-		{{-fLen / 2.f, fLen / 2.f, fLen / 2.f}, {0.f, 0.f}, {0.f, -1.f, 0.f}},
-		{{fLen / 2.f, fLen / 2.f, fLen / 2.f}, {1.f, 0.f}, {0.f, -1.f, 0.f}},
-		{{-fLen / 2.f, fLen / 2.f, -fLen / 2.f}, {0.f, 1.f}, {0.f, -1.f, 0.f}},
-		{{fLen / 2.f, fLen / 2.f, fLen / 2.f}, {1.f, 0.f}, {0.f, -1.f, 0.f}},
-		{{fLen / 2.f, fLen / 2.f, -fLen / 2.f}, {1.f, 1.f}, {0.f, -1.f, 0.f}},
+		{{-fLen / 2.f, fLen / 2.f, -fLen / 2.f}, {0.f, 1.f}},
+		{{-fLen / 2.f, fLen / 2.f, fLen / 2.f}, {0.f, 0.f}},
+		{{fLen / 2.f, fLen / 2.f, fLen / 2.f}, {1.f, 0.f}},
+		{{-fLen / 2.f, fLen / 2.f, -fLen / 2.f}, {0.f, 1.f}},
+		{{fLen / 2.f, fLen / 2.f, fLen / 2.f}, {1.f, 0.f}},
+		{{fLen / 2.f, fLen / 2.f, -fLen / 2.f}, {1.f, 1.f}},
 
 
-		{{-fLen / 2.f, -fLen / 2.f, fLen / 2.f}, {1.f, 1.f}, {0.f ,0.f, 1.f}},
-		{{fLen / 2.f, -fLen / 2.f, fLen / 2.f}, {0.f, 1.f}, {0.f ,0.f, 1.f}},
-		{{-fLen / 2.f, fLen / 2.f, fLen / 2.f}, {1.f, 0.f}, {0.f ,0.f, 1.f}},
-		{{fLen / 2.f, -fLen / 2.f, fLen / 2.f}, {0.f, 1.f}, {0.f ,0.f, 1.f}},
-		{{fLen / 2.f, fLen / 2.f, fLen / 2.f}, {0.f, 0.f}, {0.f ,0.f, 1.f}},
-		{{-fLen / 2.f, fLen / 2.f, fLen / 2.f}, {1.f, 0.f}, {0.f ,0.f, 1.f}}
+		{{-fLen / 2.f, -fLen / 2.f, fLen / 2.f}, {1.f, 1.f}},
+		{{fLen / 2.f, -fLen / 2.f, fLen / 2.f}, {0.f, 1.f}},
+		{{-fLen / 2.f, fLen / 2.f, fLen / 2.f}, {1.f, 0.f}},
+		{{fLen / 2.f, -fLen / 2.f, fLen / 2.f}, {0.f, 1.f}},
+		{{fLen / 2.f, fLen / 2.f, fLen / 2.f}, {0.f, 0.f}},
+		{{-fLen / 2.f, fLen / 2.f, fLen / 2.f}, {1.f, 0.f}}
 	};
 
 	ID3D11Helper::CreateBuffer(cpDevice.Get(), vIndex, D3D11_USAGE_IMMUTABLE, D3D11_BIND_INDEX_BUFFER, 0, 0, cpIndexBuffer.GetAddressOf());
 	ID3D11Helper::CreateBuffer(cpDevice.Get(), vVertex, D3D11_USAGE_IMMUTABLE, D3D11_BIND_VERTEX_BUFFER, 0, 0, cpVertexBuffer.GetAddressOf());
 
-	ID3D11Helper::CreateTexture2D(cpDevice.Get(), &ImageContainer::ExampleTextureDiffuse, cpTexture.GetAddressOf());
-	ID3D11Helper::CreateShaderResoureView(cpDevice.Get(), cpTexture.Get(), cpShaderResourceViewTexture.GetAddressOf());
+	STextures.CreateTextureAndSRV(TextureType::TEXTURE_AO, cpDevice.Get(), &ImageContainer::ExampleTextureAO);
+	STextures.CreateTextureAndSRV(TextureType::TEXTURE_DIFFUSE, cpDevice.Get(), &ImageContainer::ExampleTextureDiffuse);
+	STextures.CreateTextureAndSRV(TextureType::TEXTURE_HEIGHT, cpDevice.Get(), &ImageContainer::ExampleTextureHeight);
+	STextures.CreateTextureAndSRV(TextureType::TEXTURE_NORMAL, cpDevice.Get(), &ImageContainer::ExampleTextureNormal);
+	STextures.CreateTextureAndSRV(TextureType::TEXTURE_REFLECT, cpDevice.Get(), &ImageContainer::ExampleTextureReflection);
+
 	cpDeviceContext->IASetInputLayout(cpBaseInputLayout.Get());
 }
 
@@ -125,7 +127,7 @@ void TestModel::Update()
 {
 	ID3D11Helper::UpdateBuffer(
 		cpDeviceContext.Get(),
-		ModelTransform::GetAffineTransformMatrix(sModelTransformation),
+		TransformedMatrix::CreateTransfomredMatrix(ModelTransform::GetAffineTransformMatrix(sModelTransformation)),
 		D3D11_MAP_WRITE_DISCARD,
 		cpModelMatrixBuffer.Get()
 	);
@@ -141,16 +143,20 @@ void TestModel::Render()
 	cpDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	cpDeviceContext->VSSetShader(cpBaseVertexShader.Get(), 0, 0);
-	cpDeviceContext->VSSetConstantBuffers(VSConstBuffer::ModelMatrix, 1, cpModelMatrixBuffer.GetAddressOf());
-	//cpDeviceContext->VSSetSamplers();
-	//cpDeviceContext->VSSetConstantBuffers();
+	cpDeviceContext->VSSetConstantBuffers(VSConstBufferType::ModelMatrix, 1, cpModelMatrixBuffer.GetAddressOf());
+	cpDeviceContext->VSSetSamplers(0, 1, cpBaseSampler.GetAddressOf());
+	cpDeviceContext->VSSetShaderResources(VSSRVType::VS_HEIGHT, 1, STextures.HeightSRV.GetAddressOf());
+	cpDeviceContext->VSSetShaderResources(VSSRVType::VS_NORMAL, 1, STextures.NormalSRV.GetAddressOf());
 
 	cpDeviceContext->PSSetShader(cpBasePixelShader.Get(), 0, 0);
 	cpDeviceContext->PSSetSamplers(0, 1, cpBaseSampler.GetAddressOf());
-	cpDeviceContext->PSSetShaderResources(0, 1, cpShaderResourceViewTexture.GetAddressOf());
-	//cpDeviceContext->PSSetConstantBuffers();
 
-	//cpDeviceContext->RSSetState(cpRasterizerState.Get());
+
+	cpDeviceContext->PSSetShaderResources(PSSRVType::PS_AO, 1, STextures.AOSRV.GetAddressOf());
+	cpDeviceContext->PSSetShaderResources(PSSRVType::PS_DIFFUSE, 1, STextures.DiffuseSRV.GetAddressOf());
+	cpDeviceContext->PSSetShaderResources(PSSRVType::PS_NORMAL, 1, STextures.NormalSRV.GetAddressOf());
+	cpDeviceContext->PSSetShaderResources(PSSRVType::PS_REFLECT, 1, STextures.ReflectSRV.GetAddressOf());
+	//cpDeviceContext->PSSetConstantBuffers();
 
 	//cpDeviceContext->OMSetDepthStencilState(cpDepthStencilState.Get(), 0);
 

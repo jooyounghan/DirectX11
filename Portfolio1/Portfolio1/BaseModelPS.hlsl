@@ -1,15 +1,14 @@
-SamplerState Sampler : register(s0);
-Texture2D Texture : register(t0);
+#include "Common.hlsli"
 
-struct PixelInput
-{
-    float4 fProjPos : SV_Position;
-    float4 fWorldPos : POSITION;
-    float2 fTexCoord : TEXCOORD;
-    float4 fNorVec : NORMAL;
-};
+SamplerState Sampler : register(s0);
+
+Texture2D AOTexture : register(t0);
+Texture2D DiffuseTexture : register(t1);
+Texture2D NormalTexture : register(t2);
+Texture2D ReflectTexture : register(t3);
+
 
 float4 main(PixelInput input) : SV_TARGET
 {
-    return Texture.Sample(Sampler, float2(input.fTexCoord.x, input.fTexCoord.y));
+    return DiffuseTexture.Sample(Sampler, float2(input.fTexCoord.x, input.fTexCoord.y));
 }

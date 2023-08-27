@@ -1,9 +1,23 @@
 #pragma once
 
-enum VSConstBuffer : unsigned int
+enum VSConstBufferType : unsigned int
 {
 	ModelMatrix,
 	ViewProjMatrix
+};
+
+enum VSSRVType : unsigned int
+{
+	VS_HEIGHT,
+	VS_NORMAL
+};
+
+enum PSSRVType : unsigned int
+{
+	PS_AO,
+	PS_DIFFUSE,
+	PS_NORMAL,
+	PS_REFLECT,
 };
 
 enum KeyCode

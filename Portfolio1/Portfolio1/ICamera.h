@@ -42,7 +42,8 @@ public:
 	ICamera(ComPtr<ID3D11Device>& cpDeviceIn,
 		ComPtr<ID3D11DeviceContext>& cpDeviceContextIn,
 		ComPtr<IDXGISwapChain>& cpSwapChainIn, 
-		const UINT& uiWidthIn, const UINT& uiHeightIn
+		const UINT& uiWidthIn, const UINT& uiHeightIn,
+		const UINT& uiNumLevelQuality
 	);
 	~ICamera() {};
 
@@ -74,6 +75,11 @@ private:
 	ComPtr<ID3D11RasterizerState>	cpRasterizerState;
 
 private:
+	ComPtr<ID3D11Texture2D>			cpDepthStencilTexture2D;
+	ComPtr<ID3D11DepthStencilView>	cpDepthStencilView;
+	ComPtr<ID3D11DepthStencilState> cpDepthStencilState;
+
+private:
 	ComPtr<ID3D11Device>& cpDevice;
 	ComPtr<ID3D11DeviceContext>& cpDeviceContext;
 	ComPtr<IDXGISwapChain>& cpSwapChain;
@@ -89,8 +95,8 @@ public:
 	void SwitchFirstView();
 
 public:
-	static std::shared_ptr<ICamera> DefaultCamera;
-	static const float				DefaultClearColor[4];
+	static std::shared_ptr<ICamera>			DefaultCamera;
+	static const float						DefaultClearColor[4];
 
 	static const DirectX::XMVECTOR			DefaultDirection;
 	static const DirectX::XMVECTOR			DefaultUp;

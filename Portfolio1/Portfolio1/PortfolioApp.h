@@ -33,13 +33,6 @@ public:
 public:
 	void ResizeSwapChain(const UINT& uiWidthIn, const UINT& uiHeightIn);
 
-private:
-	ComPtr<ID3D11ShaderResourceView> cpShaderResourceView;
-	ComPtr<ID3D11DepthStencilView> cpDepthStencilView;
-
-	ComPtr<ID3D11RasterizerState> cpRasterizerState;
-	ComPtr<ID3D11DepthStencilState> cpDepthStencilState;
-
 private:	
 	std::shared_ptr<ICamera>				pMainCamera;
 	std::shared_ptr<IModel>					pSelectedModel;

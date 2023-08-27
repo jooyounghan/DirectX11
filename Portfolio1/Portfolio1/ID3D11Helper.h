@@ -19,6 +19,7 @@ public:
 		IN const UINT& iHeight,
 		IN bool bWindowed,
 		IN HWND hOutputWindow,
+		OUT UINT& uiNumLevelQuality,
 		OUT ComPtr<IDXGISwapChain>& cpSwapChain,
 		OUT ComPtr<ID3D11Device>& cpDevice,
 		OUT ComPtr<ID3D11DeviceContext>& cpDeviceContext);
@@ -84,8 +85,11 @@ public:
 	);
 
 	static void CreateDepthStencilView(
-		IN ID3D11Device* pDevice,
-		IN ID3D11Resource* pResource,
+		IN ID3D11Device* pDevice, 
+		IN const UINT& uiWidth, 
+		IN const UINT& uiHeight, 
+		IN const UINT& uiNumQualityLevels,
+		IN OUT ID3D11Texture2D** ppDepthStencilTexture2D,
 		OUT ID3D11DepthStencilView** ppDepthStencilView
 	);
 

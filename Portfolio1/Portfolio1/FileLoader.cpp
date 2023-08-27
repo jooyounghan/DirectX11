@@ -33,11 +33,11 @@ void FileLoader::LoadImageFromFile(IN const std::string& sfileName, OUT ImageCon
 
 void FileLoader::PreLoadFiles()
 {
-    //LoadImageFromFile(".\\Texture\\GrassWithMudAndStone\\grass_with_mud_and_stones_39_46_ao.jpg", &ImageContainer::ExampleTextureAO);
+    LoadImageFromFile(".\\Texture\\GrassWithMudAndStone\\grass_with_mud_and_stones_39_46_ao.jpg", &ImageContainer::ExampleTextureAO);
     LoadImageFromFile(".\\Texture\\GrassWithMudAndStone\\grass_with_mud_and_stones_39_46_diffuse.jpg", &ImageContainer::ExampleTextureDiffuse);
-    //LoadImageFromFile(".\\Texture\\GrassWithMudAndStone\\grass_with_mud_and_stones_39_46_height.jpg", &ImageContainer::ExampleTextureHeight);
-    //LoadImageFromFile(".\\Texture\\GrassWithMudAndStone\\grass_with_mud_and_stones_39_46_normal.jpg", &ImageContainer::ExampleTextureNormal);
-    //LoadImageFromFile(".\\Texture\\GrassWithMudAndStone\\grass_with_mud_and_stones_39_46_reflection.jpg", &ImageContainer::ExampleTextureReflection);
+    LoadImageFromFile(".\\Texture\\GrassWithMudAndStone\\grass_with_mud_and_stones_39_46_height.jpg", &ImageContainer::ExampleTextureHeight);
+    LoadImageFromFile(".\\Texture\\GrassWithMudAndStone\\grass_with_mud_and_stones_39_46_normal.jpg", &ImageContainer::ExampleTextureNormal);
+    LoadImageFromFile(".\\Texture\\GrassWithMudAndStone\\grass_with_mud_and_stones_39_46_reflection.jpg", &ImageContainer::ExampleTextureReflection);
 }
 
 ImageContainer::ImageContainer()
@@ -57,8 +57,6 @@ void ImageContainer::ExtendChannel(unsigned int uiChannelIn)
 {
     if (uiChannel < uiChannelIn)
     {
-        const unsigned int& uiDeltaChannelNum = uiChannelIn - uiChannel;
-        const unsigned int& uiTotalDataSizeBefore = uiWidth * uiHeight * uiChannel;
         const unsigned int& uiTotalDataSizeAfter = uiWidth * uiHeight * uiChannelIn;
         uint8_t* pDataNew = new uint8_t[uiTotalDataSizeAfter];
         memset(pDataNew, 255, uiTotalDataSizeAfter);
@@ -67,7 +65,7 @@ void ImageContainer::ExtendChannel(unsigned int uiChannelIn)
         {
             for (unsigned int w = 0; w < uiWidth; ++w)
             {
-                memcpy(pDataNew + h * uiWidth + w * uiChannelIn, pData + h * uiWidth + w * uiChannel, uiChannel);
+                memcpy(pDataNew + (h * uiWidth + w) * uiChannelIn, pData + (h * uiWidth + w) * uiChannel, uiChannel);
             }
         }
 

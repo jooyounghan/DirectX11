@@ -25,10 +25,6 @@ public:
 	virtual void Update() override;
 	virtual void Render() override;
 
-public:
-	ComPtr<ID3D11Texture2D>				cpTexture;
-	ComPtr<ID3D11ShaderResourceView>	cpShaderResourceViewTexture;
-
 protected:
 	static std::atomic_bool		bBaseInitialized;
 
