@@ -226,11 +226,11 @@ void ID3D11Helper::CreateRenderTargetView(IN ID3D11Device* pDevice, IN ID3D11Res
 
 void ID3D11Helper::CreateShaderResoureView(IN ID3D11Device* pDevice, IN ID3D11Resource* pResource, OUT ID3D11ShaderResourceView** ppShaderResourceView)
 {
-	//HRESULT hResult = pDevice->CreateShaderResourceView(pResource, NULL, ppShaderResourceView);
-	//if (FAILED(hResult))
-	//{
-	//	Console("Shader Resource View를 생성하는데 실패하였습니다.");
-	//}
+	HRESULT hResult = pDevice->CreateShaderResourceView(pResource, NULL, ppShaderResourceView);
+	if (FAILED(hResult))
+	{
+		Console("Shader Resource View를 생성하는데 실패하였습니다.");
+	}
 }
 
 void ID3D11Helper::CreateDepthStencilView(IN ID3D11Device* pDevice, IN ID3D11Resource* pResource, OUT ID3D11DepthStencilView** ppDepthStencilView)
@@ -333,7 +333,13 @@ void ID3D11Helper::CreateTexture2D(IN ID3D11Device* pDevice, IN ImageContainer* 
 	AutoZeroMemory(sTexture2DDesc);
 	sTexture2DDesc.Width = pImageContainer->uiWidth;
 	sTexture2DDesc.Height = pImageContainer->uiHeight;
-	sTexture2DDesc.MipLevels = 0;
+	sTexture2DDesc.MipLevels = 1;
+	sTexture2DDesc.ArraySize = 1;
+	sTexture2DDesc.SampleDesc.Count = 1;
+	sTexture2DDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+	sTexture2DDesc.CPUAccessFlags = NULL;
+	sTexture2DDesc.MiscFlags = NULL;
+	sTexture2DDesc.Usage = D3D11_USAGE_DEFAULT;
 
 	const unsigned int& uiChannel = pImageContainer->uiChannel;
 	switch (uiChannel)
@@ -345,26 +351,15 @@ void ID3D11Helper::CreateTexture2D(IN ID3D11Device* pDevice, IN ImageContainer* 
 		sTexture2DDesc.Format = DXGI_FORMAT_R8G8_UINT;
 		break;
 	case 3:
-		pImageContainer->pData
+		pImageContainer->ExtendChannel(4);
 	case 4:
-		sTexture2DDesc.Format = DXGI_FORMAT_R8G8B8A8_UINT;
+		sTexture2DDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 		break;
 	}
-	if (uiChannel == 1)
-	{
-
-	}
-	else if (uiChannel == 2)
-	{
-
-	}
-	else if (uiChannel == 3
-		)
-	sTexture2DDesc.Format = 
 
 	D3D11_SUBRESOURCE_DATA sSubResource;
 	sSubResource.pSysMem = pImageContainer->pData;
-	sSubResource.SysMemPitch = 0;
+	sSubResource.SysMemPitch = pImageContainer->uiWidth * pImageContainer->uiChannel;
 	sSubResource.SysMemSlicePitch = 0;
 
 	HRESULT hResult = pDevice->CreateTexture2D(&sTexture2DDesc, &sSubResource, ppTexture2D);

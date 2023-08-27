@@ -33,11 +33,11 @@ void FileLoader::LoadImageFromFile(IN const std::string& sfileName, OUT ImageCon
 
 void FileLoader::PreLoadFiles()
 {
-    LoadImageFromFile(".\\Texture\\GrassWithMudAndStone\\grass_with_mud_and_stones_39_46_ao.jpg", &ImageContainer::ExampleTextureAO);
+    //LoadImageFromFile(".\\Texture\\GrassWithMudAndStone\\grass_with_mud_and_stones_39_46_ao.jpg", &ImageContainer::ExampleTextureAO);
     LoadImageFromFile(".\\Texture\\GrassWithMudAndStone\\grass_with_mud_and_stones_39_46_diffuse.jpg", &ImageContainer::ExampleTextureDiffuse);
-    LoadImageFromFile(".\\Texture\\GrassWithMudAndStone\\grass_with_mud_and_stones_39_46_height.jpg", &ImageContainer::ExampleTextureHeight);
-    LoadImageFromFile(".\\Texture\\GrassWithMudAndStone\\grass_with_mud_and_stones_39_46_normal.jpg", &ImageContainer::ExampleTextureNormal);
-    LoadImageFromFile(".\\Texture\\GrassWithMudAndStone\\grass_with_mud_and_stones_39_46_reflection.jpg", &ImageContainer::ExampleTextureReflection);
+    //LoadImageFromFile(".\\Texture\\GrassWithMudAndStone\\grass_with_mud_and_stones_39_46_height.jpg", &ImageContainer::ExampleTextureHeight);
+    //LoadImageFromFile(".\\Texture\\GrassWithMudAndStone\\grass_with_mud_and_stones_39_46_normal.jpg", &ImageContainer::ExampleTextureNormal);
+    //LoadImageFromFile(".\\Texture\\GrassWithMudAndStone\\grass_with_mud_and_stones_39_46_reflection.jpg", &ImageContainer::ExampleTextureReflection);
 }
 
 ImageContainer::ImageContainer()
@@ -60,8 +60,8 @@ void ImageContainer::ExtendChannel(unsigned int uiChannelIn)
         const unsigned int& uiDeltaChannelNum = uiChannelIn - uiChannel;
         const unsigned int& uiTotalDataSizeBefore = uiWidth * uiHeight * uiChannel;
         const unsigned int& uiTotalDataSizeAfter = uiWidth * uiHeight * uiChannelIn;
-        uint8_t* pDataNew = new uint8_t(uiTotalDataSizeAfter);
-        ZeroMemory(pDataNew, uiTotalDataSizeAfter);
+        uint8_t* pDataNew = new uint8_t[uiTotalDataSizeAfter];
+        memset(pDataNew, 255, uiTotalDataSizeAfter);
 
         for (unsigned int h = 0; h < uiHeight; ++h)
         {
@@ -73,7 +73,6 @@ void ImageContainer::ExtendChannel(unsigned int uiChannelIn)
 
         STBI_FREE(pData);
         pData = pDataNew;
-        
         uiChannel = uiChannelIn;
     }
 }

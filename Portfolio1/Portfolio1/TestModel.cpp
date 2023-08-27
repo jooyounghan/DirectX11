@@ -1,5 +1,6 @@
 #include "TestModel.h"
 #include "EnumVar.h"
+#include "FileLoader.h"
 
 #include <atomic>
 
@@ -115,6 +116,8 @@ TestModel::TestModel(
 	ID3D11Helper::CreateBuffer(cpDevice.Get(), vIndex, D3D11_USAGE_IMMUTABLE, D3D11_BIND_INDEX_BUFFER, 0, 0, cpIndexBuffer.GetAddressOf());
 	ID3D11Helper::CreateBuffer(cpDevice.Get(), vVertex, D3D11_USAGE_IMMUTABLE, D3D11_BIND_VERTEX_BUFFER, 0, 0, cpVertexBuffer.GetAddressOf());
 
+	ID3D11Helper::CreateTexture2D(cpDevice.Get(), &ImageContainer::ExampleTextureDiffuse, cpTexture.GetAddressOf());
+	ID3D11Helper::CreateShaderResoureView(cpDevice.Get(), cpTexture.Get(), cpShaderResourceViewTexture.GetAddressOf());
 	cpDeviceContext->IASetInputLayout(cpBaseInputLayout.Get());
 }
 

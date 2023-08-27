@@ -8,6 +8,7 @@ cbuffer ViewProjMatrix : register(b1)
     matrix mViewProj;
 };
 
+
 struct VertexInput
 {
     float4 fWorldPos : POSITION;

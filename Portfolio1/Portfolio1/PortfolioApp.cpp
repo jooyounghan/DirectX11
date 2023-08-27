@@ -2,11 +2,10 @@
 #include "ICamera.h"
 #include "IModel.h"
 #include "TempVariable.h"
-
+#include "FileLoader.h"
 #include "TestModel.h"
 
 using namespace std;
-
 
 PortfolioApp::PortfolioApp(const UINT& uiWidthIn, const UINT& uiHeightIn)
 	: BaseApp(uiWidthIn, uiHeightIn), pMainCamera(nullptr), pSelectedModel(nullptr)
@@ -21,6 +20,8 @@ PortfolioApp::~PortfolioApp()
 
 void PortfolioApp::Init()
 {
+	FileLoader::PreLoadFiles();
+
 	BaseApp::Init();
 	InitImGUI();
 
@@ -34,8 +35,6 @@ void PortfolioApp::Init()
 	vModels.push_back(std::make_shared<TestModel>(cpDevice, cpDeviceContext, 0.f, 0.f, 0.f, 2.f));
 	vModels.push_back(std::make_shared<TestModel>(cpDevice, cpDeviceContext, 5.f, 0.f, 5.f, 2.f));
 	pSelectedModel = vModels[1];
-
-	FileLoader::PreLoadFiles();
 	// ==============================================================================================
 }
 

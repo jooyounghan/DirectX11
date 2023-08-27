@@ -11,5 +11,5 @@ struct PixelInput
 
 float4 main(PixelInput input) : SV_TARGET
 {
-    return Texture.Sample(Sampler, input.fTexCoord);
+    return Texture.Sample(Sampler, float2(input.fTexCoord.x, input.fTexCoord.y));
 }
