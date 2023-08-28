@@ -20,20 +20,26 @@ Texture2D NormalTexture : register(t1);
 PixelInput main(VertexInput input)
 {
     PixelInput result;
-
-    float4x4 TransformedMat = mul(mModel, mViewProj);
-    float4x4 InvTransposedTransformedMat = transpose(mul(mViewProjInv, mModel));
- 
-    result.fProjNorVec = mul(NormalTexture.SampleLevel(Sampler, input.fTexCoord, 0), InvTransposedTransformedMat);
+        
+    float3 fNormalSampled = NormalTexture.SampleLevel(Sampler, input.fTexCoord, 0.f).xyz;
+    fNormalSampled = 2.f * fNormalSampled - 1.f;
     
-    float4 HeightWorldPos = input.fWorldPos
-    + result.fProjNorVec * HeightTexture.SampleLevel(Sampler, input.fTexCoord, 0).x;
+    float3 fModelNormal = mul(input.fWorldNormal, mModelInv).xyz;
+    fModelNormal = normalize(fModelNormal);
+    float3 fTangent = mul(input.fWorldTangent, mModel).xyz;
+    fTangent = normalize(fTangent - dot(fTangent, fModelNormal) * fModelNormal);
+    float3 fBiTangent = cross(fModelNormal, fTangent);
+    float3x3 TBN = float3x3(fTangent, fBiTangent, fModelNormal);
     
-    result.fWorldPos = HeightWorldPos;
-    result.fProjPos = HeightWorldPos;
-    //result.fProjPos = mul(result.fProjPos, mModel);
-    //result.fProjPos = mul(result.fProjPos, mViewProj);
-    result.fProjPos = mul(result.fProjPos, TransformedMat);
+    fNormalSampled = normalize(mul(TBN, fNormalSampled));
+    
+    result.fProjNorVec = float4(fNormalSampled, 0.f);
+    
+    result.fWorldPos = input.fWorldPos + result.fProjNorVec * (2.f * HeightTexture.SampleLevel(Sampler, input.fTexCoord, 0.f).x - 1.f);
+    
+    result.fProjPos = result.fWorldPos;
+    result.fProjPos = mul(result.fProjPos, mModel);
+    result.fProjPos = mul(result.fProjPos, mViewProj);
     result.fTexCoord = input.fTexCoord;
     return result;
 }

@@ -2,6 +2,8 @@ struct VertexInput
 {
     float4 fWorldPos : POSITION;
     float2 fTexCoord : TEXCOORD;
+    float4 fWorldNormal : NORMAL;
+    float4 fWorldTangent : TANGENT;
 };
     
 struct PixelInput

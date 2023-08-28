@@ -1,44 +1,49 @@
 #include "StructVar.h"
 #include "DefineVar.h"
 
+using namespace DirectX;
+
 void ModelTransform::Init(OUT ModelTransform* pModelTransformation)
 {
 	AutoZeroMemory(*pModelTransformation);
-	pModelTransformation->xmvScale = DirectX::XMVectorSet(1.f, 1.f, 1.f, 0.f);
+	pModelTransformation->xmvScale = XMVectorSet(1.f, 1.f, 1.f, 0.f);
 	pModelTransformation->sPositionAngle.fRoll = 0.f;
 	pModelTransformation->sPositionAngle.fPitch = 0.f;
 	pModelTransformation->sPositionAngle.fYaw = 0.f;
-	pModelTransformation->xmvTranslation = DirectX::XMVectorSet(0.f, 0.f, 0.f, 0.f);
+	pModelTransformation->xmvTranslation = XMVectorSet(0.f, 0.f, 0.f, 0.f);
 }
 
-DirectX::XMMATRIX ModelTransform::GetAffineTransformMatrix(IN const ModelTransform& pModelTransformation)
+XMMATRIX ModelTransform::GetAffineTransformMatrix(IN const ModelTransform& pModelTransformation)
 {
-	DirectX::XMMATRIX xmmScale = DirectX::XMMatrixScaling(
+	XMMATRIX xmmScale = XMMatrixScaling(
 		pModelTransformation.xmvScale.m128_f32[0],
 		pModelTransformation.xmvScale.m128_f32[1],
 		pModelTransformation.xmvScale.m128_f32[2]
 	);
 
-	DirectX::XMMATRIX xmmRotation = DirectX::XMMatrixRotationRollPitchYaw(
+	XMMATRIX xmmRotation = XMMatrixRotationRollPitchYaw(
 		pModelTransformation.sPositionAngle.fPitch,
 		pModelTransformation.sPositionAngle.fYaw,
 		pModelTransformation.sPositionAngle.fRoll
 	);
 
-	DirectX::XMMATRIX xmmTranslation = DirectX::XMMatrixTranslation(
+	XMMATRIX xmmTranslation = XMMatrixTranslation(
 		pModelTransformation.xmvTranslation.m128_f32[0],
 		pModelTransformation.xmvTranslation.m128_f32[1],
 		pModelTransformation.xmvTranslation.m128_f32[2]
 	);
 
 	
-	return DirectX::XMMatrixTranspose(xmmScale * xmmRotation * xmmTranslation);
+	return XMMatrixTranspose(xmmScale * xmmRotation * xmmTranslation);
 }
 
-TransformedMatrix TransformedMatrix::CreateTransfomredMatrix(const DirectX::XMMATRIX& xmmInvTransformedMatIn)
+TransformedMatrix TransformedMatrix::CreateTransfomredMatrix(const XMMATRIX& xmmInvTransformedMatIn)
 {
 	TransformedMatrix result;
 	result.xmmTransformedMat = xmmInvTransformedMatIn;
-	result.xmmInvTransformedMat = XMMatrixInverse(nullptr, xmmInvTransformedMatIn);
+
+	result.xmmInvTransformedMat = XMMatrixTranspose(xmmInvTransformedMatIn);
+	result.xmmInvTransformedMat = XMMatrixInverse(nullptr, result.xmmInvTransformedMat);
+	// Transpose 2번의 경우 상쇄되므로 생략
 	return result;
 }

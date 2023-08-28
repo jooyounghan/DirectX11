@@ -18,7 +18,7 @@ struct TextureCoord
 	float dummy2 = 0;
 };
 
-struct NormalVector
+struct Vector
 {
 	float x;
 	float y;
@@ -30,7 +30,8 @@ struct Vertex
 {
 	PositionVector	sPosVec;
 	TextureCoord	sTexCoord;
-	NormalVector	sNorVec;
+	Vector			sNorVec;
+	Vector			sTangVec;
 };
 
 struct PositionAngle
