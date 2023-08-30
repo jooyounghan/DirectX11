@@ -11,6 +11,8 @@
 #include "TempVariable.h"
 #include "FileLoader.h"
 
+#include <string>
+
 using namespace DirectX;
 
 using namespace std;
@@ -47,7 +49,24 @@ void PortfolioApp::Init()
 	vModels.push_back(std::make_shared<TestModel>(cpDevice, cpDeviceContext, 5.f, 0.f, 5.f, 2.f));
 	pSelectedModel = vModels[1];
 
-	vLights.push_back(std::make_shared<DirectionalLight>(cpDevice, cpDeviceContext, XMVectorSet(0.f, 100.f, 0.f, 1.f), XMVectorSet(1.f, 0.1f, 0.1f, 1.f), XMVectorSet(0.f, -1.f, 0.f, 0.f)));
+	umLights.emplace(
+		std::make_shared<DirectionalLight>(
+		cpDevice, cpDeviceContext,
+		XMVectorSet(0.f, 100.f, 0.f, 1.f),
+		XMVectorSet(1.f, 0.1f, 0.1f, 1.f),
+		XMVectorSet(0.f, -1.f, 0.f, 0.f)
+		),
+		false
+	);
+	umLights.emplace(
+		std::make_shared<DirectionalLight>(
+			cpDevice, cpDeviceContext,
+			XMVectorSet(100.f, 0.f, 0.f, 1.f),
+			XMVectorSet(0.1f, 1.0f, 0.1f, 1.f),
+			XMVectorSet(-1.f, 0.f, 0.f, 0.f)
+		),
+		false
+	);
 	// ==============================================================================================
 }
 
@@ -119,26 +138,15 @@ void PortfolioApp::SetImGUIRendering()
 	ImGui_ImplDX11_NewFrame();
     ImGui_ImplWin32_NewFrame();
     ImGui::NewFrame();
-    ImGui::Begin("Scene Control");
 
     UpdateGUI(); // 추가적으로 사용할 GUI
-
-    ImGui::End();
     ImGui::Render();
 }
 
 void PortfolioApp::UpdateGUI()
 {
-	ImGui::Text("Average %.3f ms/frame (%.1f FPS)",
-    1000.0f / ImGui::GetIO().Framerate,
-    ImGui::GetIO().Framerate);
-
-	bool bModelNotSelected = (pSelectedModel == nullptr);
-	ImGui::BeginDisabled(bModelNotSelected);
-	ImGui::SliderFloat3("Scale Vector", bModelNotSelected ? TempVariable::fTempFloat3 : pSelectedModel->sModelTransformation.xmvScale.m128_f32, 0.f, 5.f);
-	ImGui::SliderFloat3("Rotation Vector", bModelNotSelected ? TempVariable::fTempFloat3 : (float*)(&pSelectedModel->sModelTransformation.sPositionAngle), -2.f * XM_PI, 2.f * XM_PI);
-	ImGui::SliderFloat3("Translation Vector", bModelNotSelected ? TempVariable::fTempFloat3 : pSelectedModel->sModelTransformation.xmvTranslation.m128_f32, -10.f, 10.f);
-	ImGui::EndDisabled();	
+	SetModelManageWnd();
+	SetLightManageWnd();
 }
 
 void PortfolioApp::RenderImGUI()
@@ -151,6 +159,99 @@ void PortfolioApp::QuitImGUI()
 	ImGui_ImplDX11_Shutdown();
     ImGui_ImplWin32_Shutdown();
     ImGui::DestroyContext();
+}
+
+void PortfolioApp::SetModelManageWnd()
+{
+	ImGui::Begin("Model Manager");
+	ImGui::Text("Average %.3f ms/frame (%.1f FPS)",
+		1000.0f / ImGui::GetIO().Framerate,
+		ImGui::GetIO().Framerate);
+
+	bool bModelNotSelected = (pSelectedModel == nullptr);
+	ImGui::BeginDisabled(bModelNotSelected);
+	ImGui::SliderFloat3("Scale Vector", bModelNotSelected ? TempVariable::fTempFloat3 : pSelectedModel->sModelTransformation.xmvScale.m128_f32, 0.f, 5.f);
+	ImGui::SliderFloat3("Rotation Vector", bModelNotSelected ? TempVariable::fTempFloat3 : (float*)(&pSelectedModel->sModelTransformation.sPositionAngle), -2.f * XM_PI, 2.f * XM_PI);
+	ImGui::SliderFloat3("Translation Vector", bModelNotSelected ? TempVariable::fTempFloat3 : pSelectedModel->sModelTransformation.xmvTranslation.m128_f32, -10.f, 10.f);
+	ImGui::EndDisabled();
+	ImGui::End();
+}
+
+void PortfolioApp::SetLightManageWnd()
+{
+	ImGui::Begin("Light Mananger");
+
+	if (ImGui::BeginTable("Light Selector", 3, ImGuiTableFlags_Borders))
+	{
+		ImGui::TableSetupColumn("Check");
+		ImGui::TableSetupColumn("Light ID");
+		ImGui::TableSetupColumn("Light Type");
+		ImGui::TableHeadersRow();
+
+		for (auto& elemLightBool : umLights)
+		{
+			auto& pLight = elemLightBool.first;
+			auto& bSelected = elemLightBool.second;
+
+			ImGui::TableNextRow();
+			ImGui::PushID(pLight.get());
+			ImGui::TableSetColumnIndex(0);
+			ImGui::Checkbox(("Light" + to_string(pLight->ullLightId)).c_str(), &bSelected);
+
+#pragma region 체크박스 선택 처리
+			if (bSelected == true)
+			{
+				if (pSelectedLight != nullptr && pSelectedLight != pLight)
+				{
+					if (umLights.find(pSelectedLight) != umLights.end())
+					{
+						umLights[pSelectedLight] = false;
+					}
+
+				}
+				pSelectedLight = pLight;
+			}
+			else
+			{
+				if (pSelectedLight != nullptr && pSelectedLight == pLight)
+				{
+					pSelectedLight = nullptr;
+				}
+			}
+#pragma endregion
+
+			ImGui::TableSetColumnIndex(1);
+			ImGui::Text("%d", pLight->ullLightId);
+			ImGui::TableSetColumnIndex(2);
+			string strLightType;
+			switch (pLight->GetLightType())
+			{
+			case LightType::Directional:
+				strLightType = "Directional";
+				break;
+			case LightType::Point:
+				strLightType = "Point";
+				break;
+			case LightType::Spot:
+				strLightType = "Spot";
+				break;
+			case LightType::NotALight:
+			default:
+				break;
+			}
+			ImGui::Text(strLightType.c_str());
+			ImGui::PopID();
+		}
+		ImGui::EndTable();
+	}
+
+
+	bool bLightNotSelected = (pSelectedLight == nullptr);
+	ImGui::BeginDisabled(bLightNotSelected);
+	ImGui::Text((pSelectedLight == nullptr) ? "" : to_string(pSelectedLight->ullLightId).c_str());
+	ImGui::EndDisabled();
+
+	ImGui::End();
 }
 
 void PortfolioApp::ResizeSwapChain(const UINT& uiWidthIn, const UINT& uiHeightIn)

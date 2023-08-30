@@ -1,10 +1,15 @@
 #pragma once
-#include <memory>
 #include <imgui.h>
 #include <imgui_impl_dx11.h>
 #include <imgui_impl_win32.h>
 
+#include <memory>
+#include <vector>
+#include <unordered_map>
+
+
 #include "BaseApp.h"
+
 
 class ICamera;
 class IModel;
@@ -31,6 +36,10 @@ public:
 	void QuitImGUI();
 
 public:
+	void SetModelManageWnd();
+	void SetLightManageWnd();
+
+public:
 	void ResizeSwapChain(const UINT& uiWidthIn, const UINT& uiHeightIn);
 
 private:	
@@ -39,9 +48,9 @@ private:
 	std::shared_ptr<ILight>					pSelectedLight;
 
 private:
-	std::vector<std::shared_ptr<ICamera>>			vCameras;
-	std::vector<std::shared_ptr<ILight>>			vLights;
-	std::vector<std::shared_ptr<IModel>>			vModels;
+	std::vector<std::shared_ptr<ICamera>>				vCameras;
+	std::unordered_map<std::shared_ptr<ILight>, bool>	umLights;
+	std::vector<std::shared_ptr<IModel>>				vModels;
 
 public:
 	virtual LRESULT WINAPI AppProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) override;

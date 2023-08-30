@@ -16,6 +16,7 @@ enum LightType : unsigned int
 	Directional,
 	Point,
 	Spot,
+	NotALight
 };
 
 struct LightSet
@@ -25,9 +26,10 @@ public:
 	DirectX::XMVECTOR	xmvLocation;
 	DirectX::XMVECTOR	xmvLightColor;
 	DirectX::XMVECTOR	xmvDirection;
-
-private:
-	uint8_t				uiPadding[12];
+	DirectX::XMVECTOR	xmvLightStrength;
+	float				fFallOffStart;
+	float				fFallOffEnd;
+	float				fSpotPower;
 };
 
 class ILight
@@ -43,8 +45,15 @@ protected:
 	Microsoft::WRL::ComPtr<ID3D11Device>& cpDevice;
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContext;
 
+public:
+	const size_t ullLightId;
+
+public:
+	LightType		 GetLightType();
+
 protected:
-	size_t ullLightId;
+	void AddLightSet();
+	void RemoveLightSet();
 
 protected:
 	static size_t ullNextLightId;
@@ -56,22 +65,5 @@ public:
 	static void InitLights(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	static void UpdateLights(ID3D11DeviceContext* pDeviceContext);
 
-protected:
-	void AddLightSet()
-	{
-		vLightSets.emplace_back();
-		LightSet* pLightSet = &vLightSets.back();
-		mIdToLightSet.emplace(ullLightId, pLightSet);
-	}
-
-	void RemoveLightSet()
-	{
-		// ªË¡¶
-		LightSet* pRemoveLightSet = mIdToLightSet.at(ullLightId);
-
-		mIdToLightSet.erase(ullLightId);
-		vLightSets.erase(remove_if(vLightSets.begin(), vLightSets.end(),
-			[&](LightSet& pTempLightSet) { return &pTempLightSet == pRemoveLightSet; }), vLightSets.end());
-	}
 };
 

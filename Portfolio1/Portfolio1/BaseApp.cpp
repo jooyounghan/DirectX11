@@ -1,4 +1,5 @@
 #include "BaseApp.h"
+#include "ID3D11Helper.h"
 
 BaseApp* BaseApp::GlobalBaseApp = nullptr;
 
@@ -58,7 +59,7 @@ BaseApp::~BaseApp()
 void BaseApp::Init()
 {
 	ID3D11Helper::CreateDeviceAndContext(uiWidth, uiHeight, true, hMainWindow, uiNumLevelQuality, cpSwapChain, cpDevice, cpDeviceContext);
-	ID3D11Helper::SetViewPort(0.f, 0.f, float(uiWidth), float(uiHeight), 0.f, 1.f, cpDeviceContext.Get(), &screenViewport);
+	ID3D11Helper::SetViewPort(0.f, 0.f, float(uiWidth), float(uiHeight), 0.f, 1.f, cpDeviceContext.Get(), &sScreenViewport);
 
 }
 

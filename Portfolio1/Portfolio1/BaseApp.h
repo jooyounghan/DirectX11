@@ -1,6 +1,9 @@
 #pragma once
-#include "ID3D11Helper.h"
 #include <windowsx.h>
+#include <windows.h>
+#include <wrl/client.h>
+#include <d3d11.h>
+#include <d3dcompiler.h>
 
 class BaseApp
 {
@@ -32,10 +35,10 @@ public:
 	void SwapChain();
 
 protected:
-	ComPtr<ID3D11Device> cpDevice;
-	ComPtr<ID3D11DeviceContext> cpDeviceContext;
-	ComPtr<IDXGISwapChain> cpSwapChain;
-	D3D11_VIEWPORT screenViewport;
+	Microsoft::WRL::ComPtr<ID3D11Device> cpDevice;
+	Microsoft::WRL::ComPtr<ID3D11DeviceContext> cpDeviceContext;
+	Microsoft::WRL::ComPtr<IDXGISwapChain> cpSwapChain;
+	D3D11_VIEWPORT sScreenViewport;
 
 public:
 	virtual LRESULT WINAPI AppProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);

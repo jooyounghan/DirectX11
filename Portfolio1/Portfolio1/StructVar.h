@@ -51,7 +51,7 @@ struct ModelTransform
 
 struct TransformedMatrix
 {
-	static TransformedMatrix CreateTransfomredMatrix(const DirectX::XMMATRIX& xmmInvTransformedMatIn);
+	static TransformedMatrix CreateTransfomredMatrix(const DirectX::XMMATRIX& xmmTransformedMatIn);
 
 	DirectX::XMMATRIX xmmTransformedMat;
 	DirectX::XMMATRIX xmmInvTransformedMat;

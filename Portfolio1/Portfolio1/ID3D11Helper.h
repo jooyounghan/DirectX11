@@ -3,6 +3,7 @@
 #include <d3dcompiler.h>
 #include <windows.h>
 #include <wrl/client.h>
+
 #include <vector>
 
 #include "DefineVar.h"

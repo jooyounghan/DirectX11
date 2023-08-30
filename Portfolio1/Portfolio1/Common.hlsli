@@ -2,25 +2,27 @@
 
 struct VertexInput
 {
-    float4 fWorldPos : POSITION;
-    float2 fTexCoord : TEXCOORD;
-    float4 fWorldNormal : NORMAL;
-    float4 fWorldTangent : TANGENT;
+    float4 f4WorldPos : POSITION;
+    float2 f2TexCoord : TEXCOORD;
+    float4 f4WorldNormal : NORMAL;
+    float4 f4WorldTangent : TANGENT;
 };
     
 struct PixelInput
 {
-    float4 fProjPos : SV_Position;
-    float4 fWorldPos : POSITION;
-    float2 fTexCoord : TEXCOORD;
-    float4 fWorldNorVec : NORMAL;
+    float4 f4ProjPos : SV_Position;
+    float4 f4WorldPos : POSITION;
+    float2 f2TexCoord : TEXCOORD;
+    float4 f4WorldNorVec : NORMAL;
 };
 
 struct LightSet
 {
     unsigned int LightType;
-    float4 fLocation;
-    float4 fColor;
-    float4 fDirection;
-    float3 fDummy;
+    float4 f4Location;
+    float4 f4Color;
+    float4 f4Direction;
+    float4 f4LightStrength;
+    float fFallOffStart;
+    float fFallOffEnd;
 };

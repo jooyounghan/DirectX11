@@ -1,5 +1,4 @@
 #pragma once
-
 #include <memory>
 #include <directxmath/DirectXMath.h>
 #include <d3d11.h>

@@ -40,10 +40,35 @@ void ILight::InitLights(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceConte
 
 void ILight::UpdateLights(ID3D11DeviceContext* pDeviceContext)
 {
-	for (auto& ls : vLightSets)
-	{
-		ls.xmvLightColor.m128_f32[1] += 0.01;
-	}
 	ID3D11Helper::UpdateBuffer(pDeviceContext, vLightSets, D3D11_MAP::D3D11_MAP_WRITE_DISCARD, cpLightConstantBuffer.Get());
 	pDeviceContext->PSSetConstantBuffers(PSConstBufferType::LightStructure, 1, cpLightConstantBuffer.GetAddressOf());
+}
+
+LightType ILight::GetLightType()
+{
+	if (mIdToLightSet.find(ullLightId) != mIdToLightSet.end())
+	{
+		return mIdToLightSet[ullLightId]->eLightType;
+	}
+	else
+	{
+		Console("ID에 해당하는 라이트 정보를 얻지 못했습니다.");
+		return LightType::NotALight;
+	}
+}
+
+void ILight::AddLightSet()
+{
+	vLightSets.emplace_back();
+	LightSet* pLightSet = &vLightSets.back();
+	mIdToLightSet.emplace(ullLightId, pLightSet);
+}
+
+void ILight::RemoveLightSet()
+{
+	LightSet* pRemoveLightSet = mIdToLightSet.at(ullLightId);
+
+	mIdToLightSet.erase(ullLightId);
+	vLightSets.erase(remove_if(vLightSets.begin(), vLightSets.end(),
+		[&](LightSet& pTempLightSet) { return &pTempLightSet == pRemoveLightSet; }), vLightSets.end());
 }

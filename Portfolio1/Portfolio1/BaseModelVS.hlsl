@@ -5,7 +5,7 @@ SamplerState Sampler : register(s0);
 cbuffer ModelMatrix : register(b0)
 {
     matrix mModel;
-    matrix mModelInv;
+    matrix mModelInvTranspose;
 };
 
 cbuffer ViewProjMatrix : register(b1)
@@ -21,13 +21,13 @@ PixelInput main(VertexInput input)
 {
     PixelInput result;
         
-    float3 fNormalSampled = 2.f * NormalTexture.SampleLevel(Sampler, input.fTexCoord, 0.f).xyz - 1.f;
-    float fHeightSampled = 2.f * HeightTexture.SampleLevel(Sampler, input.fTexCoord, 0.f).x - 1.f;
+    float3 fNormalSampled = 2.f * NormalTexture.SampleLevel(Sampler, input.f2TexCoord, 0.f).xyz - 1.f;
+    float fHeightSampled = 2.f * HeightTexture.SampleLevel(Sampler, input.f2TexCoord, 0.f).x - 1.f;
     
-    float3 fModelNormal = mul(input.fWorldNormal, mModelInv).xyz;
+    float3 fModelNormal = mul(input.f4WorldNormal, mModelInvTranspose).xyz;
     fModelNormal = normalize(fModelNormal);
     
-    float3 fTangent = mul(input.fWorldTangent, mModel).xyz;
+    float3 fTangent = mul(input.f4WorldTangent, mModel).xyz;
     fTangent = normalize(fTangent);
     fTangent = normalize(fTangent - dot(fTangent, fModelNormal) * fModelNormal);
     
@@ -37,11 +37,11 @@ PixelInput main(VertexInput input)
     
     fNormalSampled = normalize(mul(fNormalSampled, TBN));
     
-    result.fWorldNorVec = float4(fNormalSampled, 0.f);
-    result.fWorldPos = input.fWorldPos;
-    result.fProjPos = result.fWorldPos;
-    result.fProjPos = mul(result.fProjPos, mModel);
-    result.fProjPos = mul(result.fProjPos, mViewProj);
-    result.fTexCoord = input.fTexCoord;
+    result.f4WorldNorVec = float4(fNormalSampled, 0.f);
+    result.f4WorldPos = input.f4WorldPos;
+    result.f4ProjPos = result.f4WorldPos;
+    result.f4ProjPos = mul(result.f4ProjPos, mModel);
+    result.f4ProjPos = mul(result.f4ProjPos, mViewProj);
+    result.f2TexCoord = input.f2TexCoord;
     return result;
 }
