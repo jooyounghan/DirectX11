@@ -8,7 +8,7 @@
 
 class ICamera;
 class IModel;
-
+class ILight;
 
 class PortfolioApp : public BaseApp
 {
@@ -36,9 +36,11 @@ public:
 private:	
 	std::shared_ptr<ICamera>				pMainCamera;
 	std::shared_ptr<IModel>					pSelectedModel;
+	std::shared_ptr<ILight>					pSelectedLight;
 
 private:
 	std::vector<std::shared_ptr<ICamera>>			vCameras;
+	std::vector<std::shared_ptr<ILight>>			vLights;
 	std::vector<std::shared_ptr<IModel>>			vModels;
 
 public:

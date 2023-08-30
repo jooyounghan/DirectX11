@@ -133,9 +133,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BaseApp.cpp" />
+    <ClCompile Include="DirectionalLight.cpp" />
     <ClCompile Include="FileLoader.cpp" />
     <ClCompile Include="ICamera.cpp" />
     <ClCompile Include="ID3D11Helper.cpp" />
+    <ClCompile Include="ILight.cpp" />
     <ClCompile Include="IModel.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MathematicalHelper.cpp" />
@@ -147,10 +149,12 @@
   <ItemGroup>
     <ClInclude Include="BaseApp.h" />
     <ClInclude Include="DefineVar.h" />
+    <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="EnumVar.h" />
     <ClInclude Include="FileLoader.h" />
     <ClInclude Include="ICamera.h" />
     <ClInclude Include="ID3D11Helper.h" />
+    <ClInclude Include="ILight.h" />
     <ClInclude Include="IModel.h" />
     <ClInclude Include="MathematicalHelper.h" />
     <ClInclude Include="PortfolioApp.h" />

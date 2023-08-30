@@ -21,22 +21,24 @@ PixelInput main(VertexInput input)
 {
     PixelInput result;
         
-    float3 fNormalSampled = NormalTexture.SampleLevel(Sampler, input.fTexCoord, 0.f).xyz;
-    fNormalSampled = 2.f * fNormalSampled - 1.f;
+    float3 fNormalSampled = 2.f * NormalTexture.SampleLevel(Sampler, input.fTexCoord, 0.f).xyz - 1.f;
+    float fHeightSampled = 2.f * HeightTexture.SampleLevel(Sampler, input.fTexCoord, 0.f).x - 1.f;
     
     float3 fModelNormal = mul(input.fWorldNormal, mModelInv).xyz;
     fModelNormal = normalize(fModelNormal);
+    
     float3 fTangent = mul(input.fWorldTangent, mModel).xyz;
+    fTangent = normalize(fTangent);
     fTangent = normalize(fTangent - dot(fTangent, fModelNormal) * fModelNormal);
+    
     float3 fBiTangent = cross(fModelNormal, fTangent);
+    
     float3x3 TBN = float3x3(fTangent, fBiTangent, fModelNormal);
     
-    fNormalSampled = normalize(mul(TBN, fNormalSampled));
+    fNormalSampled = normalize(mul(fNormalSampled, TBN));
     
-    result.fProjNorVec = float4(fNormalSampled, 0.f);
-    
-    result.fWorldPos = input.fWorldPos + result.fProjNorVec * (2.f * HeightTexture.SampleLevel(Sampler, input.fTexCoord, 0.f).x - 1.f);
-    
+    result.fWorldNorVec = float4(fNormalSampled, 0.f);
+    result.fWorldPos = input.fWorldPos;
     result.fProjPos = result.fWorldPos;
     result.fProjPos = mul(result.fProjPos, mModel);
     result.fProjPos = mul(result.fProjPos, mViewProj);

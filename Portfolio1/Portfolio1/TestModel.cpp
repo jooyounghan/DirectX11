@@ -1,6 +1,7 @@
 #include "TestModel.h"
 #include "EnumVar.h"
 #include "FileLoader.h"
+#include "ID3D11Helper.h"
 
 #include <atomic>
 
@@ -158,7 +159,6 @@ void TestModel::Render()
 
 	cpDeviceContext->PSSetShaderResources(PSSRVType::PS_AO, 1, STextures.AOSRV.GetAddressOf());
 	cpDeviceContext->PSSetShaderResources(PSSRVType::PS_DIFFUSE, 1, STextures.DiffuseSRV.GetAddressOf());
-	cpDeviceContext->PSSetShaderResources(PSSRVType::PS_NORMAL, 1, STextures.NormalSRV.GetAddressOf());
 	cpDeviceContext->PSSetShaderResources(PSSRVType::PS_REFLECT, 1, STextures.ReflectSRV.GetAddressOf());
 	//cpDeviceContext->PSSetConstantBuffers();
 

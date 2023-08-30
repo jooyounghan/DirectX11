@@ -14,8 +14,6 @@ struct TextureCoord
 {
 	float x;
 	float y;
-	float dummy1 = 0;
-	float dummy2 = 0;
 };
 
 struct Vector

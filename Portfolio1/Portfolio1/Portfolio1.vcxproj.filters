@@ -40,6 +40,12 @@
     <Filter Include="헤더 파일\Main">
       <UniqueIdentifier>{3ff67aee-c3a9-48e7-86c3-d503fcb899aa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Light">
+      <UniqueIdentifier>{be82a46f-d4bf-439e-a611-569b584134db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Light">
+      <UniqueIdentifier>{6a94f358-5905-4f1d-a547-9175c299d290}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="IModel.cpp">
@@ -74,6 +80,12 @@
     </ClCompile>
     <ClCompile Include="FileLoader.cpp">
       <Filter>소스 파일\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="ILight.cpp">
+      <Filter>소스 파일\Light</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectionalLight.cpp">
+      <Filter>소스 파일\Light</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -112,6 +124,12 @@
     </ClInclude>
     <ClInclude Include="FileLoader.h">
       <Filter>헤더 파일\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="ILight.h">
+      <Filter>헤더 파일\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectionalLight.h">
+      <Filter>헤더 파일\Light</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

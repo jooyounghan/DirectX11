@@ -1,6 +1,7 @@
 #include "ICamera.h"
 #include "MathematicalHelper.h"
 #include "EnumVar.h"
+#include "ID3D11Helper.h"
 
 #include <string>
 

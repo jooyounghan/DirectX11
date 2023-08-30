@@ -1,9 +1,17 @@
 #include "PortfolioApp.h"
+
 #include "ICamera.h"
+
 #include "IModel.h"
+#include "TestModel.h"
+
+#include "ILight.h"
+#include "DirectionalLight.h"
+
 #include "TempVariable.h"
 #include "FileLoader.h"
-#include "TestModel.h"
+
+using namespace DirectX;
 
 using namespace std;
 
@@ -28,19 +36,26 @@ void PortfolioApp::Init()
 	if (ICamera::DefaultCamera == nullptr)
 	{
 		ICamera::DefaultCamera = std::make_shared<ICamera>(cpDevice, cpDeviceContext, cpSwapChain, uiWidth, uiHeight, uiNumLevelQuality);
-
 	}
+
+	ILight::InitLights(cpDevice.Get(), cpDeviceContext.Get());
+
 	// For Testing ==================================================================================
+
 	pMainCamera = ICamera::DefaultCamera;
 	vModels.push_back(std::make_shared<TestModel>(cpDevice, cpDeviceContext, 0.f, 0.f, 0.f, 2.f));
 	vModels.push_back(std::make_shared<TestModel>(cpDevice, cpDeviceContext, 5.f, 0.f, 5.f, 2.f));
 	pSelectedModel = vModels[1];
+
+	vLights.push_back(std::make_shared<DirectionalLight>(cpDevice, cpDeviceContext, XMVectorSet(0.f, 100.f, 0.f, 1.f), XMVectorSet(1.f, 0.1f, 0.1f, 1.f), XMVectorSet(0.f, -1.f, 0.f, 0.f)));
 	// ==============================================================================================
 }
 
 void PortfolioApp::Update()
 {
 	pMainCamera->Update();
+
+	ILight::UpdateLights(cpDeviceContext.Get());
 
 	for (auto& model : vModels)
 	{
@@ -121,7 +136,7 @@ void PortfolioApp::UpdateGUI()
 	bool bModelNotSelected = (pSelectedModel == nullptr);
 	ImGui::BeginDisabled(bModelNotSelected);
 	ImGui::SliderFloat3("Scale Vector", bModelNotSelected ? TempVariable::fTempFloat3 : pSelectedModel->sModelTransformation.xmvScale.m128_f32, 0.f, 5.f);
-	ImGui::SliderFloat3("Rotation Vector", bModelNotSelected ? TempVariable::fTempFloat3 : (float*)(&pSelectedModel->sModelTransformation.sPositionAngle), -2.f * DirectX::XM_PI, 2.f * DirectX::XM_PI);
+	ImGui::SliderFloat3("Rotation Vector", bModelNotSelected ? TempVariable::fTempFloat3 : (float*)(&pSelectedModel->sModelTransformation.sPositionAngle), -2.f * XM_PI, 2.f * XM_PI);
 	ImGui::SliderFloat3("Translation Vector", bModelNotSelected ? TempVariable::fTempFloat3 : pSelectedModel->sModelTransformation.xmvTranslation.m128_f32, -10.f, 10.f);
 	ImGui::EndDisabled();	
 }

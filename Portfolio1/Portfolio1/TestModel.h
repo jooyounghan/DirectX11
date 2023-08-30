@@ -12,8 +12,8 @@ class TestModel : public IModel
 {
 public:
 	TestModel(
-		ComPtr<ID3D11Device>& cpDeviceIn,
-		ComPtr<ID3D11DeviceContext>& cpDeviceContextIn,
+		Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn,
+		Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn,
 		const float& fCenterX,
 		const float& fCenterY,
 		const float& fCenterZ,
@@ -29,11 +29,11 @@ protected:
 	static std::atomic_bool		bBaseInitialized;
 
 protected:
-	static ComPtr<ID3D11InputLayout>	cpBaseInputLayout;
-	static ComPtr<ID3D11VertexShader>	cpBaseVertexShader;
+	static Microsoft::WRL::ComPtr<ID3D11InputLayout>	cpBaseInputLayout;
+	static Microsoft::WRL::ComPtr<ID3D11VertexShader>	cpBaseVertexShader;
 
 protected:
-	static ComPtr<ID3D11PixelShader>	cpBasePixelShader;
-	static ComPtr<ID3D11SamplerState>	cpBaseSampler;
+	static Microsoft::WRL::ComPtr<ID3D11PixelShader>	cpBasePixelShader;
+	static Microsoft::WRL::ComPtr<ID3D11SamplerState>	cpBaseSampler;
 };
 

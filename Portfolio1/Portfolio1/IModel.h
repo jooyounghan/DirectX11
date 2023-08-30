@@ -1,5 +1,9 @@
 #pragma once
-#include "ID3D11Helper.h"
+#include <d3d11.h>
+#include <d3dcompiler.h>
+#include <windows.h>
+#include <wrl/client.h>
+
 #include "StructVar.h"
 
 enum TextureType : unsigned int
@@ -25,22 +29,22 @@ public:
 	);
 
 public:
-	ComPtr<ID3D11Texture2D>				AOTexture2D;
-	ComPtr<ID3D11ShaderResourceView>	AOSRV;
-	ComPtr<ID3D11Texture2D>				DiffuseTexture2D;
-	ComPtr<ID3D11ShaderResourceView>	DiffuseSRV;
-	ComPtr<ID3D11Texture2D>				HeightTexture2D;
-	ComPtr<ID3D11ShaderResourceView>	HeightSRV;
-	ComPtr<ID3D11Texture2D>				NormalTexture2D;
-	ComPtr<ID3D11ShaderResourceView>	NormalSRV;
-	ComPtr<ID3D11Texture2D>				ReflectTexture2D;
-	ComPtr<ID3D11ShaderResourceView>	ReflectSRV;
+	Microsoft::WRL::ComPtr<ID3D11Texture2D>				AOTexture2D;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>	AOSRV;
+	Microsoft::WRL::ComPtr<ID3D11Texture2D>				DiffuseTexture2D;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>	DiffuseSRV;
+	Microsoft::WRL::ComPtr<ID3D11Texture2D>				HeightTexture2D;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>	HeightSRV;
+	Microsoft::WRL::ComPtr<ID3D11Texture2D>				NormalTexture2D;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>	NormalSRV;
+	Microsoft::WRL::ComPtr<ID3D11Texture2D>				ReflectTexture2D;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>	ReflectSRV;
 };
 
 class IModel
 {
 public:
-	IModel(ComPtr<ID3D11Device>& cpDeviceIn, ComPtr<ID3D11DeviceContext>& cpDeviceContextIn);
+	IModel(Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn, Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn);
 	~IModel() {};
 
 public:
@@ -48,20 +52,20 @@ public:
 	virtual void Render() = 0;
 
 public:
-	ComPtr<ID3D11Buffer>	cpIndexBuffer;
+	Microsoft::WRL::ComPtr<ID3D11Buffer>	cpIndexBuffer;
 	uint32_t				ui32IndexCount;
 
 public:
-	ComPtr<ID3D11Buffer>	cpVertexBuffer;
+	Microsoft::WRL::ComPtr<ID3D11Buffer>	cpVertexBuffer;
 
 public:
 	ModelTransform			sModelTransformation;
-	ComPtr<ID3D11Buffer>	cpModelMatrixBuffer;
+	Microsoft::WRL::ComPtr<ID3D11Buffer>	cpModelMatrixBuffer;
 
 public:
 	TextureSet				STextures;
 
 protected:
-	ComPtr<ID3D11Device>& cpDevice;
-	ComPtr<ID3D11DeviceContext>& cpDeviceContext;
+	Microsoft::WRL::ComPtr<ID3D11Device>& cpDevice;
+	Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContext;
 };

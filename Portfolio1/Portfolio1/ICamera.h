@@ -1,11 +1,14 @@
 #pragma once
 
 #include <memory>
-#include "StructVar.h"
-#include "ID3D11Helper.h"
-#include "EnumVar.h"
 #include <directxmath/DirectXMath.h>
+#include <d3d11.h>
+#include <d3dcompiler.h>
+#include <windows.h>
+#include <wrl/client.h>
 
+#include "StructVar.h"
+#include "EnumVar.h"
 
 class CameraInfo
 {
@@ -39,9 +42,9 @@ public:
 class ICamera
 {
 public:
-	ICamera(ComPtr<ID3D11Device>& cpDeviceIn,
-		ComPtr<ID3D11DeviceContext>& cpDeviceContextIn,
-		ComPtr<IDXGISwapChain>& cpSwapChainIn, 
+	ICamera(Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn,
+		Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn,
+		Microsoft::WRL::ComPtr<IDXGISwapChain>& cpSwapChainIn,
 		const UINT& uiWidthIn, const UINT& uiHeightIn,
 		const UINT& uiNumLevelQuality
 	);
@@ -67,24 +70,24 @@ public:
 		);
 
 public:
-	ComPtr<ID3D11Buffer>			cpCameraConstantBuffer;
+	Microsoft::WRL::ComPtr<ID3D11Buffer>			cpCameraConstantBuffer;
 
-private:
-	ComPtr<ID3D11Texture2D>			cpBackBuffer;
-	ComPtr<ID3D11RenderTargetView>	cpRenderTargetView;
-	ComPtr<ID3D11RasterizerState>	cpRasterizerState;
+protected:
+	Microsoft::WRL::ComPtr<ID3D11Texture2D>			cpBackBuffer;
+	Microsoft::WRL::ComPtr<ID3D11RenderTargetView>	cpRenderTargetView;
+	Microsoft::WRL::ComPtr<ID3D11RasterizerState>	cpRasterizerState;
 
-private:
-	ComPtr<ID3D11Texture2D>			cpDepthStencilTexture2D;
-	ComPtr<ID3D11DepthStencilView>	cpDepthStencilView;
-	ComPtr<ID3D11DepthStencilState> cpDepthStencilState;
+protected:
+	Microsoft::WRL::ComPtr<ID3D11Texture2D>			cpDepthStencilTexture2D;
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilView>	cpDepthStencilView;
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> cpDepthStencilState;
 
-private:
-	ComPtr<ID3D11Device>& cpDevice;
-	ComPtr<ID3D11DeviceContext>& cpDeviceContext;
-	ComPtr<IDXGISwapChain>& cpSwapChain;
+protected:
+	Microsoft::WRL::ComPtr<ID3D11Device>& cpDevice;
+	Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContext;
+	Microsoft::WRL::ComPtr<IDXGISwapChain>& cpSwapChain;
 
-private:
+protected:
 	bool bFirstView;
 	bool bMoveDirection[MoveDir::NUM_DIR];
 
