@@ -1,3 +1,5 @@
+#define MAX_LIGHT_NUM 10
+
 struct VertexInput
 {
     float4 fWorldPos : POSITION;
@@ -14,3 +16,11 @@ struct PixelInput
     float4 fWorldNorVec : NORMAL;
 };
 
+struct LightSet
+{
+    unsigned int LightType;
+    float4 fLocation;
+    float4 fColor;
+    float4 fDirection;
+    float3 fDummy;
+};

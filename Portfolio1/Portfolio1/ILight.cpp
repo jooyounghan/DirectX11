@@ -27,7 +27,6 @@ ILight::~ILight()
 void ILight::InitLights(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {
 	vLightSets.resize(ullMaxLightNum);
-
 	ID3D11Helper::CreateBuffer(
 		pDevice,
 		vLightSets,
@@ -36,6 +35,7 @@ void ILight::InitLights(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceConte
 		D3D11_CPU_ACCESS_WRITE, 0,
 		cpLightConstantBuffer.GetAddressOf()
 	);
+	vLightSets.clear();
 }
 
 void ILight::UpdateLights(ID3D11DeviceContext* pDeviceContext)

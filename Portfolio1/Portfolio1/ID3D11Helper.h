@@ -61,6 +61,14 @@ public:
 		OUT ID3D11Resource* pResource
 	);
 
+	template<typename T>
+	static void UpdateBuffer(
+		IN ID3D11DeviceContext* pDeviceContext,
+		IN const std::vector<T>& vData,
+		IN D3D11_MAP mapFlag,
+		OUT ID3D11Resource* pResource
+	);
+
 	static void GetBackBuffer(
 		IN IDXGISwapChain* pSwapChain,
 		OUT ID3D11Texture2D** ppTexture2D
@@ -215,5 +223,19 @@ void ID3D11Helper::UpdateBuffer(
 	D3D11_MAPPED_SUBRESOURCE ms;
 	pDeviceContext->Map(pResource, NULL, mapFlag, NULL, &ms);
 	memcpy(ms.pData, &data, sizeof(decltype(data)));
+	pDeviceContext->Unmap(pResource, NULL);
+}
+
+template<typename T>
+void ID3D11Helper::UpdateBuffer(
+	IN ID3D11DeviceContext* pDeviceContext,
+	IN const std::vector<T>& data,
+	IN D3D11_MAP mapFlag,
+	OUT ID3D11Resource* pResource
+)
+{
+	D3D11_MAPPED_SUBRESOURCE ms;
+	pDeviceContext->Map(pResource, NULL, mapFlag, NULL, &ms);
+	memcpy(ms.pData, data.data(), data.size() * sizeof(T));
 	pDeviceContext->Unmap(pResource, NULL);
 }
