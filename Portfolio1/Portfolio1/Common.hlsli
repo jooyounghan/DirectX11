@@ -19,10 +19,12 @@ struct PixelInput
 struct LightSet
 {
     unsigned int LightType;
+    float fDummy[3];
     float4 f4Location;
     float4 f4Color;
     float4 f4Direction;
-    float4 f4LightStrength;
+    float f4LightStrength;
     float fFallOffStart;
     float fFallOffEnd;
+    float fSpotPower;
 };

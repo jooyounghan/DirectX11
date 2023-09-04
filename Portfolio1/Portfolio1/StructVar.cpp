@@ -34,14 +34,13 @@ XMMATRIX ModelTransform::GetAffineTransformMatrix(IN const ModelTransform& pMode
 	);
 
 	
-	return XMMatrixTranspose(xmmScale * xmmRotation * xmmTranslation);
+	return xmmScale * xmmRotation * xmmTranslation;
 }
 
 TransformedMatrix TransformedMatrix::CreateTransfomredMatrix(const XMMATRIX& xmmTransformedMatIn)
 {
 	TransformedMatrix result;
-	result.xmmTransformedMat = xmmTransformedMatIn;
-
+	result.xmmTransformedMat = XMMatrixTranspose(xmmTransformedMatIn);
 	result.xmmInvTransformedMat = XMMatrixInverse(nullptr, xmmTransformedMatIn);
 	// Transpose 2번의 경우 상쇄되므로 생략
 	return result;

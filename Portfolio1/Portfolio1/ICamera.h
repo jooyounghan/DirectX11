@@ -63,7 +63,7 @@ public:
 	CameraInfo		sCameraInfo;
 
 public:
-	DirectX::XMMATRIX GetViewProjTransposed(
+	DirectX::XMMATRIX GetViewProj(
 		const DirectX::XMVECTOR& xmvCameraDirection,
 		const DirectX::XMVECTOR& xmvCameraUp
 		);

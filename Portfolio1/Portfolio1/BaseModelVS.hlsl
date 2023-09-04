@@ -38,7 +38,7 @@ PixelInput main(VertexInput input)
     fNormalSampled = normalize(mul(fNormalSampled, TBN));
     
     result.f4WorldNorVec = float4(fNormalSampled, 0.f);
-    result.f4WorldPos = input.f4WorldPos;
+    result.f4WorldPos = input.f4WorldPos/* + (fHeightSampled * 0.2f) DrawIndexed로 들어온 점들의 인터폴레이션으로 정해지므로 도메인 셰이더에서!*/;
     result.f4ProjPos = result.f4WorldPos;
     result.f4ProjPos = mul(result.f4ProjPos, mModel);
     result.f4ProjPos = mul(result.f4ProjPos, mViewProj);

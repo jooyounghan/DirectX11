@@ -39,7 +39,7 @@ ICamera::ICamera(ComPtr<ID3D11Device>& cpDeviceIn,
 
 	ID3D11Helper::CreateBuffer(
 		cpDevice.Get(),
-		TransformedMatrix::CreateTransfomredMatrix(GetViewProjTransposed(DefaultDirection, DefaultUp)),
+		TransformedMatrix::CreateTransfomredMatrix(GetViewProj(DefaultDirection, DefaultUp)),
 		D3D11_USAGE_DYNAMIC,
 		D3D11_BIND_CONSTANT_BUFFER,
 		D3D11_CPU_ACCESS_WRITE, 0,
@@ -65,7 +65,7 @@ void ICamera::Update()
 	// Mouse Angle에 대한 카메라 업데이트
 	ID3D11Helper::UpdateBuffer(
 		cpDeviceContext.Get(),
-		TransformedMatrix::CreateTransfomredMatrix(GetViewProjTransposed(xmvCameraDirection, xmvCameraUp)),
+		TransformedMatrix::CreateTransfomredMatrix(GetViewProj(xmvCameraDirection, xmvCameraUp)),
 		D3D11_MAP::D3D11_MAP_WRITE_DISCARD,
 		cpCameraConstantBuffer.Get()
 	);
@@ -111,7 +111,7 @@ void ICamera::SetFromMouseXY(const int& iMouseX, const int& iMouseY)
 	}
 }
 
-XMMATRIX ICamera::GetViewProjTransposed(
+XMMATRIX ICamera::GetViewProj(
 	const DirectX::XMVECTOR& xmvCameraDirection,
 	const DirectX::XMVECTOR& xmvCameraUp
 )
@@ -131,8 +131,8 @@ XMMATRIX ICamera::GetViewProjTransposed(
 	// (V * P)_T = P_T * V_T 이므로,
 	// CPU(DirectX11)에서 V * P를 계산하고 전치를 처리해준 다음에 GPU(HLSL)로 보내준다.
 
-	return XMMatrixTranspose(XMMatrixLookToLH(sCameraInfo.xmvCameraPosition, xmvCameraDirection, xmvCameraUp) *
-		XMMatrixPerspectiveFovLH(sCameraInfo.fFovAngle, sCameraInfo.fAspectRatio, sCameraInfo.fNearZ, sCameraInfo.fFarZ));
+	return XMMatrixLookToLH(sCameraInfo.xmvCameraPosition, xmvCameraDirection, xmvCameraUp) *
+		XMMatrixPerspectiveFovLH(sCameraInfo.fFovAngle, sCameraInfo.fAspectRatio, sCameraInfo.fNearZ, sCameraInfo.fFarZ);
 }
 
 void ICamera::StartMove(MoveDir moveDir)

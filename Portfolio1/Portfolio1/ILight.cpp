@@ -3,8 +3,10 @@
 #include "EnumVar.h"
 
 using namespace std;
+using namespace DirectX;
 using Microsoft::WRL::ComPtr;
 
+LightSet				ILight::sTempLightSet;
 size_t					ILight::ullNextLightId = 0;
 map<size_t, LightSet*>	ILight::mIdToLightSet;
 vector<LightSet>		ILight::vLightSets;
@@ -44,6 +46,16 @@ void ILight::UpdateLights(ID3D11DeviceContext* pDeviceContext)
 	pDeviceContext->PSSetConstantBuffers(PSConstBufferType::LightStructure, 1, cpLightConstantBuffer.GetAddressOf());
 }
 
+LightSet* ILight::GetLightSet()
+{
+	LightSet* pResult = nullptr;
+	if (mIdToLightSet.find(ullLightId) != mIdToLightSet.end())
+	{
+		pResult = mIdToLightSet[ullLightId];
+	}
+	return pResult;
+}
+
 LightType ILight::GetLightType()
 {
 	if (mIdToLightSet.find(ullLightId) != mIdToLightSet.end())
@@ -71,4 +83,9 @@ void ILight::RemoveLightSet()
 	mIdToLightSet.erase(ullLightId);
 	vLightSets.erase(remove_if(vLightSets.begin(), vLightSets.end(),
 		[&](LightSet& pTempLightSet) { return &pTempLightSet == pRemoveLightSet; }), vLightSets.end());
+}
+
+LightSet* ILight::GetTempLightSet()
+{
+	return &sTempLightSet;
 }

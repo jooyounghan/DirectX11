@@ -23,10 +23,11 @@ struct LightSet
 {
 public:
 	LightType			eLightType;
+	float				dummy[3];
 	DirectX::XMVECTOR	xmvLocation;
 	DirectX::XMVECTOR	xmvLightColor;
 	DirectX::XMVECTOR	xmvDirection;
-	DirectX::XMVECTOR	xmvLightStrength;
+	float				fLightStrength;
 	float				fFallOffStart;
 	float				fFallOffEnd;
 	float				fSpotPower;
@@ -49,13 +50,15 @@ public:
 	const size_t ullLightId;
 
 public:
-	LightType		 GetLightType();
+	LightSet*		GetLightSet();
+	LightType		GetLightType();
 
 protected:
 	void AddLightSet();
 	void RemoveLightSet();
 
 protected:
+	static LightSet	sTempLightSet;
 	static size_t ullNextLightId;
 	static std::map<size_t, LightSet*> mIdToLightSet;
 	static std::vector<LightSet>	vLightSets;
@@ -64,6 +67,6 @@ protected:
 public:
 	static void InitLights(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	static void UpdateLights(ID3D11DeviceContext* pDeviceContext);
-
+	static LightSet* GetTempLightSet();
 };
 

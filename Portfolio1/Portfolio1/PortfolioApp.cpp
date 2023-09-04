@@ -11,6 +11,8 @@
 #include "TempVariable.h"
 #include "FileLoader.h"
 
+#include "DefineVar.h"
+
 #include <string>
 
 using namespace DirectX;
@@ -127,7 +129,7 @@ void PortfolioApp::InitImGUI()
     ImGuiIO& io = ImGui::GetIO();
     (void)io;
     io.DisplaySize = ImVec2((float)uiWidth, (float)uiHeight);
-    ImGui::StyleColorsLight();
+	ImGui::StyleColorsDark();
 
 	ImGui_ImplDX11_Init(cpDevice.Get(), cpDeviceContext.Get());
     ImGui_ImplWin32_Init(hMainWindow);
@@ -181,6 +183,79 @@ void PortfolioApp::SetLightManageWnd()
 {
 	ImGui::Begin("Light Mananger");
 
+	if (ImGui::CollapsingHeader("Add Light"))
+	{
+		SetLightAddMenu();
+	}
+
+	if (ImGui::CollapsingHeader("Select Light"))
+	{
+		SetLightSelectorMenu();
+	}
+
+	if (ImGui::CollapsingHeader("Setting"))
+	{
+		SetLightSettingMenu();
+	}
+	ImGui::End();
+}
+
+void PortfolioApp::SetLightAddMenu()
+{
+	static bool	lightTypeCheckFlag[3] = { false, false, false };
+	static const char* items[] = { "Directional", "Point", "Spot" };
+	static int selected_idx = 0;
+	if (ImGui::BeginCombo("Select Light Type", items[selected_idx], NULL))
+	{
+		for (int n = 0; n < IM_ARRAYSIZE(items); n++)
+		{
+			const bool is_selected = (selected_idx == n);
+			if (ImGui::Selectable(items[n], is_selected))
+				selected_idx = n;
+
+			if (is_selected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndCombo();
+	}
+
+	LightSet* pLightSet = ILight::GetTempLightSet();
+	if (selected_idx == LightType::Directional)	SetDirectionalLightMenu(pLightSet);
+	else if (selected_idx == LightType::Point)	SetPointLightMenu(pLightSet);
+	else if (selected_idx == LightType::Spot)	SetSpotLightMenu(pLightSet);
+	else;
+
+	const float& fWindowSize = ImGui::GetWindowWidth();
+	if (ImGui::Button("Add", ImVec2(fWindowSize / 2.f, 0.f)))
+	{
+		switch (selected_idx)
+		{
+		case LightType::Directional:
+			umLights.emplace(
+				std::make_shared<DirectionalLight>(
+					cpDevice, cpDeviceContext,
+					pLightSet->xmvLocation,
+					pLightSet->xmvLightColor,
+					pLightSet->xmvDirection
+				),
+				false
+			);
+			break;
+		case LightType::Point:
+			break;
+		case LightType::Spot:
+			break;
+		}
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Reset", ImVec2(fWindowSize / 2.f, 0.f)))
+	{
+		AutoZeroMemory(*pLightSet);
+	}
+}
+
+void PortfolioApp::SetLightSelectorMenu()
+{
 	if (ImGui::BeginTable("Light Selector", 3, ImGuiTableFlags_Borders))
 	{
 		ImGui::TableSetupColumn("Check");
@@ -244,14 +319,55 @@ void PortfolioApp::SetLightManageWnd()
 		}
 		ImGui::EndTable();
 	}
+}
 
-
+void PortfolioApp::SetLightSettingMenu()
+{
 	bool bLightNotSelected = (pSelectedLight == nullptr);
-	ImGui::BeginDisabled(bLightNotSelected);
-	ImGui::Text((pSelectedLight == nullptr) ? "" : to_string(pSelectedLight->ullLightId).c_str());
-	ImGui::EndDisabled();
+	if (!bLightNotSelected)
+	{
+		LightType eLightType = pSelectedLight->GetLightType();
+		LightSet* pLightSet = pSelectedLight->GetLightSet();
+		if (eLightType == LightType::Directional)	SetDirectionalLightMenu(pLightSet);
+		else if (eLightType == LightType::Point)	SetPointLightMenu(pLightSet);
+		else if (eLightType == LightType::Spot)		SetSpotLightMenu(pLightSet);
+		else;
+	}
+	else
+	{
+		ImGui::BulletText("Select The Light For the Setting");
+	}
+}
 
-	ImGui::End();
+void PortfolioApp::SetDirectionalLightMenu(LightSet* pLightSet)
+{
+	ImGui::PushID(pLightSet);
+	ImGui::SliderFloat3("Light Location", pLightSet->xmvLocation.m128_f32, -10.f, 10.f);
+	ImGui::SliderFloat3("Light Color", pLightSet->xmvLightColor.m128_f32, 0, 1.f);
+	ImGui::SliderFloat3("Light Direction", pLightSet->xmvDirection.m128_f32, -1.f, 1.f);
+	ImGui::SliderFloat("Light Power", &pLightSet->fLightStrength, 0.f, 10.f);
+	ImGui::PopID();
+}
+
+void PortfolioApp::SetPointLightMenu(LightSet* pLightSet)
+{
+	ImGui::PushID(pLightSet);
+	ImGui::SliderFloat3("Light Location", pLightSet->xmvLocation.m128_f32, -100.f, 100.f);
+	ImGui::SliderFloat3("Light Color", pLightSet->xmvLightColor.m128_f32, 0, 1.f);
+	ImGui::SliderFloat("Light Power", &pLightSet->fLightStrength, 0.f, 10.f);
+	ImGui::SliderFloat2("Fall Off Start/End", &pLightSet->fFallOffStart, 0.f, 100.f);
+	ImGui::PopID();
+}
+
+void PortfolioApp::SetSpotLightMenu(LightSet* pLightSet)
+{
+	ImGui::PushID(pLightSet);
+	ImGui::SliderFloat3("Light Location", pLightSet->xmvLocation.m128_f32, -10.f, 10.f);
+	ImGui::SliderFloat3("Light Color", pLightSet->xmvLightColor.m128_f32, 0, 1.f);
+	ImGui::SliderFloat3("Light Direction", pLightSet->xmvDirection.m128_f32, -1.f, 1.f);
+	ImGui::SliderFloat("Light Power", &pLightSet->fLightStrength, 0.f, 10.f);
+	ImGui::SliderFloat("Spot Power", &pLightSet->fSpotPower, 0.f, 10.f);
+	ImGui::PopID();
 }
 
 void PortfolioApp::ResizeSwapChain(const UINT& uiWidthIn, const UINT& uiHeightIn)
