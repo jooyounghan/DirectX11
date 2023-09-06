@@ -54,21 +54,21 @@ void PortfolioApp::Init()
 	umLights.emplace(
 		std::make_shared<DirectionalLight>(
 		cpDevice, cpDeviceContext,
-		XMVectorSet(0.f, 100.f, 0.f, 1.f),
+		XMVectorSet(0.f, 0.f, -100.f, 1.f),
 		XMVectorSet(1.f, 0.1f, 0.1f, 1.f),
-		XMVectorSet(0.f, -1.f, 0.f, 0.f)
+		XMVectorSet(0.f, 0.f, 1.f, 0.f)
 		),
 		false
 	);
-	umLights.emplace(
-		std::make_shared<DirectionalLight>(
-			cpDevice, cpDeviceContext,
-			XMVectorSet(100.f, 0.f, 0.f, 1.f),
-			XMVectorSet(0.1f, 1.0f, 0.1f, 1.f),
-			XMVectorSet(-1.f, 0.f, 0.f, 0.f)
-		),
-		false
-	);
+	//umLights.emplace(
+	//	std::make_shared<DirectionalLight>(
+	//		cpDevice, cpDeviceContext,
+	//		XMVectorSet(100.f, 0.f, 0.f, 1.f),
+	//		XMVectorSet(0.1f, 1.0f, 0.1f, 1.f),
+	//		XMVectorSet(-1.f, 0.f, 0.f, 0.f)
+	//	),
+	//	false
+	//);
 	// ==============================================================================================
 }
 

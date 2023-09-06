@@ -1,4 +1,4 @@
-#define MAX_LIGHT_NUM 10
+#define MAX_LIGHT_NUM 1
 
 struct VertexInput
 {
@@ -19,7 +19,7 @@ struct PixelInput
 struct LightSet
 {
     unsigned int LightType;
-    float fDummy[3];
+    float3 fDummy;
     float4 f4Location;
     float4 f4Color;
     float4 f4Direction;
