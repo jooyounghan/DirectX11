@@ -2,20 +2,13 @@
 
 enum VSConstBufferType : unsigned int
 {
-	ModelMatrix,
-	ViewProjMatrix
+	VS_ModelMatrix,
+	VS_ViewProjMatrix
 };
 
 enum PSConstBufferType : unsigned int
 {
-	LightStructure,
-};
-
-
-enum VSSRVType : unsigned int
-{
-	VS_HEIGHT,
-	VS_NORMAL
+	PS_LightStructure,
 };
 
 enum PSSRVType : unsigned int
@@ -23,7 +16,19 @@ enum PSSRVType : unsigned int
 	PS_AO,
 	PS_DIFFUSE,
 	PS_REFLECT,
+	PS_NORMAL
 };
+
+enum DSSRVType : unsigned int
+{
+	DS_HEIGHT,
+};
+
+enum DSConstBufferType : unsigned int
+{
+	DS_ViewProjMatrix
+};
+
 
 enum KeyCode
 {

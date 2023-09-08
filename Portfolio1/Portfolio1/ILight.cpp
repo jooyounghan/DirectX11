@@ -43,7 +43,7 @@ void ILight::InitLights(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceConte
 void ILight::UpdateLights(ID3D11DeviceContext* pDeviceContext)
 {
 	ID3D11Helper::UpdateBuffer(pDeviceContext, vLightSets, D3D11_MAP::D3D11_MAP_WRITE_DISCARD, cpLightConstantBuffer.Get());
-	pDeviceContext->PSSetConstantBuffers(PSConstBufferType::LightStructure, 1, cpLightConstantBuffer.GetAddressOf());
+	pDeviceContext->PSSetConstantBuffers(PSConstBufferType::PS_LightStructure, 1, cpLightConstantBuffer.GetAddressOf());
 }
 
 LightSet* ILight::GetLightSet()

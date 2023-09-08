@@ -35,5 +35,9 @@ protected:
 protected:
 	static Microsoft::WRL::ComPtr<ID3D11PixelShader>	cpBasePixelShader;
 	static Microsoft::WRL::ComPtr<ID3D11SamplerState>	cpBaseSampler;
+
+protected:
+	static Microsoft::WRL::ComPtr<ID3D11HullShader>		cpBaseHullShader;
+	static Microsoft::WRL::ComPtr<ID3D11DomainShader>	cpBaseDomainShader;
 };
 

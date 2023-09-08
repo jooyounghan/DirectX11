@@ -81,6 +81,18 @@ public:
 		OUT ID3D11PixelShader** ppPixelShader
 	);
 
+	static void CreateHS(
+		IN ID3D11Device* pDevice,
+		IN LPCWSTR pFileName,
+		OUT ID3D11HullShader** ppHullShader
+	);
+
+	static void CreateDS(
+		IN ID3D11Device* pDevice,
+		IN LPCWSTR pFileName,
+		OUT ID3D11DomainShader** ppDomainShader
+	);
+
 	static void CreateRenderTargetView(
 		IN ID3D11Device* pDevice,
 		IN ID3D11Resource* pResource,

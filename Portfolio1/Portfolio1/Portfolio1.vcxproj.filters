@@ -139,6 +139,12 @@
     <FxCompile Include="BaseModelPS.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
+    <FxCompile Include="BaseModelHS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="BaseModelDS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Common.hlsli">

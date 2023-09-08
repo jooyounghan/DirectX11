@@ -72,7 +72,10 @@ void ICamera::Update()
 
 	// Camera에 대한 기본 데이터 업데이트
 	cpDeviceContext->RSSetState(cpRasterizerState.Get());
-	cpDeviceContext->VSSetConstantBuffers(ViewProjMatrix, 1, cpCameraConstantBuffer.GetAddressOf());
+
+	cpDeviceContext->VSSetConstantBuffers(VSConstBufferType::VS_ViewProjMatrix, 1, cpCameraConstantBuffer.GetAddressOf());
+	cpDeviceContext->DSSetConstantBuffers(DSConstBufferType::DS_ViewProjMatrix, 1, cpCameraConstantBuffer.GetAddressOf());
+
 	cpDeviceContext->OMSetRenderTargets(1, cpRenderTargetView.GetAddressOf(), cpDepthStencilView.Get());
 	//cpDeviceContext->OMSetDepthStencilState(cpDepthStencilState.Get(), 0);
 }

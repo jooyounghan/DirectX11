@@ -12,6 +12,9 @@ ComPtr<ID3D11InputLayout>	TestModel::cpBaseInputLayout;
 ComPtr<ID3D11VertexShader>	TestModel::cpBaseVertexShader;
 ComPtr<ID3D11PixelShader>	TestModel::cpBasePixelShader;
 ComPtr<ID3D11SamplerState>	TestModel::cpBaseSampler;
+ComPtr<ID3D11HullShader>	TestModel::cpBaseHullShader;
+ComPtr<ID3D11DomainShader>	TestModel::cpBaseDomainShader;
+
 
 TestModel::TestModel(
 	ComPtr<ID3D11Device>& cpDeviceIn,
@@ -34,6 +37,10 @@ TestModel::TestModel(
 
 		ID3D11Helper::CreateVSInputLayOut(cpDevice.Get(), L"BaseModelVS.hlsl", vInputElemDesc, cpBaseVertexShader.GetAddressOf(), cpBaseInputLayout.GetAddressOf());
 		ID3D11Helper::CreatePS(cpDevice.Get(), L"BaseModelPS.hlsl", cpBasePixelShader.GetAddressOf());
+		
+		ID3D11Helper::CreateHS(cpDevice.Get(), L"BaseModelHS.hlsl", cpBaseHullShader.GetAddressOf());
+		ID3D11Helper::CreateDS(cpDevice.Get(), L"BaseModelDS.hlsl", cpBaseDomainShader.GetAddressOf());
+
 
 		FLOAT pBorderColor[4]{ 0.f, 0.f, 0.f, 0.f };
 		ID3D11Helper::CreateSampler(D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP, pBorderColor, cpDevice.Get(), cpBaseSampler.GetAddressOf());
@@ -66,12 +73,12 @@ TestModel::TestModel(
 	sModelTransformation.xmvTranslation.m128_f32[2] = fCenterZ;
 
 	vector<Vertex> vVertex{
-		{{-fLen / 2.f, -fLen / 2.f, -fLen / 2.f}, {0.f, 1.f}, {0.f, 0.f, -1.f, 0.f}, {1.f, 0.f, 0.f, 0.f}},
-		{{fLen / 2.f, fLen / 2.f, -fLen / 2.f}, {1.f, 0.f}, {0.f, 0.f, -1.f, 0.f}, {1.f, 0.f, 0.f, 0.f}},
-		{{fLen / 2.f, -fLen / 2.f, -fLen / 2.f}, {1.f, 1.f}, {0.f, 0.f, -1.f, 0.f}, {1.f, 0.f, 0.f, 0.f}},
-		{{-fLen / 2.f, -fLen / 2.f, -fLen / 2.f}, {0.f, 1.f}, {0.f, 0.f, -1.f, 0.f}, {1.f, 0.f, 0.f, 0.f}},
-		{{-fLen / 2.f, fLen / 2.f, -fLen / 2.f}, {0.f, 0.f}, {0.f, 0.f, -1.f, 0.f}, {1.f, 0.f, 0.f, 0.f}},
-		{{fLen / 2.f, fLen / 2.f, -fLen / 2.f}, {1.f, 0.f}, {0.f, 0.f, -1.f, 0.f}, {1.f, 0.f, 0.f, 0.f}},
+		{{-fLen / 2.f, -fLen / 2.f, -fLen / 2.f}, {0.f, 1.f}, {0.f, 0.f, -1.f, 0.f}, {-1.f, 0.f, 0.f, 0.f}},
+		{{fLen / 2.f, fLen / 2.f, -fLen / 2.f}, {1.f, 0.f}, {0.f, 0.f, -1.f, 0.f}, {-1.f, 0.f, 0.f, 0.f}},
+		{{fLen / 2.f, -fLen / 2.f, -fLen / 2.f}, {1.f, 1.f}, {0.f, 0.f, -1.f, 0.f}, {-1.f, 0.f, 0.f, 0.f}},
+		{{-fLen / 2.f, -fLen / 2.f, -fLen / 2.f}, {0.f, 1.f}, {0.f, 0.f, -1.f, 0.f}, {-1.f, 0.f, 0.f, 0.f}},
+		{{-fLen / 2.f, fLen / 2.f, -fLen / 2.f}, {0.f, 0.f}, {0.f, 0.f, -1.f, 0.f}, {-1.f, 0.f, 0.f, 0.f}},
+		{{fLen / 2.f, fLen / 2.f, -fLen / 2.f}, {1.f, 0.f}, {0.f, 0.f, -1.f, 0.f}, {-1.f, 0.f, 0.f, 0.f}},
 
 
 		{{fLen / 2.f, -fLen / 2.f, -fLen / 2.f}, {0.f, 1.f}, {1.f, 0.f, 0.f, 0.f}, {0.f, 0.f, -1.f, 0.f}},
@@ -143,15 +150,17 @@ void TestModel::Render()
 
 	cpDeviceContext->IASetIndexBuffer(cpIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 	cpDeviceContext->IASetVertexBuffers(0, 1, cpVertexBuffer.GetAddressOf(), &stride, &offset);
-	cpDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	cpDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
 
 	cpDeviceContext->VSSetShader(cpBaseVertexShader.Get(), 0, 0);
-	cpDeviceContext->VSSetConstantBuffers(VSConstBufferType::ModelMatrix, 1, cpModelMatrixBuffer.GetAddressOf());
+	cpDeviceContext->VSSetConstantBuffers(VSConstBufferType::VS_ModelMatrix, 1, cpModelMatrixBuffer.GetAddressOf());
 
-	
-	cpDeviceContext->VSSetSamplers(0, 1, cpBaseSampler.GetAddressOf());
-	cpDeviceContext->VSSetShaderResources(VSSRVType::VS_HEIGHT, 1, STextures.HeightSRV.GetAddressOf());
-	cpDeviceContext->VSSetShaderResources(VSSRVType::VS_NORMAL, 1, STextures.NormalSRV.GetAddressOf());
+	cpDeviceContext->HSSetShader(cpBaseHullShader.Get(), 0, 0);
+	cpDeviceContext->DSSetShader(cpBaseDomainShader.Get(), 0, 0);
+
+	cpDeviceContext->DSSetSamplers(0, 1, cpBaseSampler.GetAddressOf());
+	cpDeviceContext->DSSetShaderResources(DSSRVType::DS_HEIGHT, 1, STextures.HeightSRV.GetAddressOf());
+
 
 	cpDeviceContext->PSSetShader(cpBasePixelShader.Get(), 0, 0);
 	cpDeviceContext->PSSetSamplers(0, 1, cpBaseSampler.GetAddressOf());
@@ -160,9 +169,13 @@ void TestModel::Render()
 	cpDeviceContext->PSSetShaderResources(PSSRVType::PS_AO, 1, STextures.AOSRV.GetAddressOf());
 	cpDeviceContext->PSSetShaderResources(PSSRVType::PS_DIFFUSE, 1, STextures.DiffuseSRV.GetAddressOf());
 	cpDeviceContext->PSSetShaderResources(PSSRVType::PS_REFLECT, 1, STextures.ReflectSRV.GetAddressOf());
+	cpDeviceContext->DSSetShaderResources(PSSRVType::PS_NORMAL, 1, STextures.NormalSRV.GetAddressOf());
 	//cpDeviceContext->PSSetConstantBuffers();
 
 	//cpDeviceContext->OMSetDepthStencilState(cpDepthStencilState.Get(), 0);
 
 	cpDeviceContext->DrawIndexed(ui32IndexCount, 0, 0);
+
+	cpDeviceContext->HSSetShader(nullptr, 0, 0);
+	cpDeviceContext->DSSetShader(nullptr, 0, 0);
 }
