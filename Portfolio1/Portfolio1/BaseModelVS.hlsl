@@ -20,11 +20,7 @@ HullInput main(VertexInput input)
     float3 fModelNormal = mul(input.f4WorldNormal, mModelInvTranspose).xyz;
     fModelNormal = normalize(fModelNormal);
     
-    float3 fModelTangent = mul(input.f4WorldTangent, mModel).xyz;
-    fModelTangent = normalize(fModelTangent);
-    
     result.f4ModelNormal = float4(fModelNormal, 0.f);
-    result.f4ModelTangent = float4(fModelTangent, 0.f);
     
     result.f4ModelPos = mul(input.f4WorldPos, mModel);
     result.f4ProjPos = result.f4ModelPos;

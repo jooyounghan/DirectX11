@@ -5,7 +5,6 @@ struct VertexInput
     float4 f4WorldPos : POSITION;
     float2 f2TexCoord : TEXCOORD;
     float4 f4WorldNormal : NORMAL;
-    float4 f4WorldTangent : TANGENT;
 };
     
 struct HullInput
@@ -14,7 +13,6 @@ struct HullInput
     float4 f4ModelPos : POSITION;
     float2 f2TexCoord : TEXCOORD;
     float4 f4ModelNormal : NORMAL;
-    float4 f4ModelTangent : TANGENT;
 };
 
 struct HS_CONSTANT_DATA_OUTPUT
@@ -30,7 +28,6 @@ struct DomainInput
     float4 f4ModelPos : POSITION;
     float2 f2TexCoord : TEXCOORD;
     float4 f4ModelNormal : NORMAL;
-    float4 f4ModelTangent : TANGENT;
 };
 
 
@@ -41,6 +38,7 @@ struct PixelInput
     float2 f2TexCoord : TEXCOORD;
     float4 f4ModelNormal : NORMAL;
     float4 f4ModelTangent : TANGENT;
+    float4 f4ModelBiTangent : BINORMAL;
 };
 
 struct LightSet
@@ -55,3 +53,10 @@ struct LightSet
     float fFallOffEnd;
     float fSpotPower;
 };
+
+float2x2 Get2X2InvMatrix(float2x2 input)
+{
+    float ad_bc = (1.0 / (input._m00 * input._m11 - input._m01 * input._m10));
+    float2x2 f22Result = float2x2(input._m11, -input._m01, -input._m10, input._m00);
+    return ad_bc * f22Result;
+}

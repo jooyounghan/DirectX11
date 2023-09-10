@@ -32,6 +32,5 @@ DomainInput main(
     Output.f4ModelPos = ip[i].f4ModelPos;
     Output.f2TexCoord = ip[i].f2TexCoord;
     Output.f4ModelNormal = ip[i].f4ModelNormal;
-    Output.f4ModelTangent = ip[i].f4ModelTangent;
 	return Output;
 }
