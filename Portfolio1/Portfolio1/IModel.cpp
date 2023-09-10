@@ -2,7 +2,11 @@
 #include "ID3D11Helper.h"
 #include "MathematicalHelper.h"
 
+using namespace std;
 using namespace DirectX;
+
+unsigned int IModel::ullCurrentModelID = 0;
+std::mutex IModel::mtxId;
 
 void TextureSet::CreateTextureAndSRV(
 	IN TextureType eTextureType,
@@ -52,5 +56,26 @@ IModel::IModel(ComPtr<ID3D11Device>& cpDeviceIn, ComPtr<ID3D11DeviceContext>& cp
 		D3D11_CPU_ACCESS_WRITE,
 		0,
 		cpModelMatrixBuffer.GetAddressOf()
+	);
+
+	SetModelID();
+}
+
+void IModel::SetModelID()
+{
+	{
+		lock_guard<mutex> lockGuard = lock_guard<mutex>(mtxId);
+		AutoZeroMemory(ullModelID);
+		ullModelID.ullModelID = IModel::ullCurrentModelID;
+		IModel::ullCurrentModelID += 0x00FF;
+	}
+	ID3D11Helper::CreateBuffer(
+		cpDevice.Get(),
+		ullModelID,
+		D3D11_USAGE_IMMUTABLE,
+		D3D11_BIND_CONSTANT_BUFFER,
+		NULL,
+		NULL,
+		cpModelIDBuffer.GetAddressOf()
 	);
 }

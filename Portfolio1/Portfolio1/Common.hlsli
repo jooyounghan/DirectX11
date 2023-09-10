@@ -41,6 +41,12 @@ struct PixelInput
     float4 f4ModelBiTangent : BINORMAL;
 };
 
+struct PixelOutput
+{
+    float4 pixelColor : SV_Target0;
+    float4 modleId : SV_Target1;
+};
+
 struct LightSet
 {
     unsigned int LightType;
@@ -52,6 +58,12 @@ struct LightSet
     float fFallOffStart;
     float fFallOffEnd;
     float fSpotPower;
+};
+
+struct ModelID
+{
+    uint uiModelID;
+    uint uiDummy[3];
 };
 
 float2x2 Get2X2InvMatrix(float2x2 input)

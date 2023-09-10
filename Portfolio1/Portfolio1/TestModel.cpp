@@ -7,7 +7,7 @@
 
 using namespace std;
 
-atomic_bool					TestModel::bBaseInitialized = false;
+atomic_bool					TestModel::bStaticTestModelInitialized = false;
 ComPtr<ID3D11InputLayout>	TestModel::cpBaseInputLayout;
 ComPtr<ID3D11VertexShader>	TestModel::cpBaseVertexShader;
 ComPtr<ID3D11PixelShader>	TestModel::cpBasePixelShader;
@@ -26,7 +26,7 @@ TestModel::TestModel(
 )
 	: IModel(cpDeviceIn, cpDeviceContextIn)
 {
-	if (!bBaseInitialized.load())
+	if (!bStaticTestModelInitialized.load())
 	{
 		vector<D3D11_INPUT_ELEMENT_DESC> vInputElemDesc{
 			{"POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
@@ -43,7 +43,7 @@ TestModel::TestModel(
 
 		FLOAT pBorderColor[4]{ 0.f, 0.f, 0.f, 0.f };
 		ID3D11Helper::CreateSampler(D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP, pBorderColor, cpDevice.Get(), cpBaseSampler.GetAddressOf());
-		bBaseInitialized.store(true);
+		bStaticTestModelInitialized.store(true);
 	}
 
 	vector<uint32_t> vIndex{
@@ -118,54 +118,6 @@ TestModel::TestModel(
 		{{fLen / 2.f, -fLen / 2.f, fLen / 2.f}, {0.f, 1.f}, {0.f, 0.f, 1.f, 0.f}},
 		{{fLen / 2.f, fLen / 2.f, fLen / 2.f}, {0.f, 0.f}, {0.f, 0.f, 1.f, 0.f}},
 		{{-fLen / 2.f, fLen / 2.f, fLen / 2.f}, {1.f, 0.f}, {0.f, 0.f, 1.f, 0.f}}
-
-
-		//{{-fLen / 2.f, -fLen / 2.f, -fLen / 2.f}, {0.f, 1.f}, {0.f, 0.f, -1.f, 0.f}, {-1.f, 0.f, 0.f, 0.f}},
-		//{{fLen / 2.f, fLen / 2.f, -fLen / 2.f}, {1.f, 0.f}, {0.f, 0.f, -1.f, 0.f}, {-1.f, 0.f, 0.f, 0.f}},
-		//{{fLen / 2.f, -fLen / 2.f, -fLen / 2.f}, {1.f, 1.f}, {0.f, 0.f, -1.f, 0.f}, {-1.f, 0.f, 0.f, 0.f}},
-		//{{-fLen / 2.f, -fLen / 2.f, -fLen / 2.f}, {0.f, 1.f}, {0.f, 0.f, -1.f, 0.f}, {-1.f, 0.f, 0.f, 0.f}},
-		//{{-fLen / 2.f, fLen / 2.f, -fLen / 2.f}, {0.f, 0.f}, {0.f, 0.f, -1.f, 0.f}, {-1.f, 0.f, 0.f, 0.f}},
-		//{{fLen / 2.f, fLen / 2.f, -fLen / 2.f}, {1.f, 0.f}, {0.f, 0.f, -1.f, 0.f}, {-1.f, 0.f, 0.f, 0.f}},
-
-
-		//{{fLen / 2.f, -fLen / 2.f, -fLen / 2.f}, {0.f, 1.f}, {1.f, 0.f, 0.f, 0.f}, {0.f, 0.f, -1.f, 0.f}},
-		//{{fLen / 2.f, fLen / 2.f, -fLen / 2.f}, {0.f, 0.f}, {1.f, 0.f, 0.f, 0.f}, {0.f, 0.f, -1.f, 0.f}},
-		//{{fLen / 2.f, -fLen / 2.f, fLen / 2.f}, {1.f, 1.f}, {1.f, 0.f, 0.f, 0.f}, {0.f, 0.f, -1.f, 0.f}},
-		//{{fLen / 2.f, -fLen / 2.f, fLen / 2.f}, {1.f, 1.f}, {1.f, 0.f, 0.f, 0.f}, {0.f, 0.f, -1.f, 0.f}},
-		//{{fLen / 2.f, fLen / 2.f, -fLen / 2.f}, {0.f, 0.f}, {1.f, 0.f, 0.f, 0.f}, {0.f, 0.f, -1.f, 0.f}},
-		//{{fLen / 2.f, fLen / 2.f, fLen / 2.f}, {1.f, 0.f}, {1.f, 0.f, 0.f, 0.f}, {0.f, 0.f, -1.f, 0.f}},
-
-
-		//{{-fLen / 2.f, -fLen / 2.f, -fLen / 2.f}, {1.f, 1.f}, {-1.f, 0.f, 0.f, 0.f}, {0.f, 0.f, 1.f, 0.f}},
-		//{{-fLen / 2.f, -fLen / 2.f, fLen / 2.f}, {0.f, 1.f}, {-1.f, 0.f, 0.f, 0.f}, {0.f, 0.f, 1.f, 0.f}},
-		//{{-fLen / 2.f, fLen / 2.f, -fLen / 2.f}, {1.f, 0.f}, {-1.f, 0.f, 0.f, 0.f}, {0.f, 0.f, 1.f, 0.f}},
-		//{{-fLen / 2.f, -fLen / 2.f, fLen / 2.f}, {0.f, 1.f}, {-1.f, 0.f, 0.f, 0.f}, {0.f, 0.f, 1.f, 0.f}},
-		//{{-fLen / 2.f, fLen / 2.f, fLen / 2.f}, {0.f, 0.f}, {-1.f, 0.f, 0.f, 0.f}, {0.f, 0.f, 1.f, 0.f}},
-		//{{-fLen / 2.f, fLen / 2.f, -fLen / 2.f}, {1.f, 0.f}, {-1.f, 0.f, 0.f, 0.f}, {0.f, 0.f, 1.f, 0.f}},
-
-
-		//{{-fLen / 2.f, -fLen / 2.f, -fLen / 2.f}, {0.f, 0.f}, {0.f, -1.f, 0.f, 0.f}, {1.f, 0.f, 0.f, 0.f}},
-		//{{fLen / 2.f, -fLen / 2.f, -fLen / 2.f}, {1.f, 0.f}, {0.f, -1.f, 0.f, 0.f}, {1.f, 0.f, 0.f, 0.f}},
-		//{{fLen / 2.f, -fLen / 2.f, fLen / 2.f}, {1.f, 1.f}, {0.f, -1.f, 0.f, 0.f}, {1.f, 0.f, 0.f, 0.f}},
-		//{{-fLen / 2.f, -fLen / 2.f, -fLen / 2.f}, {0.f, 0.f}, {0.f, -1.f, 0.f, 0.f}, {1.f, 0.f, 0.f, 0.f}},
-		//{{fLen / 2.f, -fLen / 2.f, fLen / 2.f}, {1.f, 1.f}, {0.f, -1.f, 0.f, 0.f}, {1.f, 0.f, 0.f, 0.f}},
-		//{{-fLen / 2.f, -fLen / 2.f, fLen / 2.f}, {0.f, 1.f}, {0.f, -1.f, 0.f, 0.f}, {1.f, 0.f, 0.f, 0.f}},
-
-
-		//{{-fLen / 2.f, fLen / 2.f, -fLen / 2.f}, {0.f, 1.f}, {0.f, 1.f, 0.f, 0.f}, {1.f, 0.f, 0.f, 0.f}},
-		//{{-fLen / 2.f, fLen / 2.f, fLen / 2.f}, {0.f, 0.f}, {0.f, 1.f, 0.f, 0.f}, {1.f, 0.f, 0.f, 0.f}},
-		//{{fLen / 2.f, fLen / 2.f, fLen / 2.f}, {1.f, 0.f}, {0.f, 1.f, 0.f, 0.f}, {1.f, 0.f, 0.f, 0.f}},
-		//{{-fLen / 2.f, fLen / 2.f, -fLen / 2.f}, {0.f, 1.f}, {0.f, 1.f, 0.f, 0.f}, {1.f, 0.f, 0.f, 0.f}},
-		//{{fLen / 2.f, fLen / 2.f, fLen / 2.f}, {1.f, 0.f}, {0.f, 1.f, 0.f, 0.f}, {1.f, 0.f, 0.f, 0.f}},
-		//{{fLen / 2.f, fLen / 2.f, -fLen / 2.f}, {1.f, 1.f}, {0.f, 1.f, 0.f, 0.f}, {1.f, 0.f, 0.f, 0.f}},
-
-
-		//{{-fLen / 2.f, -fLen / 2.f, fLen / 2.f}, {1.f, 1.f}, {0.f, 0.f, 1.f, 0.f}, {1.f, 0.f, 0.f, 0.f}},
-		//{{fLen / 2.f, -fLen / 2.f, fLen / 2.f}, {0.f, 1.f}, {0.f, 0.f, 1.f, 0.f}, {1.f, 0.f, 0.f, 0.f}},
-		//{{-fLen / 2.f, fLen / 2.f, fLen / 2.f}, {1.f, 0.f}, {0.f, 0.f, 1.f, 0.f}, {1.f, 0.f, 0.f, 0.f}},
-		//{{fLen / 2.f, -fLen / 2.f, fLen / 2.f}, {0.f, 1.f}, {0.f, 0.f, 1.f, 0.f}, {1.f, 0.f, 0.f, 0.f}},
-		//{{fLen / 2.f, fLen / 2.f, fLen / 2.f}, {0.f, 0.f}, {0.f, 0.f, 1.f, 0.f}, {1.f, 0.f, 0.f, 0.f}},
-		//{{-fLen / 2.f, fLen / 2.f, fLen / 2.f}, {1.f, 0.f}, {0.f, 0.f, 1.f, 0.f}, {1.f, 0.f, 0.f, 0.f}}
 	};
 
 	ID3D11Helper::CreateBuffer(cpDevice.Get(), vIndex, D3D11_USAGE_IMMUTABLE, D3D11_BIND_INDEX_BUFFER, 0, 0, cpIndexBuffer.GetAddressOf());
@@ -212,14 +164,12 @@ void TestModel::Render()
 	cpDeviceContext->PSSetShader(cpBasePixelShader.Get(), 0, 0);
 	cpDeviceContext->PSSetSamplers(0, 1, cpBaseSampler.GetAddressOf());
 
+	cpDeviceContext->PSSetConstantBuffers(PSConstBufferType::PS_ModelID, 1, cpModelIDBuffer.GetAddressOf());
 
 	cpDeviceContext->PSSetShaderResources(PSSRVType::PS_AO, 1, STextures.AOSRV.GetAddressOf());
 	cpDeviceContext->PSSetShaderResources(PSSRVType::PS_DIFFUSE, 1, STextures.DiffuseSRV.GetAddressOf());
 	cpDeviceContext->PSSetShaderResources(PSSRVType::PS_REFLECT, 1, STextures.ReflectSRV.GetAddressOf());
 	cpDeviceContext->PSSetShaderResources(PSSRVType::PS_NORMAL, 1, STextures.NormalSRV.GetAddressOf());
-	//cpDeviceContext->PSSetConstantBuffers();
-
-	//cpDeviceContext->OMSetDepthStencilState(cpDepthStencilState.Get(), 0);
 
 	cpDeviceContext->DrawIndexed(ui32IndexCount, 0, 0);
 

@@ -158,6 +158,12 @@ public:
 		IN class ImageContainer*		pImageContainer,
 		OUT ID3D11Texture2D**			ppTexture2D
 	);
+
+	static void CreateTexture2D(
+		IN ID3D11Device* pDevice,
+		IN const D3D11_TEXTURE2D_DESC sTexture2DDesc,
+		OUT ID3D11Texture2D** ppTexture2D
+	);
 };
 
 template<typename T>

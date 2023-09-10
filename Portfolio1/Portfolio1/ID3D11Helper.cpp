@@ -467,3 +467,13 @@ void ID3D11Helper::CreateTexture2D(IN ID3D11Device* pDevice, IN ImageContainer* 
 		Console("Texture2D를 생성하는데 실패하였습니다.");
 	}
 }
+
+void ID3D11Helper::CreateTexture2D(IN ID3D11Device* pDevice, IN const D3D11_TEXTURE2D_DESC sTexture2DDesc, OUT ID3D11Texture2D** ppTexture2D)
+{
+	HRESULT hResult = pDevice->CreateTexture2D(&sTexture2DDesc, nullptr, ppTexture2D);
+	if (FAILED(hResult))
+	{
+		Console("Texture2D를 생성하는데 실패하였습니다.");
+	}
+}
+

@@ -77,6 +77,10 @@ protected:
 	Microsoft::WRL::ComPtr<ID3D11RasterizerState>	cpRasterizerState;
 
 protected:
+	Microsoft::WRL::ComPtr<ID3D11Texture2D>			cpModelIDTexture;
+	Microsoft::WRL::ComPtr<ID3D11RenderTargetView>	cpModelIDRTV;
+
+protected:
 	Microsoft::WRL::ComPtr<ID3D11Texture2D>			cpDepthStencilTexture2D;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView>	cpDepthStencilView;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> cpDepthStencilState;

@@ -9,6 +9,7 @@ enum VSConstBufferType : unsigned int
 enum PSConstBufferType : unsigned int
 {
 	PS_LightStructure,
+	PS_ModelID
 };
 
 enum PSSRVType : unsigned int

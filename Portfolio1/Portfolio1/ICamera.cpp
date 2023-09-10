@@ -5,9 +5,10 @@
 
 #include <string>
 
+using namespace std;
 using namespace DirectX;
 
-std::shared_ptr<ICamera>	ICamera::DefaultCamera = nullptr;
+shared_ptr<ICamera>	ICamera::DefaultCamera = nullptr;
 const float					ICamera::DefaultClearColor[4] = { 0.f, 0.f, 0.f, 1.f };
 const XMVECTOR				ICamera::DefaultDirection = XMVectorSet(0.f, 0.f, 1.f, 0.f);
 const XMVECTOR				ICamera::DefaultUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
@@ -24,6 +25,12 @@ ICamera::ICamera(ComPtr<ID3D11Device>& cpDeviceIn,
 {
 	ID3D11Helper::GetBackBuffer(cpSwapChain.Get(), cpBackBuffer.GetAddressOf());
 	ID3D11Helper::CreateRenderTargetView(cpDevice.Get(), cpBackBuffer.Get(), cpRenderTargetView.GetAddressOf());
+
+	D3D11_TEXTURE2D_DESC desc;
+	cpBackBuffer->GetDesc(&desc);
+	ID3D11Helper::CreateTexture2D(cpDevice.Get(), desc, cpModelIDTexture.GetAddressOf());
+	ID3D11Helper::CreateRenderTargetView(cpDevice.Get(), cpModelIDTexture.Get(), cpModelIDRTV.GetAddressOf());
+
 	ID3D11Helper::CreateDepthStencilView(cpDevice.Get(), uiWidth, uiHeight, uiNumLevelQuality, cpDepthStencilTexture2D.GetAddressOf(), cpDepthStencilView.GetAddressOf());
 
 	//D3D11_DEPTH_STENCILOP_DESC sDepthOpDesc;
@@ -76,7 +83,9 @@ void ICamera::Update()
 	cpDeviceContext->VSSetConstantBuffers(VSConstBufferType::VS_ViewProjMatrix, 1, cpCameraConstantBuffer.GetAddressOf());
 	cpDeviceContext->DSSetConstantBuffers(DSConstBufferType::DS_ViewProjMatrix, 1, cpCameraConstantBuffer.GetAddressOf());
 
-	cpDeviceContext->OMSetRenderTargets(1, cpRenderTargetView.GetAddressOf(), cpDepthStencilView.Get());
+	vector<ID3D11RenderTargetView*> vRenderTargetViews{ cpRenderTargetView.Get(), cpModelIDRTV.Get() };
+
+	cpDeviceContext->OMSetRenderTargets(vRenderTargetViews.size(), vRenderTargetViews.data(), cpDepthStencilView.Get());
 	//cpDeviceContext->OMSetDepthStencilState(cpDepthStencilState.Get(), 0);
 }
 
@@ -86,11 +95,17 @@ void ICamera::Resize(const float& fAspectRatioIn)
 	ID3D11Helper::GetBackBuffer(cpSwapChain.Get(), cpBackBuffer.GetAddressOf());
 	cpRenderTargetView.Reset();
 	ID3D11Helper::CreateRenderTargetView(cpDevice.Get(), cpBackBuffer.Get(), cpRenderTargetView.GetAddressOf());
+
+	D3D11_TEXTURE2D_DESC desc;
+	cpBackBuffer->GetDesc(&desc);
+	ID3D11Helper::CreateTexture2D(cpDevice.Get(), desc, cpModelIDTexture.GetAddressOf());
+	ID3D11Helper::CreateRenderTargetView(cpDevice.Get(), cpModelIDTexture.Get(), cpModelIDRTV.GetAddressOf());
 }
 
 void ICamera::WipeOut(const float fcolor[4])
 {
 	cpDeviceContext->ClearRenderTargetView(cpRenderTargetView.Get(), fcolor);
+	cpDeviceContext->ClearRenderTargetView(cpModelIDRTV.Get(), fcolor);
 	cpDeviceContext->ClearDepthStencilView(cpDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
 }
 
@@ -99,8 +114,8 @@ void ICamera::SetFromMouseXY(const int& iMouseX, const int& iMouseY)
 	float fNdcX = iMouseX * 2.f / uiWidth - 1.f;
 	float fNdcY = iMouseY * 2.f / uiHeight - 1.f;
 
-	fNdcX = std::clamp(fNdcX, -1.f, 1.f);
-	fNdcY = std::clamp(fNdcY, -1.f, 1.f);
+	fNdcX = clamp(fNdcX, -1.f, 1.f);
+	fNdcY = clamp(fNdcY, -1.f, 1.f);
 
 	if (bFirstView)
 	{

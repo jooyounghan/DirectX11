@@ -3,7 +3,8 @@
 #include <d3dcompiler.h>
 #include <windows.h>
 #include <wrl/client.h>
-
+#include <mutex>
+#include <atomic>
 #include "StructVar.h"
 
 enum TextureType : unsigned int
@@ -41,6 +42,12 @@ public:
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>	ReflectSRV;
 };
 
+struct ModelID
+{
+	unsigned int ullModelID;
+	unsigned int ullDummy[3];
+};
+
 class IModel
 {
 public:
@@ -68,4 +75,15 @@ public:
 protected:
 	Microsoft::WRL::ComPtr<ID3D11Device>& cpDevice;
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContext;
+
+protected:
+	Microsoft::WRL::ComPtr<ID3D11Buffer>	cpModelIDBuffer;
+	ModelID ullModelID;
+
+protected:
+	static unsigned int ullCurrentModelID;
+	static std::mutex mtxId;
+
+protected:
+	void SetModelID();
 };

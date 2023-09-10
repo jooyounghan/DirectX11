@@ -33,11 +33,11 @@ void FileLoader::LoadImageFromFile(IN const std::string& sfileName, OUT ImageCon
 
 void FileLoader::PreLoadFiles()
 {
-    LoadImageFromFile(".\\Texture\\GreyPorousRock\\grey_porous_rock_40_56_ao.jpg", &ImageContainer::ExampleTextureAO);
-    LoadImageFromFile(".\\Texture\\GreyPorousRock\\grey_porous_rock_40_56_diffuse.jpg", &ImageContainer::ExampleTextureDiffuse);
-    LoadImageFromFile(".\\Texture\\GreyPorousRock\\grey_porous_rock_40_56_height.jpg", &ImageContainer::ExampleTextureHeight);
-    LoadImageFromFile(".\\Texture\\GreyPorousRock\\grey_porous_rock_40_56_normal.jpg", &ImageContainer::ExampleTextureNormal);
-    LoadImageFromFile(".\\Texture\\GreyPorousRock\\grey_porous_rock_40_56_reflection.jpg", &ImageContainer::ExampleTextureReflection);
+    LoadImageFromFile(".\\Texture\\GrassWithMudAndStone\\grass_with_mud_and_stones_39_46_ao.jpg", &ImageContainer::ExampleTextureAO);
+    LoadImageFromFile(".\\Texture\\GrassWithMudAndStone\\grass_with_mud_and_stones_39_46_diffuse.jpg", &ImageContainer::ExampleTextureDiffuse);
+    LoadImageFromFile(".\\Texture\\GrassWithMudAndStone\\grass_with_mud_and_stones_39_46_height.jpg", &ImageContainer::ExampleTextureHeight);
+    LoadImageFromFile(".\\Texture\\GrassWithMudAndStone\\grass_with_mud_and_stones_39_46_normal.jpg", &ImageContainer::ExampleTextureNormal);
+    LoadImageFromFile(".\\Texture\\GrassWithMudAndStone\\grass_with_mud_and_stones_39_46_reflection.jpg", &ImageContainer::ExampleTextureReflection);
 }
 
 ImageContainer::ImageContainer()

@@ -12,9 +12,15 @@ cbuffer LightSetsBuffer : register(b0)
     LightSet sLightSets[MAX_LIGHT_NUM];
 };
 
-
-float4 main(PixelInput input) : SV_TARGET
+cbuffer ModelIDBuffer : register(b1)
 {
+    ModelID sModelId;
+};
+
+PixelOutput main(PixelInput input) : SV_TARGET
+{
+    PixelOutput result;
+    
     float4 fResultColor = { 0.f, 0.f, 0.f, 0.f };
     float4 fDiffuseColor = DiffuseTexture.Sample(Sampler, float2(input.f2TexCoord.x, input.f2TexCoord.y));
     float3 fNormalSampled = NormalTexture.Sample(Sampler, float2(input.f2TexCoord.x, input.f2TexCoord.y)).xyz;
@@ -37,6 +43,7 @@ float4 main(PixelInput input) : SV_TARGET
         fResultColor += fDiffuseColor * fLightPower * sLightSets[i].f4Color;
     }
     
-    float4 temp = { 1.f, 0.f, 0.f, 0.f };
-    return fResultColor;
+    result.pixelColor = fResultColor;
+    result.modleId = sModelId.uiModelID;
+    return result;
 }

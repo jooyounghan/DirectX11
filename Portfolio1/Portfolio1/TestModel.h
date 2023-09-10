@@ -1,13 +1,6 @@
 #pragma once
 #include "IModel.h"
 
-namespace std {
-	template<typename T>
-	struct atomic;
-
-	using atomic_bool = atomic<bool>;
-}
-
 class TestModel : public IModel
 {
 public:
@@ -26,7 +19,7 @@ public:
 	virtual void Render() override;
 
 protected:
-	static std::atomic_bool		bBaseInitialized;
+	static std::atomic_bool		bStaticTestModelInitialized;
 
 protected:
 	static Microsoft::WRL::ComPtr<ID3D11InputLayout>	cpBaseInputLayout;
