@@ -15,6 +15,8 @@
 
 #include <string>
 
+#include <iostream>
+
 using namespace DirectX;
 
 using namespace std;
@@ -75,6 +77,8 @@ void PortfolioApp::Init()
 void PortfolioApp::Update()
 {
 	pMainCamera->Update();
+	unsigned int uiSelectedModelID = pMainCamera->GetPointedModelID();
+	std::cout << uiSelectedModelID << std::endl;
 
 	ILight::UpdateLights(cpDeviceContext.Get());
 

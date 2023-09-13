@@ -477,3 +477,35 @@ void ID3D11Helper::CreateTexture2D(IN ID3D11Device* pDevice, IN const D3D11_TEXT
 	}
 }
 
+void ID3D11Helper::CreateTexture2D(
+	IN ID3D11Device* pDevice,
+	IN UINT uiWidth,
+	IN UINT uiHeight,
+	IN UINT uiArraySize,
+	IN UINT uiSampleCount,
+	IN UINT uiBindFlag,
+	IN UINT uiCPUAccess,
+	IN UINT uiMiscFlag,
+	IN D3D11_USAGE eUsage,
+	IN DXGI_FORMAT eFormat,
+	OUT ID3D11Texture2D** ppTexture2D
+)
+{
+	D3D11_TEXTURE2D_DESC sTexture2DDesc;
+	AutoZeroMemory(sTexture2DDesc);
+	sTexture2DDesc.Width = uiWidth;
+	sTexture2DDesc.Height = uiHeight;
+	sTexture2DDesc.ArraySize = uiArraySize;
+	sTexture2DDesc.SampleDesc.Count = uiSampleCount;
+	sTexture2DDesc.BindFlags = uiBindFlag;
+	sTexture2DDesc.CPUAccessFlags = uiCPUAccess;
+	sTexture2DDesc.MiscFlags = uiMiscFlag;
+	sTexture2DDesc.Usage = eUsage;
+	sTexture2DDesc.Format = eFormat;
+	HRESULT hResult = pDevice->CreateTexture2D(&sTexture2DDesc,nullptr, ppTexture2D);
+	if (FAILED(hResult))
+	{
+		Console("Texture2D를 생성하는데 실패하였습니다.");
+	}
+}
+

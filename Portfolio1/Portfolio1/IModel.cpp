@@ -67,8 +67,9 @@ void IModel::SetModelID()
 		lock_guard<mutex> lockGuard = lock_guard<mutex>(mtxId);
 		AutoZeroMemory(ullModelID);
 		ullModelID.ullModelID = IModel::ullCurrentModelID;
-		IModel::ullCurrentModelID += 0x00FF;
+		IModel::ullCurrentModelID++;
 	}
+
 	ID3D11Helper::CreateBuffer(
 		cpDevice.Get(),
 		ullModelID,

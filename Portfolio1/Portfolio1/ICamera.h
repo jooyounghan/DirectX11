@@ -27,6 +27,7 @@ public:
 
 
 public:
+	unsigned int		uiMouseLocation[2];
 	DirectX::XMVECTOR	xmvCameraPosition;
 	PositionAngle		sCameraPose;
 	float				fFovAngle;
@@ -79,6 +80,11 @@ protected:
 protected:
 	Microsoft::WRL::ComPtr<ID3D11Texture2D>			cpModelIDTexture;
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView>	cpModelIDRTV;
+
+public:
+	Microsoft::WRL::ComPtr<ID3D11Texture2D>			cpModelIDMSToSS;
+	Microsoft::WRL::ComPtr<ID3D11Texture2D>			cpModelIDStagingTexture;
+	unsigned int GetPointedModelID();
 
 protected:
 	Microsoft::WRL::ComPtr<ID3D11Texture2D>			cpDepthStencilTexture2D;

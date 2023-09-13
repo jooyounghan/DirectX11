@@ -44,6 +44,6 @@ PixelOutput main(PixelInput input) : SV_TARGET
     }
     
     result.pixelColor = fResultColor;
-    result.modleId = sModelId.uiModelID;
+    result.modleId = float4(0.f, 0.f, 0.f, sModelId.uiModelID);
     return result;
 }

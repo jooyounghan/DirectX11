@@ -31,6 +31,9 @@ ICamera::ICamera(ComPtr<ID3D11Device>& cpDeviceIn,
 	ID3D11Helper::CreateTexture2D(cpDevice.Get(), desc, cpModelIDTexture.GetAddressOf());
 	ID3D11Helper::CreateRenderTargetView(cpDevice.Get(), cpModelIDTexture.Get(), cpModelIDRTV.GetAddressOf());
 
+	ID3D11Helper::CreateTexture2D(cpDevice.Get(), desc.Width, desc.Height, 1, 1, D3D11_BIND_SHADER_RESOURCE, NULL, NULL, D3D11_USAGE_DEFAULT, DXGI_FORMAT_R8G8B8A8_UNORM, cpModelIDMSToSS.GetAddressOf());
+	ID3D11Helper::CreateTexture2D(cpDevice.Get(), 1, 1, 1, 1, NULL, D3D11_CPU_ACCESS_READ, NULL, D3D11_USAGE_STAGING, DXGI_FORMAT_R8G8B8A8_UNORM, cpModelIDStagingTexture.GetAddressOf());
+
 	ID3D11Helper::CreateDepthStencilView(cpDevice.Get(), uiWidth, uiHeight, uiNumLevelQuality, cpDepthStencilTexture2D.GetAddressOf(), cpDepthStencilView.GetAddressOf());
 
 	//D3D11_DEPTH_STENCILOP_DESC sDepthOpDesc;
@@ -98,6 +101,8 @@ void ICamera::Resize(const float& fAspectRatioIn)
 
 	D3D11_TEXTURE2D_DESC desc;
 	cpBackBuffer->GetDesc(&desc);
+	cpModelIDTexture.Reset();
+	cpModelIDRTV.Reset();
 	ID3D11Helper::CreateTexture2D(cpDevice.Get(), desc, cpModelIDTexture.GetAddressOf());
 	ID3D11Helper::CreateRenderTargetView(cpDevice.Get(), cpModelIDTexture.Get(), cpModelIDRTV.GetAddressOf());
 }
@@ -111,11 +116,14 @@ void ICamera::WipeOut(const float fcolor[4])
 
 void ICamera::SetFromMouseXY(const int& iMouseX, const int& iMouseY)
 {
-	float fNdcX = iMouseX * 2.f / uiWidth - 1.f;
-	float fNdcY = iMouseY * 2.f / uiHeight - 1.f;
+	sCameraInfo.uiMouseLocation[0] = iMouseX;
+	sCameraInfo.uiMouseLocation[1] = iMouseY;
 
-	fNdcX = clamp(fNdcX, -1.f, 1.f);
-	fNdcY = clamp(fNdcY, -1.f, 1.f);
+	sCameraInfo.uiMouseLocation[0] = clamp(sCameraInfo.uiMouseLocation[0], 0x0000u, 0xFFFFu);
+	sCameraInfo.uiMouseLocation[1] = clamp(sCameraInfo.uiMouseLocation[1], 0x0000u, 0xFFFFu);
+
+	float fNdcX = sCameraInfo.uiMouseLocation[0] * 2.f / uiWidth - 1.f;
+	float fNdcY = sCameraInfo.uiMouseLocation[1] * 2.f / uiHeight - 1.f;
 
 	if (bFirstView)
 	{
@@ -165,6 +173,35 @@ void ICamera::StopMove(MoveDir moveDir)
 void ICamera::SwitchFirstView()
 {
 	bFirstView = !bFirstView;
+}
+
+unsigned int ICamera::GetPointedModelID()
+{
+	unsigned int uiResult = 0;
+	if (cpModelIDStagingTexture.Get() && cpModelIDTexture.Get())
+	{
+		cpDeviceContext->ResolveSubresource(cpModelIDMSToSS.Get(), 0, cpModelIDTexture.Get(), 0, DXGI_FORMAT_R8G8B8A8_UNORM);
+
+		D3D11_BOX sBox;
+		AutoZeroMemory(sBox);
+		sBox.left = sCameraInfo.uiMouseLocation[0];
+		sBox.right = sBox.left + 1;
+		sBox.top = sCameraInfo.uiMouseLocation[1];
+		sBox.bottom = sBox.top + 1;
+		sBox.front = 0;
+		sBox.back = 1;
+
+		cpDeviceContext->CopySubresourceRegion(cpModelIDStagingTexture.Get(), 0, 0, 0, NULL, cpModelIDMSToSS.Get(), 0, &sBox);
+
+		D3D11_MAPPED_SUBRESOURCE sMappedSubResource;
+		AutoZeroMemory(sMappedSubResource);
+		cpDeviceContext->Map(cpModelIDStagingTexture.Get(), 0, D3D11_MAP_READ, NULL, &sMappedSubResource);
+		unsigned int uiIdArray[4];
+		memcpy(&uiIdArray, sMappedSubResource.pData, sizeof(unsigned int) * 4);
+		uiResult = uiIdArray[3];
+		cpDeviceContext->Unmap(cpModelIDStagingTexture.Get(), 0);
+	}
+	return uiResult;
 }
 
 CameraInfo CameraInfo::CreateCameraInfo(

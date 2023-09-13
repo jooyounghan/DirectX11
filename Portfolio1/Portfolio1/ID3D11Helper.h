@@ -164,6 +164,20 @@ public:
 		IN const D3D11_TEXTURE2D_DESC sTexture2DDesc,
 		OUT ID3D11Texture2D** ppTexture2D
 	);
+
+	static void CreateTexture2D(
+		IN ID3D11Device* pDevice,
+		IN UINT uiWidth,
+		IN UINT uiHeight,
+		IN UINT uiArraySize,
+		IN UINT uiSampleCount,
+		IN UINT uiBindFlag,
+		IN UINT uiCPUAccess,
+		IN UINT uiMiscFlag,
+		IN D3D11_USAGE eUsage,
+		IN DXGI_FORMAT eFormat,
+		OUT ID3D11Texture2D** ppTexture2D
+	);
 };
 
 template<typename T>
