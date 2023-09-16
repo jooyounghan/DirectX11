@@ -5,8 +5,8 @@
 using namespace std;
 using namespace DirectX;
 
-unsigned int IModel::ullCurrentModelID = 0;
-std::mutex IModel::mtxId;
+ModelID ModelID::ullCurrentModelID;
+std::mutex ModelID::mtxId;
 
 void TextureSet::CreateTextureAndSRV(
 	IN TextureType eTextureType,
@@ -64,10 +64,8 @@ IModel::IModel(ComPtr<ID3D11Device>& cpDeviceIn, ComPtr<ID3D11DeviceContext>& cp
 void IModel::SetModelID()
 {
 	{
-		lock_guard<mutex> lockGuard = lock_guard<mutex>(mtxId);
-		AutoZeroMemory(ullModelID);
-		ullModelID.ullModelID = IModel::ullCurrentModelID;
-		IModel::ullCurrentModelID++;
+		lock_guard<mutex> lockGuard = lock_guard<mutex>(ModelID::mtxId);
+		ullModelID = ModelID::IssueModelID();
 	}
 
 	ID3D11Helper::CreateBuffer(
@@ -79,4 +77,67 @@ void IModel::SetModelID()
 		NULL,
 		cpModelIDBuffer.GetAddressOf()
 	);
+}
+
+ModelID::ModelID()
+{
+	ZeroMemory(this, sizeof(ModelID));
+	ucModelIDStd = 0xFF;
+}
+
+ModelID& ModelID::operator=(const ModelID& modelIDIn)
+{
+	memcpy(this, &modelIDIn, sizeof(ModelID));
+	return *this;
+}
+
+ ModelID ModelID::ConvertR8G8B8A8ToModelID(const unsigned int& RGBA)
+{
+	ModelID result;
+	result.ucModelID[0] = RGBA & 0xFF;
+	result.ucModelID[1] = (RGBA >> 8) & 0xFF;
+	result.ucModelID[2] = (RGBA >> 16) & 0xFF;
+	result.ucModelIDStd = (RGBA >> 24) & 0xFF;
+	return result;
+}
+
+ModelID ModelID::IssueModelID()
+{
+	ManageOverflow(ullCurrentModelID.ucModelID[2], ullCurrentModelID.ucModelID[1], ullCurrentModelID.ucModelID[0], ullCurrentModelID.ucModelID[2]);
+	ModelID resultID = ullCurrentModelID;
+	return resultID;
+}
+
+
+template<typename ...Args>
+void ModelID::ManageOverflow(unsigned int& IdLower, unsigned int& IdUpper, Args & ...IdUppers)
+{
+	if (IdLower == 0xFF)
+	{
+		IdLower = 0;
+		ManageOverflow(IdUpper, IdUppers...);
+	}
+	else
+	{
+		IdLower++;
+	}
+}
+
+template<>
+void ModelID::ManageOverflow(unsigned int& IdLower, unsigned int& IdUpper)
+{
+	if (IdLower == 0xFF)
+	{
+		IdLower = 0;
+		IdUpper++;
+	}
+	else
+	{
+		IdLower++;
+	}
+}
+
+bool operator==(const ModelID& modelID1, const ModelID& modelID2)
+{
+	return (modelID1.ucModelID[0] == modelID2.ucModelID[0] && modelID1.ucModelID[1] == modelID2.ucModelID[1] && modelID1.ucModelID[2] == modelID2.ucModelID[2]);
 }

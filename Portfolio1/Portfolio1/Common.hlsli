@@ -62,8 +62,9 @@ struct LightSet
 
 struct ModelID
 {
-    uint uiModelID;
-    uint uiDummy[3];
+    
+    uint3   uiModelID;
+    uint    uiModelIDStd;
 };
 
 float2x2 Get2X2InvMatrix(float2x2 input)

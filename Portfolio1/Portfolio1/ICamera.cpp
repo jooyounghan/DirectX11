@@ -1,8 +1,8 @@
 #include "ICamera.h"
-#include "MathematicalHelper.h"
 #include "EnumVar.h"
 #include "ID3D11Helper.h"
-
+#include "IModel.h"
+#include <algorithm>
 #include <string>
 
 using namespace std;
@@ -28,11 +28,12 @@ ICamera::ICamera(ComPtr<ID3D11Device>& cpDeviceIn,
 
 	D3D11_TEXTURE2D_DESC desc;
 	cpBackBuffer->GetDesc(&desc);
+
 	ID3D11Helper::CreateTexture2D(cpDevice.Get(), desc, cpModelIDTexture.GetAddressOf());
 	ID3D11Helper::CreateRenderTargetView(cpDevice.Get(), cpModelIDTexture.Get(), cpModelIDRTV.GetAddressOf());
 
 	ID3D11Helper::CreateTexture2D(cpDevice.Get(), desc.Width, desc.Height, 1, 1, D3D11_BIND_SHADER_RESOURCE, NULL, NULL, D3D11_USAGE_DEFAULT, DXGI_FORMAT_R8G8B8A8_UNORM, cpModelIDMSToSS.GetAddressOf());
-	ID3D11Helper::CreateTexture2D(cpDevice.Get(), 1, 1, 1, 1, NULL, D3D11_CPU_ACCESS_READ, NULL, D3D11_USAGE_STAGING, DXGI_FORMAT_R8G8B8A8_UNORM, cpModelIDStagingTexture.GetAddressOf());
+	ID3D11Helper::CreateTexture2D(cpDevice.Get(), 1, 1, 1, 1, NULL, D3D11_CPU_ACCESS_READ, NULL, D3D11_USAGE_STAGING, /*DXGI_FORMAT_R32G32B32A32_UINT*/DXGI_FORMAT_R8G8B8A8_UNORM, cpModelIDStagingTexture.GetAddressOf());
 
 	ID3D11Helper::CreateDepthStencilView(cpDevice.Get(), uiWidth, uiHeight, uiNumLevelQuality, cpDepthStencilTexture2D.GetAddressOf(), cpDepthStencilView.GetAddressOf());
 
@@ -175,9 +176,9 @@ void ICamera::SwitchFirstView()
 	bFirstView = !bFirstView;
 }
 
-unsigned int ICamera::GetPointedModelID()
+ModelID ICamera::GetPointedModelID()
 {
-	unsigned int uiResult = 0;
+	ModelID result;
 	if (cpModelIDStagingTexture.Get() && cpModelIDTexture.Get())
 	{
 		cpDeviceContext->ResolveSubresource(cpModelIDMSToSS.Get(), 0, cpModelIDTexture.Get(), 0, DXGI_FORMAT_R8G8B8A8_UNORM);
@@ -196,12 +197,12 @@ unsigned int ICamera::GetPointedModelID()
 		D3D11_MAPPED_SUBRESOURCE sMappedSubResource;
 		AutoZeroMemory(sMappedSubResource);
 		cpDeviceContext->Map(cpModelIDStagingTexture.Get(), 0, D3D11_MAP_READ, NULL, &sMappedSubResource);
-		unsigned int uiIdArray[4];
-		memcpy(&uiIdArray, sMappedSubResource.pData, sizeof(unsigned int) * 4);
-		uiResult = uiIdArray[3];
+		unsigned int uiResult = 0;
+		memcpy(&uiResult, sMappedSubResource.pData, sizeof(unsigned int));
 		cpDeviceContext->Unmap(cpModelIDStagingTexture.Get(), 0);
+		result = ModelID::ConvertR8G8B8A8ToModelID(uiResult);
 	}
-	return uiResult;
+	return result;
 }
 
 CameraInfo CameraInfo::CreateCameraInfo(

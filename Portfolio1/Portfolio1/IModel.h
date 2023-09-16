@@ -42,10 +42,33 @@ public:
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>	ReflectSRV;
 };
 
-struct ModelID
+class ModelID
 {
-	unsigned int ullModelID;
-	unsigned int ullDummy[3];
+	friend class IModel;
+
+public:
+	ModelID();
+	ModelID& operator= (const ModelID& modelIDRight);
+	friend bool operator==(const ModelID& modelID1, const ModelID& modelID2);
+
+public:
+	static ModelID ConvertR8G8B8A8ToModelID(const unsigned int& RGBA);
+
+protected:
+	static ModelID ullCurrentModelID;
+	static ModelID IssueModelID();
+	static std::mutex mtxId;
+
+protected:
+	template<typename ...Args>
+	static void ManageOverflow(unsigned int& IdLower, unsigned int& IdUpper, Args & ...IdUppers);
+	template<>
+	static void ManageOverflow(unsigned int& IdLower, unsigned int& IdUpper);
+
+
+public:
+	unsigned int ucModelID[3];
+	unsigned int ucModelIDStd = 0xFF;
 };
 
 class IModel
@@ -78,11 +101,10 @@ protected:
 
 protected:
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	cpModelIDBuffer;
+
+public:
 	ModelID ullModelID;
 
-protected:
-	static unsigned int ullCurrentModelID;
-	static std::mutex mtxId;
 
 protected:
 	void SetModelID();

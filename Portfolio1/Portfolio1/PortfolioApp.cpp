@@ -77,13 +77,16 @@ void PortfolioApp::Init()
 void PortfolioApp::Update()
 {
 	pMainCamera->Update();
-	unsigned int uiSelectedModelID = pMainCamera->GetPointedModelID();
-	std::cout << uiSelectedModelID << std::endl;
+	ModelID uiSelectedModelID = pMainCamera->GetPointedModelID();
 
 	ILight::UpdateLights(cpDeviceContext.Get());
 
 	for (auto& model : vModels)
 	{
+		if (model->ullModelID == uiSelectedModelID)
+		{
+			pSelectedModel = model;
+		}
 		model->Update();
 	}
 }

@@ -84,7 +84,7 @@ protected:
 public:
 	Microsoft::WRL::ComPtr<ID3D11Texture2D>			cpModelIDMSToSS;
 	Microsoft::WRL::ComPtr<ID3D11Texture2D>			cpModelIDStagingTexture;
-	unsigned int GetPointedModelID();
+	class ModelID GetPointedModelID();
 
 protected:
 	Microsoft::WRL::ComPtr<ID3D11Texture2D>			cpDepthStencilTexture2D;
