@@ -15,6 +15,9 @@ extern void Console(const char*);
 class ID3D11Helper
 {
 public:
+	static void Init(IN ID3D11Device* pDevice, IN ID3D11DeviceContext* pDeviceContext);
+
+public:
 	static void CreateDeviceAndContext(
 		IN const UINT& iWidth,
 		IN const UINT& iHeight,
@@ -153,8 +156,8 @@ public:
 	);
 
 	static void CreateTexture2D(
-
 		IN ID3D11Device*				pDevice,
+		IN ID3D11DeviceContext*			pDeviceContext,
 		IN class ImageContainer*		pImageContainer,
 		OUT ID3D11Texture2D**			ppTexture2D
 	);
@@ -177,6 +180,12 @@ public:
 		IN D3D11_USAGE eUsage,
 		IN DXGI_FORMAT eFormat,
 		OUT ID3D11Texture2D** ppTexture2D
+	);
+
+	static ComPtr<ID3D11Texture2D> CreateStagingTexture2D(
+		IN ID3D11Device* pDevice,
+		IN ID3D11DeviceContext* pDeviceContext,
+		IN class ImageContainer* pImageContainer
 	);
 };
 

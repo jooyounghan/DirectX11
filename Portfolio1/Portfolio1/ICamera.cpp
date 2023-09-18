@@ -37,12 +37,6 @@ ICamera::ICamera(ComPtr<ID3D11Device>& cpDeviceIn,
 
 	ID3D11Helper::CreateDepthStencilView(cpDevice.Get(), uiWidth, uiHeight, uiNumLevelQuality, cpDepthStencilTexture2D.GetAddressOf(), cpDepthStencilView.GetAddressOf());
 
-	//D3D11_DEPTH_STENCILOP_DESC sDepthOpDesc;
-	//AutoZeroMemory(sDepthOpDesc);
-	//D3D11_DEPTH_STENCILOP_DESC sStencilOpDesc;
-	//AutoZeroMemory(sStencilOpDesc);
-	//ID3D11Helper::CreateDepthStencilState(cpDevice.Get(), TRUE, D3D11_COMPARISON_LESS, TRUE, sDepthOpDesc, sStencilOpDesc, cpDepthStencilState.GetAddressOf());
-
 	ID3D11Helper::CreateRasterizerState(cpDevice.Get(), D3D11_FILL_MODE::D3D11_FILL_SOLID, D3D11_CULL_MODE::D3D11_CULL_BACK, true, cpRasterizerState.GetAddressOf());
 
 	sCameraInfo = CameraInfo::CreateCameraInfo(0.f, 0.f, -10.f, 70.f, uiWidth / (float)uiHeight);
@@ -90,7 +84,6 @@ void ICamera::Update()
 	vector<ID3D11RenderTargetView*> vRenderTargetViews{ cpRenderTargetView.Get(), cpModelIDRTV.Get() };
 
 	cpDeviceContext->OMSetRenderTargets(vRenderTargetViews.size(), vRenderTargetViews.data(), cpDepthStencilView.Get());
-	//cpDeviceContext->OMSetDepthStencilState(cpDepthStencilState.Get(), 0);
 }
 
 void ICamera::Resize(const float& fAspectRatioIn)

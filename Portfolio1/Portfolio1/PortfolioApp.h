@@ -51,12 +51,17 @@ public:
 	void SetDirectionalLightMenu(LightSet* pLightSet);
 	void SetPointLightMenu(LightSet* pLightSet);
 	void SetSpotLightMenu(LightSet* pLightSet);
+
 public:
 	void ResizeSwapChain(const UINT& uiWidthIn, const UINT& uiHeightIn);
+
+public:
+	void CheckMouseHoveredModel();
 
 private:	
 	std::shared_ptr<ICamera>				pMainCamera;
 	std::shared_ptr<IModel>					pSelectedModel;
+	std::shared_ptr<IModel>					pTempSelectedModel;
 	std::shared_ptr<ILight>					pSelectedLight;
 
 private:

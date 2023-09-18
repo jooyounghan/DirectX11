@@ -87,6 +87,15 @@
     <ClCompile Include="DirectionalLight.cpp">
       <Filter>소스 파일\Light</Filter>
     </ClCompile>
+    <ClCompile Include="ModelID.cpp">
+      <Filter>소스 파일\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureSet.cpp">
+      <Filter>소스 파일\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="DepthStencilState.cpp">
+      <Filter>소스 파일\Camera</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="IModel.h">
@@ -131,6 +140,18 @@
     <ClInclude Include="DirectionalLight.h">
       <Filter>헤더 파일\Light</Filter>
     </ClInclude>
+    <ClInclude Include="ModelID.h">
+      <Filter>헤더 파일\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureSet.h">
+      <Filter>헤더 파일\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="TODO.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="DepthStencilState.h">
+      <Filter>헤더 파일\Camera</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="BaseModelVS.hlsl">
@@ -143,6 +164,9 @@
       <Filter>Shader</Filter>
     </FxCompile>
     <FxCompile Include="BaseModelDS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="OutlinerPS.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
   </ItemGroup>

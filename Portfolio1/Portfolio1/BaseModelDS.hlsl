@@ -45,7 +45,7 @@ PixelInput main(
     Output.f4ModelPos = patch[0].f4ModelPos * domain.x + patch[1].f4ModelPos * domain.y + patch[2].f4ModelPos * domain.z;
 
     float fHeightSampled = 2.f * HeightTexture.SampleLevel(Sampler, Output.f2TexCoord, 0.f).x - 1.f;
-    fHeightSampled = 0.05 * fHeightSampled;
+    fHeightSampled = 0.1 * fHeightSampled;
     
     Output.f4ModelPos += fHeightSampled * Output.f4ModelNormal;
     Output.f4ProjPos = Output.f4ModelPos;

@@ -22,7 +22,7 @@ PixelOutput main(PixelInput input) : SV_TARGET
     PixelOutput result;
     
     float4 fResultColor = { 0.f, 0.f, 0.f, 0.f };
-    float4 fDiffuseColor = DiffuseTexture.Sample(Sampler, float2(input.f2TexCoord.x, input.f2TexCoord.y));
+    float4 fDiffuseColor = DiffuseTexture.SampleLevel(Sampler, float2(input.f2TexCoord.x, input.f2TexCoord.y), 0.f);
     float3 fNormalSampled = NormalTexture.Sample(Sampler, float2(input.f2TexCoord.x, input.f2TexCoord.y)).xyz;
     fNormalSampled = 2.f * fNormalSampled - 1.f;
     float3 f3ModelNormal = input.f4ModelNormal.xyz;

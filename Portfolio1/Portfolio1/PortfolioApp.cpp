@@ -1,5 +1,7 @@
 #include "PortfolioApp.h"
 
+#include "ID3D11Helper.h"
+
 #include "ICamera.h"
 
 #include "IModel.h"
@@ -77,16 +79,12 @@ void PortfolioApp::Init()
 void PortfolioApp::Update()
 {
 	pMainCamera->Update();
-	ModelID uiSelectedModelID = pMainCamera->GetPointedModelID();
-
 	ILight::UpdateLights(cpDeviceContext.Get());
+
+	CheckMouseHoveredModel();
 
 	for (auto& model : vModels)
 	{
-		if (model->ullModelID == uiSelectedModelID)
-		{
-			pSelectedModel = model;
-		}
 		model->Update();
 	}
 }
@@ -98,6 +96,11 @@ void PortfolioApp::Render()
 	for (auto& model : vModels)
 	{
 		model->Render();
+	}
+
+	if (pSelectedModel != nullptr)
+	{
+		pSelectedModel->RenderOutline();
 	}
 }
 
@@ -389,6 +392,20 @@ void PortfolioApp::ResizeSwapChain(const UINT& uiWidthIn, const UINT& uiHeightIn
 	}
 }
 
+inline void PortfolioApp::CheckMouseHoveredModel()
+{
+	ModelID uiSelectedModelID = pMainCamera->GetPointedModelID();
+	auto findResult = find_if(vModels.begin(), vModels.end(), [&](shared_ptr<IModel> model) { return model->modelID == uiSelectedModelID; });
+	if (findResult != vModels.end())
+	{
+		pTempSelectedModel = *findResult;
+	}
+	else
+	{
+		pTempSelectedModel = nullptr;
+	}
+}
+
 // Forward declare message handler from imgui_impl_win32.cpp
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd,
 	UINT msg,
@@ -407,6 +424,12 @@ LRESULT __stdcall PortfolioApp::AppProc(HWND hWnd, UINT msg, WPARAM wParam, LPAR
 		return 0;
 	case WM_MOUSEMOVE:
 		pMainCamera->SetFromMouseXY(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		return 0;
+	case WM_LBUTTONUP:
+		if (pTempSelectedModel != nullptr)
+		{
+			pSelectedModel = pTempSelectedModel;
+		}
 		return 0;
 	case WM_LBUTTONDOWN:
 		// TODO : 모델 선택 관련 로직 추가

@@ -133,6 +133,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BaseApp.cpp" />
+    <ClCompile Include="DepthStencilState.cpp" />
     <ClCompile Include="DirectionalLight.cpp" />
     <ClCompile Include="FileLoader.cpp" />
     <ClCompile Include="ICamera.cpp" />
@@ -141,14 +142,17 @@
     <ClCompile Include="IModel.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MathematicalHelper.cpp" />
+    <ClCompile Include="ModelID.cpp" />
     <ClCompile Include="PortfolioApp.cpp" />
     <ClCompile Include="StructVar.cpp" />
     <ClCompile Include="TempVariable.cpp" />
     <ClCompile Include="TestModel.cpp" />
+    <ClCompile Include="TextureSet.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseApp.h" />
     <ClInclude Include="DefineVar.h" />
+    <ClInclude Include="DepthStencilState.h" />
     <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="EnumVar.h" />
     <ClInclude Include="FileLoader.h" />
@@ -157,10 +161,13 @@
     <ClInclude Include="ILight.h" />
     <ClInclude Include="IModel.h" />
     <ClInclude Include="MathematicalHelper.h" />
+    <ClInclude Include="ModelID.h" />
     <ClInclude Include="PortfolioApp.h" />
     <ClInclude Include="StructVar.h" />
     <ClInclude Include="TempVariable.h" />
     <ClInclude Include="TestModel.h" />
+    <ClInclude Include="TextureSet.h" />
+    <ClInclude Include="TODO.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="BaseModelDS.hlsl">
@@ -194,6 +201,12 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="OutlinerPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

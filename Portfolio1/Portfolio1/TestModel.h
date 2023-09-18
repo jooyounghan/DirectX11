@@ -17,6 +17,7 @@ public:
 public:
 	virtual void Update() override;
 	virtual void Render() override;
+	virtual void RenderOutline() override;
 
 protected:
 	static std::atomic_bool		bStaticTestModelInitialized;
@@ -32,5 +33,8 @@ protected:
 protected:
 	static Microsoft::WRL::ComPtr<ID3D11HullShader>		cpBaseHullShader;
 	static Microsoft::WRL::ComPtr<ID3D11DomainShader>	cpBaseDomainShader;
+
+protected:
+	static Microsoft::WRL::ComPtr<ID3D11PixelShader>	cpOutlinerPixelShader;
 };
 
