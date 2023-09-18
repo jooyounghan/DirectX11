@@ -46,11 +46,26 @@
     <Filter Include="헤더 파일\Light">
       <UniqueIdentifier>{6a94f358-5905-4f1d-a547-9175c299d290}</UniqueIdentifier>
     </Filter>
+    <Filter Include="헤더 파일\Transformation">
+      <UniqueIdentifier>{e8a96e78-9dbe-404e-8b01-95fdae402aa8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Transformation">
+      <UniqueIdentifier>{4605bcec-90f0-4688-ba48-2bbeb6ad0232}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Drawer">
+      <UniqueIdentifier>{b0cbee6a-71aa-4697-b817-899688bd34f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Drawer">
+      <UniqueIdentifier>{de2587d0-6c05-413f-a77e-526722e806d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Model\Specific">
+      <UniqueIdentifier>{f4cb0c6c-6922-4df7-90ef-9c1bf2b0a3ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Model\Specific">
+      <UniqueIdentifier>{9da587ed-81ef-4e45-8e52-51aca6caa54d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="IModel.cpp">
-      <Filter>소스 파일\Model</Filter>
-    </ClCompile>
     <ClCompile Include="ICamera.cpp">
       <Filter>소스 파일\Camera</Filter>
     </ClCompile>
@@ -60,17 +75,11 @@
     <ClCompile Include="MathematicalHelper.cpp">
       <Filter>소스 파일\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="TestModel.cpp">
-      <Filter>소스 파일\Model</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>소스 파일\Main</Filter>
     </ClCompile>
     <ClCompile Include="PortfolioApp.cpp">
       <Filter>소스 파일\Main</Filter>
-    </ClCompile>
-    <ClCompile Include="StructVar.cpp">
-      <Filter>소스 파일\Utils</Filter>
     </ClCompile>
     <ClCompile Include="BaseApp.cpp">
       <Filter>소스 파일\Main</Filter>
@@ -96,11 +105,23 @@
     <ClCompile Include="DepthStencilState.cpp">
       <Filter>소스 파일\Camera</Filter>
     </ClCompile>
+    <ClCompile Include="TransformProperties.cpp">
+      <Filter>소스 파일\Transformation</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelDrawer.cpp">
+      <Filter>소스 파일\Drawer</Filter>
+    </ClCompile>
+    <ClCompile Include="CubeModel.cpp">
+      <Filter>소스 파일\Model\Specific</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelInterface.cpp">
+      <Filter>소스 파일\Model\Specific</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelOutlineDrawer.cpp">
+      <Filter>소스 파일\Drawer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="IModel.h">
-      <Filter>헤더 파일\Model</Filter>
-    </ClInclude>
     <ClInclude Include="ICamera.h">
       <Filter>헤더 파일\Camera</Filter>
     </ClInclude>
@@ -115,12 +136,6 @@
     </ClInclude>
     <ClInclude Include="DefineVar.h">
       <Filter>헤더 파일\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="StructVar.h">
-      <Filter>헤더 파일\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="TestModel.h">
-      <Filter>헤더 파일\Model</Filter>
     </ClInclude>
     <ClInclude Include="PortfolioApp.h">
       <Filter>헤더 파일\Main</Filter>
@@ -151,6 +166,21 @@
     </ClInclude>
     <ClInclude Include="DepthStencilState.h">
       <Filter>헤더 파일\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="TransformProperties.h">
+      <Filter>헤더 파일\Transformation</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelDrawer.h">
+      <Filter>헤더 파일\Drawer</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelInterface.h">
+      <Filter>헤더 파일\Model\Specific</Filter>
+    </ClInclude>
+    <ClInclude Include="CubeModel.h">
+      <Filter>헤더 파일\Model\Specific</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelOutlineDrawer.h">
+      <Filter>헤더 파일\Drawer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

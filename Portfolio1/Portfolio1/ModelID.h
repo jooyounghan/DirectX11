@@ -5,35 +5,31 @@
 #include <wrl/client.h>
 #include <mutex>
 
+struct ModelIDData
+{
+	unsigned int ucModelID[3];
+	unsigned int ucModelIDStd = 0xFF;
+};
+
 class ModelID
 {
-	friend class IModel;
-
 public:	
-	ModelID();
-	ModelID& operator= (const ModelID& modelIDRight);
-	friend bool operator==(const ModelID& modelID1, const ModelID& modelID2);
+	ModelID(ID3D11Device* pDevice);
+	//ModelID& operator= (const ModelID& modelIDRight);
+	//friend bool operator==(const ModelID& modelID1, const ModelID& modelID2);
 
 public:
-	struct
-	{
-		unsigned int ucModelID[3];
-		unsigned int ucModelIDStd = 0xFF;
-	} IdData;
-
-public:
+	ModelIDData								sIdData;
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	cpModelIDBuffer;
 
 public:
 	void SetPsConstantBuffers(ID3D11DeviceContext* pDeviceContext);
 
 public:
-	static ModelID ConvertR8G8B8A8ToModelID(const unsigned int& RGBA);
-
+	static ModelIDData ConvertR8G8B8A8ToModelID(const unsigned int& RGBA);
 
 protected:
-	static ModelID ullCurrentModelID;
-	static ModelID IssueModelID(ID3D11Device* pDevice);
+	static ModelIDData ullCurrentModelID;
 	static std::mutex mtxId;
 
 protected:

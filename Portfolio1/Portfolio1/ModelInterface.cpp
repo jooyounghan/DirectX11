@@ -1,4 +1,4 @@
-#include "TestModel.h"
+#include "ModelInterface.h"
 #include "EnumVar.h"
 #include "FileLoader.h"
 #include "ID3D11Helper.h"
@@ -8,17 +8,7 @@
 
 using namespace std;
 
-atomic_bool					TestModel::bStaticTestModelInitialized = false;
-ComPtr<ID3D11InputLayout>	TestModel::cpBaseInputLayout;
-ComPtr<ID3D11VertexShader>	TestModel::cpBaseVertexShader;
-ComPtr<ID3D11PixelShader>	TestModel::cpBasePixelShader;
-ComPtr<ID3D11SamplerState>	TestModel::cpBaseSampler;
-ComPtr<ID3D11HullShader>	TestModel::cpBaseHullShader;
-ComPtr<ID3D11DomainShader>	TestModel::cpBaseDomainShader;
-
-ComPtr<ID3D11PixelShader>	TestModel::cpOutlinerPixelShader;
-
-TestModel::TestModel(
+ModelInterface::ModelInterface(
 	ComPtr<ID3D11Device>& cpDeviceIn,
 	ComPtr<ID3D11DeviceContext>& cpDeviceContextIn,
 	const float& fCenterX,
@@ -26,30 +16,8 @@ TestModel::TestModel(
 	const float& fCenterZ,
 	const float& fLen
 )
-	: IModel(cpDeviceIn, cpDeviceContextIn)
+	: cpDevice(cpDeviceIn), cpDeviceContext(cpDeviceContextIn), modelID(cpDevice.Get())
 {
-	if (!bStaticTestModelInitialized.load())
-	{
-		vector<D3D11_INPUT_ELEMENT_DESC> vInputElemDesc{
-			{"POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-			{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 16, D3D11_INPUT_PER_VERTEX_DATA, 0},
-			{"NORMAL", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0}
-		};
-
-		ID3D11Helper::CreateVSInputLayOut(cpDevice.Get(), L"BaseModelVS.hlsl", vInputElemDesc, cpBaseVertexShader.GetAddressOf(), cpBaseInputLayout.GetAddressOf());
-		ID3D11Helper::CreatePS(cpDevice.Get(), L"BaseModelPS.hlsl", cpBasePixelShader.GetAddressOf());
-		ID3D11Helper::CreatePS(cpDevice.Get(), L"OutlinerPS.hlsl", cpOutlinerPixelShader.GetAddressOf());
-
-
-		ID3D11Helper::CreateHS(cpDevice.Get(), L"BaseModelHS.hlsl", cpBaseHullShader.GetAddressOf());
-		ID3D11Helper::CreateDS(cpDevice.Get(), L"BaseModelDS.hlsl", cpBaseDomainShader.GetAddressOf());
-
-
-		FLOAT pBorderColor[4]{ 0.f, 0.f, 0.f, 0.f };
-		ID3D11Helper::CreateSampler(D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP, pBorderColor, cpDevice.Get(), cpBaseSampler.GetAddressOf());
-		bStaticTestModelInitialized.store(true);
-	}
-
 	vector<uint32_t> vIndex{
 		0, 1, 2,
 		3, 4, 5,
@@ -71,9 +39,9 @@ TestModel::TestModel(
 	};
 	ui32IndexCount = UINT(vIndex.size());
 
-	sModelTransformation.xmvTranslation.m128_f32[0] = fCenterX;
-	sModelTransformation.xmvTranslation.m128_f32[1] = fCenterY;
-	sModelTransformation.xmvTranslation.m128_f32[2] = fCenterZ;
+	sTransformationProperties.xmvTranslation.m128_f32[0] = fCenterX;
+	sTransformationProperties.xmvTranslation.m128_f32[1] = fCenterY;
+	sTransformationProperties.xmvTranslation.m128_f32[2] = fCenterZ;
 
 	vector<Vertex> vVertex{
 		{{-fLen / 2.f, -fLen / 2.f, -fLen / 2.f}, {0.f, 1.f}, {0.f, 0.f, -1.f, 0.f}},
@@ -134,37 +102,37 @@ TestModel::TestModel(
 	sTextures.CreateTextureAndSRV(TextureType::TEXTURE_REFLECT, cpDevice.Get(), cpDeviceContext.Get(), &ImageContainer::ExampleTextureReflection);
 }
 
-void TestModel::Update()
+void ModelInterface::Update()
 {
 	ID3D11Helper::UpdateBuffer(
 		cpDeviceContext.Get(),
-		TransformedMatrix::CreateTransfomredMatrix(ModelTransform::GetAffineTransformMatrix(sModelTransformation)),
+		TransformationBufferData::CreateTransfomredMatrix(TransformProperties::GetAffineTransformMatrix(sTransformationProperties)),
 		D3D11_MAP_WRITE_DISCARD,
-		cpModelMatrixBuffer.Get()
+		cpTransformationDataBuffer.Get()
 	);
 }
 
-void TestModel::Render()
+void ModelInterface::Render()
 {
-	cpDeviceContext->IASetInputLayout(cpBaseInputLayout.Get());
-	cpDeviceContext->IASetIndexBuffer(cpIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+	//cpDeviceContext->IASetInputLayout(cpBaseInputLayout.Get());
+	//cpDeviceContext->IASetIndexBuffer(cpIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 
-	UINT stride = sizeof(Vertex);
-	UINT offset = 0;
-	cpDeviceContext->IASetVertexBuffers(0, 1, cpVertexBuffer.GetAddressOf(), &stride, &offset);
-	cpDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
+	//UINT stride = sizeof(Vertex);
+	//UINT offset = 0;
+	//cpDeviceContext->IASetVertexBuffers(0, 1, cpVertexBuffer.GetAddressOf(), &stride, &offset);
+	//cpDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
 
-	cpDeviceContext->VSSetShader(cpBaseVertexShader.Get(), 0, 0);
+	//cpDeviceContext->VSSetShader(cpBaseVertexShader.Get(), 0, 0);
 	cpDeviceContext->VSSetConstantBuffers(VSConstBufferType::VS_ModelMatrix, 1, cpModelMatrixBuffer.GetAddressOf());
 
-	cpDeviceContext->HSSetShader(cpBaseHullShader.Get(), 0, 0);
-	cpDeviceContext->DSSetShader(cpBaseDomainShader.Get(), 0, 0);
+	//cpDeviceContext->HSSetShader(cpBaseHullShader.Get(), 0, 0);
+	//cpDeviceContext->DSSetShader(cpBaseDomainShader.Get(), 0, 0);
 
-	cpDeviceContext->DSSetSamplers(0, 1, cpBaseSampler.GetAddressOf());
-	cpDeviceContext->DSSetShaderResources(DSSRVType::DS_HEIGHT, 1, sTextures.HeightSRV.GetAddressOf());
+	//cpDeviceContext->DSSetSamplers(0, 1, cpBaseSampler.GetAddressOf());
+	//cpDeviceContext->DSSetShaderResources(DSSRVType::DS_HEIGHT, 1, sTextures.HeightSRV.GetAddressOf());
 
-	cpDeviceContext->PSSetShader(cpBasePixelShader.Get(), 0, 0);
-	cpDeviceContext->PSSetSamplers(0, 1, cpBaseSampler.GetAddressOf());
+	//cpDeviceContext->PSSetShader(cpBasePixelShader.Get(), 0, 0);
+	//cpDeviceContext->PSSetSamplers(0, 1, cpBaseSampler.GetAddressOf());
 
 	modelID.SetPsConstantBuffers(cpDeviceContext.Get());
 
@@ -178,12 +146,9 @@ void TestModel::Render()
 	cpDeviceContext->DrawIndexed(ui32IndexCount, 0, 0);
 
 	cpDeviceContext->OMSetDepthStencilState(DepthStencilState::pGetDSS(DepthStencilState::DefaultOption), 0);
-
-	cpDeviceContext->HSSetShader(nullptr, 0, 0);
-	cpDeviceContext->DSSetShader(nullptr, 0, 0);
 }
 
-void TestModel::RenderOutline()
+void ModelInterface::RenderOutline()
 {
 	sModelTransformation.xmvScale.m128_f32[0] += 0.05;
 	sModelTransformation.xmvScale.m128_f32[1] += 0.05;

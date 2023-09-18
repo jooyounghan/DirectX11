@@ -426,7 +426,14 @@ void ID3D11Helper::CreateSampler(IN D3D11_FILTER eFilter, IN D3D11_TEXTURE_ADDRE
 	sSamplerDesc.AddressU = eTextureAddressMode;
 	sSamplerDesc.AddressV = eTextureAddressMode;
 	sSamplerDesc.AddressW = eTextureAddressMode;
-	memcpy(sSamplerDesc.BorderColor, pFloat4, sizeof(FLOAT) * 4);
+	if (pFloat4 == NULL)
+	{
+		memset(sSamplerDesc.BorderColor, 0.f, sizeof(FLOAT) * 4);
+	}
+	else
+	{
+		memcpy(sSamplerDesc.BorderColor, pFloat4, sizeof(FLOAT) * 4);
+	}
 	sSamplerDesc.MipLODBias = 0;
 	sSamplerDesc.MinLOD = 0;
 	sSamplerDesc.MaxLOD = D3D11_FLOAT32_MAX;

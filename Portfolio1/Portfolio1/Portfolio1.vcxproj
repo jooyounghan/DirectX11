@@ -133,24 +133,27 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BaseApp.cpp" />
+    <ClCompile Include="CubeModel.cpp" />
     <ClCompile Include="DepthStencilState.cpp" />
     <ClCompile Include="DirectionalLight.cpp" />
     <ClCompile Include="FileLoader.cpp" />
     <ClCompile Include="ICamera.cpp" />
     <ClCompile Include="ID3D11Helper.cpp" />
     <ClCompile Include="ILight.cpp" />
-    <ClCompile Include="IModel.cpp" />
+    <ClCompile Include="ModelDrawer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MathematicalHelper.cpp" />
     <ClCompile Include="ModelID.cpp" />
+    <ClCompile Include="ModelOutlineDrawer.cpp" />
     <ClCompile Include="PortfolioApp.cpp" />
-    <ClCompile Include="StructVar.cpp" />
     <ClCompile Include="TempVariable.cpp" />
-    <ClCompile Include="TestModel.cpp" />
+    <ClCompile Include="ModelInterface.cpp" />
     <ClCompile Include="TextureSet.cpp" />
+    <ClCompile Include="TransformProperties.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseApp.h" />
+    <ClInclude Include="CubeModel.h" />
     <ClInclude Include="DefineVar.h" />
     <ClInclude Include="DepthStencilState.h" />
     <ClInclude Include="DirectionalLight.h" />
@@ -159,15 +162,16 @@
     <ClInclude Include="ICamera.h" />
     <ClInclude Include="ID3D11Helper.h" />
     <ClInclude Include="ILight.h" />
-    <ClInclude Include="IModel.h" />
+    <ClInclude Include="ModelDrawer.h" />
     <ClInclude Include="MathematicalHelper.h" />
     <ClInclude Include="ModelID.h" />
+    <ClInclude Include="ModelOutlineDrawer.h" />
     <ClInclude Include="PortfolioApp.h" />
-    <ClInclude Include="StructVar.h" />
     <ClInclude Include="TempVariable.h" />
-    <ClInclude Include="TestModel.h" />
+    <ClInclude Include="ModelInterface.h" />
     <ClInclude Include="TextureSet.h" />
     <ClInclude Include="TODO.h" />
+    <ClInclude Include="TransformProperties.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="BaseModelDS.hlsl">
