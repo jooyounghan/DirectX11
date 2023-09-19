@@ -3,44 +3,49 @@
 #include <d3dcompiler.h>
 #include <windows.h>
 #include <wrl/client.h>
+
 #include <mutex>
+#include <memory>
 #include <atomic>
 
-template<typename Model>
-class ModelDrawerImpl;
+#include <vector>
 
-template<typename Model>
+#include "ID3D11Helper.h"
+
 class ModelDrawer
 {
-public:
-	template<typename ...Args>
-	ModelDrawer(Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn, Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn, Args... args);
-	~ModelDrawer() {};
+template<typename Drawer, typename Model>
+friend class Canvas;
 
 public:
-	void Update();
-	void Render();
+	ModelDrawer(
+		Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn,
+		Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn);
+	~ModelDrawer();
+
+public:
+	void SetIAInputLayer();
+	void SetVSShader();
+	void SetHSShader();
+	void SetDSShader();
+	void SetPSShader();
+
+public:
+	void ResetDrawer();
 
 protected:
-	ModelDrawerImpl<Model> templateModelImpl;
+	Microsoft::WRL::ComPtr<ID3D11Device>&			cpDevice;
+	Microsoft::WRL::ComPtr<ID3D11DeviceContext>&	cpDeviceContext;
+
+protected:
+	Microsoft::WRL::ComPtr<ID3D11InputLayout>		cpBaseInputLayout;
+	Microsoft::WRL::ComPtr<ID3D11VertexShader>	cpBaseVertexShader;
+
+protected:
+	Microsoft::WRL::ComPtr<ID3D11PixelShader>		cpBasePixelShader;
+	Microsoft::WRL::ComPtr<ID3D11SamplerState>	cpBaseSampler;
+
+protected:
+	Microsoft::WRL::ComPtr<ID3D11HullShader>		cpBaseHullShader;
+	Microsoft::WRL::ComPtr<ID3D11DomainShader>	cpBaseDomainShader;
 };
-
-template<typename Model>
-template<typename ...Args>
-ModelDrawer<Model>::ModelDrawer(Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn, Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn, Args ...args)
-	: templateModelImpl(args...)
-{
-
-}
-
-template<typename Model>
-inline void ModelDrawer<Model>::Update()
-{
-	return templateModelImpl.Update();
-}
-
-template<typename Model>
-inline void ModelDrawer<Model>::Render()
-{
-	return templateModelImpl.Render();
-}

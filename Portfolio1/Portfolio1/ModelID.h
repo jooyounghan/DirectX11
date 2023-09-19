@@ -7,6 +7,8 @@
 
 struct ModelIDData
 {
+	friend bool operator == (const ModelIDData& modelId1, const ModelIDData& modelId2);
+
 	unsigned int ucModelID[3];
 	unsigned int ucModelIDStd = 0xFF;
 };

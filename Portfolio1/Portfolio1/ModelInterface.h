@@ -2,14 +2,21 @@
 #include "TransformProperties.h"
 #include "ModelID.h"
 #include "TextureSet.h"
+struct PositionVector
+{
+	float x;
+	float y;
+	float z;
+	float w = 1.f;
+};
 
 struct Vector
 {
-	float x, y, z;
+	float x;
+	float y;
+	float z;
 	float w = 0.f;
 };
-
-typedef Vector PositionVector;
 
 struct TextureCoord
 {
@@ -27,6 +34,9 @@ struct Vertex
 
 class ModelInterface
 {
+template<typename Drawer, typename Model>
+friend class Canvas;
+
 public:
 	ModelInterface(
 		Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn,
@@ -40,8 +50,26 @@ public:
 
 public:
 	void Update();
+
+protected:
 	void Render();
-	void RenderOutline();
+
+protected:
+	void SetIAProperties();
+	void SetVSConstantBuffer();
+	void SetHSConstantBuffer();
+	void SetDSConstantBuffer();
+	void SetPSConstantBuffer();
+
+protected:
+	void SetVSShaderResources();
+	void SetHSShaderResources();
+	void SetDSShaderResources();
+	void SetPSShaderResources();
+
+protected:
+	void SetOM();
+	void ResetOM();
 
 protected:
 	Microsoft::WRL::ComPtr<ID3D11Device>&			cpDevice;

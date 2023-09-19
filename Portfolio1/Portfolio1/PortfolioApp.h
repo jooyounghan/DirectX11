@@ -14,8 +14,8 @@ typedef bool IsChecked;
 
 
 class ICamera;
-class IModel;
 class ILight;
+class ModelInterface;
 struct LightSet;
 
 class PortfolioApp : public BaseApp
@@ -60,14 +60,15 @@ public:
 
 private:	
 	std::shared_ptr<ICamera>				pMainCamera;
-	std::shared_ptr<IModel>					pSelectedModel;
-	std::shared_ptr<IModel>					pTempSelectedModel;
+	std::shared_ptr<ModelInterface>			pSelectedModel;
+	std::shared_ptr<ModelInterface>			pTempSelectedModel;
 	std::shared_ptr<ILight>					pSelectedLight;
 
 private:
 	std::vector<std::shared_ptr<ICamera>>					vCameras;
 	std::unordered_map<std::shared_ptr<ILight>, IsChecked>	umLights;
-	std::vector<std::shared_ptr<IModel>>					vModels;
+	std::unique_ptr<class ModelDrawer>						modelDrawers;
+	std::vector<std::shared_ptr<ModelInterface>>			vModels;
 
 public:
 	virtual LRESULT WINAPI AppProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) override;

@@ -4,8 +4,9 @@
 
 #include "ICamera.h"
 
-#include "IModel.h"
-#include "TestModel.h"
+#include "Canvas.h"
+#include "ModelDrawer.h"
+#include "ModelInterface.h"
 
 #include "ILight.h"
 #include "DirectionalLight.h"
@@ -41,6 +42,8 @@ void PortfolioApp::Init()
 	BaseApp::Init();
 	InitImGUI();
 
+	modelDrawers = make_unique<ModelDrawer>(cpDevice, cpDeviceContext);
+
 	if (ICamera::DefaultCamera == nullptr)
 	{
 		ICamera::DefaultCamera = std::make_shared<ICamera>(cpDevice, cpDeviceContext, cpSwapChain, uiWidth, uiHeight, uiNumLevelQuality);
@@ -51,8 +54,8 @@ void PortfolioApp::Init()
 	// For Testing ==================================================================================
 
 	pMainCamera = ICamera::DefaultCamera;
-	vModels.push_back(std::make_shared<TestModel>(cpDevice, cpDeviceContext, 0.f, 0.f, 0.f, 2.f));
-	vModels.push_back(std::make_shared<TestModel>(cpDevice, cpDeviceContext, 5.f, 0.f, 5.f, 2.f));
+	vModels.push_back(std::make_shared<ModelInterface>(cpDevice, cpDeviceContext, 0.f, 0.f, 0.f, 2.f));
+	vModels.push_back(std::make_shared<ModelInterface>(cpDevice, cpDeviceContext, 5.f, 0.f, 5.f, 2.f));
 	pSelectedModel = vModels[1];
 
 	umLights.emplace(
@@ -64,15 +67,6 @@ void PortfolioApp::Init()
 		),
 		false
 	);
-	//umLights.emplace(
-	//	std::make_shared<DirectionalLight>(
-	//		cpDevice, cpDeviceContext,
-	//		XMVectorSet(100.f, 0.f, 0.f, 1.f),
-	//		XMVectorSet(0.1f, 1.0f, 0.1f, 1.f),
-	//		XMVectorSet(-1.f, 0.f, 0.f, 0.f)
-	//	),
-	//	false
-	//);
 	// ==============================================================================================
 }
 
@@ -93,14 +87,11 @@ void PortfolioApp::Render()
 {
 	pMainCamera->WipeOut();
 
+
 	for (auto& model : vModels)
 	{
-		model->Render();
-	}
-
-	if (pSelectedModel != nullptr)
-	{
-		pSelectedModel->RenderOutline();
+		Canvas<ModelDrawer, ModelInterface> canvas(*(modelDrawers.get()), *(model.get()));
+		canvas.Render();
 	}
 }
 
@@ -182,9 +173,9 @@ void PortfolioApp::SetModelManageWnd()
 
 	bool bModelNotSelected = (pSelectedModel == nullptr);
 	ImGui::BeginDisabled(bModelNotSelected);
-	ImGui::SliderFloat3("Scale Vector", bModelNotSelected ? TempVariable::fTempFloat3 : pSelectedModel->sModelTransformation.xmvScale.m128_f32, 0.f, 5.f);
-	ImGui::SliderFloat3("Rotation Vector", bModelNotSelected ? TempVariable::fTempFloat3 : (float*)(&pSelectedModel->sModelTransformation.sPositionAngle), -2.f * XM_PI, 2.f * XM_PI);
-	ImGui::SliderFloat3("Translation Vector", bModelNotSelected ? TempVariable::fTempFloat3 : pSelectedModel->sModelTransformation.xmvTranslation.m128_f32, -10.f, 10.f);
+	ImGui::SliderFloat3("Scale Vector", bModelNotSelected ? TempVariable::fTempFloat3 : pSelectedModel->sTransformationProperties.xmvScale.m128_f32, 0.f, 5.f);
+	ImGui::SliderFloat3("Rotation Vector", bModelNotSelected ? TempVariable::fTempFloat3 : (float*)(&pSelectedModel->sTransformationProperties.sPositionAngle), -2.f * XM_PI, 2.f * XM_PI);
+	ImGui::SliderFloat3("Translation Vector", bModelNotSelected ? TempVariable::fTempFloat3 : pSelectedModel->sTransformationProperties.xmvTranslation.m128_f32, -10.f, 10.f);
 	ImGui::EndDisabled();
 	ImGui::End();
 }
@@ -394,8 +385,8 @@ void PortfolioApp::ResizeSwapChain(const UINT& uiWidthIn, const UINT& uiHeightIn
 
 inline void PortfolioApp::CheckMouseHoveredModel()
 {
-	ModelID uiSelectedModelID = pMainCamera->GetPointedModelID();
-	auto findResult = find_if(vModels.begin(), vModels.end(), [&](shared_ptr<IModel> model) { return model->modelID == uiSelectedModelID; });
+	ModelIDData uiSelectedModelID = pMainCamera->GetPointedModelID();
+	auto findResult = find_if(vModels.begin(), vModels.end(), [&](shared_ptr<ModelInterface> model) { return model->modelID.sIdData == uiSelectedModelID; });
 	if (findResult != vModels.end())
 	{
 		pTempSelectedModel = *findResult;

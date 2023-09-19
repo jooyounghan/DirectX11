@@ -1,7 +1,9 @@
 #include "ICamera.h"
 #include "EnumVar.h"
 #include "ID3D11Helper.h"
-#include "IModel.h"
+#include "TransformProperties.h"
+#include "ModelID.h"
+
 #include <algorithm>
 #include <string>
 
@@ -44,7 +46,7 @@ ICamera::ICamera(ComPtr<ID3D11Device>& cpDeviceIn,
 
 	ID3D11Helper::CreateBuffer(
 		cpDevice.Get(),
-		TransformedMatrix::CreateTransfomredMatrix(GetViewProj(DefaultDirection, DefaultUp)),
+		TransformationBufferData::CreateTransfomredMatrix(GetViewProj(DefaultDirection, DefaultUp)),
 		D3D11_USAGE_DYNAMIC,
 		D3D11_BIND_CONSTANT_BUFFER,
 		D3D11_CPU_ACCESS_WRITE, 0,
@@ -70,7 +72,7 @@ void ICamera::Update()
 	// Mouse Angle에 대한 카메라 업데이트
 	ID3D11Helper::UpdateBuffer(
 		cpDeviceContext.Get(),
-		TransformedMatrix::CreateTransfomredMatrix(GetViewProj(xmvCameraDirection, xmvCameraUp)),
+		TransformationBufferData::CreateTransfomredMatrix(GetViewProj(xmvCameraDirection, xmvCameraUp)),
 		D3D11_MAP::D3D11_MAP_WRITE_DISCARD,
 		cpCameraConstantBuffer.Get()
 	);
@@ -169,9 +171,9 @@ void ICamera::SwitchFirstView()
 	bFirstView = !bFirstView;
 }
 
-ModelID ICamera::GetPointedModelID()
+ModelIDData ICamera::GetPointedModelID()
 {
-	ModelID result;
+	ModelIDData result;
 	if (cpModelIDStagingTexture.Get() && cpModelIDTexture.Get())
 	{
 		cpDeviceContext->ResolveSubresource(cpModelIDMSToSS.Get(), 0, cpModelIDTexture.Get(), 0, DXGI_FORMAT_R8G8B8A8_UNORM);

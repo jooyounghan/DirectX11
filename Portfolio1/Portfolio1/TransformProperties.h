@@ -2,13 +2,6 @@
 #include <windows.h>
 #include <directxmath/DirectXMath.h>
 
-struct PositionAngle
-{
-	float fRoll;
-	float fPitch;
-	float fYaw;
-};
-
 class TransformProperties
 {
 public:
@@ -16,7 +9,11 @@ public:
 
 public:
 	DirectX::XMVECTOR	xmvScale;
-	PositionAngle		sPositionAngle;
+	struct {
+		float fRoll;
+		float fPitch;
+		float fYaw;
+	}					sPositionAngle;
 	DirectX::XMVECTOR	xmvTranslation;
 
 public:
@@ -34,5 +31,4 @@ public:
 
 public:
 	static TransformationBufferData CreateTransfomredMatrix(IN const DirectX::XMMATRIX& xmmTransformedMatIn);
-	static void CreateTransfomredMatrix(IN const DirectX::XMMATRIX& xmmTransformedMatIn, OUT TransformationBufferData& transformedMatrixOut);
 };

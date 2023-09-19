@@ -64,6 +64,12 @@
     <Filter Include="헤더 파일\Model\Specific">
       <UniqueIdentifier>{9da587ed-81ef-4e45-8e52-51aca6caa54d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Canvas">
+      <UniqueIdentifier>{3142697f-9aad-4934-a3cf-f91ea7a28c8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Canvas">
+      <UniqueIdentifier>{b34145dc-bf26-4fed-84cf-83e93b092109}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ICamera.cpp">
@@ -119,6 +125,9 @@
     </ClCompile>
     <ClCompile Include="ModelOutlineDrawer.cpp">
       <Filter>소스 파일\Drawer</Filter>
+    </ClCompile>
+    <ClCompile Include="Canvas.cpp">
+      <Filter>소스 파일\Canvas</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -181,6 +190,9 @@
     </ClInclude>
     <ClInclude Include="ModelOutlineDrawer.h">
       <Filter>헤더 파일\Drawer</Filter>
+    </ClInclude>
+    <ClInclude Include="Canvas.h">
+      <Filter>헤더 파일\Canvas</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

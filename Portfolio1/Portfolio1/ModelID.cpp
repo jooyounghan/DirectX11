@@ -27,18 +27,17 @@ ModelID::ModelID(ID3D11Device* pDevice)
 	);
 }
 
-//ModelID& ModelID::operator=(const ModelID& modelIDIn)
-//{
-//	memcpy(&this->sIdData, &modelIDIn.sIdData, sizeof(unsigned int) * 4);
-//	modelIDIn.cpModelIDBuffer.CopyTo(this->cpModelIDBuffer.GetAddressOf());
-//	return *this;
-//}
+bool operator==(const ModelIDData& modelID1, const ModelIDData& modelID2)
+{
+	return (modelID1.ucModelID[0] == modelID2.ucModelID[0] &&
+		modelID1.ucModelID[1] == modelID2.ucModelID[1] &&
+		modelID1.ucModelID[2] == modelID2.ucModelID[2]);
+}
+
 
 //bool operator==(const ModelID& modelID1, const ModelID& modelID2)
 //{
-//	return (modelID1.IdData.ucModelID[0] == modelID2.IdData.ucModelID[0] &&
-//		modelID1.IdData.ucModelID[1] == modelID2.IdData.ucModelID[1] &&
-//		modelID1.IdData.ucModelID[2] == modelID2.IdData.ucModelID[2]);
+
 //}
 
 void ModelID::SetPsConstantBuffers(ID3D11DeviceContext* pDeviceContext)

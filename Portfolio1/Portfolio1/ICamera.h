@@ -6,7 +6,6 @@
 #include <windows.h>
 #include <wrl/client.h>
 
-#include "StructVar.h"
 #include "EnumVar.h"
 
 class CameraInfo
@@ -27,16 +26,22 @@ public:
 
 
 public:
-	unsigned int		uiMouseLocation[2];
-	DirectX::XMVECTOR	xmvCameraPosition;
-	PositionAngle		sCameraPose;
-	float				fFovAngle;
-	float				fAspectRatio;
-	float				fNearZ;
-	float				fFarZ;
-	float				fMoveSpeed;
-	float				fMouseMovablePitchAngleDegree;
-	float				fMouseMovableYawAngleDegree;
+	unsigned int			uiMouseLocation[2];
+	DirectX::XMVECTOR		xmvCameraPosition;
+
+	struct {
+		float fRoll;
+		float fPitch;
+		float fYaw;
+	}						sCameraPose;
+
+	float					fFovAngle;
+	float					fAspectRatio;
+	float					fNearZ;
+	float					fFarZ;
+	float					fMoveSpeed;
+	float					fMouseMovablePitchAngleDegree;
+	float					fMouseMovableYawAngleDegree;
 };
 
 class ICamera
@@ -84,7 +89,7 @@ protected:
 public:
 	Microsoft::WRL::ComPtr<ID3D11Texture2D>			cpModelIDMSToSS;
 	Microsoft::WRL::ComPtr<ID3D11Texture2D>			cpModelIDStagingTexture;
-	class ModelID GetPointedModelID();
+	struct ModelIDData GetPointedModelID();
 
 protected:
 	Microsoft::WRL::ComPtr<ID3D11Texture2D>			cpDepthStencilTexture2D;

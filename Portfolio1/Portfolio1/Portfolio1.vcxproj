@@ -133,6 +133,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BaseApp.cpp" />
+    <ClCompile Include="Canvas.cpp" />
     <ClCompile Include="CubeModel.cpp" />
     <ClCompile Include="DepthStencilState.cpp" />
     <ClCompile Include="DirectionalLight.cpp" />
@@ -153,6 +154,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseApp.h" />
+    <ClInclude Include="Canvas.h" />
     <ClInclude Include="CubeModel.h" />
     <ClInclude Include="DefineVar.h" />
     <ClInclude Include="DepthStencilState.h" />

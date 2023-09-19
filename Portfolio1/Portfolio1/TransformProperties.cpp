@@ -42,13 +42,7 @@ TransformationBufferData::TransformationBufferData()
 TransformationBufferData TransformationBufferData::CreateTransfomredMatrix(IN const DirectX::XMMATRIX& xmmTransformedMatIn)
 {
 	TransformationBufferData result;
-	CreateTransfomredMatrix(xmmTransformedMatIn, result);
+	result.xmmTransformedMat = XMMatrixTranspose(xmmTransformedMatIn);
+	result.xmmInvTransformedMat = XMMatrixInverse(nullptr, xmmTransformedMatIn);
 	return result;
-}
-
-void TransformationBufferData::CreateTransfomredMatrix(IN const DirectX::XMMATRIX& xmmTransformedMatIn, OUT TransformationBufferData& transformedMatrixOut)
-{
-	transformedMatrixOut.xmmTransformedMat = XMMatrixTranspose(xmmTransformedMatIn);
-	transformedMatrixOut.xmmInvTransformedMat = XMMatrixInverse(nullptr, xmmTransformedMatIn);
-	// Transpose 2번의 경우 상쇄되므로 생략
 }
