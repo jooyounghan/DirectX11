@@ -2,7 +2,6 @@
 #include "EnumVar.h"
 #include "FileLoader.h"
 #include "ID3D11Helper.h"
-#include "DepthStencilState.h"
 
 #include <atomic>
 
@@ -134,8 +133,6 @@ void ModelInterface::SetIAProperties()
 	UINT stride = sizeof(Vertex);
 	UINT offset = 0;
 	cpDeviceContext->IASetVertexBuffers(0, 1, cpVertexBuffer.GetAddressOf(), &stride, &offset);
-	cpDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
-
 }
 
 void ModelInterface::SetVSConstantBuffer()
@@ -177,60 +174,16 @@ void ModelInterface::SetPSShaderResources()
 	cpDeviceContext->PSSetShaderResources(PSSRVType::PS_NORMAL, 1, sTextures.NormalSRV.GetAddressOf());
 }
 
-void ModelInterface::SetOM()
+void ModelInterface::ScaleUp(const float& x, const float& y, const float& z)
 {
-	cpDeviceContext->OMSetDepthStencilState(DepthStencilState::pGetDSS(DepthStencilState::MaskOption), 1);
-}
+	sTransformationProperties.xmvScale.m128_f32[0] += x;
+	sTransformationProperties.xmvScale.m128_f32[1] += y;
+	sTransformationProperties.xmvScale.m128_f32[2] += z;
 
-void ModelInterface::ResetOM()
-{
-	cpDeviceContext->OMSetDepthStencilState(DepthStencilState::pGetDSS(DepthStencilState::DefaultOption), 0);
+	ID3D11Helper::UpdateBuffer(
+		cpDeviceContext.Get(),
+		TransformationBufferData::CreateTransfomredMatrix(TransformProperties::GetAffineTransformMatrix(sTransformationProperties)),
+		D3D11_MAP_WRITE_DISCARD,
+		cpTransformationDataBuffer.Get()
+	);
 }
-
-//
-//void ModelInterface::RenderOutline()
-//{
-//	sModelTransformation.xmvScale.m128_f32[0] += 0.05;
-//	sModelTransformation.xmvScale.m128_f32[1] += 0.05;
-//	sModelTransformation.xmvScale.m128_f32[2] += 0.05;
-//	sModelTransformation.xmvScale.m128_f32[3] += 0.05;
-//
-//	ID3D11Helper::UpdateBuffer(
-//		cpDeviceContext.Get(),
-//		TransformedMatrix::CreateTransfomredMatrix(ModelTransform::GetAffineTransformMatrix(sModelTransformation)),
-//		D3D11_MAP_WRITE_DISCARD,
-//		cpModelMatrixBuffer.Get()
-//	);
-//
-//	UINT stride = sizeof(Vertex);
-//	UINT offset = 0;
-//	cpDeviceContext->IASetInputLayout(cpBaseInputLayout.Get());
-//	cpDeviceContext->IASetIndexBuffer(cpIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
-//	cpDeviceContext->IASetVertexBuffers(0, 1, cpVertexBuffer.GetAddressOf(), &stride, &offset);
-//	cpDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-//
-//	cpDeviceContext->VSSetShader(cpBaseVertexShader.Get(), 0, 0);
-//	cpDeviceContext->VSSetConstantBuffers(VSConstBufferType::VS_ModelMatrix, 1, cpModelMatrixBuffer.GetAddressOf());
-//
-//	cpDeviceContext->PSSetShader(cpOutlinerPixelShader.Get(), 0, 0);
-//	
-//	modelID.SetPsConstantBuffers(cpDeviceContext.Get());
-//
-//	cpDeviceContext->OMSetDepthStencilState(DepthStencilState::pGetDSS(DepthStencilState::DrawNotEqualOption), 1);
-//
-//	cpDeviceContext->DrawIndexed(ui32IndexCount, 0, 0);
-//
-//	cpDeviceContext->OMSetDepthStencilState(DepthStencilState::pGetDSS(DepthStencilState::DefaultOption), 0);
-//
-//	sModelTransformation.xmvScale.m128_f32[0] -= 0.05;
-//	sModelTransformation.xmvScale.m128_f32[1] -= 0.05;
-//	sModelTransformation.xmvScale.m128_f32[2] -= 0.05;
-//	sModelTransformation.xmvScale.m128_f32[3] -= 0.05;
-//
-//	ID3D11Helper::UpdateBuffer(
-//		cpDeviceContext.Get(),
-//		TransformedMatrix::CreateTransfomredMatrix(ModelTransform::GetAffineTransformMatrix(sModelTransformation)),
-//		D3D11_MAP_WRITE_DISCARD,
-//		cpModelMatrixBuffer.Get()
-//	);
-//}

@@ -14,12 +14,12 @@ cbuffer ViewProjMatrix : register(b0)
 #define NUM_CONTROL_POINTS 3
 
 [domain("tri")]
-PixelInput main(
+DomainOutput main(
 	HS_CONSTANT_DATA_OUTPUT input,
 	float3 domain : SV_DomainLocation,
-	const OutputPatch<DomainInput, NUM_CONTROL_POINTS> patch)
+	const OutputPatch<HullOutput, NUM_CONTROL_POINTS> patch)
 {
-    PixelInput Output;
+    DomainOutput Output;
     
     Output.f2TexCoord = patch[0].f2TexCoord * domain.x + patch[1].f2TexCoord * domain.y + patch[2].f2TexCoord * domain.z;
     Output.f4ModelNormal = patch[0].f4ModelNormal * domain.x + patch[1].f4ModelNormal * domain.y + patch[2].f4ModelNormal * domain.z;

@@ -7,7 +7,7 @@ struct VertexInput
     float4 f4WorldNormal : NORMAL;
 };
     
-struct HullInput
+struct VertexOutput
 {
     float4 f4ProjPos : SV_Position;
     float4 f4ModelPos : POSITION;
@@ -22,7 +22,7 @@ struct HS_CONSTANT_DATA_OUTPUT
 };
 
 
-struct DomainInput
+struct HullOutput
 {
     float4 f4ProjPos : SV_Position;
     float4 f4ModelPos : POSITION;
@@ -31,7 +31,7 @@ struct DomainInput
 };
 
 
-struct PixelInput
+struct DomainOutput
 {
     float4 f4ProjPos : SV_Position;
     float4 f4ModelPos : POSITION;

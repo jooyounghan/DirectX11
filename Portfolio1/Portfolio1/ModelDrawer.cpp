@@ -1,6 +1,13 @@
 #include "ModelDrawer.h"
+#include "ID3D11Helper.h"
+#include "DepthStencilState.h"
 
-ModelDrawer::ModelDrawer(Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn, Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn)
+#include <vector>
+
+using namespace std;
+using namespace Microsoft::WRL;
+
+ModelDrawer::ModelDrawer(ComPtr<ID3D11Device>& cpDeviceIn, ComPtr<ID3D11DeviceContext>& cpDeviceContextIn)
 	: cpDevice(cpDeviceIn), cpDeviceContext(cpDeviceContextIn)
 {
 	std::vector<D3D11_INPUT_ELEMENT_DESC> vInputElemDesc{
@@ -24,6 +31,7 @@ ModelDrawer::~ModelDrawer()
 void ModelDrawer::SetIAInputLayer()
 {
 	cpDeviceContext->IASetInputLayout(cpBaseInputLayout.Get());
+	cpDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
 }
 
 void ModelDrawer::SetVSShader()
@@ -48,10 +56,25 @@ void ModelDrawer::SetPSShader()
 	cpDeviceContext->PSSetSamplers(0, 1, cpBaseSampler.GetAddressOf());
 }
 
+void ModelDrawer::SetOM()
+{
+	cpDeviceContext->OMSetDepthStencilState(DepthStencilState::pGetDSS(DepthStencilState::MaskOption), 1);
+}
+
+void ModelDrawer::ResetOM()
+{
+	cpDeviceContext->OMSetDepthStencilState(DepthStencilState::pGetDSS(DepthStencilState::DefaultOption), 0);
+}
+
 void ModelDrawer::ResetDrawer()
 {
 	cpDeviceContext->PSSetShader(nullptr, 0, 0);
 	cpDeviceContext->DSSetShader(nullptr, 0, 0);
 	cpDeviceContext->HSSetShader(nullptr, 0, 0);
 	cpDeviceContext->VSSetShader(nullptr, 0, 0);
+}
+
+void ModelDrawer::SetModel(ModelInterface* modelInterface)
+{
+	pModel = modelInterface;
 }

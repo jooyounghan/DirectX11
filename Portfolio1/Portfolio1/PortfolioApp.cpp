@@ -5,7 +5,10 @@
 #include "ICamera.h"
 
 #include "Canvas.h"
+
 #include "ModelDrawer.h"
+#include "ModelOutlineDrawer.h"
+
 #include "ModelInterface.h"
 
 #include "ILight.h"
@@ -42,7 +45,8 @@ void PortfolioApp::Init()
 	BaseApp::Init();
 	InitImGUI();
 
-	modelDrawers = make_unique<ModelDrawer>(cpDevice, cpDeviceContext);
+	modelDrawer = make_unique<ModelDrawer>(cpDevice, cpDeviceContext);
+	modelOutlineDrawer = make_unique<ModelOutlineDrawer>(cpDevice, cpDeviceContext);
 
 	if (ICamera::DefaultCamera == nullptr)
 	{
@@ -90,7 +94,15 @@ void PortfolioApp::Render()
 
 	for (auto& model : vModels)
 	{
-		Canvas<ModelDrawer, ModelInterface> canvas(*(modelDrawers.get()), *(model.get()));
+		modelDrawer->SetModel(model.get());
+		Canvas<ModelDrawer> canvas(modelDrawer.get());
+		canvas.Render();
+	}
+
+	if (pSelectedModel)
+	{
+		modelOutlineDrawer->SetModel(pSelectedModel.get());
+		Canvas<ModelOutlineDrawer> canvas(modelOutlineDrawer.get());
 		canvas.Render();
 	}
 }

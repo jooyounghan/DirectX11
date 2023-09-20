@@ -67,7 +67,8 @@ private:
 private:
 	std::vector<std::shared_ptr<ICamera>>					vCameras;
 	std::unordered_map<std::shared_ptr<ILight>, IsChecked>	umLights;
-	std::unique_ptr<class ModelDrawer>						modelDrawers;
+	std::unique_ptr<class ModelDrawer>						modelDrawer;
+	std::unique_ptr<class ModelOutlineDrawer>				modelOutlineDrawer;
 	std::vector<std::shared_ptr<ModelInterface>>			vModels;
 
 public:

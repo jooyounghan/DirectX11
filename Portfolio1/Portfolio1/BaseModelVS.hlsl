@@ -13,9 +13,9 @@ cbuffer ViewProjMatrix : register(b1)
 };
 
 
-HullInput main(VertexInput input)
+VertexOutput main(VertexInput input)
 {
-    HullInput result;
+    VertexOutput result;
        
     float3 fModelNormal = mul(input.f4WorldNormal, mModelInvTranspose).xyz;
     fModelNormal = normalize(fModelNormal);

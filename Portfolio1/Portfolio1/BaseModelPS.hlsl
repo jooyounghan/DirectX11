@@ -17,7 +17,7 @@ cbuffer ModelIDBuffer : register(b1)
     ModelID sModelId;
 };
 
-PixelOutput main(PixelInput input) : SV_TARGET
+PixelOutput main(DomainOutput input) : SV_TARGET
 {
     PixelOutput result;
     

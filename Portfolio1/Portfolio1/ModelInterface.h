@@ -34,7 +34,7 @@ struct Vertex
 
 class ModelInterface
 {
-template<typename Drawer, typename Model>
+template<typename Drawer>
 friend class Canvas;
 
 public:
@@ -67,9 +67,8 @@ protected:
 	void SetDSShaderResources();
 	void SetPSShaderResources();
 
-protected:
-	void SetOM();
-	void ResetOM();
+public:
+	void ScaleUp(const float& x, const float& y, const float& z);
 
 protected:
 	Microsoft::WRL::ComPtr<ID3D11Device>&			cpDevice;

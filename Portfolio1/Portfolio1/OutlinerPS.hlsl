@@ -6,7 +6,7 @@ cbuffer ModelIDBuffer : register(b1)
 };
 
 
-PixelOutput main(HullInput input) : SV_TARGET
+PixelOutput main(VertexOutput input) : SV_TARGET
 {
     PixelOutput result;
     result.pixelColor = float4(0.0f, 1.0f, 0.0f, 1.0f);

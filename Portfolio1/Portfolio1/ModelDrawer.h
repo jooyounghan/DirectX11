@@ -4,17 +4,11 @@
 #include <windows.h>
 #include <wrl/client.h>
 
-#include <mutex>
-#include <memory>
-#include <atomic>
-
-#include <vector>
-
-#include "ID3D11Helper.h"
+class ModelInterface;
 
 class ModelDrawer
 {
-template<typename Drawer, typename Model>
+template<typename Drawer>
 friend class Canvas;
 
 public:
@@ -23,14 +17,18 @@ public:
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn);
 	~ModelDrawer();
 
-public:
+protected:
 	void SetIAInputLayer();
 	void SetVSShader();
 	void SetHSShader();
 	void SetDSShader();
 	void SetPSShader();
 
-public:
+protected:
+	void SetOM();
+	void ResetOM();
+
+protected:
 	void ResetDrawer();
 
 protected:
@@ -48,4 +46,10 @@ protected:
 protected:
 	Microsoft::WRL::ComPtr<ID3D11HullShader>		cpBaseHullShader;
 	Microsoft::WRL::ComPtr<ID3D11DomainShader>	cpBaseDomainShader;
+
+protected:
+	ModelInterface* pModel;
+
+public:
+	void SetModel(ModelInterface* modelInterface);
 };
