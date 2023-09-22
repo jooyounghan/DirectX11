@@ -1,6 +1,5 @@
 #include "ModelInterface.h"
 #include "EnumVar.h"
-#include "FileLoader.h"
 #include "ID3D11Helper.h"
 
 #include <atomic>
@@ -135,20 +134,20 @@ void ModelInterface::SetIAProperties()
 	cpDeviceContext->IASetVertexBuffers(0, 1, cpVertexBuffer.GetAddressOf(), &stride, &offset);
 }
 
-void ModelInterface::SetVSConstantBuffer()
+void ModelInterface::SetVSConstantBuffers()
 {
 	cpDeviceContext->VSSetConstantBuffers(VSConstBufferType::VS_ModelMatrix, 1, cpTransformationDataBuffer.GetAddressOf());
 }
 
-void ModelInterface::SetHSConstantBuffer()
+void ModelInterface::SetHSConstantBuffers()
 {
 }
 
-void ModelInterface::SetDSConstantBuffer()
+void ModelInterface::SetDSConstantBuffers()
 {
 }
 
-void ModelInterface::SetPSConstantBuffer()
+void ModelInterface::SetPSConstantBuffers()
 {
 	modelID.SetPsConstantBuffers(cpDeviceContext.Get());
 }

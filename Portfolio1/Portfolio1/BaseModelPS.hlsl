@@ -33,8 +33,6 @@ PixelOutput main(DomainOutput input) : SV_TARGET
     float3x3 TBN = float3x3(f3ModelTangent, f3ModelBiTangent, f3ModelNormal);
     fNormalSampled = normalize(mul(fNormalSampled, TBN));
 
-
-    
     [unroll]
     for (int i = 0; i < MAX_LIGHT_NUM; ++i)
     {

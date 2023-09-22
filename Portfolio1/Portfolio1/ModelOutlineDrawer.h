@@ -4,9 +4,11 @@
 #include <windows.h>
 #include <wrl/client.h>
 
+#include "DrawerInterface.h"
+
 class ModelInterface;
 
-class ModelOutlineDrawer
+class ModelOutlineDrawer : public DrawerInterface
 {
 	template<typename Drawer>
 	friend class Canvas;
@@ -25,8 +27,8 @@ protected:
 	void SetPSShader();
 
 protected:
-	void SetOM();
-	void ResetOM();
+	void SetOMState();
+	void ResetOMState();
 
 protected:
 	void ResetDrawer();
@@ -46,10 +48,4 @@ protected:
 protected:
 	Microsoft::WRL::ComPtr<ID3D11HullShader>		cpBaseHullShader;
 	Microsoft::WRL::ComPtr<ID3D11DomainShader>		cpBaseDomainShader;
-
-protected:
-	ModelInterface* pModel;
-
-public:
-	void SetModel(ModelInterface* modelInterface);
 };

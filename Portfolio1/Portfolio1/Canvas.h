@@ -26,30 +26,45 @@ Canvas<Drawer>::Canvas(Drawer* drawerIn)
 template<typename Drawer>
 void Canvas<Drawer>::Render()
 {
-	drawer->SetIAInputLayer();
-	drawer->pModel->SetIAProperties();
+	if (drawer->pModel)
+	{
+		drawer->SetIAInputLayer();
+		drawer->SetVSShader();
+		drawer->SetHSShader();
+		drawer->SetDSShader();
+		drawer->SetPSShader();
 
-	drawer->SetVSShader();
-	drawer->pModel->SetVSConstantBuffer();
-	drawer->pModel->SetVSShaderResources();
+		drawer->pModel->SetIAProperties();
+		drawer->pModel->SetVSConstantBuffers();
+		drawer->pModel->SetVSShaderResources();
+		drawer->pModel->SetHSConstantBuffers();
+		drawer->pModel->SetHSShaderResources();
+		drawer->pModel->SetDSConstantBuffers();
+		drawer->pModel->SetDSShaderResources();
+		drawer->pModel->SetPSConstantBuffers();
+		drawer->pModel->SetPSShaderResources();
 
-	drawer->SetHSShader();
-	drawer->pModel->SetHSConstantBuffer();
-	drawer->pModel->SetHSShaderResources();
+		if (drawer->pCamera)
+		{
+			drawer->pCamera->SetRSState();
+			drawer->pCamera->SetVSConstantBuffers();
+			drawer->pCamera->SetHSConstantBuffers();
+			drawer->pCamera->SetDSConstantBuffers();
+			drawer->pCamera->SetPSConstantBuffers();
+			drawer->pCamera->OMSetRenderTargets();
+		}
 
-	drawer->SetDSShader();
-	drawer->pModel->SetDSConstantBuffer();
-	drawer->pModel->SetDSShaderResources();
+		if (drawer->pLightManager)
+		{
+			drawer->pLightManager->SetPSConstantBuffers();
+		}
 
-	drawer->SetPSShader();
-	drawer->pModel->SetPSConstantBuffer();
-	drawer->pModel->SetPSShaderResources();
+		drawer->SetOMState();
+		drawer->pModel->Render();
+		drawer->ResetOMState();
 
-	drawer->SetOM();
-	drawer->pModel->Render();
-	drawer->ResetOM();
-
-	drawer->ResetDrawer();
+		drawer->ResetDrawer();
+	}
 };
 
 /*

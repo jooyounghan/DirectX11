@@ -1,7 +1,7 @@
 #pragma once
 #include "TransformProperties.h"
 #include "ModelID.h"
-#include "TextureSet.h"
+
 struct PositionVector
 {
 	float x;
@@ -56,10 +56,10 @@ protected:
 
 protected:
 	void SetIAProperties();
-	void SetVSConstantBuffer();
-	void SetHSConstantBuffer();
-	void SetDSConstantBuffer();
-	void SetPSConstantBuffer();
+	void SetVSConstantBuffers();
+	void SetHSConstantBuffers();
+	void SetDSConstantBuffers();
+	void SetPSConstantBuffers();
 
 protected:
 	void SetVSShaderResources();
@@ -80,8 +80,8 @@ public:
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	cpTransformationDataBuffer;
 
 public:
+	TextureSet	sTextureSet;
 	ModelID		modelID;
-	TextureSet	sTextures;
 
 public:
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	cpVertexBuffer;

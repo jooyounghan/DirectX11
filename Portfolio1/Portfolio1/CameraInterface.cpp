@@ -1,4 +1,4 @@
-#include "ICamera.h"
+#include "CameraInterface.h"
 #include "EnumVar.h"
 #include "ID3D11Helper.h"
 #include "TransformProperties.h"
@@ -10,13 +10,11 @@
 using namespace std;
 using namespace DirectX;
 
-shared_ptr<ICamera>	ICamera::DefaultCamera = nullptr;
-const float					ICamera::DefaultClearColor[4] = { 0.f, 0.f, 0.f, 1.f };
-const XMVECTOR				ICamera::DefaultDirection = XMVectorSet(0.f, 0.f, 1.f, 0.f);
-const XMVECTOR				ICamera::DefaultUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
-const XMVECTOR				ICamera::DefaultRight = XMVectorSet(1.f, 0.f, 0.f, 0.f);
+const XMVECTOR	CameraInterface::DefaultDirection = XMVectorSet(0.f, 0.f, 1.f, 0.f);
+const XMVECTOR	CameraInterface::DefaultUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+const XMVECTOR	CameraInterface::DefaultRight = XMVectorSet(1.f, 0.f, 0.f, 0.f);
 
-ICamera::ICamera(ComPtr<ID3D11Device>& cpDeviceIn,
+CameraInterface::CameraInterface(ComPtr<ID3D11Device>& cpDeviceIn,
 	ComPtr<ID3D11DeviceContext>& cpDeviceContextIn,
 	ComPtr<IDXGISwapChain>& cpSwapChainIn, const UINT& uiWidthIn, const UINT& uiHeightIn, const UINT& uiNumLevelQuality)
 	: cpDevice(cpDeviceIn),
@@ -55,7 +53,7 @@ ICamera::ICamera(ComPtr<ID3D11Device>& cpDeviceIn,
 
 }
 
-void ICamera::Update()
+void CameraInterface::Update()
 {
 	XMMATRIX xmRotationMat = XMMatrixRotationRollPitchYaw(sCameraInfo.sCameraPose.fPitch, sCameraInfo.sCameraPose.fYaw, sCameraInfo.sCameraPose.fRoll);
 
@@ -76,19 +74,9 @@ void ICamera::Update()
 		D3D11_MAP::D3D11_MAP_WRITE_DISCARD,
 		cpCameraConstantBuffer.Get()
 	);
-
-	// Camera에 대한 기본 데이터 업데이트
-	cpDeviceContext->RSSetState(cpRasterizerState.Get());
-
-	cpDeviceContext->VSSetConstantBuffers(VSConstBufferType::VS_ViewProjMatrix, 1, cpCameraConstantBuffer.GetAddressOf());
-	cpDeviceContext->DSSetConstantBuffers(DSConstBufferType::DS_ViewProjMatrix, 1, cpCameraConstantBuffer.GetAddressOf());
-
-	vector<ID3D11RenderTargetView*> vRenderTargetViews{ cpRenderTargetView.Get(), cpModelIDRTV.Get() };
-
-	cpDeviceContext->OMSetRenderTargets(vRenderTargetViews.size(), vRenderTargetViews.data(), cpDepthStencilView.Get());
 }
 
-void ICamera::Resize(const float& fAspectRatioIn)
+void CameraInterface::Resize(const float& fAspectRatioIn)
 {
 	sCameraInfo.fAspectRatio = fAspectRatioIn;
 	ID3D11Helper::GetBackBuffer(cpSwapChain.Get(), cpBackBuffer.GetAddressOf());
@@ -103,15 +91,16 @@ void ICamera::Resize(const float& fAspectRatioIn)
 	ID3D11Helper::CreateRenderTargetView(cpDevice.Get(), cpModelIDTexture.Get(), cpModelIDRTV.GetAddressOf());
 }
 
-void ICamera::WipeOut(const float fcolor[4])
+void CameraInterface::WipeOut(const XMVECTOR& xmvClearColor)
 {
-	cpDeviceContext->ClearRenderTargetView(cpRenderTargetView.Get(), fcolor);
-	cpDeviceContext->ClearRenderTargetView(cpModelIDRTV.Get(), fcolor);
+	cpDeviceContext->ClearRenderTargetView(cpRenderTargetView.Get(), xmvClearColor.m128_f32);
+	cpDeviceContext->ClearRenderTargetView(cpModelIDRTV.Get(), xmvClearColor.m128_f32);
 	cpDeviceContext->ClearDepthStencilView(cpDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
 }
 
-void ICamera::SetFromMouseXY(const int& iMouseX, const int& iMouseY)
+void CameraInterface::SetFromMouseXY(const int& iMouseX, const int& iMouseY)
 {
+	if (iMouseX < 0 || iMouseY < 0)	return;
 	sCameraInfo.uiMouseLocation[0] = iMouseX;
 	sCameraInfo.uiMouseLocation[1] = iMouseY;
 
@@ -133,7 +122,36 @@ void ICamera::SetFromMouseXY(const int& iMouseX, const int& iMouseY)
 	}
 }
 
-XMMATRIX ICamera::GetViewProj(
+void CameraInterface::SetRSState()
+{
+	cpDeviceContext->RSSetState(cpRasterizerState.Get());
+}
+
+void CameraInterface::SetVSConstantBuffers()
+{
+	cpDeviceContext->VSSetConstantBuffers(VSConstBufferType::VS_ViewProjMatrix, 1, cpCameraConstantBuffer.GetAddressOf());
+}
+
+void CameraInterface::SetHSConstantBuffers()
+{
+}
+
+void CameraInterface::SetDSConstantBuffers()
+{
+	cpDeviceContext->DSSetConstantBuffers(DSConstBufferType::DS_ViewProjMatrix, 1, cpCameraConstantBuffer.GetAddressOf());
+}
+
+void CameraInterface::SetPSConstantBuffers()
+{
+}
+
+void CameraInterface::OMSetRenderTargets()
+{
+	vector<ID3D11RenderTargetView*> vRenderTargetViews{ cpRenderTargetView.Get(), cpModelIDRTV.Get() };
+	cpDeviceContext->OMSetRenderTargets(UINT(vRenderTargetViews.size()), vRenderTargetViews.data(), cpDepthStencilView.Get());
+}
+
+XMMATRIX CameraInterface::GetViewProj(
 	const DirectX::XMVECTOR& xmvCameraDirection,
 	const DirectX::XMVECTOR& xmvCameraUp
 )
@@ -157,21 +175,21 @@ XMMATRIX ICamera::GetViewProj(
 		XMMatrixPerspectiveFovLH(sCameraInfo.fFovAngle, sCameraInfo.fAspectRatio, sCameraInfo.fNearZ, sCameraInfo.fFarZ);
 }
 
-void ICamera::StartMove(MoveDir moveDir)
+void CameraInterface::StartMove(MoveDir moveDir)
 {
 	bMoveDirection[moveDir] = true;
 }
-void ICamera::StopMove(MoveDir moveDir)
+void CameraInterface::StopMove(MoveDir moveDir)
 {
 	bMoveDirection[moveDir] = false;
 }
 
-void ICamera::SwitchFirstView()
+void CameraInterface::SwitchFirstView()
 {
 	bFirstView = !bFirstView;
 }
 
-ModelIDData ICamera::GetPointedModelID()
+ModelIDData CameraInterface::GetPointedModelID()
 {
 	ModelIDData result;
 	if (cpModelIDStagingTexture.Get() && cpModelIDTexture.Get())

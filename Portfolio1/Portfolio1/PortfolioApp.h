@@ -13,10 +13,8 @@ typedef bool IsChecked;
 #include "BaseApp.h"
 
 
-class ICamera;
-class ILight;
+class CameraInterface;
 class ModelInterface;
-struct LightSet;
 
 class PortfolioApp : public BaseApp
 {
@@ -48,9 +46,9 @@ public:
 	void SetLightSettingMenu();
 
 public:
-	void SetDirectionalLightMenu(LightSet* pLightSet);
-	void SetPointLightMenu(LightSet* pLightSet);
-	void SetSpotLightMenu(LightSet* pLightSet);
+	void SetDirectionalLightMenu(struct LightSet* pLightSet);
+	void SetPointLightMenu(struct LightSet* pLightSet);
+	void SetSpotLightMenu(struct LightSet* pLightSet);
 
 public:
 	void ResizeSwapChain(const UINT& uiWidthIn, const UINT& uiHeightIn);
@@ -58,18 +56,23 @@ public:
 public:
 	void CheckMouseHoveredModel();
 
+private:
+	std::unique_ptr<class FileManager>		upFileManager;
+
 private:	
-	std::shared_ptr<ICamera>				pMainCamera;
-	std::shared_ptr<ModelInterface>			pSelectedModel;
-	std::shared_ptr<ModelInterface>			pTempSelectedModel;
-	std::shared_ptr<ILight>					pSelectedLight;
+	std::shared_ptr<CameraInterface>		spMainCamera;
+	std::shared_ptr<ModelInterface>			spSelectedModel;
+	std::shared_ptr<ModelInterface>			spTempSelectedModel;
 
 private:
-	std::vector<std::shared_ptr<ICamera>>					vCameras;
-	std::unordered_map<std::shared_ptr<ILight>, IsChecked>	umLights;
-	std::unique_ptr<class ModelDrawer>						modelDrawer;
-	std::unique_ptr<class ModelOutlineDrawer>				modelOutlineDrawer;
-	std::vector<std::shared_ptr<ModelInterface>>			vModels;
+	std::vector<std::shared_ptr<CameraInterface>>					spvCameras;
+	std::vector<std::shared_ptr<ModelInterface>>					spvModels;
+	std::unique_ptr<class LightManager>								upLightManager;
+
+private:
+	std::unique_ptr<class BaseModelDrawer>							upModelDrawer;
+	std::unique_ptr<class ModelOutlineDrawer>						upModelOutlineDrawer;
+
 
 public:
 	virtual LRESULT WINAPI AppProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) override;

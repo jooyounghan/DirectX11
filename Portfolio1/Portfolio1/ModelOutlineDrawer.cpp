@@ -49,13 +49,13 @@ void ModelOutlineDrawer::SetPSShader()
 	cpDeviceContext->PSSetShader(cpBasePixelShader.Get(), 0, 0);
 }
 
-void ModelOutlineDrawer::SetOM()
+void ModelOutlineDrawer::SetOMState()
 {
 	pModel->ScaleUp(0.1f, 0.1f, 0.1f);
 	cpDeviceContext->OMSetDepthStencilState(DepthStencilState::pGetDSS(DepthStencilState::DrawNotEqualOption), 1);
 }
 
-void ModelOutlineDrawer::ResetOM()
+void ModelOutlineDrawer::ResetOMState()
 {
 	cpDeviceContext->OMSetDepthStencilState(DepthStencilState::pGetDSS(DepthStencilState::DefaultOption), 0);
 	pModel->ScaleUp(-0.1f, -0.1f, -0.1f);
@@ -65,9 +65,4 @@ void ModelOutlineDrawer::ResetDrawer()
 {
 	cpDeviceContext->PSSetShader(nullptr, 0, 0);
 	cpDeviceContext->VSSetShader(nullptr, 0, 0);
-}
-
-void ModelOutlineDrawer::SetModel(ModelInterface* modelInterface)
-{
-	pModel = modelInterface;
 }

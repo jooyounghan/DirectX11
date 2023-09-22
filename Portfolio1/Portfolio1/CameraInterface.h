@@ -1,10 +1,11 @@
 #pragma once
-#include <memory>
 #include <directxmath/DirectXMath.h>
 #include <d3d11.h>
 #include <d3dcompiler.h>
 #include <windows.h>
 #include <wrl/client.h>
+
+#include <memory>
 
 #include "EnumVar.h"
 
@@ -44,24 +45,32 @@ public:
 	float					fMouseMovableYawAngleDegree;
 };
 
-class ICamera
+class CameraInterface
 {
 public:
-	ICamera(Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn,
+	CameraInterface(Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn,
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn,
 		Microsoft::WRL::ComPtr<IDXGISwapChain>& cpSwapChainIn,
 		const UINT& uiWidthIn, const UINT& uiHeightIn,
 		const UINT& uiNumLevelQuality
 	);
-	~ICamera() {};
+	~CameraInterface() {};
 
 public:
 	void Update();
 	void Resize(const float& fAspectRatioIn);
-	void WipeOut(const float fcolor[4] = ICamera::DefaultClearColor);
+	void WipeOut(const DirectX::XMVECTOR& xmvClearColor = DirectX::XMVectorSet(0.f, 0.f, 0.f, 1.f));
 
 public:
 	void SetFromMouseXY(const int& iDeltaXIn, const int& iDeltaYIn);
+
+public:
+	void SetRSState();
+	void SetVSConstantBuffers();
+	void SetHSConstantBuffers();
+	void SetDSConstantBuffers();
+	void SetPSConstantBuffers();
+	void OMSetRenderTargets();
 
 public:
 	UINT			uiWidth;
@@ -94,7 +103,6 @@ public:
 protected:
 	Microsoft::WRL::ComPtr<ID3D11Texture2D>			cpDepthStencilTexture2D;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView>	cpDepthStencilView;
-	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> cpDepthStencilState;
 
 protected:
 	Microsoft::WRL::ComPtr<ID3D11Device>& cpDevice;
@@ -111,12 +119,15 @@ public:
 	void StopMove(MoveDir moveDir);
 	void SwitchFirstView();
 
-public:
-	static std::shared_ptr<ICamera>			DefaultCamera;
-	static const float						DefaultClearColor[4];
-
+//	static std::shared_ptr<CameraInterface>	DefaultCamera;
+//	static const float						DefaultClearColor[4];
+//
+private:
 	static const DirectX::XMVECTOR			DefaultDirection;
 	static const DirectX::XMVECTOR			DefaultUp;
 	static const DirectX::XMVECTOR			DefaultRight;
+//
+//public:
+//	static std::shared_ptr<CameraInterface> GetDefaultCamera();
 };
 

@@ -4,18 +4,18 @@
 #include <windows.h>
 #include <wrl/client.h>
 
-class ModelInterface;
+#include "DrawerInterface.h"
 
-class ModelDrawer
+class BaseModelDrawer : public DrawerInterface
 {
 template<typename Drawer>
 friend class Canvas;
 
 public:
-	ModelDrawer(
+	BaseModelDrawer(
 		Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn,
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn);
-	~ModelDrawer();
+	~BaseModelDrawer();
 
 protected:
 	void SetIAInputLayer();
@@ -25,8 +25,8 @@ protected:
 	void SetPSShader();
 
 protected:
-	void SetOM();
-	void ResetOM();
+	void SetOMState();
+	void ResetOMState();
 
 protected:
 	void ResetDrawer();
@@ -47,9 +47,4 @@ protected:
 	Microsoft::WRL::ComPtr<ID3D11HullShader>		cpBaseHullShader;
 	Microsoft::WRL::ComPtr<ID3D11DomainShader>	cpBaseDomainShader;
 
-protected:
-	ModelInterface* pModel;
-
-public:
-	void SetModel(ModelInterface* modelInterface);
 };

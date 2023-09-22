@@ -1,4 +1,4 @@
-#include "ModelDrawer.h"
+#include "BaseModelDrawer.h"
 #include "ID3D11Helper.h"
 #include "DepthStencilState.h"
 
@@ -7,7 +7,7 @@
 using namespace std;
 using namespace Microsoft::WRL;
 
-ModelDrawer::ModelDrawer(ComPtr<ID3D11Device>& cpDeviceIn, ComPtr<ID3D11DeviceContext>& cpDeviceContextIn)
+BaseModelDrawer::BaseModelDrawer(ComPtr<ID3D11Device>& cpDeviceIn, ComPtr<ID3D11DeviceContext>& cpDeviceContextIn)
 	: cpDevice(cpDeviceIn), cpDeviceContext(cpDeviceContextIn)
 {
 	std::vector<D3D11_INPUT_ELEMENT_DESC> vInputElemDesc{
@@ -24,57 +24,52 @@ ModelDrawer::ModelDrawer(ComPtr<ID3D11Device>& cpDeviceIn, ComPtr<ID3D11DeviceCo
 
 }
 
-ModelDrawer::~ModelDrawer()
+BaseModelDrawer::~BaseModelDrawer()
 {
 }
 
-void ModelDrawer::SetIAInputLayer()
+void BaseModelDrawer::SetIAInputLayer()
 {
 	cpDeviceContext->IASetInputLayout(cpBaseInputLayout.Get());
 	cpDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
 }
 
-void ModelDrawer::SetVSShader()
+void BaseModelDrawer::SetVSShader()
 {
 	cpDeviceContext->VSSetShader(cpBaseVertexShader.Get(), 0, 0);
 }
 
-void ModelDrawer::SetHSShader()
+void BaseModelDrawer::SetHSShader()
 {
 	cpDeviceContext->HSSetShader(cpBaseHullShader.Get(), 0, 0);
 }
 
-void ModelDrawer::SetDSShader()
+void BaseModelDrawer::SetDSShader()
 {
 	cpDeviceContext->DSSetShader(cpBaseDomainShader.Get(), 0, 0);
 	cpDeviceContext->DSSetSamplers(0, 1, cpBaseSampler.GetAddressOf());
 }
 
-void ModelDrawer::SetPSShader()
+void BaseModelDrawer::SetPSShader()
 {
 	cpDeviceContext->PSSetShader(cpBasePixelShader.Get(), 0, 0);
 	cpDeviceContext->PSSetSamplers(0, 1, cpBaseSampler.GetAddressOf());
 }
 
-void ModelDrawer::SetOM()
+void BaseModelDrawer::SetOMState()
 {
 	cpDeviceContext->OMSetDepthStencilState(DepthStencilState::pGetDSS(DepthStencilState::MaskOption), 1);
 }
 
-void ModelDrawer::ResetOM()
+void BaseModelDrawer::ResetOMState()
 {
 	cpDeviceContext->OMSetDepthStencilState(DepthStencilState::pGetDSS(DepthStencilState::DefaultOption), 0);
 }
 
-void ModelDrawer::ResetDrawer()
+void BaseModelDrawer::ResetDrawer()
 {
 	cpDeviceContext->PSSetShader(nullptr, 0, 0);
 	cpDeviceContext->DSSetShader(nullptr, 0, 0);
 	cpDeviceContext->HSSetShader(nullptr, 0, 0);
 	cpDeviceContext->VSSetShader(nullptr, 0, 0);
-}
-
-void ModelDrawer::SetModel(ModelInterface* modelInterface)
-{
-	pModel = modelInterface;
 }

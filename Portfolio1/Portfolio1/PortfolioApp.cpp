@@ -2,20 +2,19 @@
 
 #include "ID3D11Helper.h"
 
-#include "ICamera.h"
+#include "CameraInterface.h"
 
 #include "Canvas.h"
 
-#include "ModelDrawer.h"
+#include "BaseModelDrawer.h"
 #include "ModelOutlineDrawer.h"
 
 #include "ModelInterface.h"
 
-#include "ILight.h"
-#include "DirectionalLight.h"
+#include "LightManager.h"
 
 #include "TempVariable.h"
-#include "FileLoader.h"
+#include "FileManager.h"
 
 #include "DefineVar.h"
 
@@ -28,7 +27,7 @@ using namespace DirectX;
 using namespace std;
 
 PortfolioApp::PortfolioApp(const UINT& uiWidthIn, const UINT& uiHeightIn)
-	: BaseApp(uiWidthIn, uiHeightIn), pMainCamera(nullptr), pSelectedModel(nullptr)
+	: BaseApp(uiWidthIn, uiHeightIn), spMainCamera(nullptr), spSelectedModel(nullptr), spTempSelectedModel(nullptr)
 {
 	BaseApp::GlobalBaseApp = this;
 }
@@ -40,48 +39,40 @@ PortfolioApp::~PortfolioApp()
 
 void PortfolioApp::Init()
 {
-	FileLoader::PreLoadFiles();
+	ID3D11Helper::CreateDeviceAndContext(uiWidth, uiHeight, true, hMainWindow, uiNumLevelQuality, cpSwapChain, cpDevice, cpDeviceContext);
+	ID3D11Helper::Init(cpDevice.Get(), cpDeviceContext.Get());
+	ID3D11Helper::SetViewPort(0.f, 0.f, float(uiWidth), float(uiHeight), 0.f, 1.f, cpDeviceContext.Get(), &sScreenViewport);
 
-	BaseApp::Init();
 	InitImGUI();
 
-	modelDrawer = make_unique<ModelDrawer>(cpDevice, cpDeviceContext);
-	modelOutlineDrawer = make_unique<ModelOutlineDrawer>(cpDevice, cpDeviceContext);
-
-	if (ICamera::DefaultCamera == nullptr)
-	{
-		ICamera::DefaultCamera = std::make_shared<ICamera>(cpDevice, cpDeviceContext, cpSwapChain, uiWidth, uiHeight, uiNumLevelQuality);
-	}
-
-	ILight::InitLights(cpDevice.Get(), cpDeviceContext.Get());
+	upFileManager = make_unique<FileManager>(cpDevice, cpDeviceContext);
+	upLightManager = make_unique<LightManager>(cpDevice, cpDeviceContext);
+	upModelDrawer = make_unique<BaseModelDrawer>(cpDevice, cpDeviceContext);
+	upModelOutlineDrawer = make_unique<ModelOutlineDrawer>(cpDevice, cpDeviceContext);
 
 	// For Testing ==================================================================================
+	upFileManager->LoadImageFromFile(L"..\\Texture\\GrassWithMudAndStone");
 
-	pMainCamera = ICamera::DefaultCamera;
-	vModels.push_back(std::make_shared<ModelInterface>(cpDevice, cpDeviceContext, 0.f, 0.f, 0.f, 2.f));
-	vModels.push_back(std::make_shared<ModelInterface>(cpDevice, cpDeviceContext, 5.f, 0.f, 5.f, 2.f));
-	pSelectedModel = vModels[1];
+	spMainCamera = make_shared<CameraInterface>(cpDevice, cpDeviceContext, cpSwapChain, uiWidth, uiHeight, uiNumLevelQuality);
+	spvModels.push_back(std::make_shared<ModelInterface>(cpDevice, cpDeviceContext, 0.f, 0.f, 0.f, 2.f));
+	spvModels.push_back(std::make_shared<ModelInterface>(cpDevice, cpDeviceContext, 5.f, 0.f, 5.f, 2.f));
 
-	umLights.emplace(
-		std::make_shared<DirectionalLight>(
-		cpDevice, cpDeviceContext,
+	upLightManager->AddDirectionalLight(
 		XMVectorSet(0.f, 0.f, -100.f, 1.f),
 		XMVectorSet(1.f, 0.1f, 0.1f, 1.f),
 		XMVectorSet(0.f, 0.f, 1.f, 0.f)
-		),
-		false
 	);
 	// ==============================================================================================
 }
 
 void PortfolioApp::Update()
 {
-	pMainCamera->Update();
-	ILight::UpdateLights(cpDeviceContext.Get());
+	spMainCamera->Update();
+	upLightManager->Update();
 
 	CheckMouseHoveredModel();
 
-	for (auto& model : vModels)
+	for (auto& model : spvModels)
 	{
 		model->Update();
 	}
@@ -89,20 +80,23 @@ void PortfolioApp::Update()
 
 void PortfolioApp::Render()
 {
-	pMainCamera->WipeOut();
+	spMainCamera->WipeOut();
 
 
-	for (auto& model : vModels)
+	for (auto& model : spvModels)
 	{
-		modelDrawer->SetModel(model.get());
-		Canvas<ModelDrawer> canvas(modelDrawer.get());
+		upModelDrawer->SetModel(model.get());
+		upModelDrawer->SetCamera(spMainCamera.get());
+		upModelDrawer->SetLightManager(upLightManager.get());
+		Canvas<BaseModelDrawer> canvas(upModelDrawer.get());
 		canvas.Render();
 	}
 
-	if (pSelectedModel)
+	if (spSelectedModel)
 	{
-		modelOutlineDrawer->SetModel(pSelectedModel.get());
-		Canvas<ModelOutlineDrawer> canvas(modelOutlineDrawer.get());
+		upModelOutlineDrawer->SetModel(spSelectedModel.get());
+		upModelOutlineDrawer->SetCamera(spMainCamera.get());
+		Canvas<ModelOutlineDrawer> canvas(upModelOutlineDrawer.get());
 		canvas.Render();
 	}
 }
@@ -183,11 +177,11 @@ void PortfolioApp::SetModelManageWnd()
 		1000.0f / ImGui::GetIO().Framerate,
 		ImGui::GetIO().Framerate);
 
-	bool bModelNotSelected = (pSelectedModel == nullptr);
+	bool bModelNotSelected = (spSelectedModel == nullptr);
 	ImGui::BeginDisabled(bModelNotSelected);
-	ImGui::SliderFloat3("Scale Vector", bModelNotSelected ? TempVariable::fTempFloat3 : pSelectedModel->sTransformationProperties.xmvScale.m128_f32, 0.f, 5.f);
-	ImGui::SliderFloat3("Rotation Vector", bModelNotSelected ? TempVariable::fTempFloat3 : (float*)(&pSelectedModel->sTransformationProperties.sPositionAngle), -2.f * XM_PI, 2.f * XM_PI);
-	ImGui::SliderFloat3("Translation Vector", bModelNotSelected ? TempVariable::fTempFloat3 : pSelectedModel->sTransformationProperties.xmvTranslation.m128_f32, -10.f, 10.f);
+	ImGui::SliderFloat3("Scale Vector", bModelNotSelected ? TempVariable::fTempFloat3 : spSelectedModel->sTransformationProperties.xmvScale.m128_f32, 0.f, 5.f);
+	ImGui::SliderFloat3("Rotation Vector", bModelNotSelected ? TempVariable::fTempFloat3 : (float*)(&spSelectedModel->sTransformationProperties.sPositionAngle), -2.f * XM_PI, 2.f * XM_PI);
+	ImGui::SliderFloat3("Translation Vector", bModelNotSelected ? TempVariable::fTempFloat3 : spSelectedModel->sTransformationProperties.xmvTranslation.m128_f32, -10.f, 10.f);
 	ImGui::EndDisabled();
 	ImGui::End();
 }
@@ -232,10 +226,9 @@ void PortfolioApp::SetLightAddMenu()
 		ImGui::EndCombo();
 	}
 
-	LightSet* pLightSet = ILight::GetTempLightSet();
-	if (selected_idx == LightType::Directional)	SetDirectionalLightMenu(pLightSet);
-	else if (selected_idx == LightType::Point)	SetPointLightMenu(pLightSet);
-	else if (selected_idx == LightType::Spot)	SetSpotLightMenu(pLightSet);
+	if (selected_idx == LightType::Directional)	SetDirectionalLightMenu(&LightManager::sTempLightSet);
+	else if (selected_idx == LightType::Point)	SetPointLightMenu(&LightManager::sTempLightSet);
+	else if (selected_idx == LightType::Spot)	SetSpotLightMenu(&LightManager::sTempLightSet);
 	else;
 
 	const float& fWindowSize = ImGui::GetWindowWidth();
@@ -244,14 +237,10 @@ void PortfolioApp::SetLightAddMenu()
 		switch (selected_idx)
 		{
 		case LightType::Directional:
-			umLights.emplace(
-				std::make_shared<DirectionalLight>(
-					cpDevice, cpDeviceContext,
-					pLightSet->xmvLocation,
-					pLightSet->xmvLightColor,
-					pLightSet->xmvDirection
-				),
-				false
+			upLightManager->AddDirectionalLight(
+				LightManager::sTempLightSet.xmvLocation,
+				LightManager::sTempLightSet.xmvLightColor,
+				LightManager::sTempLightSet.xmvDirection
 			);
 			break;
 		case LightType::Point:
@@ -263,7 +252,7 @@ void PortfolioApp::SetLightAddMenu()
 	ImGui::SameLine();
 	if (ImGui::Button("Reset", ImVec2(fWindowSize / 2.f, 0.f)))
 	{
-		AutoZeroMemory(*pLightSet);
+		AutoZeroMemory(LightManager::sTempLightSet);
 	}
 }
 
@@ -276,43 +265,26 @@ void PortfolioApp::SetLightSelectorMenu()
 		ImGui::TableSetupColumn("Light Type");
 		ImGui::TableHeadersRow();
 
-		for (auto& elemLightBool : umLights)
+		const vector<LightSet>& vLights = upLightManager->GetLights();
+		const unsigned short& usSelectedLightIndex = upLightManager->GetSelectedLightIndex();
+		for (size_t idx = 0; idx < vLights.size(); ++idx)
 		{
-			auto& pLight = elemLightBool.first;
-			auto& bSelected = elemLightBool.second;
-
+			bool IsSelected = ((usSelectedLightIndex - 1) == idx);
 			ImGui::TableNextRow();
-			ImGui::PushID(pLight.get());
+			ImGui::PushID(&vLights[idx]);
 			ImGui::TableSetColumnIndex(0);
-			ImGui::Checkbox(("Light" + to_string(pLight->ullLightId)).c_str(), &bSelected);
+			ImGui::Checkbox(("Light" + to_string(idx + 1)).c_str(), &IsSelected);
 
-#pragma region 체크박스 선택 처리
-			if (bSelected == true)
+			if (IsSelected)
 			{
-				if (pSelectedLight != nullptr && pSelectedLight != pLight)
-				{
-					if (umLights.find(pSelectedLight) != umLights.end())
-					{
-						umLights[pSelectedLight] = false;
-					}
-
-				}
-				pSelectedLight = pLight;
+				upLightManager->SetSelectedLightIndex(idx + 1);
 			}
-			else
-			{
-				if (pSelectedLight != nullptr && pSelectedLight == pLight)
-				{
-					pSelectedLight = nullptr;
-				}
-			}
-#pragma endregion
 
 			ImGui::TableSetColumnIndex(1);
-			ImGui::Text("%d", pLight->ullLightId);
+			ImGui::Text("%d", idx + 1);
 			ImGui::TableSetColumnIndex(2);
 			string strLightType;
-			switch (pLight->GetLightType())
+			switch (vLights[idx].eLightType)
 			{
 			case LightType::Directional:
 				strLightType = "Directional";
@@ -336,11 +308,14 @@ void PortfolioApp::SetLightSelectorMenu()
 
 void PortfolioApp::SetLightSettingMenu()
 {
-	bool bLightNotSelected = (pSelectedLight == nullptr);
+	const vector<LightSet>& vLights = upLightManager->GetLights();
+	unsigned short usSelectedLighIndex = upLightManager->GetSelectedLightIndex();
+	bool bLightNotSelected = ((vLights.size() == 0) || (usSelectedLighIndex == 0));
 	if (!bLightNotSelected)
 	{
-		LightType eLightType = pSelectedLight->GetLightType();
-		LightSet* pLightSet = pSelectedLight->GetLightSet();
+		usSelectedLighIndex = usSelectedLighIndex - 1;
+		LightType eLightType = vLights[usSelectedLighIndex].eLightType;
+		LightSet* pLightSet = const_cast<LightSet*>(&vLights[usSelectedLighIndex]);
 		if (eLightType == LightType::Directional)	SetDirectionalLightMenu(pLightSet);
 		else if (eLightType == LightType::Point)	SetPointLightMenu(pLightSet);
 		else if (eLightType == LightType::Spot)		SetSpotLightMenu(pLightSet);
@@ -391,21 +366,21 @@ void PortfolioApp::ResizeSwapChain(const UINT& uiWidthIn, const UINT& uiHeightIn
 		uiHeight = uiHeightIn;
 		fAspectRatio = uiWidth / (float)uiHeight;
 		cpSwapChain->ResizeBuffers(0, uiWidth, uiHeight, DXGI_FORMAT_UNKNOWN, 0);
-		pMainCamera->Resize(fAspectRatio);
+		spMainCamera->Resize(fAspectRatio);
 	}
 }
 
-inline void PortfolioApp::CheckMouseHoveredModel()
+void PortfolioApp::CheckMouseHoveredModel()
 {
-	ModelIDData uiSelectedModelID = pMainCamera->GetPointedModelID();
-	auto findResult = find_if(vModels.begin(), vModels.end(), [&](shared_ptr<ModelInterface> model) { return model->modelID.sIdData == uiSelectedModelID; });
-	if (findResult != vModels.end())
+	ModelIDData uiSelectedModelID = spMainCamera->GetPointedModelID();
+	auto findResult = find_if(spvModels.begin(), spvModels.end(), [&](shared_ptr<ModelInterface> model) { return model->modelID.sIdData == uiSelectedModelID; });
+	if (findResult != spvModels.end())
 	{
-		pTempSelectedModel = *findResult;
+		spTempSelectedModel = *findResult;
 	}
 	else
 	{
-		pTempSelectedModel = nullptr;
+		spTempSelectedModel = nullptr;
 	}
 }
 
@@ -426,12 +401,12 @@ LRESULT __stdcall PortfolioApp::AppProc(HWND hWnd, UINT msg, WPARAM wParam, LPAR
 		ResizeSwapChain((UINT)LOWORD(lParam), (UINT)HIWORD(lParam));
 		return 0;
 	case WM_MOUSEMOVE:
-		pMainCamera->SetFromMouseXY(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		spMainCamera->SetFromMouseXY(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
 		return 0;
 	case WM_LBUTTONUP:
-		if (pTempSelectedModel != nullptr)
+		if (spTempSelectedModel != nullptr)
 		{
-			pSelectedModel = pTempSelectedModel;
+			spSelectedModel = spTempSelectedModel;
 		}
 		return 0;
 	case WM_LBUTTONDOWN:
@@ -440,35 +415,35 @@ LRESULT __stdcall PortfolioApp::AppProc(HWND hWnd, UINT msg, WPARAM wParam, LPAR
 	case WM_KEYDOWN:
 		switch (wParam) {
 		case KeyCode::W:
-			pMainCamera->StartMove(MoveDir::Forward);
+			spMainCamera->StartMove(MoveDir::Forward);
 			break;
 		case KeyCode::A:
-			pMainCamera->StartMove(MoveDir::Left);
+			spMainCamera->StartMove(MoveDir::Left);
 			break;
 		case KeyCode::S:
-			pMainCamera->StartMove(MoveDir::Backward);
+			spMainCamera->StartMove(MoveDir::Backward);
 			break;
 		case KeyCode::D:
-			pMainCamera->StartMove(MoveDir::Right);
+			spMainCamera->StartMove(MoveDir::Right);
 			break;
 		case KeyCode::F:
-			pMainCamera->SwitchFirstView();
+			spMainCamera->SwitchFirstView();
 			break;
 		}
 		return 0;
 	case WM_KEYUP:
 		switch (wParam) {
 		case KeyCode::W:
-			pMainCamera->StopMove(MoveDir::Forward);
+			spMainCamera->StopMove(MoveDir::Forward);
 			break;
 		case KeyCode::A:
-			pMainCamera->StopMove(MoveDir::Left);
+			spMainCamera->StopMove(MoveDir::Left);
 			break;
 		case KeyCode::S:
-			pMainCamera->StopMove(MoveDir::Backward);
+			spMainCamera->StopMove(MoveDir::Backward);
 			break;
 		case KeyCode::D:
-			pMainCamera->StopMove(MoveDir::Right);
+			spMainCamera->StopMove(MoveDir::Right);
 			break;
 		}
 		return 0;

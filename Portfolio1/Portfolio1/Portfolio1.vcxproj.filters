@@ -65,14 +65,14 @@
       <UniqueIdentifier>{9da587ed-81ef-4e45-8e52-51aca6caa54d}</UniqueIdentifier>
     </Filter>
     <Filter Include="소스 파일\Canvas">
-      <UniqueIdentifier>{3142697f-9aad-4934-a3cf-f91ea7a28c8d}</UniqueIdentifier>
+      <UniqueIdentifier>{98e446ee-2ef2-42d8-9339-1dcc1842eb56}</UniqueIdentifier>
     </Filter>
     <Filter Include="헤더 파일\Canvas">
-      <UniqueIdentifier>{b34145dc-bf26-4fed-84cf-83e93b092109}</UniqueIdentifier>
+      <UniqueIdentifier>{6e8fb75d-c9c4-4929-8369-9c97a87bc8e9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ICamera.cpp">
+    <ClCompile Include="CameraInterface.cpp">
       <Filter>소스 파일\Camera</Filter>
     </ClCompile>
     <ClCompile Include="ID3D11Helper.cpp">
@@ -93,14 +93,8 @@
     <ClCompile Include="TempVariable.cpp">
       <Filter>소스 파일\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="FileLoader.cpp">
+    <ClCompile Include="FileManager.cpp">
       <Filter>소스 파일\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="ILight.cpp">
-      <Filter>소스 파일\Light</Filter>
-    </ClCompile>
-    <ClCompile Include="DirectionalLight.cpp">
-      <Filter>소스 파일\Light</Filter>
     </ClCompile>
     <ClCompile Include="ModelID.cpp">
       <Filter>소스 파일\Model</Filter>
@@ -108,13 +102,10 @@
     <ClCompile Include="TextureSet.cpp">
       <Filter>소스 파일\Model</Filter>
     </ClCompile>
-    <ClCompile Include="DepthStencilState.cpp">
-      <Filter>소스 파일\Camera</Filter>
-    </ClCompile>
     <ClCompile Include="TransformProperties.cpp">
       <Filter>소스 파일\Transformation</Filter>
     </ClCompile>
-    <ClCompile Include="ModelDrawer.cpp">
+    <ClCompile Include="BaseModelDrawer.cpp">
       <Filter>소스 파일\Drawer</Filter>
     </ClCompile>
     <ClCompile Include="CubeModel.cpp">
@@ -126,12 +117,21 @@
     <ClCompile Include="ModelOutlineDrawer.cpp">
       <Filter>소스 파일\Drawer</Filter>
     </ClCompile>
+    <ClCompile Include="DrawerInterface.cpp">
+      <Filter>소스 파일\Drawer</Filter>
+    </ClCompile>
+    <ClCompile Include="LightManager.cpp">
+      <Filter>소스 파일\Light</Filter>
+    </ClCompile>
     <ClCompile Include="Canvas.cpp">
       <Filter>소스 파일\Canvas</Filter>
     </ClCompile>
+    <ClCompile Include="DepthStencilState.cpp">
+      <Filter>소스 파일\Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ICamera.h">
+    <ClInclude Include="CameraInterface.h">
       <Filter>헤더 파일\Camera</Filter>
     </ClInclude>
     <ClInclude Include="ID3D11Helper.h">
@@ -155,14 +155,8 @@
     <ClInclude Include="TempVariable.h">
       <Filter>헤더 파일\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="FileLoader.h">
+    <ClInclude Include="FileManager.h">
       <Filter>헤더 파일\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="ILight.h">
-      <Filter>헤더 파일\Light</Filter>
-    </ClInclude>
-    <ClInclude Include="DirectionalLight.h">
-      <Filter>헤더 파일\Light</Filter>
     </ClInclude>
     <ClInclude Include="ModelID.h">
       <Filter>헤더 파일\Model</Filter>
@@ -179,7 +173,7 @@
     <ClInclude Include="TransformProperties.h">
       <Filter>헤더 파일\Transformation</Filter>
     </ClInclude>
-    <ClInclude Include="ModelDrawer.h">
+    <ClInclude Include="BaseModelDrawer.h">
       <Filter>헤더 파일\Drawer</Filter>
     </ClInclude>
     <ClInclude Include="ModelInterface.h">
@@ -190,6 +184,12 @@
     </ClInclude>
     <ClInclude Include="ModelOutlineDrawer.h">
       <Filter>헤더 파일\Drawer</Filter>
+    </ClInclude>
+    <ClInclude Include="DrawerInterface.h">
+      <Filter>헤더 파일\Drawer</Filter>
+    </ClInclude>
+    <ClInclude Include="LightManager.h">
+      <Filter>헤더 파일\Light</Filter>
     </ClInclude>
     <ClInclude Include="Canvas.h">
       <Filter>헤더 파일\Canvas</Filter>

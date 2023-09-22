@@ -446,14 +446,14 @@ void ID3D11Helper::CreateSampler(IN D3D11_FILTER eFilter, IN D3D11_TEXTURE_ADDRE
 
 }
 
-void ID3D11Helper::CreateTexture2D(IN ID3D11Device* pDevice, IN ID3D11DeviceContext* pDeviceContext, IN ImageContainer* pImageContainer, OUT ID3D11Texture2D** ppTexture2D)
+void ID3D11Helper::CreateTexture2D(IN ID3D11Device* pDevice, IN ID3D11DeviceContext* pDeviceContext, IN const UINT& uiWidth, IN const UINT& uiHeight, IN const uint8_t* const pImageRawData, OUT ID3D11Texture2D** ppTexture2D)
 {
-	ComPtr<ID3D11Texture2D> cpStagingTexture = CreateStagingTexture2D(pDevice, pDeviceContext, pImageContainer);
+	ComPtr<ID3D11Texture2D> cpStagingTexture = CreateStagingTexture2D(pDevice, pDeviceContext, uiWidth, uiHeight, pImageRawData);
 
 	D3D11_TEXTURE2D_DESC sTexture2DDesc;
 	AutoZeroMemory(sTexture2DDesc);
-	sTexture2DDesc.Width = pImageContainer->uiWidth;
-	sTexture2DDesc.Height = pImageContainer->uiHeight;
+	sTexture2DDesc.Width = uiWidth;
+	sTexture2DDesc.Height = uiHeight;
 	sTexture2DDesc.MipLevels = 0;
 	sTexture2DDesc.ArraySize = 1;
 	sTexture2DDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
@@ -462,17 +462,6 @@ void ID3D11Helper::CreateTexture2D(IN ID3D11Device* pDevice, IN ID3D11DeviceCont
 	sTexture2DDesc.CPUAccessFlags = NULL;
 	sTexture2DDesc.MiscFlags = D3D11_RESOURCE_MISC_GENERATE_MIPS;
 	sTexture2DDesc.Usage = D3D11_USAGE_DEFAULT;
-
-	const unsigned int& uiChannel = pImageContainer->uiChannel;
-	switch (uiChannel)
-	{
-	case 1:
-	case 2:
-	case 3:
-		pImageContainer->ExtendChannel(4);
-	case 4:
-		break;
-	}
 
 	HRESULT hResult = pDevice->CreateTexture2D(&sTexture2DDesc, NULL, ppTexture2D);
 	if (FAILED(hResult))
@@ -526,12 +515,12 @@ void ID3D11Helper::CreateTexture2D(
 }
 
 
-ComPtr<ID3D11Texture2D> ID3D11Helper::CreateStagingTexture2D(IN ID3D11Device* pDevice, IN ID3D11DeviceContext* pDeviceContext, IN ImageContainer* pImageContainer)
+ComPtr<ID3D11Texture2D> ID3D11Helper::CreateStagingTexture2D(IN ID3D11Device* pDevice, IN ID3D11DeviceContext* pDeviceContext, IN const UINT& uiWidth, IN const UINT& uiHeight, IN const uint8_t* const pImageRawData)
 {
 	D3D11_TEXTURE2D_DESC sTexture2DDesc;
 	AutoZeroMemory(sTexture2DDesc);
-	sTexture2DDesc.Width = pImageContainer->uiWidth;
-	sTexture2DDesc.Height = pImageContainer->uiHeight;
+	sTexture2DDesc.Width = uiWidth;
+	sTexture2DDesc.Height = uiHeight;
 	sTexture2DDesc.MipLevels = 1;
 	sTexture2DDesc.ArraySize = 1;
 	sTexture2DDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
@@ -548,22 +537,11 @@ ComPtr<ID3D11Texture2D> ID3D11Helper::CreateStagingTexture2D(IN ID3D11Device* pD
 		Console("Texture2D를 생성하는데 실패하였습니다.");
 	}
 
-	const unsigned int& uiChannel = pImageContainer->uiChannel;
-	switch (uiChannel)
-	{
-	case 1:
-	case 2:
-	case 3:
-		pImageContainer->ExtendChannel(4);
-	case 4:
-		break;
-	}
-
 	D3D11_MAPPED_SUBRESOURCE ms;
 	pDeviceContext->Map(cpStagingTexture.Get(), NULL, D3D11_MAP_WRITE, NULL, &ms);
 
 	uint8_t* pData = (uint8_t*)ms.pData;
-	memcpy(pData, pImageContainer->pData, pImageContainer->uiWidth * pImageContainer->uiHeight * pImageContainer->uiChannel * sizeof(uint8_t));
+	memcpy(pData, pImageRawData, uiWidth * uiHeight * 4 * sizeof(uint8_t));
 	pDeviceContext->Unmap(cpStagingTexture.Get(), NULL);
 
 	return cpStagingTexture;
