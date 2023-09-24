@@ -46,6 +46,7 @@ void FileManager::LoadImageFromFile(IN const wstring& sPathName)
             ID3D11Helper::CreateShaderResoureView(cpDevice.Get(), cpImageTempTexture2D.Get(), cpImageShaderResource.GetAddressOf());
             cpDeviceContext->GenerateMips(cpImageShaderResource.Get());
             sTextureSet.ImageShaderResources.push_back(cpImageShaderResource);
+            STBI_FREE(ucImageRawData);
         }   
         vTextures.push_back(sTextureSet);
     }
@@ -53,7 +54,8 @@ void FileManager::LoadImageFromFile(IN const wstring& sPathName)
 
 uint8_t* FileManager::stbiw_load(wchar_t const* wFilename, int* x, int* y, int* comp, int req_comp)
 {
-    FILE* f = _wfopen(wFilename, L"rb");
+    FILE* f;
+    _wfopen_s(&f, wFilename, L"rb");
     uint8_t* result;
     if (!f) return stbi__errpuc("can't fopen", "Unable to open file");
     result = stbi_load_from_file(f, x, y, comp, req_comp);

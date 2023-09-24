@@ -2,9 +2,6 @@
 
 #include "DepthStencilState.h"
 
-#include "FileLoader.h"
-
-
 using namespace std;
 
 void ID3D11Helper::Init(IN ID3D11Device* pDevice, IN ID3D11DeviceContext* pDeviceContext)
@@ -428,7 +425,7 @@ void ID3D11Helper::CreateSampler(IN D3D11_FILTER eFilter, IN D3D11_TEXTURE_ADDRE
 	sSamplerDesc.AddressW = eTextureAddressMode;
 	if (pFloat4 == NULL)
 	{
-		memset(sSamplerDesc.BorderColor, 0.f, sizeof(FLOAT) * 4);
+		memset(sSamplerDesc.BorderColor, 0, sizeof(FLOAT) * 4);
 	}
 	else
 	{

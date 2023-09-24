@@ -1,6 +1,7 @@
 #pragma once
 #include "TransformProperties.h"
 #include "ModelID.h"
+#include "TextureSet.h"
 
 struct PositionVector
 {

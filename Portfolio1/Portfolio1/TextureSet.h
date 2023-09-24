@@ -25,4 +25,7 @@ public:
 
 public:
 	void SetTextureToShaderResource(TextureType textureType, const Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& cpTextureShaderResource);
+
+public:
+	inline Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& GetSRV(TextureType textureType) { return ShaderResources[textureType]; };
 };

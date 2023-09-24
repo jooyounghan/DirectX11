@@ -70,6 +70,12 @@
     <Filter Include="헤더 파일\Canvas">
       <UniqueIdentifier>{6e8fb75d-c9c4-4929-8369-9c97a87bc8e9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\GUI">
+      <UniqueIdentifier>{65dbbfa6-f44f-4154-a853-85c2032c3771}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\GUI">
+      <UniqueIdentifier>{3c9f599d-965d-47f1-8f92-64a5d3452d35}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CameraInterface.cpp">
@@ -128,6 +134,15 @@
     </ClCompile>
     <ClCompile Include="DepthStencilState.cpp">
       <Filter>소스 파일\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelManageGui.cpp">
+      <Filter>소스 파일\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="LightManageGui.cpp">
+      <Filter>소스 파일\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="FileManageGui.cpp">
+      <Filter>소스 파일\GUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -193,6 +208,15 @@
     </ClInclude>
     <ClInclude Include="Canvas.h">
       <Filter>헤더 파일\Canvas</Filter>
+    </ClInclude>
+    <ClInclude Include="LightManageGui.h">
+      <Filter>헤더 파일\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelManageGui.h">
+      <Filter>헤더 파일\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="FileManageGui.h">
+      <Filter>헤더 파일\GUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -16,7 +16,6 @@ DepthStencilState::DepthStencilState()
 
 void DepthStencilState::Init(IN ID3D11Device* pDevice)
 {
-
 	DepthStencilState::CreateDepthStencilState(DepthStencilOption::MaskOption, pDevice, DepthStencilState::cpMaskDSS.GetAddressOf());
 	DepthStencilState::CreateDepthStencilState(DepthStencilOption::DrawEqualOption, pDevice, DepthStencilState::cpDrawEqualDSS.GetAddressOf());
 	DepthStencilState::CreateDepthStencilState(DepthStencilOption::DrawNotEqualOption, pDevice, DepthStencilState::cpDrawNotEqualDSS.GetAddressOf());

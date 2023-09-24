@@ -102,12 +102,6 @@ ModelInterface::ModelInterface(
 
 	ID3D11Helper::CreateBuffer(cpDevice.Get(), vIndex, D3D11_USAGE_IMMUTABLE, D3D11_BIND_INDEX_BUFFER, 0, 0, cpIndexBuffer.GetAddressOf());
 	ID3D11Helper::CreateBuffer(cpDevice.Get(), vVertex, D3D11_USAGE_IMMUTABLE, D3D11_BIND_VERTEX_BUFFER, 0, 0, cpVertexBuffer.GetAddressOf());
-
-	sTextures.CreateTextureAndSRV(TextureType::TEXTURE_AO, cpDevice.Get(), cpDeviceContext.Get(), &ImageContainer::ExampleTextureAO);
-	sTextures.CreateTextureAndSRV(TextureType::TEXTURE_DIFFUSE, cpDevice.Get(), cpDeviceContext.Get(), &ImageContainer::ExampleTextureDiffuse);
-	sTextures.CreateTextureAndSRV(TextureType::TEXTURE_HEIGHT, cpDevice.Get(), cpDeviceContext.Get(), &ImageContainer::ExampleTextureHeight);
-	sTextures.CreateTextureAndSRV(TextureType::TEXTURE_NORMAL, cpDevice.Get(), cpDeviceContext.Get(), &ImageContainer::ExampleTextureNormal);
-	sTextures.CreateTextureAndSRV(TextureType::TEXTURE_REFLECT, cpDevice.Get(), cpDeviceContext.Get(), &ImageContainer::ExampleTextureReflection);
 }
 
 void ModelInterface::Update()
@@ -162,15 +156,20 @@ void ModelInterface::SetHSShaderResources()
 
 void ModelInterface::SetDSShaderResources()
 {
-	cpDeviceContext->DSSetShaderResources(DSSRVType::DS_HEIGHT, 1, sTextures.HeightSRV.GetAddressOf());
+	ID3D11ShaderResourceView** ppHeightSRV = sTextureSet.GetSRV(TEXTURE_HEIGHT).GetAddressOf();
+	ppHeightSRV != nullptr ? cpDeviceContext->DSGetShaderResources(DSSRVType::DS_HEIGHT, 1, ppHeightSRV) : void();
 }
 
 void ModelInterface::SetPSShaderResources()
 {
-	cpDeviceContext->PSSetShaderResources(PSSRVType::PS_AO, 1, sTextures.AOSRV.GetAddressOf());
-	cpDeviceContext->PSSetShaderResources(PSSRVType::PS_DIFFUSE, 1, sTextures.DiffuseSRV.GetAddressOf());
-	cpDeviceContext->PSSetShaderResources(PSSRVType::PS_REFLECT, 1, sTextures.ReflectSRV.GetAddressOf());
-	cpDeviceContext->PSSetShaderResources(PSSRVType::PS_NORMAL, 1, sTextures.NormalSRV.GetAddressOf());
+	ID3D11ShaderResourceView** ppAoSRV = sTextureSet.GetSRV(TEXTURE_HEIGHT).GetAddressOf();
+	ID3D11ShaderResourceView** ppDiffuseSRV = sTextureSet.GetSRV(TEXTURE_HEIGHT).GetAddressOf();
+	ID3D11ShaderResourceView** ppReflectSRV = sTextureSet.GetSRV(TEXTURE_HEIGHT).GetAddressOf();
+	ID3D11ShaderResourceView** ppNormalSRV = sTextureSet.GetSRV(TEXTURE_HEIGHT).GetAddressOf();
+	ppAoSRV != nullptr ? cpDeviceContext->DSGetShaderResources(DSSRVType::DS_HEIGHT, 1, ppAoSRV) : void();
+	ppDiffuseSRV != nullptr ? cpDeviceContext->DSGetShaderResources(DSSRVType::DS_HEIGHT, 1, ppDiffuseSRV) : void();
+	ppReflectSRV != nullptr ? cpDeviceContext->DSGetShaderResources(DSSRVType::DS_HEIGHT, 1, ppReflectSRV) : void();
+	ppNormalSRV != nullptr ? cpDeviceContext->DSGetShaderResources(DSSRVType::DS_HEIGHT, 1, ppNormalSRV) : void();
 }
 
 void ModelInterface::ScaleUp(const float& x, const float& y, const float& z)

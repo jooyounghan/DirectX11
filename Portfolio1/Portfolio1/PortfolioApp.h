@@ -1,20 +1,24 @@
 #pragma once
-#include <imgui.h>
-#include <imgui_impl_dx11.h>
-#include <imgui_impl_win32.h>
-#include <imgui_internal.h>
-
 #include <memory>
 #include <vector>
 #include <unordered_map>
 
-typedef bool IsChecked;
-
 #include "BaseApp.h"
 
+typedef bool IsChecked;
 
 class CameraInterface;
 class ModelInterface;
+
+class ModelManageGui;
+class LightManageGui;
+class FileManageGui;
+
+class LightManager;
+class FileManager;
+
+class BaseModelDrawer;
+class ModelOutlineDrawer;
 
 class PortfolioApp : public BaseApp
 {
@@ -32,23 +36,13 @@ public:
 public:
 	void InitImGUI();
 	void SetImGUIRendering();
-	void UpdateGUI();
 	void RenderImGUI();
 	void QuitImGUI();
 
-public:
-	void SetModelManageWnd();
-	void SetLightManageWnd();
-
-public:
-	void SetLightAddMenu();
-	void SetLightSelectorMenu();
-	void SetLightSettingMenu();
-
-public:
-	void SetDirectionalLightMenu(struct LightSet* pLightSet);
-	void SetPointLightMenu(struct LightSet* pLightSet);
-	void SetSpotLightMenu(struct LightSet* pLightSet);
+private:
+	std::unique_ptr<ModelManageGui>		upModelManageGui;
+	std::unique_ptr<LightManageGui>		upLightManageGui;
+	std::unique_ptr<FileManageGui>		upFileManageGui;
 
 public:
 	void ResizeSwapChain(const UINT& uiWidthIn, const UINT& uiHeightIn);
@@ -57,7 +51,7 @@ public:
 	void CheckMouseHoveredModel();
 
 private:
-	std::unique_ptr<class FileManager>		upFileManager;
+	std::unique_ptr<FileManager>		upFileManager;
 
 private:	
 	std::shared_ptr<CameraInterface>		spMainCamera;
@@ -65,13 +59,13 @@ private:
 	std::shared_ptr<ModelInterface>			spTempSelectedModel;
 
 private:
-	std::vector<std::shared_ptr<CameraInterface>>					spvCameras;
-	std::vector<std::shared_ptr<ModelInterface>>					spvModels;
-	std::unique_ptr<class LightManager>								upLightManager;
+	std::vector<std::shared_ptr<CameraInterface>>	vSpCameras;
+	std::vector<std::shared_ptr<ModelInterface>>	vSpModels;
+	std::shared_ptr<LightManager>					spLightManager;
 
 private:
-	std::unique_ptr<class BaseModelDrawer>							upModelDrawer;
-	std::unique_ptr<class ModelOutlineDrawer>						upModelOutlineDrawer;
+	std::unique_ptr<BaseModelDrawer>				upModelDrawer;
+	std::unique_ptr<ModelOutlineDrawer>				upModelOutlineDrawer;
 
 
 public:
