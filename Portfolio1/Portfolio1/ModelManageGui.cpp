@@ -5,7 +5,6 @@
 #include <directxmath/DirectXMath.h>
 
 #include "ModelManageGui.h"
-#include "TempVariable.h"
 #include "ModelInterface.h"
 
 using namespace ImGui;
@@ -36,27 +35,32 @@ void ModelManageGui::RenderGui()
 	{
 
 	}
-
-	if (CollapsingHeader("Transform Model"))
+	bool bModelNotSelected = (spSelectedModel == nullptr);
+	if (!bModelNotSelected)
 	{
-		SetTransformModelMenu();
+		if (CollapsingHeader("Transform Model"))
+		{
+			SetTransformModelMenu();
+		}
+
+		if (CollapsingHeader("Set Texture"))
+		{
+			SetModelTexture();
+		}
+	}
+	else
+	{
+		ImGui::BulletText("Select The Model For the Setting");
 	}
 
-	if (CollapsingHeader("Set Texture"))
-	{
-		SetModelTexture();
-	}
 	End();
 }
 
 void ModelManageGui::SetTransformModelMenu()
 {
-	bool bModelNotSelected = (spSelectedModel == nullptr);
-	BeginDisabled(bModelNotSelected);
-	SliderFloat3("Scale Vector", bModelNotSelected ? TempVariable::fTempFloat3 : spSelectedModel->sTransformationProperties.xmvScale.m128_f32, 0.f, 5.f);
-	SliderFloat3("Rotation Vector", bModelNotSelected ? TempVariable::fTempFloat3 : (float*)(&spSelectedModel->sTransformationProperties.sPositionAngle), -2.f * XM_PI, 2.f * XM_PI);
-	SliderFloat3("Translation Vector", bModelNotSelected ? TempVariable::fTempFloat3 : spSelectedModel->sTransformationProperties.xmvTranslation.m128_f32, -10.f, 10.f);
-	EndDisabled();
+	SliderFloat3("Scale Vector",  spSelectedModel->sTransformationProperties.xmvScale.m128_f32, 0.f, 5.f);
+	SliderFloat3("Rotation Vector", (float*)(&spSelectedModel->sTransformationProperties.sPositionAngle), -2.f * XM_PI, 2.f * XM_PI);
+	SliderFloat3("Translation Vector", spSelectedModel->sTransformationProperties.xmvTranslation.m128_f32, -10.f, 10.f);
 }
 
 void ModelManageGui::SetModelTexture()

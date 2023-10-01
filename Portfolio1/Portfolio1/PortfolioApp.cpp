@@ -50,6 +50,7 @@ void PortfolioApp::Init()
 	// GUI Ãß°¡ =====================================================================================
 	upModelManageGui = make_unique<ModelManageGui>(vSpModels, spSelectedModel, spTempSelectedModel);
 	upLightManageGui = make_unique<LightManageGui>(spLightManager);
+	upFileManageGui = make_unique<FileManageGui>(upFileManager);
 	// ==============================================================================================
 
 	upFileManager = make_unique<FileManager>(cpDevice, cpDeviceContext);
@@ -157,7 +158,7 @@ void PortfolioApp::SetImGUIRendering()
 
 	upModelManageGui->RenderGui();
 	upLightManageGui->RenderGui();
-	//upFileManageGui->RenderGui();
+	upFileManageGui->RenderGui();
     ImGui::Render();
 }
 

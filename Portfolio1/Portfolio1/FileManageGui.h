@@ -12,6 +12,9 @@ public:
 public:
 	void RenderGui();
 
+private:
+	void SetTextureMenu();
+
 public:
 	std::unique_ptr<FileManager>&		upFileManager;
 };
