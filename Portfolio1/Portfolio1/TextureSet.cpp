@@ -2,9 +2,11 @@
 #include "ID3D11Helper.h"
 
 TextureSet::TextureSet() {};
-TextureSet::~TextureSet() {};
 
-void TextureSet::SetTextureToShaderResource(TextureType textureType, const Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& cpTextureShaderResource)
+TextureSet::~TextureSet() {}
+
+void TextureSet::SetTextureToShaderResource(TextureType textureType, Texture* pTexture)
 {
-	cpTextureShaderResource.CopyTo(ShaderResources[textureType].GetAddressOf());
+	Textures[textureType].TextureName = pTexture->TextureName;
+	pTexture->TextureSRV.CopyTo(Textures[textureType].TextureSRV.GetAddressOf());
 }

@@ -3,6 +3,7 @@
 #include <d3dcompiler.h>
 #include <windows.h>
 #include <wrl/client.h>
+#include <string>
 
 enum TextureType
 {
@@ -14,6 +15,13 @@ enum TextureType
 	TEXTURE_NUM
 };
 
+struct Texture
+{
+	std::wstring										TextureName;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>	TextureSRV;
+};
+
+
 class TextureSet
 {
 public:
@@ -21,11 +29,12 @@ public:
 	~TextureSet();
 
 public:
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> ShaderResources[TEXTURE_NUM];
+	Texture Textures[TEXTURE_NUM];
 
 public:
-	void SetTextureToShaderResource(TextureType textureType, const Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& cpTextureShaderResource);
+	void SetTextureToShaderResource(TextureType textureType, Texture* pTexture);
 
 public:
-	inline Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& GetSRV(TextureType textureType) { return ShaderResources[textureType]; };
+	inline std::wstring& GetTextureName(TextureType textureType) { return Textures[textureType].TextureName; }
+	inline Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& GetSRV(TextureType textureType) { return Textures[textureType].TextureSRV; };
 };

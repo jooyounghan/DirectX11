@@ -28,7 +28,7 @@ void FileManager::LoadImageFromFile(IN const wstring& sPathName)
     filesystem::path texturePath(sPathName);
     if (filesystem::exists(texturePath) && filesystem::is_directory(texturePath))
     {
-        TexturesInDirectory sTextureSet;
+        TexturesDirectory sTextureSet;
         sTextureSet.wstrDirectoryName = GetLastDirectoryName(texturePath);
         filesystem::directory_iterator dirIter(texturePath);
         int iWidth, iHeight, iChannel;
@@ -45,10 +45,10 @@ void FileManager::LoadImageFromFile(IN const wstring& sPathName)
             ID3D11Helper::CreateTexture2D(cpDevice.Get(), cpDeviceContext.Get(), iWidth, iHeight, ucImageRawData, cpImageTempTexture2D.GetAddressOf());
             ID3D11Helper::CreateShaderResoureView(cpDevice.Get(), cpImageTempTexture2D.Get(), cpImageShaderResource.GetAddressOf());
             cpDeviceContext->GenerateMips(cpImageShaderResource.Get());
-            sTextureSet.ImageNameAndSRVs.emplace_back(wstrFileName, cpImageShaderResource);
+            sTextureSet.sTextures.emplace_back(wstrFileName, cpImageShaderResource);
             STBI_FREE(ucImageRawData);
         }   
-        vTextures.push_back(sTextureSet);
+        vTexturesWithDirectory.push_back(sTextureSet);
     }
 }
 

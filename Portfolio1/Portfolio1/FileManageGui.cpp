@@ -32,15 +32,15 @@ void FileManageGui::RenderGui()
 void FileManageGui::SetTextureMenu()
 {
     static int iSelectedIdx = 0;
-    if (iSelectedIdx < upFileManager->vTextures.size())
+    if (iSelectedIdx < upFileManager->vTexturesWithDirectory.size())
     {
-        string pSelectedStr = FileManager::ConvertWCharToChar(upFileManager->vTextures[iSelectedIdx].wstrDirectoryName);
+        string pSelectedStr = FileManager::ConvertWCharToChar(upFileManager->vTexturesWithDirectory[iSelectedIdx].wstrDirectoryName);
         if (ImGui::BeginCombo("Set Directories", pSelectedStr.c_str(), NULL))
         {
-            for (size_t idx = 0; idx < upFileManager->vTextures.size(); ++idx)
+            for (size_t idx = 0; idx < upFileManager->vTexturesWithDirectory.size(); ++idx)
             {
                 const bool is_selected = (iSelectedIdx == idx);
-                string pIndexedStr = FileManager::ConvertWCharToChar(upFileManager->vTextures[idx].wstrDirectoryName);
+                string pIndexedStr = FileManager::ConvertWCharToChar(upFileManager->vTexturesWithDirectory[idx].wstrDirectoryName);
                 if (ImGui::Selectable(pIndexedStr.c_str(), is_selected))
                     iSelectedIdx = idx;
 
@@ -51,12 +51,17 @@ void FileManageGui::SetTextureMenu()
             ImGui::EndCombo();
         }
 
-        for (size_t idx = 0; idx < upFileManager->vTextures[iSelectedIdx].ImageNameAndSRVs.size(); ++idx)
+        for (size_t idx = 0; idx < upFileManager->vTexturesWithDirectory[iSelectedIdx].sTextures.size(); ++idx)
         {
             BeginGroup();
-            ID3D11ShaderResourceView* pIndexedSRV = upFileManager->vTextures[iSelectedIdx].ImageNameAndSRVs[idx].second.Get();
+            ID3D11ShaderResourceView* pIndexedSRV = upFileManager->vTexturesWithDirectory[iSelectedIdx].sTextures[idx].TextureSRV.Get();
             Image(pIndexedSRV, ImVec2(60.f, 60.f));
-            const string& textureName = FileManager::ConvertWCharToChar(upFileManager->vTextures[iSelectedIdx].ImageNameAndSRVs[idx].first);
+
+            if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
+            {
+                ImGui::SetDragDropPayload("DND_DEMO_CELL", &(upFileManager->vTexturesWithDirectory[iSelectedIdx].sTextures[idx]), sizeof(Texture));
+                ImGui::EndDragDropSource();
+            }
             EndGroup();
             SameLine();
         }

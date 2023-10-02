@@ -65,6 +65,23 @@ void ModelManageGui::SetTransformModelMenu()
 
 void ModelManageGui::SetModelTexture()
 {
+	for (unsigned short idx = 0; idx < TextureType::TEXTURE_NUM; ++idx)
+	{
+
+		Image(spSelectedModel->sTextureSet.GetSRV((TextureType)idx).Get(), ImVec2(60.f, 60.f));
+		if (ImGui::BeginDragDropTarget())
+		{
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_DEMO_CELL"))
+			{
+				IM_ASSERT(payload->DataSize == sizeof(Texture));
+				Texture* pTexture = (Texture*)payload->Data;
+
+				spSelectedModel->sTextureSet.SetTextureToShaderResource((TextureType)idx, pTexture);
+			}
+			ImGui::EndDragDropTarget();
+		}
+	}
+
 
 }
 

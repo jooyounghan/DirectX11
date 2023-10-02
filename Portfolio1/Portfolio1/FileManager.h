@@ -4,14 +4,14 @@
 #include <windows.h>
 #include <wrl/client.h>
 #include <vector>
-#include <string>
 #include <Windows.h>
 #include <filesystem>
+#include "TextureSet.h"
 
-struct TexturesInDirectory
+struct TexturesDirectory
 {
-	std::wstring wstrDirectoryName;
-	std::vector<std::pair<std::wstring, Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>>>	ImageNameAndSRVs;
+	std::wstring			wstrDirectoryName;
+	std::vector<Texture>	sTextures;
 };
 
 class FileManager
@@ -26,7 +26,7 @@ public:
 
 
 public:
-	std::vector<TexturesInDirectory> vTextures;
+	std::vector<TexturesDirectory> vTexturesWithDirectory;
 
 
 public:
