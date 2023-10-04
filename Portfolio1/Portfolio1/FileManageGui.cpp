@@ -51,9 +51,12 @@ void FileManageGui::SetTextureMenu()
             ImGui::EndCombo();
         }
 
+
+        ImGuiWindowFlags window_flags = ImGuiWindowFlags_HorizontalScrollbar;
+        ImGui::BeginChild("FileTextureSet", ImVec2(ImGui::GetContentRegionAvail().x, 75.f), false, window_flags);
         for (size_t idx = 0; idx < upFileManager->vTexturesWithDirectory[iSelectedIdx].sTextures.size(); ++idx)
         {
-            BeginGroup();
+            Separator();
             ID3D11ShaderResourceView* pIndexedSRV = upFileManager->vTexturesWithDirectory[iSelectedIdx].sTextures[idx].TextureSRV.Get();
             Image(pIndexedSRV, ImVec2(60.f, 60.f));
 
@@ -62,8 +65,9 @@ void FileManageGui::SetTextureMenu()
                 ImGui::SetDragDropPayload("DND_DEMO_CELL", &(upFileManager->vTexturesWithDirectory[iSelectedIdx].sTextures[idx]), sizeof(Texture));
                 ImGui::EndDragDropSource();
             }
-            EndGroup();
             SameLine();
+            TextEx(FileManager::ConvertWCharToChar(upFileManager->vTexturesWithDirectory[iSelectedIdx].sTextures[idx].TextureName).c_str(), (const char*)0, ImGuiTextFlags_::ImGuiTextFlags_NoWidthForLargeClippedText);
         }
+        ImGui::EndChild();
     }
 }

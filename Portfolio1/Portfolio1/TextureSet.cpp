@@ -1,6 +1,15 @@
 #include "TextureSet.h"
 #include "ID3D11Helper.h"
 
+std::string TextureSet::strTextureType[TEXTURE_NUM]
+{
+	"Ambient Occlusion",
+	"Diffuse",
+	"Height Map",
+	"Normal Map",
+	"Reflect Map",
+};
+
 TextureSet::TextureSet() {};
 
 TextureSet::~TextureSet() {}

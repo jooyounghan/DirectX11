@@ -150,6 +150,7 @@
     <ClCompile Include="ModelManageGui.cpp" />
     <ClCompile Include="ModelOutlineDrawer.cpp" />
     <ClCompile Include="PortfolioApp.cpp" />
+    <ClCompile Include="SquareModel.cpp" />
     <ClCompile Include="TempVariable.cpp" />
     <ClCompile Include="ModelInterface.cpp" />
     <ClCompile Include="TextureSet.cpp" />
@@ -175,6 +176,7 @@
     <ClInclude Include="ModelManageGui.h" />
     <ClInclude Include="ModelOutlineDrawer.h" />
     <ClInclude Include="PortfolioApp.h" />
+    <ClInclude Include="SquareModel.h" />
     <ClInclude Include="TempVariable.h" />
     <ClInclude Include="ModelInterface.h" />
     <ClInclude Include="TextureSet.h" />

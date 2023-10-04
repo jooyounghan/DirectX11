@@ -41,11 +41,7 @@ friend class Canvas;
 public:
 	ModelInterface(
 		Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn,
-		Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn,
-		const float& fCenterX,
-		const float& fCenterY,
-		const float& fCenterZ,
-		const float& fLen
+		Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn
 	);
 	~ModelInterface() {};
 

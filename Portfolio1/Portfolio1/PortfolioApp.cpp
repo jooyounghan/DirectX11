@@ -11,7 +11,11 @@
 #include "Canvas.h"
 
 #include "CameraInterface.h"
+
 #include "ModelInterface.h"
+#include "CubeModel.h"
+#include "SquareModel.h"
+
 
 #include "LightManager.h"
 #include "FileManager.h"
@@ -62,8 +66,8 @@ void PortfolioApp::Init()
 	upFileManager->LoadImageFromFile(L".\\Texture\\GrassWithMudAndStone");
 
 	spMainCamera = make_shared<CameraInterface>(cpDevice, cpDeviceContext, cpSwapChain, uiWidth, uiHeight, uiNumLevelQuality);
-	vSpModels.push_back(std::make_shared<ModelInterface>(cpDevice, cpDeviceContext, 0.f, 0.f, 0.f, 2.f));
-	vSpModels.push_back(std::make_shared<ModelInterface>(cpDevice, cpDeviceContext, 5.f, 0.f, 5.f, 2.f));
+	vSpModels.push_back(std::make_shared<SquareModel>(cpDevice, cpDeviceContext, 0.f, 0.f, 0.f, 2.f));
+	vSpModels.push_back(std::make_shared<CubeModel>(cpDevice, cpDeviceContext, 5.f, 0.f, 5.f, 2.f));
 
 	spLightManager->AddDirectionalLight(
 		XMVectorSet(0.f, 0.f, -100.f, 1.f),

@@ -37,4 +37,7 @@ public:
 public:
 	inline std::wstring& GetTextureName(TextureType textureType) { return Textures[textureType].TextureName; }
 	inline Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& GetSRV(TextureType textureType) { return Textures[textureType].TextureSRV; };
+
+public:
+	static std::string strTextureType[TEXTURE_NUM];
 };

@@ -144,6 +144,9 @@
     <ClCompile Include="FileManageGui.cpp">
       <Filter>소스 파일\GUI</Filter>
     </ClCompile>
+    <ClCompile Include="SquareModel.cpp">
+      <Filter>소스 파일\Model\Specific</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CameraInterface.h">
@@ -217,6 +220,9 @@
     </ClInclude>
     <ClInclude Include="FileManageGui.h">
       <Filter>헤더 파일\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="SquareModel.h">
+      <Filter>헤더 파일\Model\Specific</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -6,6 +6,7 @@
 
 #include "ModelManageGui.h"
 #include "ModelInterface.h"
+#include "FileManager.h"
 
 using namespace ImGui;
 using namespace DirectX;
@@ -65,9 +66,12 @@ void ModelManageGui::SetTransformModelMenu()
 
 void ModelManageGui::SetModelTexture()
 {
+	ImGuiWindowFlags window_flags = ImGuiWindowFlags_HorizontalScrollbar;
+	ImGui::BeginChild("ModelTextureSet", ImVec2(ImGui::GetContentRegionAvail().x, 75.f), false, window_flags);
 	for (unsigned short idx = 0; idx < TextureType::TEXTURE_NUM; ++idx)
 	{
-
+		Separator();
+		Text(TextureSet::strTextureType[idx].c_str());
 		Image(spSelectedModel->sTextureSet.GetSRV((TextureType)idx).Get(), ImVec2(60.f, 60.f));
 		if (ImGui::BeginDragDropTarget())
 		{
@@ -80,8 +84,9 @@ void ModelManageGui::SetModelTexture()
 			}
 			ImGui::EndDragDropTarget();
 		}
+		SameLine();
+		Text(FileManager::ConvertWCharToChar(spSelectedModel->sTextureSet.GetTextureName((TextureType)idx)).c_str());
 	}
-
-
+	ImGui::EndChild();
 }
 
