@@ -23,50 +23,52 @@ CubeModel::CubeModel(
 		const float& fLatitudeLowTextureCord = (latitudeIdx / (float)usLevel) / 2.f;
 		const float& fLatitudeHighTextureCord = ((latitudeIdx + 1) / (float)usLevel) / 2.f;
 
+		const unsigned short& usLatitudeOffset = vVertex.size();
+
 		for (unsigned short longitudeIdx = 0; longitudeIdx <= usLevel * 2; ++longitudeIdx)
 		{
 			Vertex sTempVertex;
 
-			const float& fLongitudeLow = DirectX::XM_PIDIV2 / (usLevel * 2) * longitudeIdx;
+			const float& fLongitudeLow = DirectX::XM_2PI / (usLevel * 2) * longitudeIdx;
 			const float& fLongitudeTextureCord = longitudeIdx / (float)(usLevel * 2);
 
-			sTempVertex.sPosVec = { fRadius * cosf(fLongitudeLow) * cosf(fLatitudeLow), fRadius * cosf(fLongitudeLow) * sinf(fLatitudeLow), fRadius * sinf(fLatitudeLow) };
+			sTempVertex.sPosVec = { fRadius * cosf(fLongitudeLow) * cosf(fLatitudeLow), fRadius * sinf(fLatitudeLow), fRadius * cosf(fLatitudeLow) * sinf(fLongitudeLow) };
 			sTempVertex.sTexCoord = { fLongitudeTextureCord, 0.5f + fLatitudeLowTextureCord };
-			sTempVertex.sNorVec = { cosf(fLongitudeLow) * cosf(fLatitudeLow), cosf(fLongitudeLow) * sinf(fLatitudeLow), sinf(fLatitudeLow) };
+			sTempVertex.sNorVec = { cosf(fLongitudeLow) * cosf(fLatitudeLow), sinf(fLatitudeLow), cosf(fLatitudeLow) * sinf(fLongitudeLow) };
 			vVertex.emplace_back(sTempVertex);
 
-			sTempVertex.sPosVec = { fRadius * cosf(fLongitudeLow) * cosf(fLatitudeHigh), fRadius * cosf(fLongitudeLow) * sinf(fLatitudeHigh), fRadius * sinf(fLatitudeHigh) };
+			sTempVertex.sPosVec = { fRadius * cosf(fLongitudeLow) * cosf(fLatitudeHigh), fRadius * sinf(fLatitudeHigh), fRadius * cosf(fLatitudeHigh) * sinf(fLongitudeLow)};
 			sTempVertex.sTexCoord = { fLongitudeTextureCord, 0.5f + fLatitudeHighTextureCord };
-			sTempVertex.sNorVec = { cosf(fLongitudeLow) * cosf(fLatitudeHigh), cosf(fLongitudeLow) * sinf(fLatitudeHigh), sinf(fLatitudeHigh) };
+			sTempVertex.sNorVec = { cosf(fLongitudeLow) * cosf(fLatitudeHigh), sinf(fLatitudeHigh), cosf(fLatitudeHigh) * sinf(fLongitudeLow) };
 			vVertex.emplace_back(sTempVertex);
 
-			sTempVertex.sPosVec = { fRadius * cosf(fLongitudeLow) * cosf(-fLatitudeLow), fRadius * cosf(fLongitudeLow) * sinf(-fLatitudeLow), fRadius * sinf(-fLatitudeLow) };
+			sTempVertex.sPosVec = { fRadius * cosf(fLongitudeLow) * cosf(-fLatitudeLow), fRadius * sinf(-fLatitudeLow), fRadius * cosf(-fLatitudeLow) * sinf(fLongitudeLow) };
 			sTempVertex.sTexCoord = { fLongitudeTextureCord, 0.5f - fLatitudeLowTextureCord };
-			sTempVertex.sNorVec = { cosf(fLongitudeLow) * cosf(-fLatitudeLow), cosf(fLongitudeLow) * sinf(-fLatitudeLow), sinf(-fLatitudeLow) };
+			sTempVertex.sNorVec = { cosf(fLongitudeLow) * cosf(-fLatitudeLow), sinf(-fLatitudeLow), cosf(-fLatitudeLow) * sinf(fLongitudeLow) };
 			vVertex.emplace_back(sTempVertex);
 
-			sTempVertex.sPosVec = { fRadius * cosf(fLongitudeLow) * cosf(-fLatitudeHigh), fRadius * cosf(fLongitudeLow) * sinf(-fLatitudeHigh), fRadius * sinf(-fLatitudeHigh) };
+			sTempVertex.sPosVec = { fRadius * cosf(fLongitudeLow) * cosf(-fLatitudeHigh), fRadius * sinf(-fLatitudeHigh), fRadius * cosf(-fLatitudeHigh) * sinf(fLongitudeLow)};
 			sTempVertex.sTexCoord = { fLongitudeTextureCord, 0.5f - fLatitudeHighTextureCord };
-			sTempVertex.sNorVec = { cosf(fLongitudeLow) * cosf(-fLatitudeHigh), cosf(fLongitudeLow) * sinf(-fLatitudeHigh), sinf(-fLatitudeHigh) };
+			sTempVertex.sNorVec = { cosf(fLongitudeLow) * cosf(-fLatitudeHigh), sinf(-fLatitudeHigh), cosf(-fLatitudeHigh) * sinf(fLongitudeLow) };
 			vVertex.emplace_back(sTempVertex);
 		}
 
 		for (unsigned short longitudeIdx = 0; longitudeIdx < usLevel * 2; ++longitudeIdx)
 		{
-			const unsigned short& usOffSetIdx = 4 * longitudeIdx;
-			vIndex.push_back(usOffSetIdx + 0);
-			vIndex.push_back(usOffSetIdx + 1);
-			vIndex.push_back(usOffSetIdx + 4);
-			vIndex.push_back(usOffSetIdx + 4);
-			vIndex.push_back(usOffSetIdx + 1);
-			vIndex.push_back(usOffSetIdx + 5);
+			const unsigned short& usLongitudeOffset = 4 * longitudeIdx + usLatitudeOffset;
+			vIndex.push_back(usLongitudeOffset + 0);
+			vIndex.push_back(usLongitudeOffset + 1);
+			vIndex.push_back(usLongitudeOffset + 4);
+			vIndex.push_back(usLongitudeOffset + 4);
+			vIndex.push_back(usLongitudeOffset + 1);
+			vIndex.push_back(usLongitudeOffset + 5);
 
-			vIndex.push_back(usOffSetIdx + 3);
-			vIndex.push_back(usOffSetIdx + 2);
-			vIndex.push_back(usOffSetIdx + 7);
-			vIndex.push_back(usOffSetIdx + 7);
-			vIndex.push_back(usOffSetIdx + 2);
-			vIndex.push_back(usOffSetIdx + 6);
+			vIndex.push_back(usLongitudeOffset + 3);
+			vIndex.push_back(usLongitudeOffset + 2);
+			vIndex.push_back(usLongitudeOffset + 7);
+			vIndex.push_back(usLongitudeOffset + 7);
+			vIndex.push_back(usLongitudeOffset + 2);
+			vIndex.push_back(usLongitudeOffset + 6);
 		}
 
 	}
