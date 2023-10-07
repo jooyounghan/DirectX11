@@ -114,7 +114,7 @@
     <ClCompile Include="BaseModelDrawer.cpp">
       <Filter>소스 파일\Drawer</Filter>
     </ClCompile>
-    <ClCompile Include="CubeModel.cpp">
+    <ClCompile Include="SphereModel.cpp">
       <Filter>소스 파일\Model\Specific</Filter>
     </ClCompile>
     <ClCompile Include="ModelInterface.cpp">
@@ -197,7 +197,7 @@
     <ClInclude Include="ModelInterface.h">
       <Filter>헤더 파일\Model\Specific</Filter>
     </ClInclude>
-    <ClInclude Include="CubeModel.h">
+    <ClInclude Include="SphereModel.h">
       <Filter>헤더 파일\Model\Specific</Filter>
     </ClInclude>
     <ClInclude Include="ModelOutlineDrawer.h">
@@ -239,6 +239,18 @@
       <Filter>Shader</Filter>
     </FxCompile>
     <FxCompile Include="OutlinerPS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="NormalVectorHS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="NormalVectorGS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="NormalVectorDS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="NormalVectorPS.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
   </ItemGroup>
