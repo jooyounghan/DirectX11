@@ -7,6 +7,7 @@
 
 #include "BaseModelDrawer.h"
 #include "ModelOutlineDrawer.h"
+#include "NormalVectorDrawer.h"
 
 #include "Canvas.h"
 
@@ -59,8 +60,10 @@ void PortfolioApp::Init()
 
 	upFileManager = make_unique<FileManager>(cpDevice, cpDeviceContext);
 	spLightManager = make_unique<LightManager>(cpDevice, cpDeviceContext);
+
 	upModelDrawer = make_unique<BaseModelDrawer>(cpDevice, cpDeviceContext);
 	upModelOutlineDrawer = make_unique<ModelOutlineDrawer>(cpDevice, cpDeviceContext);
+	upNormalVectorDrawer = make_unique<NormalVectorDrawer>(cpDevice, cpDeviceContext);
 
 	// For Testing ==================================================================================
 	upFileManager->LoadImageFromFile(L".\\Texture\\GrassWithMudAndStone");
@@ -94,20 +97,28 @@ void PortfolioApp::Render()
 {
 	spMainCamera->WipeOut();
 
+	upModelDrawer->SetCamera(spMainCamera.get());
+	upNormalVectorDrawer->SetCamera(spMainCamera.get());
+	upModelOutlineDrawer->SetCamera(spMainCamera.get());
 
 	for (auto& model : vSpModels)
 	{
 		upModelDrawer->SetModel(model.get());
-		upModelDrawer->SetCamera(spMainCamera.get());
 		upModelDrawer->SetLightManager(spLightManager.get());
-		Canvas<BaseModelDrawer> canvas(upModelDrawer.get());
-		canvas.Render();
+		Canvas<BaseModelDrawer> modelCanvas(upModelDrawer.get());
+		modelCanvas.Render();
+	}
+
+	for (auto& model : vSpModels)
+	{
+		upNormalVectorDrawer->SetModel(model.get());
+		Canvas<NormalVectorDrawer> nvCanvas(upNormalVectorDrawer.get());
+		nvCanvas.Render();
 	}
 
 	if (spSelectedModel)
 	{
 		upModelOutlineDrawer->SetModel(spSelectedModel.get());
-		upModelOutlineDrawer->SetCamera(spMainCamera.get());
 		Canvas<ModelOutlineDrawer> canvas(upModelOutlineDrawer.get());
 		canvas.Render();
 	}

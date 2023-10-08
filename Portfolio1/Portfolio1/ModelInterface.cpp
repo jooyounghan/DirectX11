@@ -52,6 +52,10 @@ void ModelInterface::SetVSConstantBuffers()
 	cpDeviceContext->VSSetConstantBuffers(VSConstBufferType::VS_ModelMatrix, 1, cpTransformationDataBuffer.GetAddressOf());
 }
 
+void ModelInterface::SetGSConstantBuffers()
+{
+}
+
 void ModelInterface::SetHSConstantBuffers()
 {
 }
@@ -66,6 +70,10 @@ void ModelInterface::SetPSConstantBuffers()
 }
 
 void ModelInterface::SetVSShaderResources()
+{
+}
+
+void ModelInterface::SetGSShaderResources()
 {
 }
 

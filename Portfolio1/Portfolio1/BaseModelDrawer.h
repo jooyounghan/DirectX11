@@ -1,9 +1,4 @@
 #pragma once
-#include <d3d11.h>
-#include <d3dcompiler.h>
-#include <windows.h>
-#include <wrl/client.h>
-
 #include "DrawerInterface.h"
 
 class BaseModelDrawer : public DrawerInterface
@@ -20,6 +15,7 @@ public:
 protected:
 	void SetIAInputLayer();
 	void SetVSShader();
+	void SetGSShader();
 	void SetHSShader();
 	void SetDSShader();
 	void SetPSShader();
@@ -30,10 +26,6 @@ protected:
 
 protected:
 	void ResetDrawer();
-
-protected:
-	Microsoft::WRL::ComPtr<ID3D11Device>&			cpDevice;
-	Microsoft::WRL::ComPtr<ID3D11DeviceContext>&	cpDeviceContext;
 
 protected:
 	Microsoft::WRL::ComPtr<ID3D11InputLayout>		cpBaseInputLayout;

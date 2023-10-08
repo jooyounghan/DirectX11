@@ -132,6 +132,10 @@ void CameraInterface::SetVSConstantBuffers()
 	cpDeviceContext->VSSetConstantBuffers(VSConstBufferType::VS_ViewProjMatrix, 1, cpCameraConstantBuffer.GetAddressOf());
 }
 
+void CameraInterface::SetGSConstantBuffers()
+{
+}
+
 void CameraInterface::SetHSConstantBuffers()
 {
 }

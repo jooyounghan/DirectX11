@@ -220,6 +220,43 @@ void ID3D11Helper::CreatePS(IN ID3D11Device* pDevice, IN LPCWSTR pFileName, OUT 
 	}
 }
 
+void ID3D11Helper::CreateGS(IN ID3D11Device* pDevice, IN LPCWSTR pFileName, OUT ID3D11GeometryShader** ppGeometryShader)
+{
+	ComPtr<ID3DBlob> cpShaderBlob;
+	ComPtr<ID3DBlob> cpErrorBlob;
+
+	HRESULT hResult = D3DCompileFromFile(
+		pFileName,
+		NULL,
+		D3D_COMPILE_STANDARD_FILE_INCLUDE,
+		"main",
+		"gs_5_0",
+		D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
+		NULL,
+		cpShaderBlob.GetAddressOf(),
+		cpErrorBlob.GetAddressOf()
+	);
+
+	if (FAILED(hResult))
+	{
+		Console("Geometry Shader를 컴파일하는데 실패하였습니다.");
+		return;
+	}
+
+	hResult = pDevice->CreateGeometryShader(
+		cpShaderBlob->GetBufferPointer(),
+		cpShaderBlob->GetBufferSize(),
+		NULL,
+		ppGeometryShader
+	);
+
+	if (FAILED(hResult))
+	{
+		Console("Geometry Shader 생성하는데 실패하였습니다.");
+		return;
+	}
+}
+
 void ID3D11Helper::CreateHS(IN ID3D11Device* pDevice, IN LPCWSTR pFileName, OUT ID3D11HullShader** ppHullShader)
 {
 	ComPtr<ID3DBlob> cpShaderBlob;

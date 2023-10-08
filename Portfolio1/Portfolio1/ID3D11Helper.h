@@ -84,6 +84,12 @@ public:
 		OUT ID3D11PixelShader** ppPixelShader
 	);
 
+	static void CreateGS(
+		IN ID3D11Device* pDevice,
+		IN LPCWSTR pFileName,
+		OUT ID3D11GeometryShader** ppGeometryShader
+	);
+
 	static void CreateHS(
 		IN ID3D11Device* pDevice,
 		IN LPCWSTR pFileName,

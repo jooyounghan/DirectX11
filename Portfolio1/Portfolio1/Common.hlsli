@@ -15,14 +15,6 @@ struct VertexOutput
     float4 f4ModelNormal : NORMAL;
 };
 
-struct GeometryOutput
-{
-    float4 f4ProjPos : SV_Position;
-    float4 f4ModelPos : POSITION;
-    float2 f2TexCoord : TEXCOORD;
-    float4 f4ModelNormal : NORMAL;
-};
-
 struct HS_CONSTANT_DATA_OUTPUT
 {
     float EdgeTessFactor[3] : SV_TessFactor;

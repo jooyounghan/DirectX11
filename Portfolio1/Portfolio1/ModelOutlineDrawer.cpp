@@ -7,12 +7,12 @@
 
 
 ModelOutlineDrawer::ModelOutlineDrawer(Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn, Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn)
-	: cpDevice(cpDeviceIn), cpDeviceContext(cpDeviceContextIn)
+	: DrawerInterface(cpDeviceIn, cpDeviceContextIn)
 {
 	std::vector<D3D11_INPUT_ELEMENT_DESC> vInputElemDesc{
-	{"POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-	{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 16, D3D11_INPUT_PER_VERTEX_DATA, 0},
-	{"NORMAL", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0}
+		{"POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 16, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"NORMAL", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0}
 	};
 
 	ID3D11Helper::CreateVSInputLayOut(cpDevice.Get(), L"BaseModelVS.hlsl", vInputElemDesc, cpBaseVertexShader.GetAddressOf(), cpBaseInputLayout.GetAddressOf());
@@ -34,6 +34,10 @@ void ModelOutlineDrawer::SetIAInputLayer()
 void ModelOutlineDrawer::SetVSShader()
 {
 	cpDeviceContext->VSSetShader(cpBaseVertexShader.Get(), 0, 0);
+}
+
+void ModelOutlineDrawer::SetGSShader()
+{
 }
 
 void ModelOutlineDrawer::SetHSShader()

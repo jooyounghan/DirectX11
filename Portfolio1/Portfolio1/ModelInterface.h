@@ -54,12 +54,14 @@ protected:
 protected:
 	void SetIAProperties();
 	void SetVSConstantBuffers();
+	void SetGSConstantBuffers();
 	void SetHSConstantBuffers();
 	void SetDSConstantBuffers();
 	void SetPSConstantBuffers();
 
 protected:
 	void SetVSShaderResources();
+	void SetGSShaderResources();
 	void SetHSShaderResources();
 	void SetDSShaderResources();
 	void SetPSShaderResources();

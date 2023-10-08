@@ -30,6 +30,7 @@ void Canvas<Drawer>::Render()
 	{
 		drawer->SetIAInputLayer();
 		drawer->SetVSShader();
+		drawer->SetGSShader();
 		drawer->SetHSShader();
 		drawer->SetDSShader();
 		drawer->SetPSShader();
@@ -37,6 +38,8 @@ void Canvas<Drawer>::Render()
 		drawer->pModel->SetIAProperties();
 		drawer->pModel->SetVSConstantBuffers();
 		drawer->pModel->SetVSShaderResources();
+		drawer->pModel->SetGSConstantBuffers();
+		drawer->pModel->SetGSShaderResources();
 		drawer->pModel->SetHSConstantBuffers();
 		drawer->pModel->SetHSShaderResources();
 		drawer->pModel->SetDSConstantBuffers();
@@ -48,6 +51,7 @@ void Canvas<Drawer>::Render()
 		{
 			drawer->pCamera->SetRSState();
 			drawer->pCamera->SetVSConstantBuffers();
+			drawer->pCamera->SetGSConstantBuffers();
 			drawer->pCamera->SetHSConstantBuffers();
 			drawer->pCamera->SetDSConstantBuffers();
 			drawer->pCamera->SetPSConstantBuffers();

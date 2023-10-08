@@ -19,6 +19,7 @@ class FileManager;
 
 class BaseModelDrawer;
 class ModelOutlineDrawer;
+class NormalVectorDrawer;
 
 class PortfolioApp : public BaseApp
 {
@@ -64,9 +65,9 @@ private:
 	std::shared_ptr<LightManager>					spLightManager;
 
 private:
-	std::unique_ptr<BaseModelDrawer>				upModelDrawer;
-	std::unique_ptr<ModelOutlineDrawer>				upModelOutlineDrawer;
-
+	std::unique_ptr<BaseModelDrawer>	upModelDrawer;
+	std::unique_ptr<ModelOutlineDrawer>	upModelOutlineDrawer;
+	std::unique_ptr<NormalVectorDrawer>	upNormalVectorDrawer;
 
 public:
 	virtual LRESULT WINAPI AppProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) override;

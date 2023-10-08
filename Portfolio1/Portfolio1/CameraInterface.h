@@ -67,6 +67,7 @@ public:
 public:
 	void SetRSState();
 	void SetVSConstantBuffers();
+	void SetGSConstantBuffers();
 	void SetHSConstantBuffers();
 	void SetDSConstantBuffers();
 	void SetPSConstantBuffers();
