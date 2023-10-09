@@ -12,7 +12,7 @@ struct VertexOutput
     float4 f4ProjPos : SV_Position;
     float4 f4ModelPos : POSITION;
     float2 f2TexCoord : TEXCOORD;
-    float4 f4ModelNormal : NORMAL;
+    float4 f4ProjNormal : NORMAL;
 };
 
 struct HS_CONSTANT_DATA_OUTPUT
@@ -27,7 +27,7 @@ struct HullOutput
     float4 f4ProjPos : SV_Position;
     float4 f4ModelPos : POSITION;
     float2 f2TexCoord : TEXCOORD;
-    float4 f4ModelNormal : NORMAL;
+    float4 f4ProjNormal : NORMAL;
 };
 
 
@@ -36,7 +36,7 @@ struct DomainOutput
     float4 f4ProjPos : SV_Position;
     float4 f4ModelPos : POSITION;
     float2 f2TexCoord : TEXCOORD;
-    float4 f4ModelNormal : NORMAL;
+    float4 f4ProjNormal : NORMAL;
     float4 f4ModelTangent : TANGENT;
     float4 f4ModelBiTangent : BINORMAL;
 };
@@ -72,4 +72,26 @@ float2x2 Get2X2InvMatrix(float2x2 input)
     float ad_bc = (1.0 / (input._m00 * input._m11 - input._m01 * input._m10));
     float2x2 f22Result = float2x2(input._m11, -input._m01, -input._m10, input._m00);
     return ad_bc * f22Result;
+}
+
+float4 GetSampledNormalFromTBN(SamplerState Sampler, Texture2D NormalTexture, float2 TextureCord, float4 Normal, float4 Tangent, float4 BiTangent)
+{
+    float3 fNormalSampled = NormalTexture.Sample(Sampler, TextureCord).xyz;
+    fNormalSampled = 2.f * fNormalSampled - 1.f;
+
+    float3x3 TBN = float3x3(Tangent.xyz, BiTangent.xyz, Normal.xyz);
+    fNormalSampled = normalize(mul(fNormalSampled, TBN));
+    
+    return float4(fNormalSampled, 0.f);
+}
+
+float4 GetSampleLeveledNormalFromTBN(SamplerState Sampler, Texture2D NormalTexture, float2 TextureCord, float4 Normal, float4 Tangent, float4 BiTangent)
+{
+    float3 fNormalSampled = NormalTexture.SampleLevel(Sampler, TextureCord, 0).xyz;
+    fNormalSampled = 2.f * fNormalSampled - 1.f;
+
+    float3x3 TBN = float3x3(Tangent.xyz, BiTangent.xyz, Normal.xyz);
+    fNormalSampled = normalize(mul(fNormalSampled, TBN));
+    
+    return float4(fNormalSampled, 0.f);
 }

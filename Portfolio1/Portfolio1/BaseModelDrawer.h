@@ -15,9 +15,9 @@ public:
 protected:
 	void SetIAInputLayer();
 	void SetVSShader();
-	void SetGSShader();
 	void SetHSShader();
 	void SetDSShader();
+	void SetGSShader();
 	void SetPSShader();
 
 protected:

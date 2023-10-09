@@ -2,10 +2,11 @@
 #include <memory>
 #include <vector>
 
+#include "ManageGuiInterface.h"
 
 class ModelInterface;
 
-class ModelManageGui
+class ModelManageGui : public ManageGuiInterface
 {
 public:
 	ModelManageGui(
@@ -16,7 +17,7 @@ public:
 	~ModelManageGui();
 
 public:
-	void RenderGui();
+	virtual void RenderGui() override;
 
 private:
 	void SetTransformModelMenu();

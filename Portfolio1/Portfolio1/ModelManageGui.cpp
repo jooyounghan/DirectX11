@@ -29,9 +29,6 @@ ModelManageGui::~ModelManageGui()
 void ModelManageGui::RenderGui()
 {
 	Begin("Model Manager");
-	Text("Average %.3f ms/frame (%.1f FPS)",
-		1000.0f / ImGui::GetIO().Framerate,
-		ImGui::GetIO().Framerate);
 	if (CollapsingHeader("Add Model"))
 	{
 

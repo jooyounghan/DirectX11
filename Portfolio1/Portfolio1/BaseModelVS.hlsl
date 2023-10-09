@@ -19,7 +19,8 @@ VertexOutput main(VertexInput input)
     float3 fModelNormal = mul(input.f4WorldNormal, mModelInvTranspose).xyz;
     fModelNormal = normalize(fModelNormal);
     
-    result.f4ModelNormal = float4(fModelNormal, 0.f);
+    result.f4ProjNormal = float4(fModelNormal, 0.f);
+    result.f4ProjNormal = mul(result.f4ProjNormal, mViewProj);
     
     result.f4ModelPos = mul(input.f4WorldPos, mModel);
     result.f4ProjPos = result.f4ModelPos;

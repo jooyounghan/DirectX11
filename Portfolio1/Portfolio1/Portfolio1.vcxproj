@@ -134,7 +134,9 @@
   <ItemGroup>
     <ClCompile Include="BaseApp.cpp" />
     <ClCompile Include="Canvas.cpp" />
+    <ClCompile Include="ManageGuiInterface.cpp" />
     <ClCompile Include="NormalVectorDrawer.cpp" />
+    <ClCompile Include="SettingManageGui.cpp" />
     <ClCompile Include="SphereModel.cpp" />
     <ClCompile Include="DepthStencilState.cpp" />
     <ClCompile Include="FileManager.cpp" />
@@ -160,7 +162,9 @@
   <ItemGroup>
     <ClInclude Include="BaseApp.h" />
     <ClInclude Include="Canvas.h" />
+    <ClInclude Include="ManageGuiInterface.h" />
     <ClInclude Include="NormalVectorDrawer.h" />
+    <ClInclude Include="SettingManageGui.h" />
     <ClInclude Include="SphereModel.h" />
     <ClInclude Include="DefineVar.h" />
     <ClInclude Include="DepthStencilState.h" />
@@ -220,25 +224,12 @@
     </FxCompile>
     <FxCompile Include="NormalVectorGS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Geometry</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Geometry</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Geometry</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Geometry</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="NormalVectorPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
-    </FxCompile>
-    <FxCompile Include="NormalVectorVS.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
     <FxCompile Include="OutlinerPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>

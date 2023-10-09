@@ -1,16 +1,17 @@
 #pragma once
 #include <memory>
+#include "ManageGuiInterface.h"
 
 class FileManager;
 
-class FileManageGui
+class FileManageGui : public ManageGuiInterface
 {
 public:
 	FileManageGui(std::unique_ptr<FileManager>& upFileManagerIn);
 	~FileManageGui();
 
 public:
-	void RenderGui();
+	virtual void RenderGui() override;
 
 private:
 	void SetTextureMenu();

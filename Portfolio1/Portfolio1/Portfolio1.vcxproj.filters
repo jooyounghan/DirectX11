@@ -150,6 +150,12 @@
     <ClCompile Include="NormalVectorDrawer.cpp">
       <Filter>소스 파일\Drawer</Filter>
     </ClCompile>
+    <ClCompile Include="ManageGuiInterface.cpp">
+      <Filter>소스 파일\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="SettingManageGui.cpp">
+      <Filter>소스 파일\GUI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CameraInterface.h">
@@ -230,6 +236,12 @@
     <ClInclude Include="NormalVectorDrawer.h">
       <Filter>헤더 파일\Drawer</Filter>
     </ClInclude>
+    <ClInclude Include="ManageGuiInterface.h">
+      <Filter>헤더 파일\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="SettingManageGui.h">
+      <Filter>헤더 파일\GUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="BaseModelVS.hlsl">
@@ -251,9 +263,6 @@
       <Filter>Shader</Filter>
     </FxCompile>
     <FxCompile Include="NormalVectorGS.hlsl">
-      <Filter>Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="NormalVectorVS.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
   </ItemGroup>

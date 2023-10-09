@@ -1,10 +1,11 @@
 #pragma once
 
 #include <memory>
+#include "ManageGuiInterface.h"
 
 class LightManager;
 
-class LightManageGui
+class LightManageGui : public ManageGuiInterface
 {
 public:
 	LightManageGui(
@@ -16,7 +17,7 @@ private:
 	std::shared_ptr<LightManager>& spLightManager;
 
 public:
-	void RenderGui();
+	virtual void RenderGui() override;
 
 private:
 	void SetLightAddMenu();

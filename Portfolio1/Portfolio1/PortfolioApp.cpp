@@ -4,6 +4,7 @@
 #include "ModelManageGui.h"
 #include "LightManageGui.h"
 #include "FileManageGui.h"
+#include "SettingManageGui.h"
 
 #include "BaseModelDrawer.h"
 #include "ModelOutlineDrawer.h"
@@ -56,6 +57,7 @@ void PortfolioApp::Init()
 	upModelManageGui = make_unique<ModelManageGui>(vSpModels, spSelectedModel, spTempSelectedModel);
 	upLightManageGui = make_unique<LightManageGui>(spLightManager);
 	upFileManageGui = make_unique<FileManageGui>(upFileManager);
+	upSettingManageGui = make_unique<SettingManageGui>();
 	// ==============================================================================================
 
 	upFileManager = make_unique<FileManager>(cpDevice, cpDeviceContext);
@@ -109,11 +111,14 @@ void PortfolioApp::Render()
 		modelCanvas.Render();
 	}
 
-	for (auto& model : vSpModels)
+	if (upSettingManageGui->IsNormalVectorDraw())
 	{
-		upNormalVectorDrawer->SetModel(model.get());
-		Canvas<NormalVectorDrawer> nvCanvas(upNormalVectorDrawer.get());
-		nvCanvas.Render();
+		for (auto& model : vSpModels)
+		{
+			upNormalVectorDrawer->SetModel(model.get());
+			Canvas<NormalVectorDrawer> nvCanvas(upNormalVectorDrawer.get());
+			nvCanvas.Render();
+		}
 	}
 
 	if (spSelectedModel)
@@ -174,6 +179,7 @@ void PortfolioApp::SetImGUIRendering()
 	upModelManageGui->RenderGui();
 	upLightManageGui->RenderGui();
 	upFileManageGui->RenderGui();
+	upSettingManageGui->RenderGui();
     ImGui::Render();
 }
 

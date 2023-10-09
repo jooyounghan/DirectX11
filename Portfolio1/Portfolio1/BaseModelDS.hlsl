@@ -22,7 +22,7 @@ DomainOutput main(
     DomainOutput Output;
     
     Output.f2TexCoord = patch[0].f2TexCoord * domain.x + patch[1].f2TexCoord * domain.y + patch[2].f2TexCoord * domain.z;
-    Output.f4ModelNormal = patch[0].f4ModelNormal * domain.x + patch[1].f4ModelNormal * domain.y + patch[2].f4ModelNormal * domain.z;
+    Output.f4ProjNormal = patch[0].f4ProjNormal * domain.x + patch[1].f4ProjNormal * domain.y + patch[2].f4ProjNormal * domain.z;
     
     float3 e1 = normalize((patch[1].f4ModelPos - patch[0].f4ModelPos).xyz);
     float3 e2 = normalize((patch[2].f4ModelPos - patch[0].f4ModelPos).xyz);
@@ -38,7 +38,7 @@ DomainOutput main(
     
     float2x3 TB = mul(dTexXYInv, e);
 
-    Output.f4ModelNormal = normalize(Output.f4ModelNormal);
+    Output.f4ProjNormal = normalize(Output.f4ProjNormal);
     Output.f4ModelTangent = normalize(float4(TB[0], 0.f));
     Output.f4ModelBiTangent = normalize(float4(TB[1], 0.f));
 
@@ -47,7 +47,7 @@ DomainOutput main(
     float fHeightSampled = 2.f * HeightTexture.SampleLevel(Sampler, Output.f2TexCoord, 0.f).x - 1.f;
     fHeightSampled = 0.1 * fHeightSampled;
     
-    Output.f4ModelPos += fHeightSampled * Output.f4ModelNormal;
+    Output.f4ModelPos += fHeightSampled * Output.f4ProjNormal;
     Output.f4ProjPos = Output.f4ModelPos;
     Output.f4ProjPos = mul(Output.f4ProjPos, mViewProj);   
 	return Output;

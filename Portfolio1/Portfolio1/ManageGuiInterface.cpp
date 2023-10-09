@@ -1,0 +1,1 @@
+#include "ManageGuiInterface.h"

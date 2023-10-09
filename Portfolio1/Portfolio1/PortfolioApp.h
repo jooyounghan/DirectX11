@@ -13,6 +13,7 @@ class ModelInterface;
 class ModelManageGui;
 class LightManageGui;
 class FileManageGui;
+class SettingManageGui;
 
 class LightManager;
 class FileManager;
@@ -44,6 +45,7 @@ private:
 	std::unique_ptr<ModelManageGui>		upModelManageGui;
 	std::unique_ptr<LightManageGui>		upLightManageGui;
 	std::unique_ptr<FileManageGui>		upFileManageGui;
+	std::unique_ptr<SettingManageGui>	upSettingManageGui;
 
 public:
 	void ResizeSwapChain(const UINT& uiWidthIn, const UINT& uiHeightIn);

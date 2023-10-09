@@ -54,16 +54,16 @@ protected:
 protected:
 	void SetIAProperties();
 	void SetVSConstantBuffers();
-	void SetGSConstantBuffers();
 	void SetHSConstantBuffers();
 	void SetDSConstantBuffers();
+	void SetGSConstantBuffers();
 	void SetPSConstantBuffers();
 
 protected:
 	void SetVSShaderResources();
-	void SetGSShaderResources();
 	void SetHSShaderResources();
 	void SetDSShaderResources();
+	void SetGSShaderResources();
 	void SetPSShaderResources();
 
 public:
@@ -81,6 +81,20 @@ public:
 public:
 	TextureSet	sTextureSet;
 	ModelID		modelID;
+
+public:
+	Microsoft::WRL::ComPtr<ID3D11Buffer>	cpTextureFlagBuffer;
+	struct
+	{
+		bool bAODummy[3];
+		bool bIsAOTexture;
+		bool bDiffuseDummy[3];
+		bool bIsDiffuseTexture;
+		bool bReflectDummy[3];
+		bool bIsReflectTexture;
+		bool bNormalDummy[3];
+		bool bIsNormalTexture;
+	} sPSTextureFlags;
 
 public:
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	cpVertexBuffer;
