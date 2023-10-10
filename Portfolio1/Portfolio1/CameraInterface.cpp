@@ -132,10 +132,6 @@ void CameraInterface::SetVSConstantBuffers()
 	cpDeviceContext->VSSetConstantBuffers(VSConstBufferType::VS_ViewProjMatrix, 1, cpCameraConstantBuffer.GetAddressOf());
 }
 
-void CameraInterface::SetGSConstantBuffers()
-{
-}
-
 void CameraInterface::SetHSConstantBuffers()
 {
 }
@@ -143,6 +139,11 @@ void CameraInterface::SetHSConstantBuffers()
 void CameraInterface::SetDSConstantBuffers()
 {
 	cpDeviceContext->DSSetConstantBuffers(DSConstBufferType::DS_ViewProjMatrix, 1, cpCameraConstantBuffer.GetAddressOf());
+}
+
+void CameraInterface::SetGSConstantBuffers()
+{
+	cpDeviceContext->GSSetConstantBuffers(GSConstBufferType::GS_ViewProjMatrix, 1, cpCameraConstantBuffer.GetAddressOf());
 }
 
 void CameraInterface::SetPSConstantBuffers()

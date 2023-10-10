@@ -13,6 +13,13 @@ cbuffer TextureFlagBuffer : register(b0)
     bool bIsNormalTexture;
 };
 
+cbuffer ViewProjMatrix : register(b1)
+{
+    matrix mViewProj;
+    matrix mViewProjInv;
+};
+
+
 [maxvertexcount(6)]
 void main(
 	triangle DomainOutput input[3],
@@ -26,16 +33,16 @@ void main(
         float4 fNormalSampled;
         if (bIsNormalTexture)
         {
-            fNormalSampled = GetSampleLeveledNormalFromTBN(Sampler, NormalTexture, input[i].f2TexCoord, input[i].f4ProjNormal, input[i].f4ModelTangent, input[i].f4ModelBiTangent);
+            fNormalSampled = GetSampleLeveledNormalFromTBN(Sampler, NormalTexture, input[i].f2TexCoord, input[i].f4ModelNormal, input[i].f4ModelTangent, input[i].f4ModelBiTangent);
         }
         else
         {
-            fNormalSampled = input[i].f4ProjNormal;
+            fNormalSampled = input[i].f4ModelNormal;
         }
         
         for (uint j = 0; j < 2; j++)
         {
-            element.f4ProjNormal = fNormalSampled;
+            element.f4ProjNormal = mul(fNormalSampled, mViewProj);
             element.f2TexCoord = input[i].f2TexCoord;
             element.f2TexCoord.x = (float)j;
             element.f4ProjPos = input[i].f4ProjPos + element.f4ProjNormal * j;

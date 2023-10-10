@@ -33,7 +33,8 @@ enum PSSRVType : unsigned int
 
 enum GSConstBufferType : unsigned int
 {
-	GS_TextureFlags
+	GS_TextureFlags,
+	GS_ViewProjMatrix
 };
 
 enum GSSRVType : unsigned int

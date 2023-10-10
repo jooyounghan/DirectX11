@@ -12,7 +12,7 @@ struct VertexOutput
     float4 f4ProjPos : SV_Position;
     float4 f4ModelPos : POSITION;
     float2 f2TexCoord : TEXCOORD;
-    float4 f4ProjNormal : NORMAL;
+    float4 f4ModelNormal : NORMAL;
 };
 
 struct HS_CONSTANT_DATA_OUTPUT
@@ -27,7 +27,7 @@ struct HullOutput
     float4 f4ProjPos : SV_Position;
     float4 f4ModelPos : POSITION;
     float2 f2TexCoord : TEXCOORD;
-    float4 f4ProjNormal : NORMAL;
+    float4 f4ModelNormal : NORMAL;
 };
 
 
@@ -36,7 +36,7 @@ struct DomainOutput
     float4 f4ProjPos : SV_Position;
     float4 f4ModelPos : POSITION;
     float2 f2TexCoord : TEXCOORD;
-    float4 f4ProjNormal : NORMAL;
+    float4 f4ModelNormal : NORMAL;
     float4 f4ModelTangent : TANGENT;
     float4 f4ModelBiTangent : BINORMAL;
 };
