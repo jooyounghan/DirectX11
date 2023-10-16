@@ -13,3 +13,4 @@
   - 조명의 종류 : Directional / Point / Spot
 7. Point Light의 경우 Halo 효과를 구현한다.
 8. 그림자를 구현한다.
+9. HDR을 통한 렌더링을 지원한다.

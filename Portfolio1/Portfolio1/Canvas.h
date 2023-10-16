@@ -8,23 +8,31 @@ template <typename Drawer>
 class Canvas
 {
 public:
-	Canvas(Drawer* drawerIn);
+	Canvas();
 
 public:
-	void Render();
+	inline void Render();
+
+public:
+	inline void SetDrawer(Drawer* drawerIn);
 
 protected:
 	Drawer* drawer;
 };
 
 template<typename Drawer>
-Canvas<Drawer>::Canvas(Drawer* drawerIn)
-	: drawer(drawerIn)
+Canvas<Drawer>::Canvas()
 {
 }
 
 template<typename Drawer>
-void Canvas<Drawer>::Render()
+inline void Canvas<Drawer>::SetDrawer(Drawer* drawerIn)
+{
+	drawer = drawerIn;
+}
+
+template<typename Drawer>
+inline void Canvas<Drawer>::Render()
 {
 	if (drawer->pModel)
 	{
@@ -69,7 +77,8 @@ void Canvas<Drawer>::Render()
 
 		drawer->ResetDrawer();
 	}
-};
+}
+
 
 /*
 Drawer의 경우 단위 정책 디자인을 통하여 가상함수 호출을 최소화하였고

@@ -76,9 +76,15 @@
     <Filter Include="헤더 파일\GUI">
       <UniqueIdentifier>{3c9f599d-965d-47f1-8f92-64a5d3452d35}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Camera\Specific">
+      <UniqueIdentifier>{0382e59d-7599-4f0f-878f-2d64f7c09a51}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Camera\Specific">
+      <UniqueIdentifier>{39527639-b1d5-4a56-8187-944ec67a8ea1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CameraInterface.cpp">
+    <ClCompile Include="CameraBase.cpp">
       <Filter>소스 파일\Camera</Filter>
     </ClCompile>
     <ClCompile Include="ID3D11Helper.cpp">
@@ -156,9 +162,21 @@
     <ClCompile Include="SettingManageGui.cpp">
       <Filter>소스 파일\GUI</Filter>
     </ClCompile>
+    <ClCompile Include="CameraUNorm.cpp">
+      <Filter>소스 파일\Camera\Specific</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraHDR.cpp">
+      <Filter>소스 파일\Camera\Specific</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraInfo.cpp">
+      <Filter>소스 파일\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraAdapter.cpp">
+      <Filter>소스 파일\Camera</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CameraInterface.h">
+    <ClInclude Include="CameraBase.h">
       <Filter>헤더 파일\Camera</Filter>
     </ClInclude>
     <ClInclude Include="ID3D11Helper.h">
@@ -241,6 +259,18 @@
     </ClInclude>
     <ClInclude Include="SettingManageGui.h">
       <Filter>헤더 파일\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraHDR.h">
+      <Filter>헤더 파일\Camera\Specific</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraUNorm.h">
+      <Filter>헤더 파일\Camera\Specific</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraInfo.h">
+      <Filter>헤더 파일\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraAdapter.h">
+      <Filter>헤더 파일\Camera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -22,6 +22,9 @@ class BaseModelDrawer;
 class ModelOutlineDrawer;
 class NormalVectorDrawer;
 
+template<typename T>
+class Canvas;
+
 class PortfolioApp : public BaseApp
 {
 public:
@@ -56,15 +59,22 @@ public:
 private:
 	std::unique_ptr<FileManager>		upFileManager;
 
-private:	
-	std::shared_ptr<CameraInterface>		spMainCamera;
+private:
+	std::shared_ptr<CameraInterface>		spCameraAdapter;
+
+private:
 	std::shared_ptr<ModelInterface>			spSelectedModel;
 	std::shared_ptr<ModelInterface>			spTempSelectedModel;
 
 private:
-	std::vector<std::shared_ptr<CameraInterface>>	vSpCameras;
+	std::vector<std::shared_ptr<CameraInterface>>		vSpCameras;
 	std::vector<std::shared_ptr<ModelInterface>>	vSpModels;
 	std::shared_ptr<LightManager>					spLightManager;
+
+private:
+	std::unique_ptr<Canvas<BaseModelDrawer>> upBaseCanvas;
+	std::unique_ptr<Canvas<ModelOutlineDrawer>> upModelOutlineCanvas;
+	std::unique_ptr<Canvas<NormalVectorDrawer>> upNVCanvas;
 
 private:
 	std::unique_ptr<BaseModelDrawer>	upModelDrawer;

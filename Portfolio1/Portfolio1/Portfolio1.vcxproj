@@ -133,6 +133,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BaseApp.cpp" />
+    <ClCompile Include="CameraAdapter.cpp" />
+    <ClCompile Include="CameraHDR.cpp" />
+    <ClCompile Include="CameraInfo.cpp" />
+    <ClCompile Include="CameraUNorm.cpp" />
     <ClCompile Include="Canvas.cpp" />
     <ClCompile Include="ManageGuiInterface.cpp" />
     <ClCompile Include="NormalVectorDrawer.cpp" />
@@ -140,7 +144,7 @@
     <ClCompile Include="SphereModel.cpp" />
     <ClCompile Include="DepthStencilState.cpp" />
     <ClCompile Include="FileManager.cpp" />
-    <ClCompile Include="CameraInterface.cpp" />
+    <ClCompile Include="CameraBase.cpp" />
     <ClCompile Include="FileManageGui.cpp" />
     <ClCompile Include="ID3D11Helper.cpp" />
     <ClCompile Include="BaseModelDrawer.cpp" />
@@ -161,6 +165,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseApp.h" />
+    <ClInclude Include="CameraAdapter.h" />
+    <ClInclude Include="CameraHDR.h" />
+    <ClInclude Include="CameraInfo.h" />
+    <ClInclude Include="CameraUNorm.h" />
     <ClInclude Include="Canvas.h" />
     <ClInclude Include="ManageGuiInterface.h" />
     <ClInclude Include="NormalVectorDrawer.h" />
@@ -170,7 +178,7 @@
     <ClInclude Include="DepthStencilState.h" />
     <ClInclude Include="EnumVar.h" />
     <ClInclude Include="FileManager.h" />
-    <ClInclude Include="CameraInterface.h" />
+    <ClInclude Include="CameraBase.h" />
     <ClInclude Include="FileManageGui.h" />
     <ClInclude Include="ID3D11Helper.h" />
     <ClInclude Include="BaseModelDrawer.h" />

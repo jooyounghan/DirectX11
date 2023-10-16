@@ -12,16 +12,15 @@
 
 #include "Canvas.h"
 
-#include "CameraInterface.h"
+#include "CameraAdapter.h"
+#include "CameraUNorm.h"
 
 #include "ModelInterface.h"
 #include "SphereModel.h"
 #include "SquareModel.h"
 
-
 #include "LightManager.h"
 #include "FileManager.h"
-
 
 #include "DefineVar.h"
 
@@ -35,7 +34,7 @@ using namespace DirectX;
 using namespace std;
 
 PortfolioApp::PortfolioApp(const UINT& uiWidthIn, const UINT& uiHeightIn)
-	: BaseApp(uiWidthIn, uiHeightIn), spMainCamera(nullptr), spSelectedModel(nullptr), spTempSelectedModel(nullptr)
+	: BaseApp(uiWidthIn, uiHeightIn), spCameraAdapter(nullptr), spSelectedModel(nullptr), spTempSelectedModel(nullptr)
 {
 	BaseApp::GlobalBaseApp = this;
 }
@@ -63,6 +62,10 @@ void PortfolioApp::Init()
 	upFileManager = make_unique<FileManager>(cpDevice, cpDeviceContext);
 	spLightManager = make_unique<LightManager>(cpDevice, cpDeviceContext);
 
+	upBaseCanvas = make_unique<Canvas<BaseModelDrawer>>();
+	upModelOutlineCanvas = make_unique<Canvas<ModelOutlineDrawer>>();
+	upNVCanvas = make_unique<Canvas<NormalVectorDrawer>>();
+
 	upModelDrawer = make_unique<BaseModelDrawer>(cpDevice, cpDeviceContext);
 	upModelOutlineDrawer = make_unique<ModelOutlineDrawer>(cpDevice, cpDeviceContext);
 	upNormalVectorDrawer = make_unique<NormalVectorDrawer>(cpDevice, cpDeviceContext);
@@ -70,7 +73,8 @@ void PortfolioApp::Init()
 	// For Testing ==================================================================================
 	upFileManager->LoadImageFromFile(L".\\Texture\\GrassWithMudAndStone");
 
-	spMainCamera = make_shared<CameraInterface>(cpDevice, cpDeviceContext, cpSwapChain, uiWidth, uiHeight, uiNumLevelQuality);
+	spCameraAdapter = make_shared<CameraAdapter<CameraUNorm>>(cpDevice, cpDeviceContext, cpSwapChain, uiWidth, uiHeight, uiNumLevelQuality);
+
 	vSpModels.push_back(std::make_shared<SquareModel>(cpDevice, cpDeviceContext, 0.f, 0.f, 0.f, 2.f));
 	vSpModels.push_back(std::make_shared<SphereModel>(cpDevice, cpDeviceContext, 5.f, 0.f, 5.f, 2.f));
 
@@ -84,7 +88,7 @@ void PortfolioApp::Init()
 
 void PortfolioApp::Update()
 {
-	spMainCamera->Update();
+	//spCameraAdapter->Update();
 	spLightManager->Update();
 
 	CheckMouseHoveredModel();
@@ -97,18 +101,21 @@ void PortfolioApp::Update()
 
 void PortfolioApp::Render()
 {
-	spMainCamera->WipeOut();
+	//spMainCamera->WipeOut();
 
-	upModelDrawer->SetCamera(spMainCamera.get());
-	upNormalVectorDrawer->SetCamera(spMainCamera.get());
-	upModelOutlineDrawer->SetCamera(spMainCamera.get());
+	upBaseCanvas->SetDrawer(upModelDrawer.get());
+	upModelOutlineCanvas->SetDrawer(upModelOutlineDrawer.get());
+	upNVCanvas->SetDrawer(upNormalVectorDrawer.get());
+
+	upModelDrawer->SetCameraAdapter(spCameraAdapter.get());
+	upNormalVectorDrawer->SetCameraAdapter(spCameraAdapter.get());
+	upModelOutlineDrawer->SetCameraAdapter(spCameraAdapter.get());
 
 	for (auto& model : vSpModels)
 	{
 		upModelDrawer->SetModel(model.get());
 		upModelDrawer->SetLightManager(spLightManager.get());
-		Canvas<BaseModelDrawer> modelCanvas(upModelDrawer.get());
-		modelCanvas.Render();
+		upBaseCanvas->Render();
 	}
 
 	if (upSettingManageGui->IsNormalVectorDraw())
@@ -116,16 +123,14 @@ void PortfolioApp::Render()
 		for (auto& model : vSpModels)
 		{
 			upNormalVectorDrawer->SetModel(model.get());
-			Canvas<NormalVectorDrawer> nvCanvas(upNormalVectorDrawer.get());
-			nvCanvas.Render();
+			upModelOutlineCanvas->Render();
 		}
 	}
 
 	if (spSelectedModel)
 	{
 		upModelOutlineDrawer->SetModel(spSelectedModel.get());
-		Canvas<ModelOutlineDrawer> canvas(upModelOutlineDrawer.get());
-		canvas.Render();
+		upNVCanvas->Render();
 	}
 }
 
@@ -203,13 +208,13 @@ void PortfolioApp::ResizeSwapChain(const UINT& uiWidthIn, const UINT& uiHeightIn
 		uiHeight = uiHeightIn;
 		fAspectRatio = uiWidth / (float)uiHeight;
 		cpSwapChain->ResizeBuffers(0, uiWidth, uiHeight, DXGI_FORMAT_UNKNOWN, 0);
-		spMainCamera->Resize(fAspectRatio);
+		spCameraAdapter->Resize(fAspectRatio);
 	}
 }
 
 void PortfolioApp::CheckMouseHoveredModel()
 {
-	ModelIDData uiSelectedModelID = spMainCamera->GetPointedModelID();
+	ModelIDData uiSelectedModelID = spCameraAdapter->GetPointedModelID();
 	auto findResult = find_if(vSpModels.begin(), vSpModels.end(), [&](shared_ptr<ModelInterface> model) { return model->modelID.sIdData == uiSelectedModelID; });
 	if (findResult != vSpModels.end())
 	{
@@ -238,7 +243,7 @@ LRESULT __stdcall PortfolioApp::AppProc(HWND hWnd, UINT msg, WPARAM wParam, LPAR
 		ResizeSwapChain((UINT)LOWORD(lParam), (UINT)HIWORD(lParam));
 		return 0;
 	case WM_MOUSEMOVE:
-		spMainCamera->SetFromMouseXY(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		spCameraAdapter->SetFromMouseXY(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
 		return 0;
 	case WM_LBUTTONUP:
 		if (spTempSelectedModel != nullptr)
@@ -252,35 +257,32 @@ LRESULT __stdcall PortfolioApp::AppProc(HWND hWnd, UINT msg, WPARAM wParam, LPAR
 	case WM_KEYDOWN:
 		switch (wParam) {
 		case KeyCode::W:
-			spMainCamera->StartMove(MoveDir::Forward);
+			spCameraAdapter->StartMove(MoveDir::Forward);
 			break;
 		case KeyCode::A:
-			spMainCamera->StartMove(MoveDir::Left);
+			spCameraAdapter->StartMove(MoveDir::Left);
 			break;
 		case KeyCode::S:
-			spMainCamera->StartMove(MoveDir::Backward);
+			spCameraAdapter->StartMove(MoveDir::Backward);
 			break;
 		case KeyCode::D:
-			spMainCamera->StartMove(MoveDir::Right);
-			break;
-		case KeyCode::F:
-			spMainCamera->SwitchFirstView();
+			spCameraAdapter->StartMove(MoveDir::Right);
 			break;
 		}
 		return 0;
 	case WM_KEYUP:
 		switch (wParam) {
 		case KeyCode::W:
-			spMainCamera->StopMove(MoveDir::Forward);
+			spCameraAdapter->StopMove(MoveDir::Forward);
 			break;
 		case KeyCode::A:
-			spMainCamera->StopMove(MoveDir::Left);
+			spCameraAdapter->StopMove(MoveDir::Left);
 			break;
 		case KeyCode::S:
-			spMainCamera->StopMove(MoveDir::Backward);
+			spCameraAdapter->StopMove(MoveDir::Backward);
 			break;
 		case KeyCode::D:
-			spMainCamera->StopMove(MoveDir::Right);
+			spCameraAdapter->StopMove(MoveDir::Right);
 			break;
 		}
 		return 0;

@@ -26,8 +26,8 @@ protected:
 	LightManager* pLightManager;
 
 public:
-	void SetModel(ModelInterface* modelInterface);
-	void SetCamera(CameraInterface* cameraInterface);
-	void SetLightManager(LightManager* lightManager);
+	inline void SetModel(ModelInterface* modelInterface) { pModel = modelInterface; };
+	inline void SetCameraAdapter(CameraInterface* cameraInterface) { pCamera = cameraInterface; };
+	inline void SetLightManager(LightManager* lightManager) { pLightManager = lightManager; } ;
 };
 
