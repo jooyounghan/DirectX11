@@ -52,7 +52,7 @@ PixelOutput main(DomainOutput input) : SV_TARGET
         fResultColor += fDiffuseColor * fLightPower * sLightSets[i].f4Color;
     }
     
-    result.pixelColor = fResultColor;
+    result.pixelColor = fResultColor + float4(0.3f, 0.3f, 0.3f, 0.3f);
     result.modleId = float4(sModelId.uiModelID.x, sModelId.uiModelID.y, sModelId.uiModelID.z, sModelId.uiModelIDStd) / sModelId.uiModelIDStd;
     return result;
 }

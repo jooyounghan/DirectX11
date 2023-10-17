@@ -11,39 +11,25 @@ public:
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn,
 		Microsoft::WRL::ComPtr<IDXGISwapChain>& cpSwapChainIn,
 		const UINT& uiWidthIn, const UINT& uiHeightIn,
-		const UINT& uiNumLevelQuality
+		const UINT& uiNumLevelQualityIn
 	);
 	~CameraBase();
 
 public:
 	UINT			uiWidth;
 	UINT			uiHeight;
+	UINT			uiNumLevelQuality;
 	CameraInfo		sCameraInfo;
 
 protected:
 	Microsoft::WRL::ComPtr<ID3D11Texture2D>			cpBackBuffer;
-	Microsoft::WRL::ComPtr<ID3D11RenderTargetView>	cpRenderTargetView;
-
-protected:
-	Microsoft::WRL::ComPtr<ID3D11Texture2D>			cpModelIDTexture;
-	Microsoft::WRL::ComPtr<ID3D11RenderTargetView>	cpModelIDRTV;
-
-public:
-	Microsoft::WRL::ComPtr<ID3D11Texture2D>			cpModelIDMSToSS;
-	Microsoft::WRL::ComPtr<ID3D11Texture2D>			cpModelIDStagingTexture;
-
-public:
-	struct ModelIDData GetPointedModelID();
+	Microsoft::WRL::ComPtr<ID3D11RenderTargetView>	cpSwapChainRTV;
 
 public:
 	void StartMove(MoveDir moveDir);
 	void StopMove(MoveDir moveDir);
 	void SetFromMouseXY(const int& iMouseX, const int& iMouseY);
 	void SwitchFirstView();
-
-protected:
-	Microsoft::WRL::ComPtr<ID3D11Texture2D>			cpDepthStencilTexture2D;
-	Microsoft::WRL::ComPtr<ID3D11DepthStencilView>	cpDepthStencilView;
 
 public:
 	Microsoft::WRL::ComPtr<ID3D11RasterizerState>	cpRasterizerState;

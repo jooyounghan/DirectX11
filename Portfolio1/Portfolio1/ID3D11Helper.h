@@ -123,6 +123,13 @@ public:
 		OUT ID3D11DepthStencilView** ppDepthStencilView
 	);
 
+	static void CreateDepthStencilView(
+		IN ID3D11Device* pDevice,
+		IN const D3D11_TEXTURE2D_DESC& sTexture2DDesc,
+		IN OUT ID3D11Texture2D** ppDepthStencilTexture2D,
+		OUT ID3D11DepthStencilView** ppDepthStencilView
+	);
+
 	static void CreateRasterizerState(
 		IN ID3D11Device* pDevice,
 		IN D3D11_FILL_MODE eFillMode,
@@ -181,7 +188,7 @@ public:
 		IN UINT uiWidth,
 		IN UINT uiHeight,
 		IN UINT uiArraySize,
-		IN UINT uiSampleCount,
+		IN UINT uiNumQualityLevels,
 		IN UINT uiBindFlag,
 		IN UINT uiCPUAccess,
 		IN UINT uiMiscFlag,

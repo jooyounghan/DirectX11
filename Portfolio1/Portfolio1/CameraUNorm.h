@@ -11,10 +11,7 @@ public:
 		const UINT& uiWidthIn, const UINT& uiHeightIn,
 		const UINT& uiNumLevelQuality
 	);
-	~CameraUNorm()
-	{
-		bool test = true;
-	};
+	~CameraUNorm() {};
 
 public:
 	void Update();
@@ -29,4 +26,31 @@ public:
 	void SetGSConstantBuffers();
 	void SetPSConstantBuffers();
 	void OMSetRenderTargets();
+
+public:
+	void PostProcess();
+
+protected:
+	Microsoft::WRL::ComPtr<ID3D11Texture2D>			cpSDRTexture;
+	Microsoft::WRL::ComPtr<ID3D11RenderTargetView>	cpSDRRTV;
+
+protected:
+	Microsoft::WRL::ComPtr<ID3D11Texture2D>			cpModelIDTexture;
+	Microsoft::WRL::ComPtr<ID3D11RenderTargetView>	cpModelIDRTV;
+
+public:
+	Microsoft::WRL::ComPtr<ID3D11Texture2D>			cpModelIDMSToSS;
+	Microsoft::WRL::ComPtr<ID3D11Texture2D>			cpModelIDStagingTexture;
+
+protected:
+	Microsoft::WRL::ComPtr<ID3D11Texture2D>			cpDepthStencilTexture2D;
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilView>	cpDepthStencilView;
+
+public:
+	struct ModelIDData GetPointedModelID();
+
+
+private:
+	void CreateSRDResource();
+	void CreateModelIDResource();
 };

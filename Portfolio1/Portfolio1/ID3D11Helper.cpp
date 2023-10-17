@@ -82,8 +82,8 @@ void ID3D11Helper::CreateDeviceAndContext(
 	sSwapChainDesc.BufferDesc.RefreshRate.Denominator = 1;
 	sSwapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 
-	sSwapChainDesc.SampleDesc.Count = uiNumLevelQuality > 0 ? 4 : 1;
-	sSwapChainDesc.SampleDesc.Quality = uiNumLevelQuality > 0 ? uiNumLevelQuality - 1 : 0;
+	sSwapChainDesc.SampleDesc.Count = /*uiNumLevelQuality > 0 ? 4 : */ 1;
+	sSwapChainDesc.SampleDesc.Quality = /*uiNumLevelQuality > 0 ? uiNumLevelQuality - 1 : */ 0;
 
 	sSwapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 	sSwapChainDesc.BufferCount = 2;
@@ -108,7 +108,7 @@ void ID3D11Helper::CreateDeviceAndContext(
 	이를 비-멀티샘플링된 백 버퍼에 Resolve한다.
 	이후에 Resolve된 백 버퍼를 프론트 버퍼로 스왑한다.
 	*/
-	sSwapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+	sSwapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 	sSwapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG::DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
 	hResult = D3D11CreateDeviceAndSwapChain(
@@ -521,7 +521,7 @@ void ID3D11Helper::CreateTexture2D(
 	IN UINT uiWidth,
 	IN UINT uiHeight,
 	IN UINT uiArraySize,
-	IN UINT uiSampleCount,
+	IN UINT uiNumQualityLevels,
 	IN UINT uiBindFlag,
 	IN UINT uiCPUAccess,
 	IN UINT uiMiscFlag,
@@ -535,7 +535,15 @@ void ID3D11Helper::CreateTexture2D(
 	sTexture2DDesc.Width = uiWidth;
 	sTexture2DDesc.Height = uiHeight;
 	sTexture2DDesc.ArraySize = uiArraySize;
-	sTexture2DDesc.SampleDesc.Count = uiSampleCount;
+	sTexture2DDesc.MipLevels = 1;
+	if (uiNumQualityLevels > 0) {
+		sTexture2DDesc.SampleDesc.Count = 4; // how many multisamples
+		sTexture2DDesc.SampleDesc.Quality = uiNumQualityLevels - 1;
+	}
+	else {
+		sTexture2DDesc.SampleDesc.Count = 1; // how many multisamples
+		sTexture2DDesc.SampleDesc.Quality = 0;
+	}
 	sTexture2DDesc.BindFlags = uiBindFlag;
 	sTexture2DDesc.CPUAccessFlags = uiCPUAccess;
 	sTexture2DDesc.MiscFlags = uiMiscFlag;

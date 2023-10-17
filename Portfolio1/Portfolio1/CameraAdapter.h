@@ -25,6 +25,9 @@ public:
 	std::function<void(MoveDir)> StopMove;
 	std::function<void(const int&, const int&)> SetFromMouseXY;
 	std::function<void()> SwitchFirstView;
+
+public:
+	std::function<void()> PostProcess;
 };
 
 template <typename CameraImpl>
@@ -59,4 +62,6 @@ CameraAdapter<CameraImpl>::CameraAdapter(Args& ...args)
 	StopMove = [this](MoveDir moveDir) {cameraImpl.StopMove(moveDir); };
 	SetFromMouseXY = [this](const int& iMouseX, const int& iMouseY) {cameraImpl.SetFromMouseXY(iMouseX, iMouseY); };
 	SwitchFirstView = [this]() { cameraImpl.SwitchFirstView(); };
+
+	PostProcess = [this]() { cameraImpl.PostProcess(); };
 };
