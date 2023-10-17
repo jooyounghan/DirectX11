@@ -39,6 +39,7 @@ public:
 	void StartMove(MoveDir moveDir);
 	void StopMove(MoveDir moveDir);
 	void SetFromMouseXY(const int& iMouseX, const int& iMouseY);
+	void SwitchFirstView();
 
 protected:
 	Microsoft::WRL::ComPtr<ID3D11Texture2D>			cpDepthStencilTexture2D;

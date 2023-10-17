@@ -31,28 +31,29 @@ public:
 	);
 
 public:
-	unsigned int			uiMouseLocation[2];
-	DirectX::XMVECTOR		xmvCameraPosition;
+	struct {
+		unsigned int			uiMouseLocation[2];
+		DirectX::XMVECTOR		xmvCameraPosition;
 
-	float	fRoll;
-	float	fPitch;
-	float	fYaw;
-	float	fFovAngle;
-	float	fAspectRatio;
-	float	fNearZ;
-	float	fFarZ;
-	float	fMoveSpeed;
-	float	fMouseMovablePitchAngleDegree;
-	float	fMouseMovableYawAngleDegree;
+		float	fRoll;
+		float	fPitch;
+		float	fYaw;
+		float	fFovAngle;
+		float	fAspectRatio;
+		float	fNearZ;
+		float	fFarZ;
+		float	fMoveSpeed;
+		float	fMouseMovablePitchAngleDegree;
+		float	fMouseMovableYawAngleDegree;
+		bool			bMoveDirection[MoveDir::NUM_DIR];
+		bool			bFirstView;
+	} sInfoData;
 
 public:
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	cpCameraInfoConstantBuffer;
 
 public:
 	inline const Microsoft::WRL::ComPtr<ID3D11Buffer>& GetCameraInfoConstantBuffer() { return cpCameraInfoConstantBuffer; }
-
-public:
-	bool bMoveDirection[MoveDir::NUM_DIR];
 
 public:
 	void Update();

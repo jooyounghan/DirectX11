@@ -48,10 +48,12 @@ void ModelID::SetPsConstantBuffers(ID3D11DeviceContext* pDeviceContext)
 ModelIDData ModelID::ConvertR8G8B8A8ToModelID(const unsigned int& RGBA)
 {
 	ModelIDData result;
-	result.ucModelID[0] = RGBA & 0xFF;
-	result.ucModelID[1] = (RGBA >> 8) & 0xFF;
-	result.ucModelID[2] = (RGBA >> 16) & 0xFF;
-	result.ucModelIDStd = (RGBA >> 24) & 0xFF;
+	result.ucModelID[0] = (RGBA & 0xFF);
+	result.ucModelID[1] = ((RGBA >> 8) & 0xFF);
+	result.ucModelID[2] = ((RGBA >> 16) & 0xFF);
+	result.ucModelIDStd = ((RGBA >> 24) & 0xFF);
+	int a;
+	a = 5;
 	return result;
 }
 

@@ -46,9 +46,9 @@ ModelIDData CameraBase::GetPointedModelID()
 
 		D3D11_BOX sBox;
 		AutoZeroMemory(sBox);
-		sBox.left = sCameraInfo.uiMouseLocation[0];
+		sBox.left = sCameraInfo.sInfoData.uiMouseLocation[0];
 		sBox.right = sBox.left + 1;
-		sBox.top = sCameraInfo.uiMouseLocation[1];
+		sBox.top = sCameraInfo.sInfoData.uiMouseLocation[1];
 		sBox.bottom = sBox.top + 1;
 		sBox.front = 0;
 		sBox.back = 1;
@@ -68,25 +68,34 @@ ModelIDData CameraBase::GetPointedModelID()
 
 void CameraBase::StartMove(MoveDir moveDir)
 {
-	sCameraInfo.bMoveDirection[moveDir] = true;
+	sCameraInfo.sInfoData.bMoveDirection[moveDir] = true;
 }
 void CameraBase::StopMove(MoveDir moveDir)
 {
-	sCameraInfo.bMoveDirection[moveDir] = false;
+	sCameraInfo.sInfoData.bMoveDirection[moveDir] = false;
 }
 
 void CameraBase::SetFromMouseXY(const int& iMouseX, const int& iMouseY)
 {
-	if (iMouseX < 0 || iMouseY < 0)	return;
-	sCameraInfo.uiMouseLocation[0] = iMouseX;
-	sCameraInfo.uiMouseLocation[1] = iMouseY;
+	sCameraInfo.sInfoData.uiMouseLocation[0] = clamp((unsigned int)iMouseX, 0x0000u, 0xFFFFu);
+	sCameraInfo.sInfoData.uiMouseLocation[1] = clamp((unsigned int)iMouseY, 0x0000u, 0xFFFFu);
 
-	sCameraInfo.uiMouseLocation[0] = clamp(sCameraInfo.uiMouseLocation[0], 0x0000u, 0xFFFFu);
-	sCameraInfo.uiMouseLocation[1] = clamp(sCameraInfo.uiMouseLocation[1], 0x0000u, 0xFFFFu);
+	float fNdcX = sCameraInfo.sInfoData.uiMouseLocation[0] * 2.f / uiWidth - 1.f;
+	float fNdcY = sCameraInfo.sInfoData.uiMouseLocation[1] * 2.f / uiHeight - 1.f;
 
-	float fNdcX = sCameraInfo.uiMouseLocation[0] * 2.f / uiWidth - 1.f;
-	float fNdcY = sCameraInfo.uiMouseLocation[1] * 2.f / uiHeight - 1.f;
+	if (sCameraInfo.sInfoData.bFirstView)
+	{
+		sCameraInfo.sInfoData.fPitch = sCameraInfo.sInfoData.fMouseMovablePitchAngleDegree * fNdcY;
+		sCameraInfo.sInfoData.fYaw = sCameraInfo.sInfoData.fMouseMovableYawAngleDegree * fNdcX;
+	}
+	else
+	{
+		sCameraInfo.sInfoData.fPitch = sCameraInfo.sInfoData.fPitch;
+		sCameraInfo.sInfoData.fYaw = sCameraInfo.sInfoData.fYaw;
+	}
+}
 
-	sCameraInfo.fPitch = sCameraInfo.fMouseMovablePitchAngleDegree * fNdcY;
-	sCameraInfo.fYaw = sCameraInfo.fMouseMovableYawAngleDegree * fNdcX;
+void CameraBase::SwitchFirstView()
+{
+	sCameraInfo.sInfoData.bFirstView = !sCameraInfo.sInfoData.bFirstView;
 }

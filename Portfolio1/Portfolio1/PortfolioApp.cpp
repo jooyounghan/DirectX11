@@ -88,7 +88,7 @@ void PortfolioApp::Init()
 
 void PortfolioApp::Update()
 {
-	//spCameraAdapter->Update();
+	spCameraAdapter->Update();
 	spLightManager->Update();
 
 	CheckMouseHoveredModel();
@@ -101,7 +101,7 @@ void PortfolioApp::Update()
 
 void PortfolioApp::Render()
 {
-	//spMainCamera->WipeOut();
+	spCameraAdapter->WipeOut(DirectX::XMVectorSet(0.f, 0.f, 0.f, 1.f));
 
 	upBaseCanvas->SetDrawer(upModelDrawer.get());
 	upModelOutlineCanvas->SetDrawer(upModelOutlineDrawer.get());
@@ -123,14 +123,14 @@ void PortfolioApp::Render()
 		for (auto& model : vSpModels)
 		{
 			upNormalVectorDrawer->SetModel(model.get());
-			upModelOutlineCanvas->Render();
+			upNVCanvas->Render();
 		}
 	}
 
 	if (spSelectedModel)
 	{
 		upModelOutlineDrawer->SetModel(spSelectedModel.get());
-		upNVCanvas->Render();
+		upModelOutlineCanvas->Render();
 	}
 }
 
@@ -267,6 +267,9 @@ LRESULT __stdcall PortfolioApp::AppProc(HWND hWnd, UINT msg, WPARAM wParam, LPAR
 			break;
 		case KeyCode::D:
 			spCameraAdapter->StartMove(MoveDir::Right);
+			break;
+		case KeyCode::F:
+			spCameraAdapter->SwitchFirstView();
 			break;
 		}
 		return 0;

@@ -23,7 +23,7 @@ void CameraUNorm::Update()
 
 void CameraUNorm::Resize(const float& fAspectRatioIn)
 {
-	sCameraInfo.fAspectRatio = fAspectRatioIn;
+	sCameraInfo.sInfoData.fAspectRatio = fAspectRatioIn;
 	ID3D11Helper::GetBackBuffer(cpSwapChain.Get(), cpBackBuffer.GetAddressOf());
 	cpRenderTargetView.Reset();
 	ID3D11Helper::CreateRenderTargetView(cpDevice.Get(), cpBackBuffer.Get(), cpRenderTargetView.GetAddressOf());
