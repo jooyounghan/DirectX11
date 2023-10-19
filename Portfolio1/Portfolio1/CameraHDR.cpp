@@ -5,6 +5,8 @@ CameraHDR::CameraHDR(Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn, Microsoft
 {
 }
 
+CameraHDR::~CameraHDR() {}
+
 void CameraHDR::Update()
 {
 	sCameraInfo.Update();

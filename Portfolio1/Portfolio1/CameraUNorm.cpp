@@ -17,6 +17,8 @@ CameraUNorm::CameraUNorm(Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn, Micro
 	CreateModelIDResource();
 }
 
+CameraUNorm::~CameraUNorm() {}
+
 void CameraUNorm::Update()
 {
 	sCameraInfo.Update();

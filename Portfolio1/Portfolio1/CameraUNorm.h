@@ -11,7 +11,7 @@ public:
 		const UINT& uiWidthIn, const UINT& uiHeightIn,
 		const UINT& uiNumLevelQuality
 	);
-	virtual ~CameraUNorm() {};
+	virtual ~CameraUNorm();
 
 public:
 	void Update();

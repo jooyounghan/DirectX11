@@ -19,7 +19,7 @@ public:
 		const UINT& uiWidthIn, const UINT& uiHeightIn,
 		const UINT& uiNumLevelQualityIn
 	);
-	virtual ~CameraInterface() = 0;
+	virtual ~CameraInterface() {};
 	
 public:
 	UINT			uiWidth;

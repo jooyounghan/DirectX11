@@ -11,8 +11,6 @@ FilterInterface::FilterInterface(
 )
 	: cpDevice(cpDeviceIn), cpDeviceContext(cpDeviceContextIn), cpInputTexture2D(cpInputTexture2DIn), uiWidth(uiWidthIn), uiHeight(uiHeightIn)
 {
-	CreateOutputResource();
-
 	vFilterVertices = vector<FilterVertex>({
 		{ {-1.f, 1.f}, {0.f, 0.f} },
 		{ {1.f, 1.f}, {1.f, 0.f} },

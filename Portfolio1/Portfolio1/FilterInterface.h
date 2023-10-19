@@ -22,7 +22,7 @@ public:
 		const UINT& uiWidthIn,
 		const UINT& uiHeightIn
 	);
-	virtual ~FilterInterface() = 0;
+	virtual ~FilterInterface() { };
 
 public:
 	Microsoft::WRL::ComPtr<ID3D11Device>& cpDevice;
