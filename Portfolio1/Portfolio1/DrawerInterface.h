@@ -14,7 +14,7 @@ public:
 	DrawerInterface(
 		Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn,
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn);
-	~DrawerInterface();
+	virtual ~DrawerInterface();
 
 protected:
 	Microsoft::WRL::ComPtr<ID3D11Device>& cpDevice;

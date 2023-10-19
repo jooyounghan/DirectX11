@@ -11,7 +11,7 @@ public:
 		const UINT& uiWidthIn, const UINT& uiHeightIn,
 		const UINT& uiNumLevelQuality
 	);
-	~CameraHDR() {};
+	virtual ~CameraHDR() {};
 
 public:
 	void Update();

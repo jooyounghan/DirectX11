@@ -1,5 +1,8 @@
 #pragma once
 
+#include <d3d11.h>
+#include <d3dcompiler.h>
+#include <wrl/client.h>
 #include <directxmath/DirectXMath.h>
 #include <functional>
 
@@ -8,9 +11,9 @@ enum MoveDir;
 class CameraInterface
 {
 public:
-	std::function<void()> Update;
-	std::function<void(const float&)> Resize;
-	std::function<void(const DirectX::XMVECTOR& xmvClearColor)> WipeOut;
+	void (*Update)();
+	void (*Resize)(const float&);
+	void (*WipeOut)(const DirectX::XMVECTOR&);
 	std::function<void()> SetRSState;
 	std::function<void()> SetVSConstantBuffers;
 	std::function<void()> SetHSConstantBuffers;
@@ -35,7 +38,12 @@ class CameraAdapter : public CameraInterface
 {
 public:
 	template<typename ...Args>
-	CameraAdapter<CameraImpl>(Args&... args);
+	CameraAdapter<CameraImpl>(
+		Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn,
+		Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn,
+		Microsoft::WRL::ComPtr<IDXGISwapChain>& cpSwapChainIn,
+		Args... args
+	);
 
 public:
 	CameraImpl cameraImpl;
@@ -43,12 +51,17 @@ public:
 
 template<typename CameraImpl>
 template<typename ...Args>
-CameraAdapter<CameraImpl>::CameraAdapter(Args& ...args)
-	: cameraImpl(CameraImpl(args...))
+CameraAdapter<CameraImpl>::CameraAdapter(
+	Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn,
+	Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn,
+	Microsoft::WRL::ComPtr<IDXGISwapChain>& cpSwapChainIn,
+	Args... args
+)
+	: cameraImpl(CameraImpl(cpDeviceIn, cpDeviceContextIn, cpSwapChainIn, args...))
 {
-	Update = [this]() { cameraImpl.Update(); };
-	Resize = [this](const float& fAspectRatioIn) { cameraImpl.Resize(fAspectRatioIn); };
-	WipeOut = [this](const DirectX::XMVECTOR& xmvClearColor) { cameraImpl.WipeOut(xmvClearColor); };
+	Update = &CameraImpl::Update;
+	Resize = &CameraImpl::Resize;
+	WipeOut = &CameraImpl::WipeOut;
 	SetRSState = [this]() { cameraImpl.SetRSState(); };
 	SetVSConstantBuffers = [this]() { cameraImpl.SetVSConstantBuffers(); };
 	SetHSConstantBuffers = [this]() { cameraImpl.SetHSConstantBuffers(); };

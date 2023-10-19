@@ -133,13 +133,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BaseApp.cpp" />
+    <ClCompile Include="BloomDown.cpp" />
+    <ClCompile Include="BloomUp.cpp" />
     <ClCompile Include="CameraAdapter.cpp" />
     <ClCompile Include="CameraHDR.cpp" />
     <ClCompile Include="CameraInfo.cpp" />
     <ClCompile Include="CameraUNorm.cpp" />
     <ClCompile Include="Canvas.cpp" />
+    <ClCompile Include="FilterAdapter.cpp" />
+    <ClCompile Include="FilterInterface.cpp" />
     <ClCompile Include="ManageGuiInterface.cpp" />
     <ClCompile Include="NormalVectorDrawer.cpp" />
+    <ClCompile Include="PostProcess.cpp" />
     <ClCompile Include="SettingManageGui.cpp" />
     <ClCompile Include="SphereModel.cpp" />
     <ClCompile Include="DepthStencilState.cpp" />
@@ -165,13 +170,18 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseApp.h" />
+    <ClInclude Include="BloomDown.h" />
+    <ClInclude Include="BloomUp.h" />
     <ClInclude Include="CameraAdapter.h" />
     <ClInclude Include="CameraHDR.h" />
     <ClInclude Include="CameraInfo.h" />
     <ClInclude Include="CameraUNorm.h" />
     <ClInclude Include="Canvas.h" />
+    <ClInclude Include="FilterAdapter.h" />
+    <ClInclude Include="FilterInterface.h" />
     <ClInclude Include="ManageGuiInterface.h" />
     <ClInclude Include="NormalVectorDrawer.h" />
+    <ClInclude Include="PostProcess.h" />
     <ClInclude Include="SettingManageGui.h" />
     <ClInclude Include="SphereModel.h" />
     <ClInclude Include="DefineVar.h" />

@@ -10,7 +10,7 @@ public:
 	NormalVectorDrawer(
 		Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn,
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn);
-	~NormalVectorDrawer();
+	virtual ~NormalVectorDrawer();
 
 protected:
 	void SetIAInputLayer();

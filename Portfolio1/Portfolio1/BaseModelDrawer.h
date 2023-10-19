@@ -10,7 +10,7 @@ public:
 	BaseModelDrawer(
 		Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn,
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn);
-	~BaseModelDrawer();
+	virtual ~BaseModelDrawer();
 
 protected:
 	void SetIAInputLayer();

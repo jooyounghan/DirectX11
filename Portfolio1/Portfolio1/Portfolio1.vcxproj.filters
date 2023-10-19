@@ -82,6 +82,18 @@
     <Filter Include="헤더 파일\Camera\Specific">
       <UniqueIdentifier>{39527639-b1d5-4a56-8187-944ec67a8ea1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\PostProcess">
+      <UniqueIdentifier>{f8d0fb8d-8a7f-49c7-904b-70c3ff9b7f62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\PostProcess">
+      <UniqueIdentifier>{69b7ad86-c895-49e5-8603-fef065d91e88}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\PostProcess\Filter">
+      <UniqueIdentifier>{ed34881b-41e4-4b63-8f18-5aed44dbaeb6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\PostProcess\Filter">
+      <UniqueIdentifier>{d6dfd2d6-e0d4-440c-8b9d-013de5c8ea64}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CameraBase.cpp">
@@ -173,6 +185,21 @@
     </ClCompile>
     <ClCompile Include="CameraAdapter.cpp">
       <Filter>소스 파일\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="PostProcess.cpp">
+      <Filter>소스 파일\PostProcess</Filter>
+    </ClCompile>
+    <ClCompile Include="BloomUp.cpp">
+      <Filter>소스 파일\PostProcess\Filter</Filter>
+    </ClCompile>
+    <ClCompile Include="BloomDown.cpp">
+      <Filter>소스 파일\PostProcess\Filter</Filter>
+    </ClCompile>
+    <ClCompile Include="FilterAdapter.cpp">
+      <Filter>소스 파일\PostProcess</Filter>
+    </ClCompile>
+    <ClCompile Include="FilterInterface.cpp">
+      <Filter>소스 파일\PostProcess</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -271,6 +298,21 @@
     </ClInclude>
     <ClInclude Include="CameraAdapter.h">
       <Filter>헤더 파일\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="PostProcess.h">
+      <Filter>헤더 파일\PostProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="FilterInterface.h">
+      <Filter>헤더 파일\PostProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="FilterAdapter.h">
+      <Filter>헤더 파일\PostProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="BloomDown.h">
+      <Filter>헤더 파일\PostProcess\Filter</Filter>
+    </ClInclude>
+    <ClInclude Include="BloomUp.h">
+      <Filter>헤더 파일\PostProcess\Filter</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

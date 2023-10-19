@@ -13,7 +13,7 @@ public:
 		const UINT& uiWidthIn, const UINT& uiHeightIn,
 		const UINT& uiNumLevelQualityIn
 	);
-	~CameraBase();
+	virtual ~CameraBase();
 
 public:
 	UINT			uiWidth;
