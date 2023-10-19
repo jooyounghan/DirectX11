@@ -135,12 +135,11 @@
     <ClCompile Include="BaseApp.cpp" />
     <ClCompile Include="BloomDown.cpp" />
     <ClCompile Include="BloomUp.cpp" />
-    <ClCompile Include="CameraAdapter.cpp" />
+    <ClCompile Include="CameraInterface.cpp" />
     <ClCompile Include="CameraHDR.cpp" />
     <ClCompile Include="CameraInfo.cpp" />
     <ClCompile Include="CameraUNorm.cpp" />
     <ClCompile Include="Canvas.cpp" />
-    <ClCompile Include="FilterAdapter.cpp" />
     <ClCompile Include="FilterInterface.cpp" />
     <ClCompile Include="ManageGuiInterface.cpp" />
     <ClCompile Include="NormalVectorDrawer.cpp" />
@@ -149,7 +148,6 @@
     <ClCompile Include="SphereModel.cpp" />
     <ClCompile Include="DepthStencilState.cpp" />
     <ClCompile Include="FileManager.cpp" />
-    <ClCompile Include="CameraBase.cpp" />
     <ClCompile Include="FileManageGui.cpp" />
     <ClCompile Include="ID3D11Helper.cpp" />
     <ClCompile Include="BaseModelDrawer.cpp" />
@@ -172,14 +170,14 @@
     <ClInclude Include="BaseApp.h" />
     <ClInclude Include="BloomDown.h" />
     <ClInclude Include="BloomUp.h" />
-    <ClInclude Include="CameraAdapter.h" />
+    <ClInclude Include="CameraInterface.h" />
     <ClInclude Include="CameraHDR.h" />
     <ClInclude Include="CameraInfo.h" />
     <ClInclude Include="CameraUNorm.h" />
     <ClInclude Include="Canvas.h" />
-    <ClInclude Include="FilterAdapter.h" />
     <ClInclude Include="FilterInterface.h" />
     <ClInclude Include="ManageGuiInterface.h" />
+    <ClInclude Include="ModelStruct.h" />
     <ClInclude Include="NormalVectorDrawer.h" />
     <ClInclude Include="PostProcess.h" />
     <ClInclude Include="SettingManageGui.h" />
@@ -188,7 +186,6 @@
     <ClInclude Include="DepthStencilState.h" />
     <ClInclude Include="EnumVar.h" />
     <ClInclude Include="FileManager.h" />
-    <ClInclude Include="CameraBase.h" />
     <ClInclude Include="FileManageGui.h" />
     <ClInclude Include="ID3D11Helper.h" />
     <ClInclude Include="BaseModelDrawer.h" />
@@ -235,6 +232,30 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
     <FxCompile Include="BaseModelVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="BloomDownPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="BloomDownVShlsl.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="BloomUpPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="BloomUpVS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>

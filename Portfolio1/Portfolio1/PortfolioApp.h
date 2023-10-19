@@ -60,7 +60,7 @@ private:
 	std::unique_ptr<FileManager>		upFileManager;
 
 private:
-	std::shared_ptr<CameraInterface>		spCameraAdapter;
+	std::shared_ptr<CameraInterface>		spMainCameras;
 
 private:
 	std::shared_ptr<ModelInterface>			spSelectedModel;

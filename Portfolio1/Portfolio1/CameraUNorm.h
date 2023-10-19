@@ -1,7 +1,7 @@
 #pragma once
-#include "CameraBase.h"
+#include "CameraInterface.h"
 
-class CameraUNorm : public CameraBase
+class CameraUNorm : public CameraInterface
 {
 public:
 	CameraUNorm(

@@ -94,11 +94,23 @@
     <Filter Include="헤더 파일\PostProcess\Filter">
       <UniqueIdentifier>{d6dfd2d6-e0d4-440c-8b9d-013de5c8ea64}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shader\BaseModel">
+      <UniqueIdentifier>{e4303043-0bfc-4ef5-816d-e88dbdd6e590}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader\NormalVector">
+      <UniqueIdentifier>{a56136f3-5e57-4e3a-a6b8-1e7a51cc2d24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader\Filter">
+      <UniqueIdentifier>{628d7f14-5c0a-4934-9375-e9bdc4d47c63}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader\Filter\BloomDown">
+      <UniqueIdentifier>{85855bf3-84d7-43c1-b152-13163a65aa7c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader\Filter\BloomUp">
+      <UniqueIdentifier>{93ea8628-c793-4b69-84a4-a07d30daeba2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CameraBase.cpp">
-      <Filter>소스 파일\Camera</Filter>
-    </ClCompile>
     <ClCompile Include="ID3D11Helper.cpp">
       <Filter>소스 파일\Utils</Filter>
     </ClCompile>
@@ -183,7 +195,7 @@
     <ClCompile Include="CameraInfo.cpp">
       <Filter>소스 파일\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="CameraAdapter.cpp">
+    <ClCompile Include="CameraInterface.cpp">
       <Filter>소스 파일\Camera</Filter>
     </ClCompile>
     <ClCompile Include="PostProcess.cpp">
@@ -195,17 +207,11 @@
     <ClCompile Include="BloomDown.cpp">
       <Filter>소스 파일\PostProcess\Filter</Filter>
     </ClCompile>
-    <ClCompile Include="FilterAdapter.cpp">
-      <Filter>소스 파일\PostProcess</Filter>
-    </ClCompile>
     <ClCompile Include="FilterInterface.cpp">
       <Filter>소스 파일\PostProcess</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CameraBase.h">
-      <Filter>헤더 파일\Camera</Filter>
-    </ClInclude>
     <ClInclude Include="ID3D11Helper.h">
       <Filter>헤더 파일\Utils</Filter>
     </ClInclude>
@@ -296,7 +302,7 @@
     <ClInclude Include="CameraInfo.h">
       <Filter>헤더 파일\Camera</Filter>
     </ClInclude>
-    <ClInclude Include="CameraAdapter.h">
+    <ClInclude Include="CameraInterface.h">
       <Filter>헤더 파일\Camera</Filter>
     </ClInclude>
     <ClInclude Include="PostProcess.h">
@@ -305,37 +311,49 @@
     <ClInclude Include="FilterInterface.h">
       <Filter>헤더 파일\PostProcess</Filter>
     </ClInclude>
-    <ClInclude Include="FilterAdapter.h">
-      <Filter>헤더 파일\PostProcess</Filter>
-    </ClInclude>
     <ClInclude Include="BloomDown.h">
       <Filter>헤더 파일\PostProcess\Filter</Filter>
     </ClInclude>
     <ClInclude Include="BloomUp.h">
       <Filter>헤더 파일\PostProcess\Filter</Filter>
     </ClInclude>
+    <ClInclude Include="ModelStruct.h">
+      <Filter>헤더 파일\Model</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="BaseModelVS.hlsl">
-      <Filter>Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="BaseModelPS.hlsl">
-      <Filter>Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="BaseModelHS.hlsl">
-      <Filter>Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="BaseModelDS.hlsl">
-      <Filter>Shader</Filter>
-    </FxCompile>
     <FxCompile Include="OutlinerPS.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
-    <FxCompile Include="NormalVectorPS.hlsl">
-      <Filter>Shader</Filter>
+    <FxCompile Include="BaseModelDS.hlsl">
+      <Filter>Shader\BaseModel</Filter>
+    </FxCompile>
+    <FxCompile Include="BaseModelHS.hlsl">
+      <Filter>Shader\BaseModel</Filter>
+    </FxCompile>
+    <FxCompile Include="BaseModelPS.hlsl">
+      <Filter>Shader\BaseModel</Filter>
+    </FxCompile>
+    <FxCompile Include="BaseModelVS.hlsl">
+      <Filter>Shader\BaseModel</Filter>
     </FxCompile>
     <FxCompile Include="NormalVectorGS.hlsl">
-      <Filter>Shader</Filter>
+      <Filter>Shader\NormalVector</Filter>
+    </FxCompile>
+    <FxCompile Include="NormalVectorPS.hlsl">
+      <Filter>Shader\NormalVector</Filter>
+    </FxCompile>
+    <FxCompile Include="BloomDownVShlsl.hlsl">
+      <Filter>Shader\Filter\BloomDown</Filter>
+    </FxCompile>
+    <FxCompile Include="BloomDownPS.hlsl">
+      <Filter>Shader\Filter\BloomDown</Filter>
+    </FxCompile>
+    <FxCompile Include="BloomUpPS.hlsl">
+      <Filter>Shader\Filter\BloomUp</Filter>
+    </FxCompile>
+    <FxCompile Include="BloomUpVS.hlsl">
+      <Filter>Shader\Filter\BloomUp</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
@@ -343,7 +361,7 @@
       <Filter>Shader</Filter>
     </None>
     <None Include="NormalVectorShaderType.hlsli">
-      <Filter>Shader</Filter>
+      <Filter>Shader\NormalVector</Filter>
     </None>
   </ItemGroup>
 </Project>

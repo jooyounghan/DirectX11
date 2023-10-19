@@ -1,4 +1,4 @@
-#include "CameraBase.h"
+#include "CameraInterface.h"
 #include "ModelID.h"
 #include "DefineVar.h"
 #include "ID3D11Helper.h"
@@ -6,7 +6,7 @@
 
 using namespace std;
 
-CameraBase::CameraBase(
+CameraInterface::CameraInterface(
 	Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn,
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn,
 	Microsoft::WRL::ComPtr<IDXGISwapChain>& cpSwapChainIn,
@@ -24,19 +24,16 @@ CameraBase::CameraBase(
 	sCameraInfo.SetCameraInfo(0.f, 0.f, -10.f, 70.f, uiWidth / (float)uiHeight);
 }
 
-CameraBase::~CameraBase() {}
-
-
-void CameraBase::StartMove(MoveDir moveDir)
+void CameraInterface::StartMove(MoveDir moveDir)
 {
 	sCameraInfo.sInfoData.bMoveDirection[moveDir] = true;
 }
-void CameraBase::StopMove(MoveDir moveDir)
+void CameraInterface::StopMove(MoveDir moveDir)
 {
 	sCameraInfo.sInfoData.bMoveDirection[moveDir] = false;
 }
 
-void CameraBase::SetFromMouseXY(const int& iMouseX, const int& iMouseY)
+void CameraInterface::SetFromMouseXY(const int& iMouseX, const int& iMouseY)
 {
 	sCameraInfo.sInfoData.uiMouseLocation[0] = clamp((unsigned int)iMouseX, 0x0000u, 0xFFFFu);
 	sCameraInfo.sInfoData.uiMouseLocation[1] = clamp((unsigned int)iMouseY, 0x0000u, 0xFFFFu);
@@ -56,7 +53,7 @@ void CameraBase::SetFromMouseXY(const int& iMouseX, const int& iMouseY)
 	}
 }
 
-void CameraBase::SwitchFirstView()
+void CameraInterface::SwitchFirstView()
 {
 	sCameraInfo.sInfoData.bFirstView = !sCameraInfo.sInfoData.bFirstView;
 }
