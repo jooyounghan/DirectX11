@@ -38,7 +38,6 @@ protected:
 	Microsoft::WRL::ComPtr<ID3D11Device> cpDevice;
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> cpDeviceContext;
 	Microsoft::WRL::ComPtr<IDXGISwapChain> cpSwapChain;
-	D3D11_VIEWPORT sScreenViewport;
 
 public:
 	virtual LRESULT WINAPI AppProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);

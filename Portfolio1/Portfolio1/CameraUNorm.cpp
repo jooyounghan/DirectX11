@@ -3,6 +3,7 @@
 #include "ID3D11Helper.h"
 #include "TransformProperties.h"
 #include "ModelID.h"
+#include "PostProcess.h"
 
 #include <algorithm>
 #include <string>
@@ -15,9 +16,17 @@ CameraUNorm::CameraUNorm(Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn, Micro
 {
 	CreateSRDResource();
 	CreateModelIDResource();
+	SetPostProcess();
 }
 
-CameraUNorm::~CameraUNorm() {}
+CameraUNorm::~CameraUNorm()
+{
+	if (pPostProcess != nullptr)
+	{
+		delete pPostProcess;
+		pPostProcess = nullptr;
+	}
+}
 
 void CameraUNorm::Update()
 {
@@ -45,6 +54,12 @@ void CameraUNorm::WipeOut(const DirectX::XMVECTOR& xmvClearColor)
 	cpDeviceContext->ClearRenderTargetView(cpSDRRTV.Get(), xmvClearColor.m128_f32);
 	cpDeviceContext->ClearRenderTargetView(cpModelIDRTV.Get(), xmvClearColor.m128_f32);
 	cpDeviceContext->ClearDepthStencilView(cpDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
+}
+
+void CameraUNorm::SetCameraProperty()
+{
+	sCameraInfo.SetCameraInfo(0.f, 0.f, -10.f, 70.f, uiWidth / (float)uiHeight);
+	ID3D11Helper::SetViewPort(0.f, 0.f, float(uiWidth), float(uiHeight), 0.f, 1.f, cpDeviceContext.Get(), &sScreenViewport);
 }
 
 void CameraUNorm::SetRSState()
@@ -82,9 +97,16 @@ void CameraUNorm::OMSetRenderTargets()
 	cpDeviceContext->OMSetRenderTargets(UINT(vRenderTargetViews.size()), vRenderTargetViews.data(), cpDepthStencilView.Get());
 }
 
-ID3D11ShaderResourceView** CameraUNorm::GetAddressOfRenderedSRV()
+DXGI_FORMAT CameraUNorm::GetRenderedTextureFormat()
 {
-	return cpSDRSRV.GetAddressOf();
+	D3D11_TEXTURE2D_DESC sTextureDesc;
+	cpSDRTexture->GetDesc(&sTextureDesc);
+	return sTextureDesc.Format;
+}
+
+ID3D11Texture2D* CameraUNorm::GetRenderedTexture()
+{
+	return cpSDRTexture.Get();
 }
 
 ModelIDData CameraUNorm::GetPointedModelID()
@@ -116,8 +138,22 @@ ModelIDData CameraUNorm::GetPointedModelID()
 	return result;
 }
 
+void CameraUNorm::SetPostProcess()
+{
+	pPostProcess = new PostProcess(cpDevice, cpDeviceContext, sScreenViewport, DXGI_FORMAT_R8G8B8A8_UNORM);
+	pPostProcess->AddBloomFilter();
+	pPostProcess->AddBloomFilter();
+	pPostProcess->AddBloomFilter();
+}
+
+void CameraUNorm::DoPostProcess()
+{
+	pPostProcess->Process(cpSDRTexture.Get(), cpBackBuffer.Get(), cpSwapChainRTV.GetAddressOf());
+}
+
 void CameraUNorm::CreateSRDResource()
 {
+	SetCameraProperty();
 	ID3D11Helper::CreateTexture2D(cpDevice.Get(), uiWidth, uiHeight, uiNumLevelQuality, 1, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, NULL, NULL, D3D11_USAGE_DEFAULT, DXGI_FORMAT_R8G8B8A8_UNORM, cpSDRTexture.GetAddressOf());
 	ID3D11Helper::CreateRenderTargetView(cpDevice.Get(), cpSDRTexture.Get(), cpSDRRTV.GetAddressOf());
 	ID3D11Helper::CreateShaderResoureView(cpDevice.Get(), cpSDRTexture.Get(), cpSDRSRV.GetAddressOf());

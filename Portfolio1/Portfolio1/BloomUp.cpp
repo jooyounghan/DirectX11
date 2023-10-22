@@ -31,18 +31,21 @@ BloomUpShader& BloomUpShader::GetIncetance(Microsoft::WRL::ComPtr<ID3D11Device>&
 BloomUp::BloomUp(
 	Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn,
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn,
-	const UINT& uiWidthIn, const UINT& uiHeightIn
+	const D3D11_VIEWPORT& sScreenViewportIn,
+	DXGI_FORMAT eFormat
 )
-	: FilterInterface(cpDeviceIn, cpDeviceContextIn, uiWidthIn, uiHeightIn)
+	: FilterInterface(cpDeviceIn, cpDeviceContextIn, sScreenViewportIn)
 {
-	CreateOutputResource();
+	sScreenViewport.Width *= 2;
+	sScreenViewport.Height *= 2;
+	CreateOutputResource(eFormat);
 }
 
 BloomUp::~BloomUp() {}
 
-void BloomUp::CreateOutputResource()
+void BloomUp::CreateOutputResource(DXGI_FORMAT eFormat)
 {
-	ID3D11Helper::CreateTexture2D(cpDevice.Get(), uiWidth * 2, uiHeight * 2, 1, 0, D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET , NULL, NULL, D3D11_USAGE_DEFAULT, DXGI_FORMAT_R8G8B8A8_UNORM, cpOutputTexture2D.GetAddressOf());
+	ID3D11Helper::CreateTexture2D(cpDevice.Get(), sScreenViewport.Width, sScreenViewport.Height, 1, 0, D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET , NULL, NULL, D3D11_USAGE_DEFAULT, eFormat, cpOutputTexture2D.GetAddressOf());
 	ID3D11Helper::CreateRenderTargetView(cpDevice.Get(), cpOutputTexture2D.Get(), cpOutputRTV.GetAddressOf());
 	ID3D11Helper::CreateShaderResoureView(cpDevice.Get(), cpOutputTexture2D.Get(), cpOutputSRV.GetAddressOf());
 }
@@ -66,6 +69,8 @@ void BloomUp::StartFilter(ID3D11ShaderResourceView** ppInputSRV)
 	cpDeviceContext->PSSetShader(bloomUpShader.cpBloomUpPS.Get(), NULL, NULL);
 	cpDeviceContext->PSSetSamplers(0, 1, filterInfo.cpPSSamplerState.GetAddressOf());
 	cpDeviceContext->PSSetShaderResources(0, 1, ppInputSRV);
+
+	cpDeviceContext->RSSetViewports(1, &sScreenViewport);
 
 	cpDeviceContext->DrawIndexed(filterInfo.vIndices.size(), 0, 0);
 }

@@ -29,14 +29,14 @@ public:
 	BloomUp(
 		Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn,
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn,
-		const UINT& uiWidthIn,
-		const UINT& uiHeightIn
+		const D3D11_VIEWPORT& sScreenViewportIn,
+		DXGI_FORMAT eFormat
 	);
 
 	virtual ~BloomUp();
 
 public:
-	virtual void CreateOutputResource() override;
+	virtual void CreateOutputResource(DXGI_FORMAT eFormat) override;
 	virtual void StartFilter(ID3D11ShaderResourceView** ppInputSRV) override;
 };
 

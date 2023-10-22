@@ -19,7 +19,7 @@ public:
 		const UINT& uiWidthIn, const UINT& uiHeightIn,
 		const UINT& uiNumLevelQualityIn
 	);
-	virtual ~CameraInterface() {};
+	virtual ~CameraInterface();
 	
 public:
 	UINT			uiWidth;
@@ -28,12 +28,16 @@ public:
 	CameraInfo		sCameraInfo;
 
 protected:
+	D3D11_VIEWPORT sScreenViewport;
 	Microsoft::WRL::ComPtr<ID3D11Texture2D>			cpBackBuffer;
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView>	cpSwapChainRTV;
 
 public:
 	 inline ID3D11Texture2D* GetBackBufferTexture2D() { return cpBackBuffer.Get(); }
 	 inline ID3D11RenderTargetView** GetAddressOfSwapChainRTV() { return cpSwapChainRTV.GetAddressOf(); }
+
+public:
+	virtual void SetCameraProperty() = 0;
 
 public:
 	void StartMove(MoveDir moveDir);
@@ -61,8 +65,16 @@ public:
 	virtual void SetPSConstantBuffers() = 0;
 	virtual void OMSetRenderTargets() = 0;
 
+protected:
+	class PostProcess* pPostProcess = nullptr;
+
 public:
-	virtual ID3D11ShaderResourceView** GetAddressOfRenderedSRV() = 0;
+	virtual void SetPostProcess() = 0;
+	virtual void DoPostProcess() = 0;
+
+public:
+	virtual DXGI_FORMAT GetRenderedTextureFormat() = 0;
+	virtual ID3D11Texture2D* GetRenderedTexture() = 0;
 
 public:
 	virtual struct ModelIDData GetPointedModelID() = 0;

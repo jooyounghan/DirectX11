@@ -19,6 +19,9 @@ public:
 	void WipeOut(const DirectX::XMVECTOR& xmvClearColor = DirectX::XMVectorSet(0.f, 0.f, 0.f, 1.f));
 
 public:
+	virtual void SetCameraProperty() override;
+
+public:
 	void SetRSState();
 	void SetVSConstantBuffers();
 	void SetHSConstantBuffers();
@@ -45,11 +48,15 @@ protected:
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView>		cpDepthStencilView;
 
 public:
-	virtual ID3D11ShaderResourceView** GetAddressOfRenderedSRV() override;
+	virtual DXGI_FORMAT GetRenderedTextureFormat() override;
+	virtual ID3D11Texture2D* GetRenderedTexture() override;
 
 public:
 	struct ModelIDData GetPointedModelID();
 
+public:
+	virtual void SetPostProcess() override;
+	virtual void DoPostProcess() override;
 
 private:
 	void CreateSRDResource();

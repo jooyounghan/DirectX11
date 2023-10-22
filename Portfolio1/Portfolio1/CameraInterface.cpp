@@ -2,6 +2,8 @@
 #include "ModelID.h"
 #include "DefineVar.h"
 #include "ID3D11Helper.h"
+#include "PostProcess.h"
+
 #include <algorithm>
 
 using namespace std;
@@ -18,10 +20,16 @@ CameraInterface::CameraInterface(
 {
 	ID3D11Helper::GetBackBuffer(cpSwapChain.Get(), cpBackBuffer.GetAddressOf());
 	ID3D11Helper::CreateRenderTargetView(cpDevice.Get(), cpBackBuffer.Get(), cpSwapChainRTV.GetAddressOf());
-
 	ID3D11Helper::CreateRasterizerState(cpDevice.Get(), D3D11_FILL_MODE::D3D11_FILL_SOLID, D3D11_CULL_MODE::D3D11_CULL_BACK, true, cpRasterizerState.GetAddressOf());
+}
 
-	sCameraInfo.SetCameraInfo(0.f, 0.f, -10.f, 70.f, uiWidth / (float)uiHeight);
+CameraInterface::~CameraInterface()
+{
+	if (pPostProcess != nullptr)
+	{
+		delete pPostProcess;
+		pPostProcess = nullptr;
+	}
 }
 
 void CameraInterface::StartMove(MoveDir moveDir)

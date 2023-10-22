@@ -22,8 +22,6 @@ class BaseModelDrawer;
 class ModelOutlineDrawer;
 class NormalVectorDrawer;
 
-class PostProcess;
-
 template<typename T>
 class Canvas;
 
@@ -39,9 +37,6 @@ public:
 	virtual void Render() override;
 	virtual void Run() override;
 	virtual void Quit() override;
-
-public:
-	void DoPostProcess();
 
 public:
 	void InitImGUI();
@@ -85,9 +80,6 @@ private:
 	std::unique_ptr<BaseModelDrawer>				upModelDrawer;
 	std::unique_ptr<ModelOutlineDrawer>				upModelOutlineDrawer;
 	std::unique_ptr<NormalVectorDrawer>				upNormalVectorDrawer;
-
-private:
-	std::unique_ptr<PostProcess>					upPostProcess;
 
 public:
 	virtual LRESULT WINAPI AppProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) override;
