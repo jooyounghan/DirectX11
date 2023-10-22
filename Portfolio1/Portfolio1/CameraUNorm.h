@@ -27,24 +27,25 @@ public:
 	void SetPSConstantBuffers();
 	void OMSetRenderTargets();
 
-public:
-	void PostProcess();
+protected:
+	Microsoft::WRL::ComPtr<ID3D11Texture2D>				cpSDRTexture;
+	Microsoft::WRL::ComPtr<ID3D11RenderTargetView>		cpSDRRTV;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>	cpSDRSRV;
 
 protected:
-	Microsoft::WRL::ComPtr<ID3D11Texture2D>			cpSDRTexture;
-	Microsoft::WRL::ComPtr<ID3D11RenderTargetView>	cpSDRRTV;
-
-protected:
-	Microsoft::WRL::ComPtr<ID3D11Texture2D>			cpModelIDTexture;
-	Microsoft::WRL::ComPtr<ID3D11RenderTargetView>	cpModelIDRTV;
+	Microsoft::WRL::ComPtr<ID3D11Texture2D>				cpModelIDTexture;
+	Microsoft::WRL::ComPtr<ID3D11RenderTargetView>		cpModelIDRTV;
 
 public:
-	Microsoft::WRL::ComPtr<ID3D11Texture2D>			cpModelIDMSToSS;
-	Microsoft::WRL::ComPtr<ID3D11Texture2D>			cpModelIDStagingTexture;
+	Microsoft::WRL::ComPtr<ID3D11Texture2D>				cpModelIDMSToSS;
+	Microsoft::WRL::ComPtr<ID3D11Texture2D>				cpModelIDStagingTexture;
 
 protected:
-	Microsoft::WRL::ComPtr<ID3D11Texture2D>			cpDepthStencilTexture2D;
-	Microsoft::WRL::ComPtr<ID3D11DepthStencilView>	cpDepthStencilView;
+	Microsoft::WRL::ComPtr<ID3D11Texture2D>				cpDepthStencilTexture2D;
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilView>		cpDepthStencilView;
+
+public:
+	virtual ID3D11ShaderResourceView** GetAddressOfRenderedSRV() override;
 
 public:
 	struct ModelIDData GetPointedModelID();

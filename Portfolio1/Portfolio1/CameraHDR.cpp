@@ -47,3 +47,8 @@ void CameraHDR::SetPSConstantBuffers()
 void CameraHDR::OMSetRenderTargets()
 {
 }
+
+ID3D11ShaderResourceView** CameraHDR::GetAddressOfRenderedSRV()
+{
+	return nullptr;
+}

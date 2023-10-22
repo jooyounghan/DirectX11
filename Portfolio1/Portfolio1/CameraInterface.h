@@ -32,6 +32,10 @@ protected:
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView>	cpSwapChainRTV;
 
 public:
+	 inline ID3D11Texture2D* GetBackBufferTexture2D() { return cpBackBuffer.Get(); }
+	 inline ID3D11RenderTargetView** GetAddressOfSwapChainRTV() { return cpSwapChainRTV.GetAddressOf(); }
+
+public:
 	void StartMove(MoveDir moveDir);
 	void StopMove(MoveDir moveDir);
 	void SetFromMouseXY(const int& iMouseX, const int& iMouseY);
@@ -58,8 +62,8 @@ public:
 	virtual void OMSetRenderTargets() = 0;
 
 public:
-	virtual struct ModelIDData GetPointedModelID() = 0;
+	virtual ID3D11ShaderResourceView** GetAddressOfRenderedSRV() = 0;
 
 public:
-	virtual void PostProcess() = 0;
+	virtual struct ModelIDData GetPointedModelID() = 0;
 };

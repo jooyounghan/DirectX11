@@ -16,5 +16,5 @@ VertexOutput main(VertexInput pos)
     VertexOutput result;
     result.f4ProjPos = pos.f4ProjPos;
     result.f2TexCoord = pos.f2TexCoord;
-	return result;
+    return result;
 }

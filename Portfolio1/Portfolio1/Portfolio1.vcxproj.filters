@@ -109,6 +109,12 @@
     <Filter Include="Shader\Filter\BloomUp">
       <UniqueIdentifier>{93ea8628-c793-4b69-84a4-a07d30daeba2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="헤더 파일\PostProcess\Specific">
+      <UniqueIdentifier>{78f7ebd9-b5dc-461e-86c9-ded6059452b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\PostProcess\Filter\Specific">
+      <UniqueIdentifier>{2bc18e99-a82c-43dc-a42e-993178ea565e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ID3D11Helper.cpp">
@@ -201,14 +207,14 @@
     <ClCompile Include="PostProcess.cpp">
       <Filter>소스 파일\PostProcess</Filter>
     </ClCompile>
-    <ClCompile Include="BloomUp.cpp">
-      <Filter>소스 파일\PostProcess\Filter</Filter>
-    </ClCompile>
-    <ClCompile Include="BloomDown.cpp">
-      <Filter>소스 파일\PostProcess\Filter</Filter>
-    </ClCompile>
     <ClCompile Include="FilterInterface.cpp">
       <Filter>소스 파일\PostProcess</Filter>
+    </ClCompile>
+    <ClCompile Include="BloomDown.cpp">
+      <Filter>소스 파일\PostProcess\Filter\Specific</Filter>
+    </ClCompile>
+    <ClCompile Include="BloomUp.cpp">
+      <Filter>소스 파일\PostProcess\Filter\Specific</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -343,7 +349,7 @@
     <FxCompile Include="NormalVectorPS.hlsl">
       <Filter>Shader\NormalVector</Filter>
     </FxCompile>
-    <FxCompile Include="BloomDownVShlsl.hlsl">
+    <FxCompile Include="BloomDownVS.hlsl">
       <Filter>Shader\Filter\BloomDown</Filter>
     </FxCompile>
     <FxCompile Include="BloomDownPS.hlsl">

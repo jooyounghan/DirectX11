@@ -25,10 +25,10 @@ public:
 
 class BloomUp : public FilterInterface
 {
+public:
 	BloomUp(
 		Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn,
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn,
-		Microsoft::WRL::ComPtr<ID3D11Texture2D>& cpInputTexture2DIn,
 		const UINT& uiWidthIn,
 		const UINT& uiHeightIn
 	);
@@ -37,6 +37,6 @@ class BloomUp : public FilterInterface
 
 public:
 	virtual void CreateOutputResource() override;
-	virtual void StartFilter() override;
+	virtual void StartFilter(ID3D11ShaderResourceView** ppInputSRV) override;
 };
 

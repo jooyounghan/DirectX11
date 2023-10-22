@@ -75,8 +75,6 @@ inline void Canvas<Drawer>::Render()
 		drawer->pModel->Render();
 		drawer->ResetOMState();
 
-		drawer->pCamera->PostProcess();
-
 		drawer->ResetDrawer();
 	}
 }

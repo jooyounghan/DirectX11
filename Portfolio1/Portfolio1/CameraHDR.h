@@ -27,9 +27,12 @@ public:
 	void SetPSConstantBuffers();
 	void OMSetRenderTargets();
 
-protected:
-	Microsoft::WRL::ComPtr<ID3D11Texture2D>			cpHDRTexture;
-	Microsoft::WRL::ComPtr<ID3D11RenderTargetView>	cpHDRRTV;
+public:
+	virtual ID3D11ShaderResourceView** GetAddressOfRenderedSRV() override;
 
+protected:
+	Microsoft::WRL::ComPtr<ID3D11Texture2D>				cpHDRTexture;
+	Microsoft::WRL::ComPtr<ID3D11RenderTargetView>		cpHDRRTV;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>	cpHDRSRV;
 };
 

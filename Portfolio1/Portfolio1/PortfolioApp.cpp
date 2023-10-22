@@ -22,6 +22,10 @@
 #include "LightManager.h"
 #include "FileManager.h"
 
+#include "PostProcess.h"
+#include "BloomUp.h"
+#include "BloomDown.h"
+
 #include "DefineVar.h"
 
 #include <imgui.h>
@@ -69,6 +73,15 @@ void PortfolioApp::Init()
 	upModelDrawer = make_unique<BaseModelDrawer>(cpDevice, cpDeviceContext);
 	upModelOutlineDrawer = make_unique<ModelOutlineDrawer>(cpDevice, cpDeviceContext);
 	upNormalVectorDrawer = make_unique<NormalVectorDrawer>(cpDevice, cpDeviceContext);
+
+	upPostProcess = make_unique<PostProcess>(cpDevice, cpDeviceContext);
+	upPostProcess->vFilters.emplace_back(new BloomDown(cpDevice, cpDeviceContext, uiWidth, uiHeight));
+	upPostProcess->vFilters.emplace_back(new BloomDown(cpDevice, cpDeviceContext, uiWidth / 2, uiHeight / 2));
+	upPostProcess->vFilters.emplace_back(new BloomDown(cpDevice, cpDeviceContext, uiWidth / 4, uiHeight / 4));
+
+	upPostProcess->vFilters.emplace_back(new BloomUp(cpDevice, cpDeviceContext, uiWidth / 8, uiHeight / 8));
+	upPostProcess->vFilters.emplace_back(new BloomUp(cpDevice, cpDeviceContext, uiWidth / 4, uiHeight / 4));
+	upPostProcess->vFilters.emplace_back(new BloomUp(cpDevice, cpDeviceContext, uiWidth / 2, uiHeight / 2));
 
 	// For Testing ==================================================================================
 	upFileManager->LoadImageFromFile(L".\\Texture\\GrassWithMudAndStone");
@@ -149,6 +162,8 @@ void PortfolioApp::Run()
 			Update();
 			Render();
 
+			DoPostProcess();
+
 			RenderImGUI();
 
 			SwapChain();
@@ -173,6 +188,11 @@ void PortfolioApp::InitImGUI()
 
 	ImGui_ImplDX11_Init(cpDevice.Get(), cpDeviceContext.Get());
     ImGui_ImplWin32_Init(hMainWindow);
+}
+
+void PortfolioApp::DoPostProcess()
+{
+	upPostProcess->Process(spMainCameras->GetAddressOfRenderedSRV(), spMainCameras->GetBackBufferTexture2D(), spMainCameras->GetAddressOfSwapChainRTV());
 }
 
 void PortfolioApp::SetImGUIRendering()
@@ -246,10 +266,7 @@ LRESULT __stdcall PortfolioApp::AppProc(HWND hWnd, UINT msg, WPARAM wParam, LPAR
 		spMainCameras->SetFromMouseXY(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
 		return 0;
 	case WM_LBUTTONUP:
-		if (spTempSelectedModel != nullptr)
-		{
-			spSelectedModel = spTempSelectedModel;
-		}
+		spSelectedModel = spTempSelectedModel;
 		return 0;
 	case WM_LBUTTONDOWN:
 		// TODO : 모델 선택 관련 로직 추가

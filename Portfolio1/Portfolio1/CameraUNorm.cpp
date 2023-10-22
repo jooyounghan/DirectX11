@@ -82,10 +82,9 @@ void CameraUNorm::OMSetRenderTargets()
 	cpDeviceContext->OMSetRenderTargets(UINT(vRenderTargetViews.size()), vRenderTargetViews.data(), cpDepthStencilView.Get());
 }
 
-void CameraUNorm::PostProcess()
+ID3D11ShaderResourceView** CameraUNorm::GetAddressOfRenderedSRV()
 {
-	cpDeviceContext->ResolveSubresource(cpBackBuffer.Get(), 0, cpSDRTexture.Get(), 0, DXGI_FORMAT_R8G8B8A8_UNORM);
-	cpDeviceContext->OMSetRenderTargets(1, cpSwapChainRTV.GetAddressOf(), NULL);
+	return cpSDRSRV.GetAddressOf();
 }
 
 ModelIDData CameraUNorm::GetPointedModelID()
@@ -119,8 +118,9 @@ ModelIDData CameraUNorm::GetPointedModelID()
 
 void CameraUNorm::CreateSRDResource()
 {
-	ID3D11Helper::CreateTexture2D(cpDevice.Get(), uiWidth, uiHeight, uiNumLevelQuality, 1, D3D11_BIND_RENDER_TARGET, NULL, NULL, D3D11_USAGE_DEFAULT, DXGI_FORMAT_R8G8B8A8_UNORM, cpSDRTexture.GetAddressOf());
+	ID3D11Helper::CreateTexture2D(cpDevice.Get(), uiWidth, uiHeight, uiNumLevelQuality, 1, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, NULL, NULL, D3D11_USAGE_DEFAULT, DXGI_FORMAT_R8G8B8A8_UNORM, cpSDRTexture.GetAddressOf());
 	ID3D11Helper::CreateRenderTargetView(cpDevice.Get(), cpSDRTexture.Get(), cpSDRRTV.GetAddressOf());
+	ID3D11Helper::CreateShaderResoureView(cpDevice.Get(), cpSDRTexture.Get(), cpSDRSRV.GetAddressOf());
 }
 
 void CameraUNorm::CreateModelIDResource()
