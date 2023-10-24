@@ -31,6 +31,7 @@ CameraUNorm::~CameraUNorm()
 void CameraUNorm::Update()
 {
 	sCameraInfo.Update();
+	pPostProcess->Update();
 }
 
 void CameraUNorm::Resize(const float& fAspectRatioIn)
@@ -127,6 +128,9 @@ ModelIDData CameraUNorm::GetPointedModelID()
 
 		cpDeviceContext->CopySubresourceRegion(cpModelIDStagingTexture.Get(), 0, 0, 0, NULL, cpModelIDMSToSS.Get(), 0, &sBox);
 
+		D3D11_TEXTURE2D_DESC test;
+		cpModelIDMSToSS->GetDesc(&test);
+
 		D3D11_MAPPED_SUBRESOURCE sMappedSubResource;
 		AutoZeroMemory(sMappedSubResource);
 		cpDeviceContext->Map(cpModelIDStagingTexture.Get(), 0, D3D11_MAP_READ, NULL, &sMappedSubResource);
@@ -141,7 +145,6 @@ ModelIDData CameraUNorm::GetPointedModelID()
 void CameraUNorm::SetPostProcess()
 {
 	pPostProcess = new PostProcess(cpDevice, cpDeviceContext, sScreenViewport, DXGI_FORMAT_R8G8B8A8_UNORM);
-	pPostProcess->AddBloomFilter();
 	pPostProcess->AddBloomFilter();
 	pPostProcess->AddBloomFilter();
 }

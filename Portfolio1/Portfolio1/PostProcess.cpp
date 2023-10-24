@@ -2,9 +2,9 @@
 #include "FilterInterface.h"
 #include "ID3D11Helper.h"
 
-#include "BloomDown.h"
-#include "BloomUp.h"
-#include <stack>
+#include "BloomFilter.h"
+#include "BlendFilter.h"
+
 PostProcess::PostProcess(
 	Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn,
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn,
@@ -13,7 +13,8 @@ PostProcess::PostProcess(
 )
 	: cpDevice(cpDeviceIn),cpDeviceContext(cpDeviceContextIn), sScreenViewport(sScreenViewportIn), uiDepth(1), eFormat(eFormatIn)
 {
-	ID3D11Helper::CreateTexture2D(cpDevice.Get(), sScreenViewport.Width, sScreenViewport.Height, 1, 0, D3D11_BIND_SHADER_RESOURCE, NULL, NULL, D3D11_USAGE_DEFAULT, eFormat, cpResolvedTexture.GetAddressOf());
+	pBlendFilter = new BlendFilter(cpDevice, cpDeviceContext, sScreenViewport, eFormat);
+	ID3D11Helper::CreateTexture2D(cpDevice.Get(), (UINT)sScreenViewport.Width, (UINT)sScreenViewport.Height, 1, 0, D3D11_BIND_SHADER_RESOURCE, NULL, NULL, D3D11_USAGE_DEFAULT, eFormat, cpResolvedTexture.GetAddressOf());
 	ID3D11Helper::CreateShaderResoureView(cpDevice.Get(), cpResolvedTexture.Get(), cpResolvedSRV.GetAddressOf());
 }
 
@@ -32,21 +33,53 @@ PostProcess::~PostProcess()
 		pFilter = nullptr;
 	}
 	vBloomUpFilters.clear();
+
+	if (pBlendFilter != nullptr)
+	{
+		delete pBlendFilter;
+		pBlendFilter = nullptr;
+	}
 }
 
 void PostProcess::AddBloomFilter()
 {
-	UINT uiWidthOrigin = sScreenViewport.Width;
-	UINT uiHeightOrigin = sScreenViewport.Height;
-	sScreenViewport.Width = uiWidthOrigin / uiDepth;
-	sScreenViewport.Height = uiHeightOrigin / uiDepth;
-	vBloomDownFilters.push_back(new BloomDown(cpDevice, cpDeviceContext, sScreenViewport, eFormat));
+	UINT uiWidthOrigin = (UINT)sScreenViewport.Width;
+	UINT uiHeightOrigin = (UINT)sScreenViewport.Height;
 
-	sScreenViewport.Width = uiWidthOrigin / (2 * uiDepth);
-	sScreenViewport.Height = uiHeightOrigin / (2 * uiDepth);
-	vBloomUpFilters.push_front(new BloomUp(cpDevice, cpDeviceContext, sScreenViewport, eFormat));
+	UINT uiDepthForBloomUp = uiDepth;
 
 	uiDepth *= 2;
+	sScreenViewport.Width = (float)uiWidthOrigin / uiDepth;
+	sScreenViewport.Height = (float)uiHeightOrigin / uiDepth;
+
+	vBloomDownFilters.push_back(new BloomFilter(cpDevice, cpDeviceContext, sScreenViewport, eFormat));
+
+	sScreenViewport.Width = (float)uiWidthOrigin / (uiDepthForBloomUp);
+	sScreenViewport.Height = (float)uiHeightOrigin / (uiDepthForBloomUp);
+	vBloomUpFilters.push_front(new BloomFilter(cpDevice, cpDeviceContext, sScreenViewport, eFormat));
+}
+
+void PostProcess::SetBlendProperties(const float& fBlendStrengthIn, const float& fExposureIn, const float& fGammaIn)
+{
+	if (pBlendFilter != nullptr)
+	{
+		pBlendFilter->SetBlendStrength(fBlendStrengthIn);
+		pBlendFilter->SetExposure(fExposureIn);
+		pBlendFilter->SetGamma(fGammaIn);
+	}
+}
+
+void PostProcess::Update()
+{
+	for (auto& pFilter : vBloomDownFilters)
+	{
+		pFilter->Update();
+	}
+	for (auto& pFilter : vBloomUpFilters)
+	{
+		pFilter->Update();
+	}
+	pBlendFilter->Update();
 }
 
 void PostProcess::Process(
@@ -56,8 +89,10 @@ void PostProcess::Process(
 )
 {
 	cpDeviceContext->ResolveSubresource(cpResolvedTexture.Get(), 0, pStartTexture, 0, eFormat);
-	ID3D11Texture2D* pOutputTexture2D = nullptr;
-	ID3D11ShaderResourceView** ppOutputSRV = cpResolvedSRV.GetAddressOf();
+	ID3D11Texture2D* pOutputTexture2D = cpResolvedTexture.Get();
+
+	ID3D11ShaderResourceView** ppOriginOutputSRV = cpResolvedSRV.GetAddressOf();
+	ID3D11ShaderResourceView** ppOutputSRV = ppOriginOutputSRV;
 
 	for (auto& pFilter : vBloomDownFilters)
 	{
@@ -71,6 +106,12 @@ void PostProcess::Process(
 		pFilter->StartFilter(ppOutputSRV);
 		ppOutputSRV = pFilter->GetAddressOfOutputSRV();
 		pOutputTexture2D = pFilter->GetOutputTexture2D();
+	}
+
+	if (pBlendFilter)
+	{
+		pBlendFilter->StartFilter(ppOutputSRV, ppOriginOutputSRV);
+		pOutputTexture2D = pBlendFilter->GetOutputTexture2D();
 	}
 
 	cpDeviceContext->ResolveSubresource(pBackBufferTexture, 0, pOutputTexture2D, 0, eFormat);

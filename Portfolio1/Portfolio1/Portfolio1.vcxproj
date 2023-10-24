@@ -133,11 +133,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BaseApp.cpp" />
-    <ClCompile Include="BloomDown.cpp" />
-    <ClCompile Include="BloomUp.cpp" />
+    <ClCompile Include="BlendFilter.cpp" />
+    <ClCompile Include="BlendFilterInterface.cpp" />
+    <ClCompile Include="BloomFilter.cpp" />
     <ClCompile Include="CameraInterface.cpp" />
     <ClCompile Include="CameraHDR.cpp" />
     <ClCompile Include="CameraInfo.cpp" />
+    <ClCompile Include="CameraManageGui.cpp" />
     <ClCompile Include="CameraUNorm.cpp" />
     <ClCompile Include="Canvas.cpp" />
     <ClCompile Include="FilterInterface.cpp" />
@@ -145,6 +147,7 @@
     <ClCompile Include="NormalVectorDrawer.cpp" />
     <ClCompile Include="PostProcess.cpp" />
     <ClCompile Include="SettingManageGui.cpp" />
+    <ClCompile Include="SingleFilterInterface.cpp" />
     <ClCompile Include="SphereModel.cpp" />
     <ClCompile Include="DepthStencilState.cpp" />
     <ClCompile Include="FileManager.cpp" />
@@ -168,11 +171,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseApp.h" />
-    <ClInclude Include="BloomDown.h" />
-    <ClInclude Include="BloomUp.h" />
+    <ClInclude Include="BlendFilter.h" />
+    <ClInclude Include="BlendFilterInterface.h" />
+    <ClInclude Include="BloomFilter.h" />
     <ClInclude Include="CameraInterface.h" />
     <ClInclude Include="CameraHDR.h" />
     <ClInclude Include="CameraInfo.h" />
+    <ClInclude Include="CameraManageGui.h" />
     <ClInclude Include="CameraUNorm.h" />
     <ClInclude Include="Canvas.h" />
     <ClInclude Include="FilterInterface.h" />
@@ -181,6 +186,7 @@
     <ClInclude Include="NormalVectorDrawer.h" />
     <ClInclude Include="PostProcess.h" />
     <ClInclude Include="SettingManageGui.h" />
+    <ClInclude Include="SingleFilterInterface.h" />
     <ClInclude Include="SphereModel.h" />
     <ClInclude Include="DefineVar.h" />
     <ClInclude Include="DepthStencilState.h" />
@@ -237,25 +243,19 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
-    <FxCompile Include="BloomDownPS.hlsl">
+    <FxCompile Include="BlendPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
-    <FxCompile Include="BloomDownVS.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
-    </FxCompile>
-    <FxCompile Include="BloomUpPS.hlsl">
+    <FxCompile Include="BloomPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
-    <FxCompile Include="BloomUpVS.hlsl">
+    <FxCompile Include="FilterVS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>

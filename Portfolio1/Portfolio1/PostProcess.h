@@ -6,6 +6,7 @@
 #include <vector>
 #include <deque>
 
+
 class PostProcess
 {
 public:
@@ -19,18 +20,23 @@ public:
 	~PostProcess();
 
 private:
-	std::vector<class BloomDown*> vBloomDownFilters;
-	std::deque<class BloomUp*> vBloomUpFilters;
+	std::vector<class BloomFilter*> vBloomDownFilters;
+	std::deque<class BloomFilter*> vBloomUpFilters;
+	class BlendFilter* pBlendFilter;
 
 public:
 	void AddBloomFilter();
+	void SetBlendProperties(const float& fBlendStrengthIn, const float& fExposureIn, const float& fGammaIn);
 
 public:
+	void Update();
 	void Process(
 		ID3D11Texture2D* pStartTexture,
 		ID3D11Texture2D* pBackBufferTextureIn,
 		ID3D11RenderTargetView** ppBackBufferRTVIn
 	);
+
+public:
 
 private:
 	D3D11_VIEWPORT sScreenViewport;

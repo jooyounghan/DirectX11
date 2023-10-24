@@ -103,17 +103,17 @@
     <Filter Include="Shader\Filter">
       <UniqueIdentifier>{628d7f14-5c0a-4934-9375-e9bdc4d47c63}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Shader\Filter\BloomDown">
-      <UniqueIdentifier>{85855bf3-84d7-43c1-b152-13163a65aa7c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Shader\Filter\BloomUp">
-      <UniqueIdentifier>{93ea8628-c793-4b69-84a4-a07d30daeba2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\PostProcess\Specific">
-      <UniqueIdentifier>{78f7ebd9-b5dc-461e-86c9-ded6059452b1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\PostProcess\Filter\Specific">
       <UniqueIdentifier>{2bc18e99-a82c-43dc-a42e-993178ea565e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader\Filter\Bloom">
+      <UniqueIdentifier>{85855bf3-84d7-43c1-b152-13163a65aa7c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader\Filter\Blend">
+      <UniqueIdentifier>{047885f1-290f-4ba6-8043-2adf3023295c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\PostProcess\Filter\Specific">
+      <UniqueIdentifier>{78f7ebd9-b5dc-461e-86c9-ded6059452b1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -207,14 +207,23 @@
     <ClCompile Include="PostProcess.cpp">
       <Filter>소스 파일\PostProcess</Filter>
     </ClCompile>
+    <ClCompile Include="BloomFilter.cpp">
+      <Filter>소스 파일\PostProcess\Filter\Specific</Filter>
+    </ClCompile>
+    <ClCompile Include="BlendFilter.cpp">
+      <Filter>소스 파일\PostProcess\Filter\Specific</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraManageGui.cpp">
+      <Filter>소스 파일\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="BlendFilterInterface.cpp">
+      <Filter>소스 파일\PostProcess\Filter</Filter>
+    </ClCompile>
     <ClCompile Include="FilterInterface.cpp">
-      <Filter>소스 파일\PostProcess</Filter>
+      <Filter>소스 파일\PostProcess\Filter</Filter>
     </ClCompile>
-    <ClCompile Include="BloomDown.cpp">
-      <Filter>소스 파일\PostProcess\Filter\Specific</Filter>
-    </ClCompile>
-    <ClCompile Include="BloomUp.cpp">
-      <Filter>소스 파일\PostProcess\Filter\Specific</Filter>
+    <ClCompile Include="SingleFilterInterface.cpp">
+      <Filter>소스 파일\PostProcess\Filter</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -314,17 +323,26 @@
     <ClInclude Include="PostProcess.h">
       <Filter>헤더 파일\PostProcess</Filter>
     </ClInclude>
-    <ClInclude Include="FilterInterface.h">
-      <Filter>헤더 파일\PostProcess</Filter>
-    </ClInclude>
-    <ClInclude Include="BloomDown.h">
-      <Filter>헤더 파일\PostProcess\Filter</Filter>
-    </ClInclude>
-    <ClInclude Include="BloomUp.h">
-      <Filter>헤더 파일\PostProcess\Filter</Filter>
-    </ClInclude>
     <ClInclude Include="ModelStruct.h">
       <Filter>헤더 파일\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraManageGui.h">
+      <Filter>헤더 파일\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="BlendFilterInterface.h">
+      <Filter>헤더 파일\PostProcess\Filter</Filter>
+    </ClInclude>
+    <ClInclude Include="BloomFilter.h">
+      <Filter>헤더 파일\PostProcess\Filter\Specific</Filter>
+    </ClInclude>
+    <ClInclude Include="BlendFilter.h">
+      <Filter>헤더 파일\PostProcess\Filter\Specific</Filter>
+    </ClInclude>
+    <ClInclude Include="FilterInterface.h">
+      <Filter>헤더 파일\PostProcess\Filter</Filter>
+    </ClInclude>
+    <ClInclude Include="SingleFilterInterface.h">
+      <Filter>헤더 파일\PostProcess\Filter</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -349,17 +367,14 @@
     <FxCompile Include="NormalVectorPS.hlsl">
       <Filter>Shader\NormalVector</Filter>
     </FxCompile>
-    <FxCompile Include="BloomDownVS.hlsl">
-      <Filter>Shader\Filter\BloomDown</Filter>
+    <FxCompile Include="FilterVS.hlsl">
+      <Filter>Shader\Filter</Filter>
     </FxCompile>
-    <FxCompile Include="BloomDownPS.hlsl">
-      <Filter>Shader\Filter\BloomDown</Filter>
+    <FxCompile Include="BloomPS.hlsl">
+      <Filter>Shader\Filter\Bloom</Filter>
     </FxCompile>
-    <FxCompile Include="BloomUpPS.hlsl">
-      <Filter>Shader\Filter\BloomUp</Filter>
-    </FxCompile>
-    <FxCompile Include="BloomUpVS.hlsl">
-      <Filter>Shader\Filter\BloomUp</Filter>
+    <FxCompile Include="BlendPS.hlsl">
+      <Filter>Shader\Filter\Blend</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

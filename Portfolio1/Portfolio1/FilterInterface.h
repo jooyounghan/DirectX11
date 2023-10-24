@@ -32,6 +32,10 @@ public:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> cpIndexBuffer;
 
 public:
+	Microsoft::WRL::ComPtr<ID3D11VertexShader>	cpFilterVS;
+	Microsoft::WRL::ComPtr<ID3D11InputLayout>	cpFilterInputLayout;
+
+public:
 	Microsoft::WRL::ComPtr<ID3D11SamplerState> cpPSSamplerState;
 };
 
@@ -66,7 +70,7 @@ public:
 	inline ID3D11ShaderResourceView** GetAddressOfOutputSRV() { return cpOutputSRV.GetAddressOf(); }
 
 public:
-	virtual void CreateOutputResource(DXGI_FORMAT eFormat) = 0;
+	virtual void Update() = 0;
 	virtual void StartFilter(ID3D11ShaderResourceView** ppInputSRV) = 0;
 };
 

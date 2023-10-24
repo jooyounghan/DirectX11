@@ -65,7 +65,7 @@ public:
 	virtual void SetPSConstantBuffers() = 0;
 	virtual void OMSetRenderTargets() = 0;
 
-protected:
+public:
 	class PostProcess* pPostProcess = nullptr;
 
 public:

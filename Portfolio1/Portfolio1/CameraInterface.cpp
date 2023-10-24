@@ -43,8 +43,8 @@ void CameraInterface::StopMove(MoveDir moveDir)
 
 void CameraInterface::SetFromMouseXY(const int& iMouseX, const int& iMouseY)
 {
-	sCameraInfo.sInfoData.uiMouseLocation[0] = clamp((unsigned int)iMouseX, 0x0000u, 0xFFFFu);
-	sCameraInfo.sInfoData.uiMouseLocation[1] = clamp((unsigned int)iMouseY, 0x0000u, 0xFFFFu);
+	sCameraInfo.sInfoData.uiMouseLocation[0] = clamp((unsigned int)iMouseX, 0x0000u, (UINT)sScreenViewport.Width - 1);
+	sCameraInfo.sInfoData.uiMouseLocation[1] = clamp((unsigned int)iMouseY, 0x0000u, (UINT)sScreenViewport.Height - 1);
 
 	float fNdcX = sCameraInfo.sInfoData.uiMouseLocation[0] * 2.f / uiWidth - 1.f;
 	float fNdcY = sCameraInfo.sInfoData.uiMouseLocation[1] * 2.f / uiHeight - 1.f;
