@@ -3,7 +3,6 @@
 #include <d3dcompiler.h>
 #include <wrl/client.h>
 #include <vector>
-
 #include "ModelStruct.h"
 
 struct FilterVertex

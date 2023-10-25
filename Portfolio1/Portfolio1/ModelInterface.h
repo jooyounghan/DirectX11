@@ -1,7 +1,6 @@
 #pragma once
 #include "TransformProperties.h"
 #include "ModelID.h"
-#include "TextureSet.h"
 #include "ModelStruct.h"
 
 struct Vertex
@@ -22,7 +21,7 @@ public:
 		Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn,
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn
 	);
-	~ModelInterface() {};
+	~ModelInterface();
 
 public:
 	void Update();
@@ -58,8 +57,8 @@ public:
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	cpTransformationDataBuffer;
 
 public:
-	TextureSet	sTextureSet;
-	ModelID		modelID;
+	class ModelTextureSet*		pModelTextureSet;
+	ModelID						modelID;
 
 public:
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	cpTextureFlagBuffer;

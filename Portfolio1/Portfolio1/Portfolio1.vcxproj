@@ -142,7 +142,9 @@
     <ClCompile Include="CameraManageGui.cpp" />
     <ClCompile Include="CameraUNorm.cpp" />
     <ClCompile Include="Canvas.cpp" />
+    <ClCompile Include="FileLoader.cpp" />
     <ClCompile Include="FilterInterface.cpp" />
+    <ClCompile Include="ImguiFileDialog.cpp" />
     <ClCompile Include="ManageGuiInterface.cpp" />
     <ClCompile Include="NormalVectorDrawer.cpp" />
     <ClCompile Include="PostProcess.cpp" />
@@ -150,7 +152,7 @@
     <ClCompile Include="SingleFilterInterface.cpp" />
     <ClCompile Include="SphereModel.cpp" />
     <ClCompile Include="DepthStencilState.cpp" />
-    <ClCompile Include="FileManager.cpp" />
+    <ClCompile Include="ModelTextureLoader.cpp" />
     <ClCompile Include="FileManageGui.cpp" />
     <ClCompile Include="ID3D11Helper.cpp" />
     <ClCompile Include="BaseModelDrawer.cpp" />
@@ -166,7 +168,6 @@
     <ClCompile Include="SquareModel.cpp" />
     <ClCompile Include="TempVariable.cpp" />
     <ClCompile Include="ModelInterface.cpp" />
-    <ClCompile Include="TextureSet.cpp" />
     <ClCompile Include="TransformProperties.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -180,7 +181,9 @@
     <ClInclude Include="CameraManageGui.h" />
     <ClInclude Include="CameraUNorm.h" />
     <ClInclude Include="Canvas.h" />
+    <ClInclude Include="FileLoader.h" />
     <ClInclude Include="FilterInterface.h" />
+    <ClInclude Include="ImguiFileDialog.h" />
     <ClInclude Include="ManageGuiInterface.h" />
     <ClInclude Include="ModelStruct.h" />
     <ClInclude Include="NormalVectorDrawer.h" />
@@ -191,8 +194,7 @@
     <ClInclude Include="DefineVar.h" />
     <ClInclude Include="DepthStencilState.h" />
     <ClInclude Include="EnumVar.h" />
-    <ClInclude Include="FileManager.h" />
-    <ClInclude Include="FileManageGui.h" />
+    <ClInclude Include="ModelTextureLoader.h" />
     <ClInclude Include="ID3D11Helper.h" />
     <ClInclude Include="BaseModelDrawer.h" />
     <ClInclude Include="LightManageGui.h" />
@@ -206,7 +208,6 @@
     <ClInclude Include="SquareModel.h" />
     <ClInclude Include="TempVariable.h" />
     <ClInclude Include="ModelInterface.h" />
-    <ClInclude Include="TextureSet.h" />
     <ClInclude Include="TODO.h" />
     <ClInclude Include="TransformProperties.h" />
   </ItemGroup>

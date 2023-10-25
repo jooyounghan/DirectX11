@@ -3,7 +3,6 @@
 
 #include "ModelManageGui.h"
 #include "LightManageGui.h"
-#include "FileManageGui.h"
 #include "SettingManageGui.h"
 #include "CameraManageGui.h"
 
@@ -21,7 +20,6 @@
 #include "SquareModel.h"
 
 #include "LightManager.h"
-#include "FileManager.h"
 
 #include "DefineVar.h"
 
@@ -53,14 +51,12 @@ void PortfolioApp::Init()
 	InitImGUI();
 
 	// GUI Ãß°¡ =====================================================================================
-	upModelManageGui = make_unique<ModelManageGui>(vSpModels, spSelectedModel, spTempSelectedModel);
-	upLightManageGui = make_unique<LightManageGui>(spLightManager);
-	upFileManageGui = make_unique<FileManageGui>(upFileManager);
-	upSettingManageGui = make_unique<SettingManageGui>();
-	upCameraManageGui = make_unique<CameraManageGui>(spMainCameras);
+	vUpManageGuis.push_back(make_unique<ModelManageGui>(vSpModels, spSelectedModel, spTempSelectedModel));
+	vUpManageGuis.push_back(make_unique<LightManageGui>(spLightManager));
+	vUpManageGuis.push_back(make_unique<SettingManageGui>());
+	vUpManageGuis.push_back(make_unique<CameraManageGui>(spMainCameras));
 	// ==============================================================================================
 
-	upFileManager = make_unique<FileManager>(cpDevice, cpDeviceContext);
 	spLightManager = make_unique<LightManager>(cpDevice, cpDeviceContext);
 
 	upBaseCanvas = make_unique<Canvas<BaseModelDrawer>>();
@@ -71,8 +67,6 @@ void PortfolioApp::Init()
 	upModelOutlineDrawer = make_unique<ModelOutlineDrawer>(cpDevice, cpDeviceContext);
 	upNormalVectorDrawer = make_unique<NormalVectorDrawer>(cpDevice, cpDeviceContext);
 
-	// For Testing ==================================================================================
-	upFileManager->LoadImageFromFile(L".\\Texture\\GrassWithMudAndStone");
 
 	spMainCameras = make_shared<CameraUNorm>(cpDevice, cpDeviceContext, cpSwapChain, uiWidth, uiHeight, uiNumLevelQuality);
 
@@ -119,14 +113,14 @@ void PortfolioApp::Render()
 		upBaseCanvas->Render();
 	}
 
-	if (upSettingManageGui->IsNormalVectorDraw())
-	{
-		for (auto& model : vSpModels)
-		{
-			upNormalVectorDrawer->SetModel(model.get());
-			upNVCanvas->Render();
-		}
-	}
+	//if (upSettingManageGui->IsNormalVectorDraw())
+	//{
+	//	for (auto& model : vSpModels)
+	//	{
+	//		upNormalVectorDrawer->SetModel(model.get());
+	//		upNVCanvas->Render();
+	//	}
+	//}
 
 	if (spSelectedModel)
 	{
@@ -183,11 +177,10 @@ void PortfolioApp::SetImGUIRendering()
     ImGui_ImplWin32_NewFrame();
     ImGui::NewFrame();
 
-	upModelManageGui->RenderGui();
-	upLightManageGui->RenderGui();
-	upFileManageGui->RenderGui();
-	upSettingManageGui->RenderGui();
-	upCameraManageGui->RenderGui();
+	for (auto& gui : vUpManageGuis)
+	{
+		gui->RenderGui();
+	}
     ImGui::Render();
 }
 

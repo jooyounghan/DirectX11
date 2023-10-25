@@ -115,6 +115,18 @@
     <Filter Include="헤더 파일\PostProcess\Filter\Specific">
       <UniqueIdentifier>{78f7ebd9-b5dc-461e-86c9-ded6059452b1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="헤더 파일\FileLoader">
+      <UniqueIdentifier>{3df608cf-08bd-4066-9428-6cf24490b8c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\FileLoader">
+      <UniqueIdentifier>{f8676696-34c6-46ad-b3a2-4e2b6122146b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GUI\Extended">
+      <UniqueIdentifier>{c6606fff-36e2-4ea3-af88-d78d467ea60b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\GUI\Extended">
+      <UniqueIdentifier>{afb83f03-52f9-4375-b284-631f380b3037}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ID3D11Helper.cpp">
@@ -135,13 +147,7 @@
     <ClCompile Include="TempVariable.cpp">
       <Filter>소스 파일\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="FileManager.cpp">
-      <Filter>소스 파일\Utils</Filter>
-    </ClCompile>
     <ClCompile Include="ModelID.cpp">
-      <Filter>소스 파일\Model</Filter>
-    </ClCompile>
-    <ClCompile Include="TextureSet.cpp">
       <Filter>소스 파일\Model</Filter>
     </ClCompile>
     <ClCompile Include="TransformProperties.cpp">
@@ -225,6 +231,15 @@
     <ClCompile Include="SingleFilterInterface.cpp">
       <Filter>소스 파일\PostProcess\Filter</Filter>
     </ClCompile>
+    <ClCompile Include="ModelTextureLoader.cpp">
+      <Filter>소스 파일\FileLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="FileLoader.cpp">
+      <Filter>소스 파일\FileLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="ImguiFileDialog.cpp">
+      <Filter>소스 파일\GUI\Extended</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ID3D11Helper.h">
@@ -248,13 +263,7 @@
     <ClInclude Include="TempVariable.h">
       <Filter>헤더 파일\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="FileManager.h">
-      <Filter>헤더 파일\Utils</Filter>
-    </ClInclude>
     <ClInclude Include="ModelID.h">
-      <Filter>헤더 파일\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="TextureSet.h">
       <Filter>헤더 파일\Model</Filter>
     </ClInclude>
     <ClInclude Include="TODO.h">
@@ -291,9 +300,6 @@
       <Filter>헤더 파일\GUI</Filter>
     </ClInclude>
     <ClInclude Include="ModelManageGui.h">
-      <Filter>헤더 파일\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="FileManageGui.h">
       <Filter>헤더 파일\GUI</Filter>
     </ClInclude>
     <ClInclude Include="SquareModel.h">
@@ -343,6 +349,15 @@
     </ClInclude>
     <ClInclude Include="SingleFilterInterface.h">
       <Filter>헤더 파일\PostProcess\Filter</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelTextureLoader.h">
+      <Filter>헤더 파일\FileLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="FileLoader.h">
+      <Filter>헤더 파일\FileLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="ImguiFileDialog.h">
+      <Filter>헤더 파일\GUI\Extended</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

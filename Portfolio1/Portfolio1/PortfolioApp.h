@@ -9,15 +9,9 @@ typedef bool IsChecked;
 
 class CameraInterface;
 class ModelInterface;
-
-class ModelManageGui;
-class LightManageGui;
-class FileManageGui;
-class SettingManageGui;
-class CameraManageGui;
+class ManageGuiInterface;
 
 class LightManager;
-class FileManager;
 
 class BaseModelDrawer;
 class ModelOutlineDrawer;
@@ -46,20 +40,13 @@ public:
 	void QuitImGUI();
 
 private:
-	std::unique_ptr<ModelManageGui>		upModelManageGui;
-	std::unique_ptr<LightManageGui>		upLightManageGui;
-	std::unique_ptr<FileManageGui>		upFileManageGui;
-	std::unique_ptr<SettingManageGui>	upSettingManageGui;
-	std::unique_ptr<CameraManageGui>	upCameraManageGui;
+	std::vector<std::unique_ptr<ManageGuiInterface>> vUpManageGuis;
 
 public:
 	void ResizeSwapChain(const UINT& uiWidthIn, const UINT& uiHeightIn);
 
 public:
 	void CheckMouseHoveredModel();
-
-private:
-	std::unique_ptr<FileManager>					upFileManager;
 
 private:
 	std::shared_ptr<CameraInterface>				spMainCameras;

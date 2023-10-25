@@ -1,7 +1,7 @@
 #include "ModelInterface.h"
 #include "EnumVar.h"
 #include "ID3D11Helper.h"
-
+#include "ModelTextureLoader.h"
 #include <atomic>
 
 using namespace std;
@@ -32,14 +32,25 @@ ModelInterface::ModelInterface(
 		0,
 		cpTransformationDataBuffer.GetAddressOf()
 	);
+
+	pModelTextureSet = new ModelTextureSet();
+}
+
+ModelInterface::~ModelInterface()
+{
+	if (pModelTextureSet != nullptr)
+	{
+		delete pModelTextureSet;
+		pModelTextureSet = nullptr;
+	}
 }
 
 void ModelInterface::Update()
 {
-	sPSTextureFlags.bIsAOTexture = sTextureSet.GetSRV(TEXTURE_AO) != nullptr ? true : false;
-	sPSTextureFlags.bIsDiffuseTexture = sTextureSet.GetSRV(TEXTURE_DIFFUSE) != nullptr ? true : false;
-	sPSTextureFlags.bIsReflectTexture = sTextureSet.GetSRV(TEXTURE_REFLECT) != nullptr ? true : false;
-	sPSTextureFlags.bIsNormalTexture = sTextureSet.GetSRV(TEXTURE_NORMAL) != nullptr ? true : false;
+	sPSTextureFlags.bIsAOTexture = pModelTextureSet->GetSRV(MODEL_TEXTURE_AO) != nullptr ? true : false;
+	sPSTextureFlags.bIsDiffuseTexture = pModelTextureSet->GetSRV(MODEL_TEXTURE_DIFFUSE) != nullptr ? true : false;
+	sPSTextureFlags.bIsReflectTexture = pModelTextureSet->GetSRV(MODEL_TEXTURE_REFLECT) != nullptr ? true : false;
+	sPSTextureFlags.bIsNormalTexture = pModelTextureSet->GetSRV(MODEL_TEXTURE_NORMAL) != nullptr ? true : false;
 
 	ID3D11Helper::UpdateBuffer(
 		cpDeviceContext.Get(),
@@ -104,22 +115,22 @@ void ModelInterface::SetHSShaderResources()
 
 void ModelInterface::SetDSShaderResources()
 {
-	ID3D11ShaderResourceView** ppHeightSRV = sTextureSet.GetSRV(TEXTURE_HEIGHT).GetAddressOf();
+	ID3D11ShaderResourceView** ppHeightSRV = pModelTextureSet->GetSRV(MODEL_TEXTURE_HEIGHT).GetAddressOf();
 	ppHeightSRV != nullptr ? cpDeviceContext->DSSetShaderResources(DSSRVType::DS_HEIGHT, 1, ppHeightSRV) : void();
 }
 
 void ModelInterface::SetGSShaderResources()
 {
-	ID3D11ShaderResourceView** ppNormalSRV = sTextureSet.GetSRV(TEXTURE_NORMAL).GetAddressOf();
+	ID3D11ShaderResourceView** ppNormalSRV = pModelTextureSet->GetSRV(MODEL_TEXTURE_NORMAL).GetAddressOf();
 	ppNormalSRV != nullptr ? cpDeviceContext->GSSetShaderResources(GSSRVType::GS_NORMAL, 1, ppNormalSRV) : void();
 }
 
 void ModelInterface::SetPSShaderResources()
 {
-	ID3D11ShaderResourceView** ppAoSRV = sTextureSet.GetSRV(TEXTURE_AO).GetAddressOf();
-	ID3D11ShaderResourceView** ppDiffuseSRV = sTextureSet.GetSRV(TEXTURE_DIFFUSE).GetAddressOf();
-	ID3D11ShaderResourceView** ppReflectSRV = sTextureSet.GetSRV(TEXTURE_REFLECT).GetAddressOf();
-	ID3D11ShaderResourceView** ppNormalSRV = sTextureSet.GetSRV(TEXTURE_NORMAL).GetAddressOf();
+	ID3D11ShaderResourceView** ppAoSRV = pModelTextureSet->GetSRV(MODEL_TEXTURE_AO).GetAddressOf();
+	ID3D11ShaderResourceView** ppDiffuseSRV = pModelTextureSet->GetSRV(MODEL_TEXTURE_DIFFUSE).GetAddressOf();
+	ID3D11ShaderResourceView** ppReflectSRV = pModelTextureSet->GetSRV(MODEL_TEXTURE_REFLECT).GetAddressOf();
+	ID3D11ShaderResourceView** ppNormalSRV = pModelTextureSet->GetSRV(MODEL_TEXTURE_NORMAL).GetAddressOf();
 	ppAoSRV != nullptr ? cpDeviceContext->PSSetShaderResources(PSSRVType::PS_AO, 1, ppAoSRV) : void();
 	ppDiffuseSRV != nullptr ? cpDeviceContext->PSSetShaderResources(PSSRVType::PS_DIFFUSE, 1, ppDiffuseSRV) : void();
 	ppReflectSRV != nullptr ? cpDeviceContext->PSSetShaderResources(PSSRVType::PS_REFLECT, 1, ppReflectSRV) : void();

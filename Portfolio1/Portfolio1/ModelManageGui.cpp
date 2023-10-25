@@ -6,10 +6,13 @@
 
 #include "ModelManageGui.h"
 #include "ModelInterface.h"
-#include "FileManager.h"
+
+#include "FileLoader.h"
+#include "ModelTextureLoader.h"
 
 using namespace ImGui;
 using namespace DirectX;
+using namespace std;
 
 ModelManageGui::ModelManageGui(
 	std::vector<std::shared_ptr<ModelInterface>>& vSpModelsIn,
@@ -45,6 +48,7 @@ void ModelManageGui::RenderGui()
 		{
 			SetModelTexture();
 		}
+		
 	}
 	else
 	{
@@ -63,26 +67,23 @@ void ModelManageGui::SetTransformModelMenu()
 
 void ModelManageGui::SetModelTexture()
 {
+	string test;
+	if (ImGui::Button("Find..."))
+	{
+
+	}; 	ImGui::SameLine();
+	ImGui::Text(test.c_str());
+
 	ImGuiWindowFlags window_flags = ImGuiWindowFlags_HorizontalScrollbar;
-	ImGui::BeginChild("ModelTextureSet", ImVec2(ImGui::GetContentRegionAvail().x, 75.f), false, window_flags);
-	for (unsigned short idx = 0; idx < TextureType::TEXTURE_NUM; ++idx)
+	ImGui::BeginChild("ModelTextureSet", ImGui::GetContentRegionAvail(), false, window_flags);
+	for (unsigned short idx = 0; idx < MODEL_TEXTURE::MODEL_TEXTURE_NUM; ++idx)
 	{
 		Separator();
-		Text(TextureSet::strTextureType[idx].c_str());
-		Image(spSelectedModel->sTextureSet.GetSRV((TextureType)idx).Get(), ImVec2(60.f, 60.f));
-		if (ImGui::BeginDragDropTarget())
-		{
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_DEMO_CELL"))
-			{
-				IM_ASSERT(payload->DataSize == sizeof(Texture));
-				Texture* pTexture = (Texture*)payload->Data;
+		Text(ModelTexture::strTextureType[idx].c_str());
+		Image(spSelectedModel->pModelTextureSet->GetSRV((MODEL_TEXTURE)idx).Get(), ImVec2(60.f, 60.f));
 
-				spSelectedModel->sTextureSet.SetTextureToShaderResource((TextureType)idx, pTexture);
-			}
-			ImGui::EndDragDropTarget();
-		}
 		SameLine();
-		Text(FileManager::ConvertWCharToChar(spSelectedModel->sTextureSet.GetTextureName((TextureType)idx)).c_str());
+		Text(FileLoader::ConvertWCharToChar(spSelectedModel->pModelTextureSet->GetName((MODEL_TEXTURE)idx)).c_str());
 	}
 	ImGui::EndChild();
 }
