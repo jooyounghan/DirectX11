@@ -1,6 +1,7 @@
 #include "CameraHDR.h"
 #include "PostProcess.h"
 #include "ID3D11Helper.h"
+#include "ModelID.h"
 
 CameraHDR::CameraHDR(Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn, Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn, Microsoft::WRL::ComPtr<IDXGISwapChain>& cpSwapChainIn, const UINT& uiWidthIn, const UINT& uiHeightIn, const UINT& uiNumLevelQuality)
 	: CameraInterface(cpDeviceIn, cpDeviceContextIn, cpSwapChainIn, uiWidthIn, uiHeightIn, uiNumLevelQuality)
@@ -67,6 +68,8 @@ ID3D11Texture2D* CameraHDR::GetRenderedTexture()
 {
 	return nullptr;
 }
+
+inline ModelIDData CameraHDR::GetPointedModelID() { return ModelIDData(); }
 
 void CameraHDR::SetPostProcess()
 {

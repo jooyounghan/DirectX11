@@ -53,6 +53,10 @@ protected:
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContext;
 	Microsoft::WRL::ComPtr<IDXGISwapChain>& cpSwapChain;
 
+protected:
+	Microsoft::WRL::ComPtr<ID3D11Texture2D>				cpDepthStencilTexture2D;
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilView>		cpDepthStencilView;
+
 public:
 	virtual void Update() = 0;
 	virtual void Resize(const float&) = 0;
@@ -68,6 +72,14 @@ public:
 public:
 	class PostProcess* pPostProcess = nullptr;
 
+protected:
+	Microsoft::WRL::ComPtr<ID3D11Texture2D>				cpModelIDTexture;
+	Microsoft::WRL::ComPtr<ID3D11RenderTargetView>		cpModelIDRTV;
+
+public:
+	Microsoft::WRL::ComPtr<ID3D11Texture2D>				cpModelIDMSToSS;
+	Microsoft::WRL::ComPtr<ID3D11Texture2D>				cpModelIDStagingTexture;
+
 public:
 	virtual void SetPostProcess() = 0;
 	virtual void DoPostProcess() = 0;
@@ -78,4 +90,7 @@ public:
 
 public:
 	virtual struct ModelIDData GetPointedModelID() = 0;
+
+protected:
+	virtual void CreateModelIDResource() = 0;
 };

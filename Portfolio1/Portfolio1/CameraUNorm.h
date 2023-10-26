@@ -35,24 +35,16 @@ protected:
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView>		cpSDRRTV;
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>	cpSDRSRV;
 
-protected:
-	Microsoft::WRL::ComPtr<ID3D11Texture2D>				cpModelIDTexture;
-	Microsoft::WRL::ComPtr<ID3D11RenderTargetView>		cpModelIDRTV;
-
-public:
-	Microsoft::WRL::ComPtr<ID3D11Texture2D>				cpModelIDMSToSS;
-	Microsoft::WRL::ComPtr<ID3D11Texture2D>				cpModelIDStagingTexture;
-
-protected:
-	Microsoft::WRL::ComPtr<ID3D11Texture2D>				cpDepthStencilTexture2D;
-	Microsoft::WRL::ComPtr<ID3D11DepthStencilView>		cpDepthStencilView;
 
 public:
 	virtual DXGI_FORMAT GetRenderedTextureFormat() override;
 	virtual ID3D11Texture2D* GetRenderedTexture() override;
 
 public:
-	struct ModelIDData GetPointedModelID();
+	virtual struct ModelIDData GetPointedModelID() override;
+
+protected:
+	virtual void CreateModelIDResource() override;
 
 public:
 	virtual void SetPostProcess() override;
@@ -60,5 +52,4 @@ public:
 
 private:
 	void CreateSRDResource();
-	void CreateModelIDResource();
 };

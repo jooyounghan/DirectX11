@@ -30,17 +30,34 @@ public:
 	void SetPSConstantBuffers();
 	void OMSetRenderTargets();
 
+protected:
+	Microsoft::WRL::ComPtr<ID3D11Texture2D>				cpHDRTexture;
+	Microsoft::WRL::ComPtr<ID3D11RenderTargetView>		cpHDRRTV;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>	cpHDRSRV;
+
+protected:
+	Microsoft::WRL::ComPtr<ID3D11Texture2D>				cpModelIDTexture;
+	Microsoft::WRL::ComPtr<ID3D11RenderTargetView>		cpModelIDRTV;
+
+public:
+	Microsoft::WRL::ComPtr<ID3D11Texture2D>				cpModelIDMSToSS;
+	Microsoft::WRL::ComPtr<ID3D11Texture2D>				cpModelIDStagingTexture;
+
 public:
 	virtual DXGI_FORMAT GetRenderedTextureFormat() override;
 	virtual ID3D11Texture2D* GetRenderedTexture() override;
 
 public:
+	virtual struct ModelIDData GetPointedModelID() override;;
+
+protected:
+	virtual void CreateModelIDResource() override {};
+
+public:
 	virtual void SetPostProcess() override;
 	virtual void DoPostProcess() override;
 
-protected:
-	Microsoft::WRL::ComPtr<ID3D11Texture2D>				cpHDRTexture;
-	Microsoft::WRL::ComPtr<ID3D11RenderTargetView>		cpHDRRTV;
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>	cpHDRSRV;
+private:
+	void CreateHRDResource() {};
 };
 
