@@ -67,24 +67,17 @@ void ModelManageGui::SetTransformModelMenu()
 
 void ModelManageGui::SetModelTexture()
 {
-	string test;
-	if (ImGui::Button("Find..."))
-	{
-
-	}; 	ImGui::SameLine();
-	ImGui::Text(test.c_str());
-
 	ImGuiWindowFlags window_flags = ImGuiWindowFlags_HorizontalScrollbar;
 	ImGui::BeginChild("ModelTextureSet", ImGui::GetContentRegionAvail(), false, window_flags);
-	for (unsigned short idx = 0; idx < MODEL_TEXTURE::MODEL_TEXTURE_NUM; ++idx)
-	{
-		Separator();
-		Text(ModelTexture::strTextureType[idx].c_str());
-		Image(spSelectedModel->pModelTextureSet->GetSRV((MODEL_TEXTURE)idx).Get(), ImVec2(60.f, 60.f));
+	//for (unsigned short idx = 0; idx < MODEL_TEXTURE::MODEL_TEXTURE_NUM; ++idx)
+	//{
+	//	Separator();
+	//	Text(ModelTexture::strTextureType[idx].c_str());
+	//	Image(spSelectedModel->pModelTextureSet->GetSRV((MODEL_TEXTURE)idx).Get(), ImVec2(60.f, 60.f));
 
-		SameLine();
-		Text(FileLoader::ConvertWCharToChar(spSelectedModel->pModelTextureSet->GetName((MODEL_TEXTURE)idx)).c_str());
-	}
+	//	SameLine();
+	//	Text(FileLoader::ConvertWCharToChar(spSelectedModel->pModelTextureSet->GetName((MODEL_TEXTURE)idx)).c_str());
+	//}
 	ImGui::EndChild();
 }
 

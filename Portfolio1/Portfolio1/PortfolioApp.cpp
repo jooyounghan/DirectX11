@@ -5,6 +5,7 @@
 #include "LightManageGui.h"
 #include "SettingManageGui.h"
 #include "CameraManageGui.h"
+#include "FileManageGui.h"
 
 #include "BaseModelDrawer.h"
 #include "ModelOutlineDrawer.h"
@@ -55,6 +56,7 @@ void PortfolioApp::Init()
 	vUpManageGuis.push_back(make_unique<LightManageGui>(spLightManager));
 	vUpManageGuis.push_back(make_unique<SettingManageGui>());
 	vUpManageGuis.push_back(make_unique<CameraManageGui>(spMainCameras));
+	vUpManageGuis.push_back(make_unique<FileManageGui>());
 	// ==============================================================================================
 
 	spLightManager = make_unique<LightManager>(cpDevice, cpDeviceContext);

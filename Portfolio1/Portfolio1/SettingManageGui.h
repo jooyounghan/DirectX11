@@ -5,7 +5,7 @@ class SettingManageGui : public ManageGuiInterface
 {
 public:
 	SettingManageGui();
-	~SettingManageGui();
+	virtual ~SettingManageGui() override;
 
 public:
 	virtual void RenderGui() override;

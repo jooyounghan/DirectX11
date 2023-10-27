@@ -11,7 +11,7 @@ public:
 	LightManageGui(
 		std::shared_ptr<LightManager>&
 		spLightManagerIn);
-	~LightManageGui();
+	virtual ~LightManageGui() override;
 
 private:
 	std::shared_ptr<LightManager>& spLightManager;

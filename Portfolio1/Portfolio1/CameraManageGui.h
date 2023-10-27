@@ -10,7 +10,7 @@ class CameraManageGui : public ManageGuiInterface
 {
 public:
 	CameraManageGui(std::shared_ptr<CameraInterface>& spSelectedCameraIn);
-	~CameraManageGui();
+	virtual ~CameraManageGui() override;
 
 private:
 	std::shared_ptr<CameraInterface>& spSelectedCamera;

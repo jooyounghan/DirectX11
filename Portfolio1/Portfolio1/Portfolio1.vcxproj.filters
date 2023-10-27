@@ -115,17 +115,23 @@
     <Filter Include="헤더 파일\PostProcess\Filter\Specific">
       <UniqueIdentifier>{78f7ebd9-b5dc-461e-86c9-ded6059452b1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="헤더 파일\FileLoader">
-      <UniqueIdentifier>{3df608cf-08bd-4066-9428-6cf24490b8c1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\FileLoader">
-      <UniqueIdentifier>{f8676696-34c6-46ad-b3a2-4e2b6122146b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\GUI\Extended">
-      <UniqueIdentifier>{c6606fff-36e2-4ea3-af88-d78d467ea60b}</UniqueIdentifier>
+      <UniqueIdentifier>{5885205d-22ed-4e27-ac0a-8257ea0d9c3c}</UniqueIdentifier>
     </Filter>
     <Filter Include="헤더 파일\GUI\Extended">
-      <UniqueIdentifier>{afb83f03-52f9-4375-b284-631f380b3037}</UniqueIdentifier>
+      <UniqueIdentifier>{cf7849a6-a68c-4de9-9cc9-89809e0c4545}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Files">
+      <UniqueIdentifier>{f8676696-34c6-46ad-b3a2-4e2b6122146b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Files">
+      <UniqueIdentifier>{3df608cf-08bd-4066-9428-6cf24490b8c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Files\Specific">
+      <UniqueIdentifier>{c15be7b5-0dd0-494a-bfd1-b475cd7d506b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Files\Specific">
+      <UniqueIdentifier>{097b653a-e56d-4678-83d5-f245cc972250}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -231,14 +237,20 @@
     <ClCompile Include="SingleFilterInterface.cpp">
       <Filter>소스 파일\PostProcess\Filter</Filter>
     </ClCompile>
-    <ClCompile Include="ModelTextureLoader.cpp">
-      <Filter>소스 파일\FileLoader</Filter>
-    </ClCompile>
     <ClCompile Include="FileLoader.cpp">
-      <Filter>소스 파일\FileLoader</Filter>
+      <Filter>소스 파일\Files</Filter>
     </ClCompile>
-    <ClCompile Include="ImguiFileDialog.cpp">
+    <ClCompile Include="..\..\..\..\..\..\..\Program Files\vcpkg\installed\x64-windows\include\ImGuiFileDialog\ImGuiFileDialog.cpp">
       <Filter>소스 파일\GUI\Extended</Filter>
+    </ClCompile>
+    <ClCompile Include="FileInterface.cpp">
+      <Filter>소스 파일\Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelTexture.cpp">
+      <Filter>소스 파일\Files\Specific</Filter>
+    </ClCompile>
+    <ClCompile Include="UnknownFile.cpp">
+      <Filter>소스 파일\Files\Specific</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -350,14 +362,23 @@
     <ClInclude Include="SingleFilterInterface.h">
       <Filter>헤더 파일\PostProcess\Filter</Filter>
     </ClInclude>
-    <ClInclude Include="ModelTextureLoader.h">
-      <Filter>헤더 파일\FileLoader</Filter>
-    </ClInclude>
     <ClInclude Include="FileLoader.h">
-      <Filter>헤더 파일\FileLoader</Filter>
+      <Filter>헤더 파일\Files</Filter>
     </ClInclude>
-    <ClInclude Include="ImguiFileDialog.h">
+    <ClInclude Include="FileManageGui.h">
+      <Filter>헤더 파일\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\..\Program Files\vcpkg\installed\x64-windows\include\ImGuiFileDialog\ImGuiFileDialog.h">
       <Filter>헤더 파일\GUI\Extended</Filter>
+    </ClInclude>
+    <ClInclude Include="FileInterface.h">
+      <Filter>헤더 파일\Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelTexture.h">
+      <Filter>헤더 파일\Files\Specific</Filter>
+    </ClInclude>
+    <ClInclude Include="UnknownFile.h">
+      <Filter>헤더 파일\Files\Specific</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

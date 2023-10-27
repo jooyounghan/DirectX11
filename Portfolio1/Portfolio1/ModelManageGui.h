@@ -14,7 +14,7 @@ public:
 		std::shared_ptr<ModelInterface>& spSelectedModelIn,
 		std::shared_ptr<ModelInterface>& spTempSelectedModelIn
 	);
-	~ModelManageGui();
+	virtual ~ModelManageGui() override;
 
 public:
 	virtual void RenderGui() override;

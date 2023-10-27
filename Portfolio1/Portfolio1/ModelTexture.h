@@ -49,24 +49,3 @@ public:
 	inline std::wstring& GetName(const MODEL_TEXTURE& eModelTexture) { return sTextures[eModelTexture].wStrModelTextureName; }
 	inline Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& GetSRV(const MODEL_TEXTURE& eModelTexture) { return sTextures[eModelTexture].cpModelTextureSRV; }
 };
-
-class ModelTextureLoader
-{
-public:
-	ModelTextureLoader(
-		Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn,
-		Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn
-	);
-	~ModelTextureLoader();
-
-public:
-	Microsoft::WRL::ComPtr<ID3D11Device>& cpDevice;
-	Microsoft::WRL::ComPtr<ID3D11DeviceContext> cpDeviceContext;
-
-
-public:
-	ModelTextureSet sModelTextureSet;
-
-public:
-	void LoadImageFromFile(IN const std::wstring& sPathName);
-};
