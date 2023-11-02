@@ -56,8 +56,7 @@ void ID3D11Helper::CreateDeviceAndContext(
 		return;
 	}
 
-	cpTempDevice->CheckMultisampleQualityLevels(DXGI_FORMAT_R8G8B8A8_UNORM, 4,
-		&uiNumLevelQuality);
+	cpTempDevice->CheckMultisampleQualityLevels(DXGI_FORMAT_R8G8B8A8_UNORM, 4, &uiNumLevelQuality);
 
 
 	hResult = cpTempDevice.As(&cpDevice);
@@ -82,8 +81,8 @@ void ID3D11Helper::CreateDeviceAndContext(
 	sSwapChainDesc.BufferDesc.RefreshRate.Denominator = 1;
 	sSwapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 
-	sSwapChainDesc.SampleDesc.Count = /*uiNumLevelQuality > 0 ? 4 : */ 1;
-	sSwapChainDesc.SampleDesc.Quality = /*uiNumLevelQuality > 0 ? uiNumLevelQuality - 1 : */ 0;
+	sSwapChainDesc.SampleDesc.Count = 1;
+	sSwapChainDesc.SampleDesc.Quality = 0;
 
 	sSwapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 	sSwapChainDesc.BufferCount = 2;
@@ -480,9 +479,16 @@ void ID3D11Helper::CreateSampler(IN D3D11_FILTER eFilter, IN D3D11_TEXTURE_ADDRE
 
 }
 
-void ID3D11Helper::CreateTexture2D(IN ID3D11Device* pDevice, IN ID3D11DeviceContext* pDeviceContext, IN const UINT& uiWidth, IN const UINT& uiHeight, IN const uint8_t* const pImageRawData, OUT ID3D11Texture2D** ppTexture2D)
+void ID3D11Helper::CreateTexture2D(
+	IN ID3D11Device* pDevice,
+	IN ID3D11DeviceContext* pDeviceContext,
+	IN const UINT& uiWidth,
+	IN const UINT& uiHeight,
+	IN DXGI_FORMAT eFormat,
+	IN const uint8_t* const pImageRawData,
+	OUT ID3D11Texture2D** ppTexture2D)
 {
-	ComPtr<ID3D11Texture2D> cpStagingTexture = CreateStagingTexture2D(pDevice, pDeviceContext, uiWidth, uiHeight, pImageRawData);
+	ComPtr<ID3D11Texture2D> cpStagingTexture = CreateStagingTexture2D(pDevice, pDeviceContext, uiWidth, uiHeight, eFormat, pImageRawData);
 
 	D3D11_TEXTURE2D_DESC sTexture2DDesc;
 	AutoZeroMemory(sTexture2DDesc);
@@ -490,7 +496,7 @@ void ID3D11Helper::CreateTexture2D(IN ID3D11Device* pDevice, IN ID3D11DeviceCont
 	sTexture2DDesc.Height = uiHeight;
 	sTexture2DDesc.MipLevels = 0;
 	sTexture2DDesc.ArraySize = 1;
-	sTexture2DDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	sTexture2DDesc.Format = eFormat;
 	sTexture2DDesc.SampleDesc.Count = 1;
 	sTexture2DDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
 	sTexture2DDesc.CPUAccessFlags = NULL;
@@ -557,7 +563,13 @@ void ID3D11Helper::CreateTexture2D(
 }
 
 
-ComPtr<ID3D11Texture2D> ID3D11Helper::CreateStagingTexture2D(IN ID3D11Device* pDevice, IN ID3D11DeviceContext* pDeviceContext, IN const UINT& uiWidth, IN const UINT& uiHeight, IN const uint8_t* const pImageRawData)
+ComPtr<ID3D11Texture2D> ID3D11Helper::CreateStagingTexture2D(
+	IN ID3D11Device* pDevice,
+	IN ID3D11DeviceContext* pDeviceContext,
+	IN const UINT& uiWidth,
+	IN const UINT& uiHeight,
+	IN DXGI_FORMAT eFormat,
+	IN const uint8_t* const pImageRawData)
 {
 	D3D11_TEXTURE2D_DESC sTexture2DDesc;
 	AutoZeroMemory(sTexture2DDesc);
@@ -565,7 +577,7 @@ ComPtr<ID3D11Texture2D> ID3D11Helper::CreateStagingTexture2D(IN ID3D11Device* pD
 	sTexture2DDesc.Height = uiHeight;
 	sTexture2DDesc.MipLevels = 1;
 	sTexture2DDesc.ArraySize = 1;
-	sTexture2DDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	sTexture2DDesc.Format = eFormat;
 	sTexture2DDesc.SampleDesc.Count = 1;
 	sTexture2DDesc.BindFlags = NULL;
 	sTexture2DDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE | D3D11_CPU_ACCESS_READ;

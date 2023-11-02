@@ -114,7 +114,9 @@ void PostProcess::Process(
 		pOutputTexture2D = pBlendFilter->GetOutputTexture2D();
 	}
 
-	cpDeviceContext->ResolveSubresource(pBackBufferTexture, 0, pOutputTexture2D, 0, eFormat);
+	D3D11_TEXTURE2D_DESC desc;
+	pBackBufferTexture->GetDesc(&desc);
+	cpDeviceContext->ResolveSubresource(pBackBufferTexture, 0, pOutputTexture2D, 0, desc.Format);
 	cpDeviceContext->OMSetRenderTargets(1, ppBackBufferRTV, NULL);
 
 }

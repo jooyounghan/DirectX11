@@ -2,6 +2,9 @@
 #include "TransformProperties.h"
 #include "ModelID.h"
 #include "ModelStruct.h"
+#include "ModelTexture.h"
+
+#include <memory>
 
 struct Vertex
 {
@@ -57,21 +60,17 @@ public:
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	cpTransformationDataBuffer;
 
 public:
-	class ModelTextureSet*		pModelTextureSet;
-	ModelID						modelID;
+	std::shared_ptr<class ModelTexture>	pModelTextureSet[MODEL_TEXTURE_NUM];
+
+public:
+	ModelID			modelID;
 
 public:
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	cpTextureFlagBuffer;
 	struct
 	{
-		bool bAODummy[3];
-		bool bIsAOTexture;
-		bool bDiffuseDummy[3];
-		bool bIsDiffuseTexture;
-		bool bReflectDummy[3];
-		bool bIsReflectTexture;
-		bool bNormalDummy[3];
-		bool bIsNormalTexture;
+		uint32_t bIsTextureOn[MODEL_TEXTURE_NUM];
+		uint32_t uiDummy[2];
 	} sPSTextureFlags;
 
 public:

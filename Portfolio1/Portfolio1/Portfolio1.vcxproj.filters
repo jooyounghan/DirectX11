@@ -34,9 +34,6 @@
     <Filter Include="소스 파일\Utils">
       <UniqueIdentifier>{ac0113e6-afd1-4f90-9078-03771388cce5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Main">
-      <UniqueIdentifier>{0505c04a-655b-4531-a921-1d69aa6249e7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="헤더 파일\Main">
       <UniqueIdentifier>{3ff67aee-c3a9-48e7-86c3-d503fcb899aa}</UniqueIdentifier>
     </Filter>
@@ -133,6 +130,9 @@
     <Filter Include="소스 파일\Files\Specific">
       <UniqueIdentifier>{097b653a-e56d-4678-83d5-f245cc972250}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Main">
+      <UniqueIdentifier>{0505c04a-655b-4531-a921-1d69aa6249e7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ID3D11Helper.cpp">
@@ -204,14 +204,8 @@
     <ClCompile Include="SettingManageGui.cpp">
       <Filter>소스 파일\GUI</Filter>
     </ClCompile>
-    <ClCompile Include="CameraUNorm.cpp">
+    <ClCompile Include="CameraNormal.cpp">
       <Filter>소스 파일\Camera\Specific</Filter>
-    </ClCompile>
-    <ClCompile Include="CameraHDR.cpp">
-      <Filter>소스 파일\Camera\Specific</Filter>
-    </ClCompile>
-    <ClCompile Include="CameraInfo.cpp">
-      <Filter>소스 파일\Camera</Filter>
     </ClCompile>
     <ClCompile Include="CameraInterface.cpp">
       <Filter>소스 파일\Camera</Filter>
@@ -240,9 +234,6 @@
     <ClCompile Include="FileLoader.cpp">
       <Filter>소스 파일\Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\..\..\Program Files\vcpkg\installed\x64-windows\include\ImGuiFileDialog\ImGuiFileDialog.cpp">
-      <Filter>소스 파일\GUI\Extended</Filter>
-    </ClCompile>
     <ClCompile Include="FileInterface.cpp">
       <Filter>소스 파일\Files</Filter>
     </ClCompile>
@@ -251,6 +242,15 @@
     </ClCompile>
     <ClCompile Include="UnknownFile.cpp">
       <Filter>소스 파일\Files\Specific</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGuiFileDialog.cpp">
+      <Filter>소스 파일\GUI\Extended</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraInfo.cpp">
+      <Filter>소스 파일\Camera\Specific</Filter>
+    </ClCompile>
+    <ClCompile Include="Filter.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -326,10 +326,7 @@
     <ClInclude Include="SettingManageGui.h">
       <Filter>헤더 파일\GUI</Filter>
     </ClInclude>
-    <ClInclude Include="CameraHDR.h">
-      <Filter>헤더 파일\Camera\Specific</Filter>
-    </ClInclude>
-    <ClInclude Include="CameraUNorm.h">
+    <ClInclude Include="CameraNormal.h">
       <Filter>헤더 파일\Camera\Specific</Filter>
     </ClInclude>
     <ClInclude Include="CameraInfo.h">
@@ -368,9 +365,6 @@
     <ClInclude Include="FileManageGui.h">
       <Filter>헤더 파일\GUI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\..\..\Program Files\vcpkg\installed\x64-windows\include\ImGuiFileDialog\ImGuiFileDialog.h">
-      <Filter>헤더 파일\GUI\Extended</Filter>
-    </ClInclude>
     <ClInclude Include="FileInterface.h">
       <Filter>헤더 파일\Files</Filter>
     </ClInclude>
@@ -379,6 +373,15 @@
     </ClInclude>
     <ClInclude Include="UnknownFile.h">
       <Filter>헤더 파일\Files\Specific</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGuiFileDialog.h">
+      <Filter>헤더 파일\GUI\Extended</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGuiFileDialogConfig.h">
+      <Filter>헤더 파일\GUI\Extended</Filter>
+    </ClInclude>
+    <ClInclude Include="Filter.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

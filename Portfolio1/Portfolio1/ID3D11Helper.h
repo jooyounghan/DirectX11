@@ -173,6 +173,7 @@ public:
 		IN ID3D11DeviceContext*			pDeviceContext,
 		IN const UINT&					uiWidth,
 		IN const UINT&					uiHeight,
+		IN DXGI_FORMAT					eFormat,
 		IN const uint8_t* const			pImageRawData,
 		OUT ID3D11Texture2D**			ppTexture2D
 	);
@@ -202,6 +203,7 @@ public:
 		IN ID3D11DeviceContext*		pDeviceContext,
 		IN const UINT&				uiWidth,
 		IN const UINT&				uiHeight,
+		IN DXGI_FORMAT				eFormat,
 		IN const uint8_t* const		pImageRawData
 	);
 };

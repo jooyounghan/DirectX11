@@ -41,6 +41,9 @@ public:
 
 private:
 	std::vector<std::unique_ptr<ManageGuiInterface>> vUpManageGuis;
+	
+private:
+	bool bIsNormalVectorDraw = false;
 
 public:
 	void ResizeSwapChain(const UINT& uiWidthIn, const UINT& uiHeightIn);

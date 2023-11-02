@@ -7,8 +7,8 @@
 
 using namespace ImGui;
 
-SettingManageGui::SettingManageGui()
-	: bIsNormalVectorDraw(false)
+SettingManageGui::SettingManageGui(bool& bIsNormalVectorDrawIn)
+	: bIsNormalVectorDraw(bIsNormalVectorDrawIn)
 {
 }
 

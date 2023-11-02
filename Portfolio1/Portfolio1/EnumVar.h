@@ -26,8 +26,9 @@ enum PSConstBufferType : unsigned int
 enum PSSRVType : unsigned int
 {
 	PS_AO,
-	PS_DIFFUSE,
-	PS_REFLECT,
+	PS_COLOR,
+	PS_METALNESS,
+	PS_ROUGHNESS,
 	PS_NORMAL
 };
 

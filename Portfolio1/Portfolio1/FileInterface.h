@@ -11,18 +11,23 @@ public:
 	FileInterface(
 		Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn,
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn,
-		const std::string& strNameIn,
-		const UINT& uiWidthIn, const UINT& uiHeightIn,
-		uint8_t* pDataIn
+		const std::string& strFileNameIn,
+		uint8_t* pThumbNailDataIn,
+		DXGI_FORMAT eThumbNailFormatIn = DXGI_FORMAT_R8G8B8A8_UNORM
 	);
 	virtual ~FileInterface() {};
 
-private:
+protected:
 	Microsoft::WRL::ComPtr<ID3D11Device>& cpDevice;
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContext;
 
 public:
-	std::string											strFileName;
+	std::string strFileName;
+
+protected:
+	DXGI_FORMAT eThumbNailFormat;
+
+public:
 	Microsoft::WRL::ComPtr<ID3D11Texture2D>				cpFileThumbNailTexture2D;
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>	cpFileThumbNailSRV;
 };

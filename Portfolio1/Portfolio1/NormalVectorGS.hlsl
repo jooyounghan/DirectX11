@@ -8,9 +8,12 @@ Texture2D NormalTexture : register(t0);
 cbuffer TextureFlagBuffer : register(b0)
 {
     bool bIsAOTexture;
-    bool bIsDiffuseTexture;
-    bool bIsReflectTexture;
+    bool bIsColorTexture;
+    bool bIsMetalnessTexture;
+    bool bIsRoughnessTexture;
     bool bIsNormalTexture;
+    bool bIsHeightTexture;
+    uint2 uiDummy;
 };
 
 cbuffer ViewProjMatrix : register(b1)

@@ -49,18 +49,22 @@ public:
 	Microsoft::WRL::ComPtr<ID3D11RasterizerState>	cpRasterizerState;
 
 protected:
-	Microsoft::WRL::ComPtr<ID3D11Device>& cpDevice;
-	Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContext;
-	Microsoft::WRL::ComPtr<IDXGISwapChain>& cpSwapChain;
+	Microsoft::WRL::ComPtr<ID3D11Device>&			cpDevice;
+	Microsoft::WRL::ComPtr<ID3D11DeviceContext>&	cpDeviceContext;
+	Microsoft::WRL::ComPtr<IDXGISwapChain>&			cpSwapChain;
 
 protected:
-	Microsoft::WRL::ComPtr<ID3D11Texture2D>				cpDepthStencilTexture2D;
-	Microsoft::WRL::ComPtr<ID3D11DepthStencilView>		cpDepthStencilView;
+	Microsoft::WRL::ComPtr<ID3D11Texture2D>			cpDepthStencilTexture2D;
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilView>	cpDepthStencilView;
 
 public:
 	virtual void Update() = 0;
-	virtual void Resize(const float&) = 0;
-	virtual void WipeOut(const DirectX::XMVECTOR&) = 0;
+	virtual void Resize(const float& fAspectRatioIn) = 0;
+
+public:
+	void WipeOut(const DirectX::XMVECTOR& xmvClearColor = DirectX::XMVectorSet(0.f, 0.f, 0.f, 1.f));
+
+public:
 	virtual void SetRSState() = 0;
 	virtual void SetVSConstantBuffers() = 0;
 	virtual void SetHSConstantBuffers() = 0;
@@ -73,6 +77,11 @@ public:
 	class PostProcess* pPostProcess = nullptr;
 
 protected:
+	Microsoft::WRL::ComPtr<ID3D11Texture2D>				cpCameraOutputTexture;
+	Microsoft::WRL::ComPtr<ID3D11RenderTargetView>		cpCameraOutputRTV;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>	cpCameraOutputSRV;
+
+protected:
 	Microsoft::WRL::ComPtr<ID3D11Texture2D>				cpModelIDTexture;
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView>		cpModelIDRTV;
 
@@ -81,16 +90,17 @@ public:
 	Microsoft::WRL::ComPtr<ID3D11Texture2D>				cpModelIDStagingTexture;
 
 public:
-	virtual void SetPostProcess() = 0;
-	virtual void DoPostProcess() = 0;
+	DXGI_FORMAT GetRenderedTextureFormat();
+	inline ID3D11Texture2D* GetRenderedTexture() { return cpCameraOutputTexture.Get(); }
 
 public:
-	virtual DXGI_FORMAT GetRenderedTextureFormat() = 0;
-	virtual ID3D11Texture2D* GetRenderedTexture() = 0;
+	virtual void SetPostProcess() = 0;
+	void DoPostProcess();
 
 public:
 	virtual struct ModelIDData GetPointedModelID() = 0;
 
 protected:
 	virtual void CreateModelIDResource() = 0;
+	virtual void CreateResource() = 0;
 };

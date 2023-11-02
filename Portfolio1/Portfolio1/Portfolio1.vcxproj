@@ -123,29 +123,31 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;dxgi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\..\..\..\Program Files\vcpkg\installed\x64-windows\include\ImGuiFileDialog\ImGuiFileDialog.cpp" />
     <ClCompile Include="BaseApp.cpp" />
     <ClCompile Include="BlendFilter.cpp" />
     <ClCompile Include="BlendFilterInterface.cpp" />
     <ClCompile Include="BloomFilter.cpp" />
     <ClCompile Include="CameraInterface.cpp" />
-    <ClCompile Include="CameraHDR.cpp" />
     <ClCompile Include="CameraInfo.cpp" />
     <ClCompile Include="CameraManageGui.cpp" />
-    <ClCompile Include="CameraUNorm.cpp" />
+    <ClCompile Include="CameraNormal.cpp" />
     <ClCompile Include="Canvas.cpp" />
     <ClCompile Include="FileInterface.cpp" />
     <ClCompile Include="FileLoader.cpp" />
+    <ClCompile Include="Filter.cpp" />
     <ClCompile Include="FilterInterface.cpp" />
+    <ClCompile Include="ImGuiFileDialog.cpp" />
     <ClCompile Include="ManageGuiInterface.cpp" />
     <ClCompile Include="NormalVectorDrawer.cpp" />
     <ClCompile Include="PostProcess.cpp" />
@@ -173,21 +175,22 @@
     <ClCompile Include="UnknownFile.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\..\..\..\Program Files\vcpkg\installed\x64-windows\include\ImGuiFileDialog\ImGuiFileDialog.h" />
     <ClInclude Include="BaseApp.h" />
     <ClInclude Include="BlendFilter.h" />
     <ClInclude Include="BlendFilterInterface.h" />
     <ClInclude Include="BloomFilter.h" />
     <ClInclude Include="CameraInterface.h" />
-    <ClInclude Include="CameraHDR.h" />
     <ClInclude Include="CameraInfo.h" />
     <ClInclude Include="CameraManageGui.h" />
-    <ClInclude Include="CameraUNorm.h" />
+    <ClInclude Include="CameraNormal.h" />
     <ClInclude Include="Canvas.h" />
     <ClInclude Include="FileInterface.h" />
     <ClInclude Include="FileLoader.h" />
     <ClInclude Include="FileManageGui.h" />
+    <ClInclude Include="Filter.h" />
     <ClInclude Include="FilterInterface.h" />
+    <ClInclude Include="ImGuiFileDialog.h" />
+    <ClInclude Include="ImGuiFileDialogConfig.h" />
     <ClInclude Include="ManageGuiInterface.h" />
     <ClInclude Include="ModelStruct.h" />
     <ClInclude Include="NormalVectorDrawer.h" />
@@ -242,45 +245,54 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="BaseModelVS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="BlendPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="BloomPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="FilterVS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="NormalVectorGS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Geometry</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="NormalVectorPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="OutlinerPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

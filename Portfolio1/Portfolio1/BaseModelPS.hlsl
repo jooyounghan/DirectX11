@@ -3,9 +3,10 @@
 SamplerState Sampler : register(s0);
 
 Texture2D AOTexture : register(t0);
-Texture2D DiffuseTexture : register(t1);
-Texture2D ReflectTexture : register(t2);
-Texture2D NormalTexture : register(t3);
+Texture2D ColorTexture : register(t1);
+Texture2D MetalnessTexture : register(t2);
+Texture2D RoughnessTexture : register(t3);
+Texture2D NormalTexture : register(t4);
 
 cbuffer LightSetsBuffer : register(b0)
 {
@@ -19,19 +20,29 @@ cbuffer ModelIDBuffer : register(b1)
 
 cbuffer TextureFlagBuffer : register(b2)
 {
-    bool bIsAOTexture;
-    bool bIsDiffuseTexture;
-    bool bIsReflectTexture;
-    bool bIsNormalTexture;
-    int3 iDummy;
+    bool    bIsAOTexture;
+    bool    bIsColorTexture;
+    bool    bIsMetalnessTexture;
+    bool    bIsRoughnessTexture;
+    bool    bIsNormalTexture;
+    bool    bIsHeightTexture;
+    uint2   uiDummy;
 };
 
-PixelOutput main(DomainOutput input) : SV_TARGET
+PixelOutput main(DomainOutput input)
 {
     PixelOutput result;
     
     float4 fResultColor = { 0.f, 0.f, 0.f, 0.f };
-    float4 fDiffuseColor = DiffuseTexture.SampleLevel(Sampler, input.f2TexCoord, 0.f);
+    float4 fColor = { 0.f, 0.f, 0.f, 0.f };
+    
+    if (bIsColorTexture)
+    {
+        fColor = ColorTexture.Sample(Sampler, input.f2TexCoord);
+    }
+    else
+    {
+    }
     
     float4 fNormalSampled;
     if (bIsNormalTexture)
@@ -49,7 +60,7 @@ PixelOutput main(DomainOutput input) : SV_TARGET
     {
         float4 tolight = normalize(sLightSets[i].f4Location - input.f4ModelPos);
         float fLightPower = clamp(dot(tolight, fNormalSampled), 0.f, 1.f);
-        fResultColor += fDiffuseColor * fLightPower * sLightSets[i].f4Color;
+        fResultColor += fColor * fLightPower * sLightSets[i].f4Color;
     }
     
     result.pixelColor = fResultColor;

@@ -3,49 +3,37 @@
 #include <d3dcompiler.h>
 #include <windows.h>
 #include <wrl/client.h>
-#include <vector>
-#include <Windows.h>
-#include <filesystem>
+
+#include "FileInterface.h"
 
 enum MODEL_TEXTURE
 {
 	MODEL_TEXTURE_AO,
-	MODEL_TEXTURE_DIFFUSE,
-	MODEL_TEXTURE_HEIGHT,
+	MODEL_TEXTURE_COLOR,
+	MODEL_TEXTURE_METALNESS,
+	MODEL_TEXTURE_ROUGHNESS,
 	MODEL_TEXTURE_NORMAL,
-	MODEL_TEXTURE_REFLECT,
+	MODEL_TEXTURE_HEIGHT,
 	MODEL_TEXTURE_NUM
 };
 
-class ModelTexture
+class ModelTexture : public FileInterface
 {
 public:
-	ModelTexture() {};
 	ModelTexture(
-		const std::wstring& wStrNameIn,
-		const Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& cpModelTextureSRVIn
+		Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn,
+		Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn,
+		const std::string& strFileNameIn,
+		const UINT& uiWidthIn, const UINT& uiHeightIn,
+		uint8_t* pTextureDataIn,
+		DXGI_FORMAT eThumbNailFormatIn = DXGI_FORMAT_R8G8B8A8_UNORM
 	);
 	~ModelTexture();
 
 public:
-	std::wstring										wStrModelTextureName;
+	Microsoft::WRL::ComPtr<ID3D11Texture2D>				cpModelTextureTexture2D;
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>	cpModelTextureSRV;
 
 public:
-	static std::string strTextureType[5];
-};
-
-class ModelTextureSet
-{
-public:
-	ModelTextureSet() {};
-	~ModelTextureSet() {};
-
-public:
-	std::wstring				wStrDirectoryName;
-	ModelTexture				sTextures[MODEL_TEXTURE_NUM];
-
-public:
-	inline std::wstring& GetName(const MODEL_TEXTURE& eModelTexture) { return sTextures[eModelTexture].wStrModelTextureName; }
-	inline Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& GetSRV(const MODEL_TEXTURE& eModelTexture) { return sTextures[eModelTexture].cpModelTextureSRV; }
+	static std::string strTextureType[MODEL_TEXTURE_NUM];
 };

@@ -8,7 +8,6 @@
 #include "ModelInterface.h"
 
 #include "FileLoader.h"
-#include "ModelTextureLoader.h"
 
 using namespace ImGui;
 using namespace DirectX;
@@ -69,15 +68,41 @@ void ModelManageGui::SetModelTexture()
 {
 	ImGuiWindowFlags window_flags = ImGuiWindowFlags_HorizontalScrollbar;
 	ImGui::BeginChild("ModelTextureSet", ImGui::GetContentRegionAvail(), false, window_flags);
-	//for (unsigned short idx = 0; idx < MODEL_TEXTURE::MODEL_TEXTURE_NUM; ++idx)
-	//{
-	//	Separator();
-	//	Text(ModelTexture::strTextureType[idx].c_str());
-	//	Image(spSelectedModel->pModelTextureSet->GetSRV((MODEL_TEXTURE)idx).Get(), ImVec2(60.f, 60.f));
+	for (unsigned short idx = 0; idx < MODEL_TEXTURE::MODEL_TEXTURE_NUM; ++idx)
+	{
+		Separator();
+		Text(ModelTexture::strTextureType[idx].c_str());
+		if (spSelectedModel->pModelTextureSet[idx] != nullptr)
+		{
+			Image(spSelectedModel->pModelTextureSet[idx]->cpFileThumbNailSRV.Get(), ImVec2(60.f, 60.f));
+		}
+		else
+		{
+			Image(nullptr, ImVec2(60.f, 60.f));
 
-	//	SameLine();
-	//	Text(FileLoader::ConvertWCharToChar(spSelectedModel->pModelTextureSet->GetName((MODEL_TEXTURE)idx)).c_str());
-	//}
+		}
+
+		if (ImGui::BeginDragDropTarget())
+		{
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_DEMO_CELL"))
+			{
+				IM_ASSERT(payload->DataSize == sizeof(shared_ptr<ModelTexture>));
+				spSelectedModel->pModelTextureSet[(MODEL_TEXTURE)idx] = *(shared_ptr<ModelTexture>*)payload->Data;
+			}
+			ImGui::EndDragDropTarget();
+		}
+
+		if (spSelectedModel->pModelTextureSet[idx] != nullptr)
+		{
+			SameLine();
+			Text(spSelectedModel->pModelTextureSet[idx]->strFileName.c_str());
+		}
+		else
+		{
+			SameLine();
+			Text("");
+		}
+	}
 	ImGui::EndChild();
 }
 

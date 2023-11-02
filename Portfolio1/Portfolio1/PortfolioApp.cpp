@@ -14,7 +14,7 @@
 #include "Canvas.h"
 
 #include "CameraInterface.h"
-#include "CameraUNorm.h"
+#include "CameraNormal.h"
 
 #include "ModelInterface.h"
 #include "SphereModel.h"
@@ -54,9 +54,9 @@ void PortfolioApp::Init()
 	// GUI Ãß°¡ =====================================================================================
 	vUpManageGuis.push_back(make_unique<ModelManageGui>(vSpModels, spSelectedModel, spTempSelectedModel));
 	vUpManageGuis.push_back(make_unique<LightManageGui>(spLightManager));
-	vUpManageGuis.push_back(make_unique<SettingManageGui>());
+	vUpManageGuis.push_back(make_unique<SettingManageGui>(bIsNormalVectorDraw));
 	vUpManageGuis.push_back(make_unique<CameraManageGui>(spMainCameras));
-	vUpManageGuis.push_back(make_unique<FileManageGui>());
+	vUpManageGuis.push_back(make_unique<FileManageGui>(cpDevice, cpDeviceContext));
 	// ==============================================================================================
 
 	spLightManager = make_unique<LightManager>(cpDevice, cpDeviceContext);
@@ -69,8 +69,11 @@ void PortfolioApp::Init()
 	upModelOutlineDrawer = make_unique<ModelOutlineDrawer>(cpDevice, cpDeviceContext);
 	upNormalVectorDrawer = make_unique<NormalVectorDrawer>(cpDevice, cpDeviceContext);
 
-
-	spMainCameras = make_shared<CameraUNorm>(cpDevice, cpDeviceContext, cpSwapChain, uiWidth, uiHeight, uiNumLevelQuality);
+	// SDR
+	//spMainCameras = make_shared<CameraNormal>(cpDevice, cpDeviceContext, cpSwapChain, uiWidth, uiHeight, uiNumLevelQuality);
+	
+	// HDR
+	spMainCameras = make_shared<CameraNormal>(cpDevice, cpDeviceContext, cpSwapChain, uiWidth, uiHeight, uiNumLevelQuality, DXGI_FORMAT_R16G16B16A16_FLOAT);
 
 	vSpModels.push_back(std::make_shared<SquareModel>(cpDevice, cpDeviceContext, 0.f, 0.f, 0.f, 2.f));
 	vSpModels.push_back(std::make_shared<SphereModel>(cpDevice, cpDeviceContext, 5.f, 0.f, 5.f, 2.f));
@@ -115,14 +118,14 @@ void PortfolioApp::Render()
 		upBaseCanvas->Render();
 	}
 
-	//if (upSettingManageGui->IsNormalVectorDraw())
-	//{
-	//	for (auto& model : vSpModels)
-	//	{
-	//		upNormalVectorDrawer->SetModel(model.get());
-	//		upNVCanvas->Render();
-	//	}
-	//}
+	if (bIsNormalVectorDraw)
+	{
+		for (auto& model : vSpModels)
+		{
+			upNormalVectorDrawer->SetModel(model.get());
+			upNVCanvas->Render();
+		}
+	}
 
 	if (spSelectedModel)
 	{
@@ -168,7 +171,7 @@ void PortfolioApp::InitImGUI()
     (void)io;
     io.DisplaySize = ImVec2((float)uiWidth, (float)uiHeight);
 	ImGui::StyleColorsDark();
-
+	io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\malgun.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesKorean());
 	ImGui_ImplDX11_Init(cpDevice.Get(), cpDeviceContext.Get());
     ImGui_ImplWin32_Init(hMainWindow);
 }

@@ -66,3 +66,27 @@ void CameraInterface::SwitchFirstView()
 {
 	sCameraInfo.sInfoData.bFirstView = !sCameraInfo.sInfoData.bFirstView;
 }
+
+
+void CameraInterface::WipeOut(const DirectX::XMVECTOR& xmvClearColor)
+{
+	cpDeviceContext->ClearRenderTargetView(cpSwapChainRTV.Get(), xmvClearColor.m128_f32);
+	cpDeviceContext->ClearRenderTargetView(cpCameraOutputRTV.Get(), xmvClearColor.m128_f32);
+	cpDeviceContext->ClearRenderTargetView(cpModelIDRTV.Get(), xmvClearColor.m128_f32);
+	cpDeviceContext->ClearDepthStencilView(cpDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
+}
+
+DXGI_FORMAT CameraInterface::GetRenderedTextureFormat()
+{
+	D3D11_TEXTURE2D_DESC sTextureDesc;
+	cpCameraOutputTexture->GetDesc(&sTextureDesc);
+	return sTextureDesc.Format;
+}
+
+void CameraInterface::DoPostProcess()
+{
+	if (pPostProcess != nullptr)
+	{
+		pPostProcess->Process(cpCameraOutputTexture.Get(), cpBackBuffer.Get(), cpSwapChainRTV.GetAddressOf());
+	}
+}

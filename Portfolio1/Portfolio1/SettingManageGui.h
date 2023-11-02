@@ -4,7 +4,7 @@
 class SettingManageGui : public ManageGuiInterface
 {
 public:
-	SettingManageGui();
+	SettingManageGui(bool& bIsNormalVectorDrawIn);
 	virtual ~SettingManageGui() override;
 
 public:
@@ -14,7 +14,7 @@ private:
 	void SetDrawNormalVector();
 
 private:
-	bool bIsNormalVectorDraw;
+	bool& bIsNormalVectorDraw;
 
 public:
 	inline const bool& IsNormalVectorDraw() { return bIsNormalVectorDraw; }

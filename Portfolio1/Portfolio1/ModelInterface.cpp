@@ -1,7 +1,9 @@
 #include "ModelInterface.h"
+
 #include "EnumVar.h"
 #include "ID3D11Helper.h"
-#include "ModelTextureLoader.h"
+
+
 #include <atomic>
 
 using namespace std;
@@ -32,25 +34,27 @@ ModelInterface::ModelInterface(
 		0,
 		cpTransformationDataBuffer.GetAddressOf()
 	);
-
-	pModelTextureSet = new ModelTextureSet();
 }
 
 ModelInterface::~ModelInterface()
 {
-	if (pModelTextureSet != nullptr)
-	{
-		delete pModelTextureSet;
-		pModelTextureSet = nullptr;
-	}
+
 }
 
 void ModelInterface::Update()
 {
-	sPSTextureFlags.bIsAOTexture = pModelTextureSet->GetSRV(MODEL_TEXTURE_AO) != nullptr ? true : false;
-	sPSTextureFlags.bIsDiffuseTexture = pModelTextureSet->GetSRV(MODEL_TEXTURE_DIFFUSE) != nullptr ? true : false;
-	sPSTextureFlags.bIsReflectTexture = pModelTextureSet->GetSRV(MODEL_TEXTURE_REFLECT) != nullptr ? true : false;
-	sPSTextureFlags.bIsNormalTexture = pModelTextureSet->GetSRV(MODEL_TEXTURE_NORMAL) != nullptr ? true : false;
+	sPSTextureFlags.bIsTextureOn[MODEL_TEXTURE_AO] 
+		= pModelTextureSet[MODEL_TEXTURE_AO] != nullptr ? true : false;
+	sPSTextureFlags.bIsTextureOn[MODEL_TEXTURE_COLOR] 
+		= pModelTextureSet[MODEL_TEXTURE_COLOR] != nullptr ? true : false;
+	sPSTextureFlags.bIsTextureOn[MODEL_TEXTURE_METALNESS] 
+		= pModelTextureSet[MODEL_TEXTURE_METALNESS] != nullptr ? true : false;
+	sPSTextureFlags.bIsTextureOn[MODEL_TEXTURE_ROUGHNESS]
+		= pModelTextureSet[MODEL_TEXTURE_ROUGHNESS] != nullptr ? true : false;
+	sPSTextureFlags.bIsTextureOn[MODEL_TEXTURE_NORMAL] 
+		= pModelTextureSet[MODEL_TEXTURE_NORMAL] != nullptr ? true : false;
+	sPSTextureFlags.bIsTextureOn[MODEL_TEXTURE_HEIGHT] 
+		= pModelTextureSet[MODEL_TEXTURE_HEIGHT] != nullptr ? true : false;
 
 	ID3D11Helper::UpdateBuffer(
 		cpDeviceContext.Get(),
@@ -115,26 +119,53 @@ void ModelInterface::SetHSShaderResources()
 
 void ModelInterface::SetDSShaderResources()
 {
-	ID3D11ShaderResourceView** ppHeightSRV = pModelTextureSet->GetSRV(MODEL_TEXTURE_HEIGHT).GetAddressOf();
-	ppHeightSRV != nullptr ? cpDeviceContext->DSSetShaderResources(DSSRVType::DS_HEIGHT, 1, ppHeightSRV) : void();
+	if (pModelTextureSet[MODEL_TEXTURE_HEIGHT] != nullptr)
+	{
+		ID3D11ShaderResourceView** ppHeightSRV = pModelTextureSet[MODEL_TEXTURE_HEIGHT]->cpModelTextureSRV.GetAddressOf();
+		ppHeightSRV != nullptr ? cpDeviceContext->DSSetShaderResources(DSSRVType::DS_HEIGHT, 1, ppHeightSRV) : void();
+	}
 }
 
 void ModelInterface::SetGSShaderResources()
 {
-	ID3D11ShaderResourceView** ppNormalSRV = pModelTextureSet->GetSRV(MODEL_TEXTURE_NORMAL).GetAddressOf();
-	ppNormalSRV != nullptr ? cpDeviceContext->GSSetShaderResources(GSSRVType::GS_NORMAL, 1, ppNormalSRV) : void();
+	if (pModelTextureSet[MODEL_TEXTURE_NORMAL] != nullptr)
+	{
+		ID3D11ShaderResourceView** ppNormalSRV = pModelTextureSet[MODEL_TEXTURE_NORMAL]->cpModelTextureSRV.GetAddressOf();
+		ppNormalSRV != nullptr ? cpDeviceContext->GSSetShaderResources(GSSRVType::GS_NORMAL, 1, ppNormalSRV) : void();
+	}
 }
 
 void ModelInterface::SetPSShaderResources()
 {
-	ID3D11ShaderResourceView** ppAoSRV = pModelTextureSet->GetSRV(MODEL_TEXTURE_AO).GetAddressOf();
-	ID3D11ShaderResourceView** ppDiffuseSRV = pModelTextureSet->GetSRV(MODEL_TEXTURE_DIFFUSE).GetAddressOf();
-	ID3D11ShaderResourceView** ppReflectSRV = pModelTextureSet->GetSRV(MODEL_TEXTURE_REFLECT).GetAddressOf();
-	ID3D11ShaderResourceView** ppNormalSRV = pModelTextureSet->GetSRV(MODEL_TEXTURE_NORMAL).GetAddressOf();
-	ppAoSRV != nullptr ? cpDeviceContext->PSSetShaderResources(PSSRVType::PS_AO, 1, ppAoSRV) : void();
-	ppDiffuseSRV != nullptr ? cpDeviceContext->PSSetShaderResources(PSSRVType::PS_DIFFUSE, 1, ppDiffuseSRV) : void();
-	ppReflectSRV != nullptr ? cpDeviceContext->PSSetShaderResources(PSSRVType::PS_REFLECT, 1, ppReflectSRV) : void();
-	ppNormalSRV != nullptr ? cpDeviceContext->PSSetShaderResources(PSSRVType::PS_NORMAL, 1, ppNormalSRV) : void();
+	if (pModelTextureSet[MODEL_TEXTURE_AO] != nullptr)
+	{
+		ID3D11ShaderResourceView** ppAoSRV = pModelTextureSet[MODEL_TEXTURE_AO]->cpModelTextureSRV.GetAddressOf();
+		ppAoSRV != nullptr ? cpDeviceContext->PSSetShaderResources(PSSRVType::PS_AO, 1, ppAoSRV) : void();
+	}
+
+	if (pModelTextureSet[MODEL_TEXTURE_COLOR] != nullptr)
+	{
+		ID3D11ShaderResourceView** ppColorSRV = pModelTextureSet[MODEL_TEXTURE_COLOR]->cpModelTextureSRV.GetAddressOf();
+		ppColorSRV != nullptr ? cpDeviceContext->PSSetShaderResources(PSSRVType::PS_COLOR, 1, ppColorSRV) : void();
+	}
+
+	if (pModelTextureSet[MODEL_TEXTURE_METALNESS] != nullptr)
+	{
+		ID3D11ShaderResourceView** ppMetalnessSRV = pModelTextureSet[MODEL_TEXTURE_METALNESS]->cpModelTextureSRV.GetAddressOf();
+		ppMetalnessSRV != nullptr ? cpDeviceContext->PSSetShaderResources(PSSRVType::PS_METALNESS, 1, ppMetalnessSRV) : void();
+	}
+
+	if (pModelTextureSet[MODEL_TEXTURE_ROUGHNESS] != nullptr)
+	{
+		ID3D11ShaderResourceView** ppRoughnessSRV = pModelTextureSet[MODEL_TEXTURE_ROUGHNESS]->cpModelTextureSRV.GetAddressOf();
+		ppRoughnessSRV != nullptr ? cpDeviceContext->PSSetShaderResources(PSSRVType::PS_ROUGHNESS, 1, ppRoughnessSRV) : void();
+	}
+
+	if (pModelTextureSet[MODEL_TEXTURE_NORMAL] != nullptr)
+	{
+		ID3D11ShaderResourceView** ppNormalSRV = pModelTextureSet[MODEL_TEXTURE_NORMAL]->cpModelTextureSRV.GetAddressOf();
+		ppNormalSRV != nullptr ? cpDeviceContext->PSSetShaderResources(PSSRVType::PS_NORMAL, 1, ppNormalSRV) : void();
+	}
 }
 
 void ModelInterface::ScaleUp(const float& x, const float& y, const float& z)
