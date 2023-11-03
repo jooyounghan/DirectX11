@@ -1,5 +1,4 @@
 #include "ID3D11Helper.h"
-
 #include "DepthStencilState.h"
 
 using namespace std;

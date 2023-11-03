@@ -91,8 +91,6 @@ void PortfolioApp::Update()
 	spMainCameras->Update();
 	spLightManager->Update();
 
-	CheckMouseHoveredModel();
-
 	for (auto& model : vSpModels)
 	{
 		model->Update();
@@ -253,7 +251,7 @@ LRESULT __stdcall PortfolioApp::AppProc(HWND hWnd, UINT msg, WPARAM wParam, LPAR
 		}
 		return 0;
 	case WM_LBUTTONDOWN:
-		// TODO : 모델 선택 관련 로직 추가
+		CheckMouseHoveredModel();
 		return 0;
 	case WM_KEYDOWN:
 		switch (wParam) {

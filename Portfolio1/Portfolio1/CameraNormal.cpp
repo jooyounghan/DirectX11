@@ -16,9 +16,9 @@ CameraNormal::CameraNormal(
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn,
 	Microsoft::WRL::ComPtr<IDXGISwapChain>& cpSwapChainIn,
 	const UINT& uiWidthIn, const UINT& uiHeightIn,
-	const UINT& uiNumLevelQuality, const DXGI_FORMAT eCameraFormatIn
+	const UINT& uiNumLevelQuality, const DXGI_FORMAT& eCameraFormatIn
 )
-	: CameraInterface(cpDeviceIn, cpDeviceContextIn, cpSwapChainIn, uiWidthIn, uiHeightIn, uiNumLevelQuality), eCameraFormat(eCameraFormatIn)
+	: CameraInterface(cpDeviceIn, cpDeviceContextIn, cpSwapChainIn, uiWidthIn, uiHeightIn, uiNumLevelQuality, eCameraFormatIn)
 {
 	SetCameraProperty();
 	CreateResource();
@@ -98,7 +98,7 @@ ModelIDData CameraNormal::GetPointedModelID()
 	ModelIDData result;
 	if (cpModelIDStagingTexture.Get() && cpModelIDTexture.Get())
 	{
-		cpDeviceContext->ResolveSubresource(cpModelIDMSToSS.Get(), 0, cpModelIDTexture.Get(), 0, eCameraFormat);
+		cpDeviceContext->ResolveSubresource(cpModelIDMSToSS.Get(), 0, cpModelIDTexture.Get(), 0, eBackBufferFormat);
 
 		D3D11_BOX sBox;
 		AutoZeroMemory(sBox);
@@ -124,16 +124,16 @@ ModelIDData CameraNormal::GetPointedModelID()
 
 void CameraNormal::CreateModelIDResource()
 {
-	ID3D11Helper::CreateTexture2D(cpDevice.Get(), uiWidth, uiHeight, uiNumLevelQuality, 1, D3D11_BIND_RENDER_TARGET, NULL, NULL, D3D11_USAGE_DEFAULT, eCameraFormat, cpModelIDTexture.GetAddressOf());
-	ID3D11Helper::CreateRenderTargetView(cpDevice.Get(), cpModelIDTexture.Get(), cpModelIDRTV.GetAddressOf());
 
-	ID3D11Helper::CreateTexture2D(cpDevice.Get(), uiWidth, uiHeight, 1, 0, D3D11_BIND_SHADER_RESOURCE, NULL, NULL, D3D11_USAGE_DEFAULT, eCameraFormat, cpModelIDMSToSS.GetAddressOf());
-	ID3D11Helper::CreateTexture2D(cpDevice.Get(), 1, 1, 1, 0, NULL, D3D11_CPU_ACCESS_READ, NULL, D3D11_USAGE_STAGING, eCameraFormat, cpModelIDStagingTexture.GetAddressOf());
+	ID3D11Helper::CreateTexture2D(cpDevice.Get(), uiWidth, uiHeight, uiNumLevelQuality, 1, D3D11_BIND_RENDER_TARGET, NULL, NULL, D3D11_USAGE_DEFAULT, eBackBufferFormat, cpModelIDTexture.GetAddressOf());
+	ID3D11Helper::CreateRenderTargetView(cpDevice.Get(), cpModelIDTexture.Get(), cpModelIDRTV.GetAddressOf());
+	ID3D11Helper::CreateTexture2D(cpDevice.Get(), uiWidth, uiHeight, 1, 0, D3D11_BIND_SHADER_RESOURCE, NULL, NULL, D3D11_USAGE_DEFAULT, eBackBufferFormat, cpModelIDMSToSS.GetAddressOf());
+	ID3D11Helper::CreateTexture2D(cpDevice.Get(), 1, 1, 1, 0, NULL, D3D11_CPU_ACCESS_READ, NULL, D3D11_USAGE_STAGING, eBackBufferFormat, cpModelIDStagingTexture.GetAddressOf());
 }
 
 void CameraNormal::SetPostProcess()
 {
-	pPostProcess = new PostProcess(cpDevice, cpDeviceContext, sScreenViewport, eCameraFormat);
+	pPostProcess = make_unique<PostProcess>(cpDevice, cpDeviceContext, sScreenViewport, eCameraFormat, eBackBufferFormat);
 	pPostProcess->AddBloomFilter();
 	pPostProcess->AddBloomFilter();
 }

@@ -9,12 +9,9 @@ public:
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn,
 		Microsoft::WRL::ComPtr<IDXGISwapChain>& cpSwapChainIn,
 		const UINT& uiWidthIn, const UINT& uiHeightIn,
-		const UINT& uiNumLevelQuality, const DXGI_FORMAT eCameraFormatIn = DXGI_FORMAT_R8G8B8A8_UNORM
+		const UINT& uiNumLevelQuality, const DXGI_FORMAT& eCameraFormatIn = DXGI_FORMAT_R8G8B8A8_UNORM
 	);
 	virtual ~CameraNormal() override;
-
-protected:
-	DXGI_FORMAT eCameraFormat;
 
 public:
 	virtual void SetCameraProperty() override;

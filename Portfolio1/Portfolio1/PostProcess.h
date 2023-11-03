@@ -14,7 +14,8 @@ public:
 		Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn,
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn,
 		const D3D11_VIEWPORT& sScreenViewportIn,
-		DXGI_FORMAT eFormatIn
+		DXGI_FORMAT eCameraFormatIn,
+		DXGI_FORMAT eBackBufferFormatIn
 	);
 
 	~PostProcess();
@@ -45,9 +46,10 @@ private:
 private:
 	Microsoft::WRL::ComPtr<ID3D11Device>& cpDevice;
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContext;
-
+	
 private:
-	DXGI_FORMAT eFormat;
+	DXGI_FORMAT eCameraFormat;
+	DXGI_FORMAT eBackBufferFormat;
 
 private:
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> cpResolvedTexture;

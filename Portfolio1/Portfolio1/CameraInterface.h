@@ -17,7 +17,7 @@ public:
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn,
 		Microsoft::WRL::ComPtr<IDXGISwapChain>& cpSwapChainIn,
 		const UINT& uiWidthIn, const UINT& uiHeightIn,
-		const UINT& uiNumLevelQualityIn
+		const UINT& uiNumLevelQualityIn, const DXGI_FORMAT& eCameraFormatIn = DXGI_FORMAT_R8G8B8A8_UNORM
 	);
 	virtual ~CameraInterface();
 	
@@ -31,6 +31,10 @@ protected:
 	D3D11_VIEWPORT sScreenViewport;
 	Microsoft::WRL::ComPtr<ID3D11Texture2D>			cpBackBuffer;
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView>	cpSwapChainRTV;
+
+protected:
+	DXGI_FORMAT										eCameraFormat;
+	DXGI_FORMAT										eBackBufferFormat;
 
 public:
 	 inline ID3D11Texture2D* GetBackBufferTexture2D() { return cpBackBuffer.Get(); }
@@ -74,7 +78,7 @@ public:
 	virtual void OMSetRenderTargets() = 0;
 
 public:
-	class PostProcess* pPostProcess = nullptr;
+	std::unique_ptr<class PostProcess> pPostProcess;
 
 protected:
 	Microsoft::WRL::ComPtr<ID3D11Texture2D>				cpCameraOutputTexture;
