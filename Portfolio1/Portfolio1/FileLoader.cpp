@@ -1,40 +1,77 @@
-#include "FileLoader.h"
 #define __STDC_LIB_EXT1__
 #define STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_WRITE_IMPLEMENTATION
+
+#include "FileLoader.h"
 #include "stb_image.h"
 #include "stb_image_write.h"
+#include <DirectXTexEXR.h>
+#include <directxtk/DDSTextureLoader.h>
+#include <fp16.h>
 #include <atlconv.h>
 
 using namespace std;
+using namespace DirectX;
 
-uint8_t* FileLoader::stbi_load(char const* sFilename, int* x, int* y, int* comp, int req_comp)
+uint8_t* FileLoader::LoadFileWithStbi(const char* sFilename, UINT* x, UINT* y, UINT* comp)
 {
     FILE* f;
     fopen_s(&f, sFilename, "rb");
     uint8_t* result;
     if (!f) return stbi__errpuc("can't fopen", "Unable to open file");
-    result = stbi_load_from_file(f, x, y, comp, req_comp);
+    result = stbi_load_from_file(f, (int*)x, (int*)y, (int*)comp, 4);
     fclose(f);
     return result;
 }
 
-uint8_t* FileLoader::stbiw_load(const wchar_t* wFilename, int* x, int* y, int* comp, int req_comp)
+uint8_t* FileLoader::LoadFileWithStbi(const wchar_t* wFilename, UINT* x, UINT* y, UINT* comp)
 {
     FILE* f;
     _wfopen_s(&f, wFilename, L"rb");
     uint8_t* result;
     if (!f) return stbi__errpuc("can't fopen", "Unable to open file");
-    result = stbi_load_from_file(f, x, y, comp, req_comp);
+    result = stbi_load_from_file(f, (int*)x, (int*)y, (int*)comp, 4);
     fclose(f);
     return result;
 }
 
-void FileLoader::stbi_free(uint8_t* pRawData)
+void FileLoader::FreeLoadedFileData(uint8_t* pRawData)
 {
-    return STBI_FREE(pRawData);
+    STBI_FREE(pRawData);
+    pRawData = nullptr;
 }
 
+uint8_t* FileLoader::LoadFileWithOpenEXR(const char* pFileName, UINT* x, UINT* y, UINT* comp)
+{
+    return LoadFileWithOpenEXR(FileLoader::ConvertUTF8ToUniCode(string(pFileName)).c_str(), x, y, comp);
+}
+
+uint8_t* FileLoader::LoadFileWithOpenEXR(const wchar_t* pFileName, UINT* x, UINT* y, UINT* comp)
+{
+    uint8_t* result = nullptr;
+    ScratchImage scratch;
+    TexMetadata metaData;
+    HRESULT hResult = LoadFromEXRFile(pFileName, &metaData, scratch);
+    if (FAILED(hResult))
+    {
+        Console("EXR 파일을 불러들이는데 실패하였습니다.");
+    }
+    else
+    {
+        *x = metaData.width;
+        *y = metaData.height;
+        *comp = metaData.dimension;
+
+        result = (uint8_t*)malloc(scratch.GetPixelsSize());
+        if (result != nullptr)
+        {
+            memcpy(result, scratch.GetPixels(), scratch.GetPixelsSize());
+        }
+    }
+    return result;
+}
+
+// req_comp 인자를 통하여 기존 함수에서 사용가능 하므로 삭제 필요시 삭제
 void FileLoader::ExtendChannel(uint8_t*& ucRawData, const int& iWidth, const int& iHeight, int& iChannelCurrent, const int& iChannelIn)
 {
     if (iChannelCurrent < iChannelIn)

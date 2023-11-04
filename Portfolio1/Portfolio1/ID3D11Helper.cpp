@@ -594,7 +594,22 @@ ComPtr<ID3D11Texture2D> ID3D11Helper::CreateStagingTexture2D(
 	pDeviceContext->Map(cpStagingTexture.Get(), NULL, D3D11_MAP_WRITE, NULL, &ms);
 
 	uint8_t* pData = (uint8_t*)ms.pData;
-	memcpy(pData, pImageRawData, uiWidth * uiHeight * 4 * sizeof(uint8_t));
+	size_t ullTotalSize = 0;
+
+	switch (eFormat)
+	{
+	case(DXGI_FORMAT_R8G8B8A8_UNORM):
+	case(DXGI_FORMAT_R8G8B8A8_UNORM_SRGB):
+		ullTotalSize = uiWidth * uiHeight * 4 * sizeof(uint8_t);
+		break;
+	case(DXGI_FORMAT_R16G16B16A16_FLOAT):
+		ullTotalSize = uiWidth * uiHeight * 4 * sizeof(uint16_t);
+		break;
+	default:
+		break;
+	}
+
+	memcpy(pData, pImageRawData, ullTotalSize);
 	pDeviceContext->Unmap(cpStagingTexture.Get(), NULL);
 
 	return cpStagingTexture;

@@ -39,6 +39,7 @@ protected:
 	void SetDSConstantBuffers();
 	void SetGSConstantBuffers();
 	void SetPSConstantBuffers();
+	void ResetConstantBuffers();
 
 protected:
 	void SetVSShaderResources();
@@ -46,6 +47,7 @@ protected:
 	void SetDSShaderResources();
 	void SetGSShaderResources();
 	void SetPSShaderResources();
+	void ResetShaderResources();
 
 public:
 	void ScaleUp(const float& x, const float& y, const float& z);

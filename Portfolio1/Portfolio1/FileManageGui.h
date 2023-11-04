@@ -29,7 +29,7 @@ private:
 	void SetLoadedFiles();
 
 private:
-	void LoadImages(const std::string& strFilePathIn);
+	void LoadImages(const std::string& strExtention, const std::string& strFilePathIn);
 
 private:
 	Microsoft::WRL::ComPtr<ID3D11Device>& cpDevice;

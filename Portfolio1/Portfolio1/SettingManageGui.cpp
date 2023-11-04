@@ -7,8 +7,8 @@
 
 using namespace ImGui;
 
-SettingManageGui::SettingManageGui(bool& bIsNormalVectorDrawIn)
-	: bIsNormalVectorDraw(bIsNormalVectorDrawIn)
+SettingManageGui::SettingManageGui(bool& bIsNormalVectorDrawIn, bool& bIsWireFrameDrawIn)
+	: bIsNormalVectorDraw(bIsNormalVectorDrawIn), bIsWireFrameDraw(bIsWireFrameDrawIn)
 {
 }
 
@@ -31,4 +31,9 @@ void SettingManageGui::RenderGui()
 void SettingManageGui::SetDrawNormalVector()
 {
 	ImGui::Checkbox("Draw Normal Vector", &bIsNormalVectorDraw);
+}
+
+void SettingManageGui::SetDrawWireFrame()
+{
+	ImGui::Checkbox("Draw WireFrame", &bIsWireFrameDraw);
 }

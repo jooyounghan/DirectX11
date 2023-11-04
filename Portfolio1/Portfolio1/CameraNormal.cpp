@@ -65,7 +65,6 @@ void CameraNormal::SetRSState()
 
 void CameraNormal::SetVSConstantBuffers()
 {
-	
 	cpDeviceContext->VSSetConstantBuffers(VSConstBufferType::VS_ViewProjMatrix, 1, sCameraInfo.GetCameraInfoConstantBuffer().GetAddressOf());
 }
 
@@ -91,6 +90,19 @@ void CameraNormal::OMSetRenderTargets()
 {
 	vector<ID3D11RenderTargetView*> vRenderTargetViews{ cpCameraOutputRTV.Get(), cpModelIDRTV.Get() };
 	cpDeviceContext->OMSetRenderTargets(UINT(vRenderTargetViews.size()), vRenderTargetViews.data(), cpDepthStencilView.Get());
+}
+
+void CameraNormal::ResetCamera()
+{
+	cpDeviceContext->RSSetState(nullptr);
+
+	ID3D11Buffer* pResetBuffer = nullptr;
+	cpDeviceContext->VSSetConstantBuffers(VSConstBufferType::VS_ViewProjMatrix, 1, &pResetBuffer);
+	cpDeviceContext->DSSetConstantBuffers(DSConstBufferType::DS_ViewProjMatrix, 1, &pResetBuffer);
+	cpDeviceContext->GSSetConstantBuffers(GSConstBufferType::GS_ViewProjMatrix, 1, &pResetBuffer);
+
+	vector<ID3D11RenderTargetView*> vResetRTV{ nullptr, nullptr };
+	cpDeviceContext->OMSetRenderTargets(UINT(vResetRTV.size()), vResetRTV.data(), nullptr);
 }
 
 ModelIDData CameraNormal::GetPointedModelID()

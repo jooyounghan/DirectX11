@@ -55,16 +55,13 @@ inline void Canvas<Drawer>::Render()
 		drawer->pModel->SetPSConstantBuffers();
 		drawer->pModel->SetPSShaderResources();
 
-		if (drawer->pCamera)
-		{
-			drawer->pCamera->SetRSState();
-			drawer->pCamera->SetVSConstantBuffers();
-			drawer->pCamera->SetGSConstantBuffers();
-			drawer->pCamera->SetHSConstantBuffers();
-			drawer->pCamera->SetDSConstantBuffers();
-			drawer->pCamera->SetPSConstantBuffers();
-			drawer->pCamera->OMSetRenderTargets();
-		}
+		drawer->pCamera->SetRSState();
+		drawer->pCamera->SetVSConstantBuffers();
+		drawer->pCamera->SetGSConstantBuffers();
+		drawer->pCamera->SetHSConstantBuffers();
+		drawer->pCamera->SetDSConstantBuffers();
+		drawer->pCamera->SetPSConstantBuffers();
+		drawer->pCamera->OMSetRenderTargets();
 
 		if (drawer->pLightManager)
 		{
@@ -74,6 +71,11 @@ inline void Canvas<Drawer>::Render()
 		drawer->SetOMState();
 		drawer->pModel->Render();
 		drawer->ResetOMState();
+
+		drawer->pCamera->ResetCamera();
+
+		drawer->pModel->ResetConstantBuffers();
+		drawer->pModel->ResetShaderResources();
 
 		drawer->ResetDrawer();
 	}

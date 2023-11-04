@@ -76,6 +76,7 @@ public:
 	virtual void SetGSConstantBuffers() = 0;
 	virtual void SetPSConstantBuffers() = 0;
 	virtual void OMSetRenderTargets() = 0;
+	virtual void ResetCamera() = 0;
 
 public:
 	std::unique_ptr<class PostProcess> pPostProcess;

@@ -105,8 +105,17 @@ void ModelInterface::SetGSConstantBuffers()
 
 void ModelInterface::SetPSConstantBuffers()
 {
+	cpDeviceContext->PSSetConstantBuffers(PSConstBufferType::PS_ModelID, 1, modelID.GetAddressOfTextureIDBuffer());
 	cpDeviceContext->PSSetConstantBuffers(PSConstBufferType::PS_TextureFlags, 1, cpTextureFlagBuffer.GetAddressOf());
-	modelID.SetPsConstantBuffers(cpDeviceContext.Get());
+}
+
+void ModelInterface::ResetConstantBuffers()
+{
+	ID3D11Buffer* pResetBuffer = nullptr;
+	cpDeviceContext->VSSetConstantBuffers(VSConstBufferType::VS_ModelMatrix, 1, &pResetBuffer);
+	cpDeviceContext->GSSetConstantBuffers(GSConstBufferType::GS_TextureFlags, 1, &pResetBuffer);
+	cpDeviceContext->PSSetConstantBuffers(PSConstBufferType::PS_ModelID, 1, &pResetBuffer);
+	cpDeviceContext->PSSetConstantBuffers(PSConstBufferType::PS_TextureFlags, 1, &pResetBuffer);
 }
 
 void ModelInterface::SetVSShaderResources()
@@ -166,6 +175,17 @@ void ModelInterface::SetPSShaderResources()
 		ID3D11ShaderResourceView** ppNormalSRV = pModelTextureSet[MODEL_TEXTURE_NORMAL]->cpModelTextureSRV.GetAddressOf();
 		ppNormalSRV != nullptr ? cpDeviceContext->PSSetShaderResources(PSSRVType::PS_NORMAL, 1, ppNormalSRV) : void();
 	}
+}
+
+void ModelInterface::ResetShaderResources()
+{
+	ID3D11ShaderResourceView* pResetSRV = nullptr;
+	cpDeviceContext->DSSetShaderResources(DSSRVType::DS_HEIGHT, 1, &pResetSRV);
+	cpDeviceContext->PSSetShaderResources(PSSRVType::PS_AO, 1, &pResetSRV);
+	cpDeviceContext->PSSetShaderResources(PSSRVType::PS_COLOR, 1, &pResetSRV);
+	cpDeviceContext->PSSetShaderResources(PSSRVType::PS_METALNESS, 1, &pResetSRV);
+	cpDeviceContext->PSSetShaderResources(PSSRVType::PS_ROUGHNESS, 1, &pResetSRV);
+	cpDeviceContext->PSSetShaderResources(PSSRVType::PS_NORMAL, 1, &pResetSRV);
 }
 
 void ModelInterface::ScaleUp(const float& x, const float& y, const float& z)

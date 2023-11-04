@@ -25,7 +25,7 @@ public:
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	cpModelIDBuffer;
 
 public:
-	void SetPsConstantBuffers(ID3D11DeviceContext* pDeviceContext);
+	inline ID3D11Buffer** GetAddressOfTextureIDBuffer() { return cpModelIDBuffer.GetAddressOf(); }
 
 public:
 	static ModelIDData ConvertR8G8B8A8ToModelID(const unsigned int& RGBA);

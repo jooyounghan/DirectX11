@@ -23,7 +23,7 @@ SphereModel::SphereModel(
 		const float& fLatitudeLowTextureCord = (latitudeIdx / (float)usLevel) / 2.f;
 		const float& fLatitudeHighTextureCord = ((latitudeIdx + 1) / (float)usLevel) / 2.f;
 
-		const unsigned short& usLatitudeOffset = vVertex.size();
+		const unsigned short& usLatitudeOffset = (unsigned short)vVertex.size();
 
 		for (unsigned short longitudeIdx = 0; longitudeIdx <= usLevel * 2; ++longitudeIdx)
 		{

@@ -21,13 +21,14 @@ public:
 	virtual void Resize(const float& fAspectRatioIn) override;
 
 public:
-	void SetRSState();
-	void SetVSConstantBuffers();
-	void SetHSConstantBuffers();
-	void SetDSConstantBuffers();
-	void SetGSConstantBuffers();
-	void SetPSConstantBuffers();
-	void OMSetRenderTargets();
+	virtual void SetRSState() override;
+	virtual void SetVSConstantBuffers() override;
+	virtual void SetHSConstantBuffers() override;
+	virtual void SetDSConstantBuffers() override;
+	virtual void SetGSConstantBuffers() override;
+	virtual void SetPSConstantBuffers() override;
+	virtual void OMSetRenderTargets() override;
+	virtual void ResetCamera() override;
 
 public:
 	virtual void SetPostProcess() override;

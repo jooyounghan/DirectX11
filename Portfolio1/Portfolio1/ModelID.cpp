@@ -34,17 +34,6 @@ bool operator==(const ModelIDData& modelID1, const ModelIDData& modelID2)
 		modelID1.ucModelID[2] == modelID2.ucModelID[2]);
 }
 
-
-//bool operator==(const ModelID& modelID1, const ModelID& modelID2)
-//{
-
-//}
-
-void ModelID::SetPsConstantBuffers(ID3D11DeviceContext* pDeviceContext)
-{
-	pDeviceContext->PSSetConstantBuffers(PSConstBufferType::PS_ModelID, 1, cpModelIDBuffer.GetAddressOf());
-}
-
 ModelIDData ModelID::ConvertR8G8B8A8ToModelID(const unsigned int& RGBA)
 {
 	ModelIDData result;

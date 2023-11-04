@@ -44,6 +44,7 @@ private:
 	
 private:
 	bool bIsNormalVectorDraw = false;
+	bool bIsWireFrameDraw = false;
 
 public:
 	void ResizeSwapChain(const UINT& uiWidthIn, const UINT& uiHeightIn);

@@ -64,33 +64,41 @@ void FileManageGui::UpdateLoadedFiles(const wstring& wstrFilePathIn)
         for (auto& entry : dirIter)
         {
             string sExtensionName = entry.path().extension().string();
-            
+
             bool isImage = false;
-            Filter::IsStrSame(&isImage, sExtensionName, ".jpg", ".png");
+            Filter::IsStrSame(&isImage, sExtensionName, ".jpg", ".png", ".exr");
             if (isImage)
             {
-                LoadImages(entry.path().string());
+                LoadImages(sExtensionName, entry.path().string());
             }
             else
             {
-                // LoadUnknownFIle
+
             }
         }
     }
 }
 
-void FileManageGui::LoadImages(const string& strFilePathIn)
+void FileManageGui::LoadImages(const string& strExtention, const string& strFilePathIn)
 {
-    int iWidth, iHeight, iChannel;
+    UINT uiWidth, uiHeight, uiChannel;
     uint8_t* ucImageRawData;
 
     if (mapNameToFiles.find(strFilePathIn) == mapNameToFiles.end())
     {
-        ucImageRawData = FileLoader::stbi_load(strFilePathIn.c_str(), &iWidth, &iHeight, &iChannel, 0);
-        FileLoader::ExtendChannel(ucImageRawData, iWidth, iHeight, iChannel, 4);
-        shared_ptr<ModelTexture> spModelTexture = make_shared<ModelTexture>(cpDevice, cpDeviceContext, strFilePathIn, (UINT)iWidth, (UINT)iHeight, ucImageRawData);
+        shared_ptr<ModelTexture> spModelTexture;
+        if (strExtention == ".exr")
+        {
+            ucImageRawData = FileLoader::LoadFileWithOpenEXR(strFilePathIn.c_str(), &uiWidth, &uiHeight, &uiChannel);
+            spModelTexture = make_shared<ModelTexture>(cpDevice, cpDeviceContext, strFilePathIn, uiWidth, uiHeight, ucImageRawData, DXGI_FORMAT_R16G16B16A16_FLOAT);
+        }
+        else
+        {
+            ucImageRawData = FileLoader::LoadFileWithStbi(strFilePathIn.c_str(), &uiWidth, &uiHeight, &uiChannel);
+            spModelTexture = make_shared<ModelTexture>(cpDevice, cpDeviceContext, strFilePathIn, uiWidth, uiHeight, ucImageRawData);
+        }
         vLoadedFiles.emplace_back(spModelTexture);
-        FileLoader::stbi_free(ucImageRawData);
+        FileLoader::FreeLoadedFileData(ucImageRawData);
     }
     else
     {

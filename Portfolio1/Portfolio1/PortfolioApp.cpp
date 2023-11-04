@@ -54,7 +54,7 @@ void PortfolioApp::Init()
 	// GUI Ãß°¡ =====================================================================================
 	vUpManageGuis.push_back(make_unique<ModelManageGui>(vSpModels, spSelectedModel, spTempSelectedModel));
 	vUpManageGuis.push_back(make_unique<LightManageGui>(spLightManager));
-	vUpManageGuis.push_back(make_unique<SettingManageGui>(bIsNormalVectorDraw));
+	vUpManageGuis.push_back(make_unique<SettingManageGui>(bIsNormalVectorDraw, bIsWireFrameDraw));
 	vUpManageGuis.push_back(make_unique<CameraManageGui>(spMainCameras));
 	vUpManageGuis.push_back(make_unique<FileManageGui>(cpDevice, cpDeviceContext));
 	// ==============================================================================================
