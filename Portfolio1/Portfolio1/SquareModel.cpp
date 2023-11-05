@@ -1,7 +1,9 @@
 #include "SquareModel.h"
 #include "ID3D11Helper.h"
+#include "TransformProperties.h"
 
 using namespace std;
+using namespace DirectX;
 
 SquareModel::SquareModel(
 	Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn,
@@ -10,7 +12,7 @@ SquareModel::SquareModel(
 	const float& fCenterY,
 	const float& fCenterZ,
 	const float& fLen
-) : ModelInterface(cpDeviceIn, cpDeviceContextIn)
+) : ObjectModel(cpDeviceIn, cpDeviceContextIn)
 {
 	vector<uint32_t> vIndex{
 	0, 1, 2,
@@ -33,9 +35,9 @@ SquareModel::SquareModel(
 	};
 	ui32IndexCount = UINT(vIndex.size());
 
-	sTransformationProperties.xmvTranslation.m128_f32[0] = fCenterX;
-	sTransformationProperties.xmvTranslation.m128_f32[1] = fCenterY;
-	sTransformationProperties.xmvTranslation.m128_f32[2] = fCenterZ;
+	upTransformationProperties->xmvTranslation.m128_f32[0] = fCenterX;
+	upTransformationProperties->xmvTranslation.m128_f32[1] = fCenterY;
+	upTransformationProperties->xmvTranslation.m128_f32[2] = fCenterZ;
 
 	vector<Vertex> vVertex{
 		{{-fLen / 2.f, -fLen / 2.f, -fLen / 2.f}, {0.f, 1.f}, {0.f, 0.f, -1.f, 0.f}},

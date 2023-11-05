@@ -3,9 +3,7 @@
 #include <d3dcompiler.h>
 #include <windows.h>
 #include <wrl/client.h>
-
 #include <vector>
-
 #include "DefineVar.h"
 
 using Microsoft::WRL::ComPtr;
@@ -205,6 +203,17 @@ public:
 		IN const UINT&				uiHeight,
 		IN DXGI_FORMAT				eFormat,
 		IN const uint8_t* const		pImageRawData
+	);
+
+	static void CreateTexture2DFromDDS(
+		IN ID3D11Device* pDevice,
+		IN const wchar_t* wFileName,
+		IN UINT uiBindFlag,
+		IN UINT uiCPUAccess,
+		IN UINT uiMiscFlag,
+		IN D3D11_USAGE eUsage,
+		OUT ID3D11Texture2D** ppTexture2D,
+		OUT ID3D11ShaderResourceView** ppSRV
 	);
 };
 

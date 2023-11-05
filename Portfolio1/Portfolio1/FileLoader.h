@@ -9,7 +9,7 @@ class FileLoader
 public:
 	static uint8_t* LoadFileWithStbi(const char* pFilename, UINT* x, UINT* y, UINT* comp);
 	static uint8_t* LoadFileWithStbi(const wchar_t* wFilename, UINT* x, UINT* y, UINT* comp);
-	static void FreeLoadedFileData(uint8_t* pRawData);
+	static void		FreeLoadedFileData(uint8_t* pRawData);
 
 public:
 	static uint8_t* LoadFileWithOpenEXR(const char* pFileName, UINT* x, UINT* y, UINT* comp);

@@ -55,9 +55,6 @@
     <Filter Include="헤더 파일\Drawer">
       <UniqueIdentifier>{de2587d0-6c05-413f-a77e-526722e806d9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Model\Specific">
-      <UniqueIdentifier>{f4cb0c6c-6922-4df7-90ef-9c1bf2b0a3ce}</UniqueIdentifier>
-    </Filter>
     <Filter Include="헤더 파일\Model\Specific">
       <UniqueIdentifier>{9da587ed-81ef-4e45-8e52-51aca6caa54d}</UniqueIdentifier>
     </Filter>
@@ -133,6 +130,15 @@
     <Filter Include="소스 파일\Main">
       <UniqueIdentifier>{0505c04a-655b-4531-a921-1d69aa6249e7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Model\Object">
+      <UniqueIdentifier>{25482c32-cffa-4bb4-bdd8-4b17ccddbbb4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Model\CubeMap">
+      <UniqueIdentifier>{f4cb0c6c-6922-4df7-90ef-9c1bf2b0a3ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Model\Object\Extended">
+      <UniqueIdentifier>{2f5b774f-21dd-4323-aefc-369cf6718d92}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ID3D11Helper.cpp">
@@ -162,12 +168,6 @@
     <ClCompile Include="BaseModelDrawer.cpp">
       <Filter>소스 파일\Drawer</Filter>
     </ClCompile>
-    <ClCompile Include="SphereModel.cpp">
-      <Filter>소스 파일\Model\Specific</Filter>
-    </ClCompile>
-    <ClCompile Include="ModelInterface.cpp">
-      <Filter>소스 파일\Model\Specific</Filter>
-    </ClCompile>
     <ClCompile Include="ModelOutlineDrawer.cpp">
       <Filter>소스 파일\Drawer</Filter>
     </ClCompile>
@@ -191,9 +191,6 @@
     </ClCompile>
     <ClCompile Include="FileManageGui.cpp">
       <Filter>소스 파일\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="SquareModel.cpp">
-      <Filter>소스 파일\Model\Specific</Filter>
     </ClCompile>
     <ClCompile Include="NormalVectorDrawer.cpp">
       <Filter>소스 파일\Drawer</Filter>
@@ -237,7 +234,7 @@
     <ClCompile Include="FileInterface.cpp">
       <Filter>소스 파일\Files</Filter>
     </ClCompile>
-    <ClCompile Include="ModelTexture.cpp">
+    <ClCompile Include="ModelTextureFile.cpp">
       <Filter>소스 파일\Files\Specific</Filter>
     </ClCompile>
     <ClCompile Include="UnknownFile.cpp">
@@ -251,6 +248,21 @@
     </ClCompile>
     <ClCompile Include="Filter.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="DDSFile.cpp">
+      <Filter>소스 파일\Files\Specific</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelInterface.cpp">
+      <Filter>소스 파일\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectModel.cpp">
+      <Filter>소스 파일\Model\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="SphereModel.cpp">
+      <Filter>소스 파일\Model\Object\Extended</Filter>
+    </ClCompile>
+    <ClCompile Include="SquareModel.cpp">
+      <Filter>소스 파일\Model\Object\Extended</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -289,9 +301,6 @@
     </ClInclude>
     <ClInclude Include="BaseModelDrawer.h">
       <Filter>헤더 파일\Drawer</Filter>
-    </ClInclude>
-    <ClInclude Include="ModelInterface.h">
-      <Filter>헤더 파일\Model\Specific</Filter>
     </ClInclude>
     <ClInclude Include="SphereModel.h">
       <Filter>헤더 파일\Model\Specific</Filter>
@@ -368,7 +377,7 @@
     <ClInclude Include="FileInterface.h">
       <Filter>헤더 파일\Files</Filter>
     </ClInclude>
-    <ClInclude Include="ModelTexture.h">
+    <ClInclude Include="ModelTextureFile.h">
       <Filter>헤더 파일\Files\Specific</Filter>
     </ClInclude>
     <ClInclude Include="UnknownFile.h">
@@ -381,6 +390,15 @@
       <Filter>헤더 파일\GUI\Extended</Filter>
     </ClInclude>
     <ClInclude Include="Filter.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="DDSFile.h">
+      <Filter>헤더 파일\Files\Specific</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelInterface.h">
+      <Filter>헤더 파일\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectModel.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

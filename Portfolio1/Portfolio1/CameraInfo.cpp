@@ -71,9 +71,10 @@ void CameraInfo::Update()
 	sInfoData.xmvCameraPosition = sInfoData.bFirstView && sInfoData.bMoveDirection[MoveDir::Right] ? sInfoData.xmvCameraPosition + (sInfoData.fMoveSpeed * xmvCameraRight) : sInfoData.xmvCameraPosition;
 
 	// Mouse Angle에 대한 카메라 업데이트
+	XMMATRIX viewProjMatrix = GetViewProj(xmvCameraDirection, xmvCameraUp);
 	ID3D11Helper::UpdateBuffer(
 		cpDeviceContext.Get(),
-		TransformationBufferData::CreateTransfomredMatrix(GetViewProj(xmvCameraDirection, xmvCameraUp)),
+		TransformationBufferData::CreateTransfomredMatrix(&viewProjMatrix),
 		D3D11_MAP::D3D11_MAP_WRITE_DISCARD,
 		cpCameraInfoConstantBuffer.Get()
 	);

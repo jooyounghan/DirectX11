@@ -143,6 +143,7 @@
     <ClCompile Include="CameraManageGui.cpp" />
     <ClCompile Include="CameraNormal.cpp" />
     <ClCompile Include="Canvas.cpp" />
+    <ClCompile Include="DDSFile.cpp" />
     <ClCompile Include="FileInterface.cpp" />
     <ClCompile Include="FileLoader.cpp" />
     <ClCompile Include="Filter.cpp" />
@@ -150,12 +151,13 @@
     <ClCompile Include="ImGuiFileDialog.cpp" />
     <ClCompile Include="ManageGuiInterface.cpp" />
     <ClCompile Include="NormalVectorDrawer.cpp" />
+    <ClCompile Include="ObjectModel.cpp" />
     <ClCompile Include="PostProcess.cpp" />
     <ClCompile Include="SettingManageGui.cpp" />
     <ClCompile Include="SingleFilterInterface.cpp" />
     <ClCompile Include="SphereModel.cpp" />
     <ClCompile Include="DepthStencilState.cpp" />
-    <ClCompile Include="ModelTexture.cpp" />
+    <ClCompile Include="ModelTextureFile.cpp" />
     <ClCompile Include="FileManageGui.cpp" />
     <ClCompile Include="ID3D11Helper.cpp" />
     <ClCompile Include="BaseModelDrawer.cpp" />
@@ -184,6 +186,7 @@
     <ClInclude Include="CameraManageGui.h" />
     <ClInclude Include="CameraNormal.h" />
     <ClInclude Include="Canvas.h" />
+    <ClInclude Include="DDSFile.h" />
     <ClInclude Include="FileInterface.h" />
     <ClInclude Include="FileLoader.h" />
     <ClInclude Include="FileManageGui.h" />
@@ -194,6 +197,7 @@
     <ClInclude Include="ManageGuiInterface.h" />
     <ClInclude Include="ModelStruct.h" />
     <ClInclude Include="NormalVectorDrawer.h" />
+    <ClInclude Include="ObjectModel.h" />
     <ClInclude Include="PostProcess.h" />
     <ClInclude Include="SettingManageGui.h" />
     <ClInclude Include="SingleFilterInterface.h" />
@@ -201,7 +205,7 @@
     <ClInclude Include="DefineVar.h" />
     <ClInclude Include="DepthStencilState.h" />
     <ClInclude Include="EnumVar.h" />
-    <ClInclude Include="ModelTexture.h" />
+    <ClInclude Include="ModelTextureFile.h" />
     <ClInclude Include="ID3D11Helper.h" />
     <ClInclude Include="BaseModelDrawer.h" />
     <ClInclude Include="LightManageGui.h" />

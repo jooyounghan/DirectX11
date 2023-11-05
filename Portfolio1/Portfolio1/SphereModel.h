@@ -1,7 +1,7 @@
 #pragma once
-#include "ModelInterface.h"
+#include "ObjectModel.h"
 
-class SphereModel : public ModelInterface
+class SphereModel : public ObjectModel
 {
 public:
 	SphereModel(

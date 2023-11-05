@@ -9,24 +9,24 @@ TransformProperties::TransformProperties()
 	xmvTranslation = XMVectorSet(0.f, 0.f, 0.f, 0.f);
 }
 
-DirectX::XMMATRIX TransformProperties::GetAffineTransformMatrix(IN const TransformProperties& pModelTransformation)
+DirectX::XMMATRIX TransformProperties::GetAffineTransformMatrix(IN TransformProperties* pModelTransformation)
 {
 	XMMATRIX xmmScale = XMMatrixScaling(
-		pModelTransformation.xmvScale.m128_f32[0],
-		pModelTransformation.xmvScale.m128_f32[1],
-		pModelTransformation.xmvScale.m128_f32[2]
+		pModelTransformation->xmvScale.m128_f32[0],
+		pModelTransformation->xmvScale.m128_f32[1],
+		pModelTransformation->xmvScale.m128_f32[2]
 	);
 
 	XMMATRIX xmmRotation = XMMatrixRotationRollPitchYaw(
-		pModelTransformation.sPositionAngle.fPitch,
-		pModelTransformation.sPositionAngle.fYaw,
-		pModelTransformation.sPositionAngle.fRoll
+		pModelTransformation->sPositionAngle.fPitch,
+		pModelTransformation->sPositionAngle.fYaw,
+		pModelTransformation->sPositionAngle.fRoll
 	);
 
 	XMMATRIX xmmTranslation = XMMatrixTranslation(
-		pModelTransformation.xmvTranslation.m128_f32[0],
-		pModelTransformation.xmvTranslation.m128_f32[1],
-		pModelTransformation.xmvTranslation.m128_f32[2]
+		pModelTransformation->xmvTranslation.m128_f32[0],
+		pModelTransformation->xmvTranslation.m128_f32[1],
+		pModelTransformation->xmvTranslation.m128_f32[2]
 	);
 
 
@@ -39,10 +39,10 @@ TransformationBufferData::TransformationBufferData()
 
 }
 
-TransformationBufferData TransformationBufferData::CreateTransfomredMatrix(IN const DirectX::XMMATRIX& xmmTransformedMatIn)
+TransformationBufferData TransformationBufferData::CreateTransfomredMatrix(IN DirectX::XMMATRIX* pXmmTransformedMatIn)
 {
 	TransformationBufferData result;
-	result.xmmTransformedMat = XMMatrixTranspose(xmmTransformedMatIn);
-	result.xmmInvTransformedMat = XMMatrixInverse(nullptr, xmmTransformedMatIn);
+	result.xmmTransformedMat = XMMatrixTranspose(*pXmmTransformedMatIn);
+	result.xmmInvTransformedMat = XMMatrixInverse(nullptr, *pXmmTransformedMatIn);
 	return result;
 }

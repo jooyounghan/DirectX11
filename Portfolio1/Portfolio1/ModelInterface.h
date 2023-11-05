@@ -1,18 +1,10 @@
 #pragma once
-#include "TransformProperties.h"
-#include "ModelID.h"
-#include "ModelStruct.h"
-#include "ModelTexture.h"
-
 #include <memory>
-
-struct Vertex
-{
-	PositionVector	sPosVec;
-	TextureCoord	sTexCoord;
-	Vector			sNorVec;
-	Vector			sTangVec;
-};
+#include <d3d11.h>
+#include <d3dcompiler.h>
+#include <windows.h>
+#include <wrl/client.h>
+#include "ModelStruct.h"
 
 class ModelInterface
 {
@@ -24,30 +16,28 @@ public:
 		Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn,
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn
 	);
-	~ModelInterface();
+	virtual ~ModelInterface();
 
 public:
-	void Update();
-
-protected:
+	virtual void Update();
 	void Render();
 
 protected:
-	void SetIAProperties();
-	void SetVSConstantBuffers();
-	void SetHSConstantBuffers();
-	void SetDSConstantBuffers();
-	void SetGSConstantBuffers();
-	void SetPSConstantBuffers();
-	void ResetConstantBuffers();
+	virtual void SetIAProperties() = 0;
+	virtual void SetVSConstantBuffers() = 0;
+	virtual void SetHSConstantBuffers() = 0;
+	virtual void SetDSConstantBuffers() = 0;
+	virtual void SetGSConstantBuffers() = 0;
+	virtual void SetPSConstantBuffers() = 0;
+	virtual void ResetConstantBuffers() = 0;
 
 protected:
-	void SetVSShaderResources();
-	void SetHSShaderResources();
-	void SetDSShaderResources();
-	void SetGSShaderResources();
-	void SetPSShaderResources();
-	void ResetShaderResources();
+	virtual void SetVSShaderResources() = 0;
+	virtual void SetHSShaderResources() = 0;
+	virtual void SetDSShaderResources() = 0;
+	virtual void SetGSShaderResources() = 0;
+	virtual void SetPSShaderResources() = 0;
+	virtual void ResetShaderResources() = 0;
 
 public:
 	void ScaleUp(const float& x, const float& y, const float& z);
@@ -57,23 +47,9 @@ protected:
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext>&	cpDeviceContext;
 
 public:
-	TransformProperties						sTransformationProperties;
-	TransformationBufferData				sTransformationBufferData;
-	Microsoft::WRL::ComPtr<ID3D11Buffer>	cpTransformationDataBuffer;
-
-public:
-	std::shared_ptr<class ModelTexture>	pModelTextureSet[MODEL_TEXTURE_NUM];
-
-public:
-	ModelID			modelID;
-
-public:
-	Microsoft::WRL::ComPtr<ID3D11Buffer>	cpTextureFlagBuffer;
-	struct
-	{
-		uint32_t bIsTextureOn[MODEL_TEXTURE_NUM];
-		uint32_t uiDummy[2];
-	} sPSTextureFlags;
+	std::unique_ptr<class TransformProperties >			upTransformationProperties;
+	std::unique_ptr<class TransformationBufferData>		upTransformationBufferData;
+	Microsoft::WRL::ComPtr<ID3D11Buffer>				cpTransformationDataBuffer;
 
 public:
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	cpVertexBuffer;

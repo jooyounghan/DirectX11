@@ -1,7 +1,9 @@
 #include "ID3D11Helper.h"
 #include "DepthStencilState.h"
+#include <directxtk/DDSTextureLoader.h>
 
 using namespace std;
+using namespace DirectX;
 
 void ID3D11Helper::Init(IN ID3D11Device* pDevice, IN ID3D11DeviceContext* pDeviceContext)
 {
@@ -613,4 +615,25 @@ ComPtr<ID3D11Texture2D> ID3D11Helper::CreateStagingTexture2D(
 	pDeviceContext->Unmap(cpStagingTexture.Get(), NULL);
 
 	return cpStagingTexture;
+}
+
+void ID3D11Helper::CreateTexture2DFromDDS(
+	IN ID3D11Device* pDevice, IN const wchar_t* wFileName,
+	IN UINT uiBindFlag, IN UINT uiCPUAccess, IN UINT uiMiscFlag,
+	IN D3D11_USAGE eUsage, OUT ID3D11Texture2D** ppTexture2D,
+	OUT ID3D11ShaderResourceView** ppSRV
+)
+{
+	HRESULT hResult = CreateDDSTextureFromFileEx(
+		pDevice, wFileName, (size_t)0,
+		eUsage, uiBindFlag, uiCPUAccess,
+		uiMiscFlag | D3D11_RESOURCE_MISC_TEXTURECUBE,
+		DDS_LOADER_DEFAULT, (ID3D11Resource**)ppTexture2D, ppSRV
+	);
+	if (FAILED(hResult))
+	{
+		Console("DDS 파일을 통해 Texture와 SRV를 생성하는데 실패했습니다.");
+		return;
+	}
+
 }

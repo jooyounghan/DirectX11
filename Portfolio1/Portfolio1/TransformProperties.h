@@ -17,7 +17,7 @@ public:
 	DirectX::XMVECTOR	xmvTranslation;
 
 public:
-	static DirectX::XMMATRIX GetAffineTransformMatrix(IN const TransformProperties& pModelTransformation);
+	static DirectX::XMMATRIX GetAffineTransformMatrix(IN TransformProperties* pModelTransformation);
 };
 
 class TransformationBufferData
@@ -30,5 +30,5 @@ public:
 	DirectX::XMMATRIX xmmInvTransformedMat;
 
 public:
-	static TransformationBufferData CreateTransfomredMatrix(IN const DirectX::XMMATRIX& xmmTransformedMatIn);
+	static TransformationBufferData CreateTransfomredMatrix(IN DirectX::XMMATRIX* pXmmTransformedMatIn);
 };

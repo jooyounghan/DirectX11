@@ -59,9 +59,9 @@ void ModelManageGui::RenderGui()
 
 void ModelManageGui::SetTransformModelMenu()
 {
-	SliderFloat3("Scale Vector",  spSelectedModel->sTransformationProperties.xmvScale.m128_f32, 0.f, 5.f);
-	SliderFloat3("Rotation Vector", (float*)(&spSelectedModel->sTransformationProperties.sPositionAngle), -2.f * XM_PI, 2.f * XM_PI);
-	SliderFloat3("Translation Vector", spSelectedModel->sTransformationProperties.xmvTranslation.m128_f32, -10.f, 10.f);
+	SliderFloat3("Scale Vector",  spSelectedModel->upTransformationProperties.xmvScale.m128_f32, 0.f, 5.f);
+	SliderFloat3("Rotation Vector", (float*)(&spSelectedModel->upTransformationProperties.sPositionAngle), -2.f * XM_PI, 2.f * XM_PI);
+	SliderFloat3("Translation Vector", spSelectedModel->upTransformationProperties.xmvTranslation.m128_f32, -10.f, 10.f);
 }
 
 void ModelManageGui::SetModelTexture()
@@ -71,7 +71,7 @@ void ModelManageGui::SetModelTexture()
 	for (unsigned short idx = 0; idx < MODEL_TEXTURE::MODEL_TEXTURE_NUM; ++idx)
 	{
 		Separator();
-		Text(ModelTexture::strTextureType[idx].c_str());
+		Text(ModelTextureFile::strTextureType[idx].c_str());
 		if (spSelectedModel->pModelTextureSet[idx] != nullptr)
 		{
 			Image(spSelectedModel->pModelTextureSet[idx]->cpFileThumbNailSRV.Get(), ImVec2(60.f, 60.f));
@@ -86,8 +86,8 @@ void ModelManageGui::SetModelTexture()
 		{
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_DEMO_CELL"))
 			{
-				IM_ASSERT(payload->DataSize == sizeof(shared_ptr<ModelTexture>));
-				spSelectedModel->pModelTextureSet[(MODEL_TEXTURE)idx] = *(shared_ptr<ModelTexture>*)payload->Data;
+				IM_ASSERT(payload->DataSize == sizeof(shared_ptr<ModelTextureFile>));
+				spSelectedModel->pModelTextureSet[(MODEL_TEXTURE)idx] = *(shared_ptr<ModelTextureFile>*)payload->Data;
 			}
 			ImGui::EndDragDropTarget();
 		}

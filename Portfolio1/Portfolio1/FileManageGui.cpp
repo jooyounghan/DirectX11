@@ -3,13 +3,13 @@
 
 #include "FileLoader.h"
 #include "FileInterface.h"
+
 #include "UnknownFile.h"
-#include "ModelTexture.h"
+#include "ModelTextureFile.h"
+#include "DDSFile.h"
 #include "Filter.h"
 
 #include "ID3D11Helper.h"
-
-#include "FileLoader.h"
 
 #include <filesystem>
 #include <imgui.h>
@@ -66,7 +66,7 @@ void FileManageGui::UpdateLoadedFiles(const wstring& wstrFilePathIn)
             string sExtensionName = entry.path().extension().string();
 
             bool isImage = false;
-            Filter::IsStrSame(&isImage, sExtensionName, ".jpg", ".png", ".exr");
+            Filter::IsStrSame(&isImage, sExtensionName, ".jpg", ".png", ".exr", ".dds");
             if (isImage)
             {
                 LoadImages(sExtensionName, entry.path().string());
@@ -82,22 +82,26 @@ void FileManageGui::UpdateLoadedFiles(const wstring& wstrFilePathIn)
 void FileManageGui::LoadImages(const string& strExtention, const string& strFilePathIn)
 {
     UINT uiWidth, uiHeight, uiChannel;
-    uint8_t* ucImageRawData;
+    uint8_t* ucImageRawData = nullptr;
 
     if (mapNameToFiles.find(strFilePathIn) == mapNameToFiles.end())
     {
-        shared_ptr<ModelTexture> spModelTexture;
+        shared_ptr<FileInterface> spFileInterface;
         if (strExtention == ".exr")
         {
             ucImageRawData = FileLoader::LoadFileWithOpenEXR(strFilePathIn.c_str(), &uiWidth, &uiHeight, &uiChannel);
-            spModelTexture = make_shared<ModelTexture>(cpDevice, cpDeviceContext, strFilePathIn, uiWidth, uiHeight, ucImageRawData, DXGI_FORMAT_R16G16B16A16_FLOAT);
+            spFileInterface = make_shared<ModelTextureFile>(cpDevice, cpDeviceContext, strFilePathIn, uiWidth, uiHeight, ucImageRawData, DXGI_FORMAT_R16G16B16A16_FLOAT);
+        }
+        else if (strExtention == ".dds")
+        {
+            spFileInterface = make_shared<DDSFile>(cpDevice, cpDeviceContext, strFilePathIn);
         }
         else
         {
             ucImageRawData = FileLoader::LoadFileWithStbi(strFilePathIn.c_str(), &uiWidth, &uiHeight, &uiChannel);
-            spModelTexture = make_shared<ModelTexture>(cpDevice, cpDeviceContext, strFilePathIn, uiWidth, uiHeight, ucImageRawData);
+            spFileInterface = make_shared<ModelTextureFile>(cpDevice, cpDeviceContext, strFilePathIn, uiWidth, uiHeight, ucImageRawData);
         }
-        vLoadedFiles.emplace_back(spModelTexture);
+        vLoadedFiles.emplace_back(spFileInterface);
         FileLoader::FreeLoadedFileData(ucImageRawData);
     }
     else
@@ -143,10 +147,21 @@ void FileManageGui::SetLoadedFiles()
     {
         Separator();
         ID3D11ShaderResourceView* pIndexedSRV = loadedFile->cpFileThumbNailSRV.Get();
-        Image(pIndexedSRV, ImVec2(60.f, 60.f));
+        D3D11_SHADER_RESOURCE_VIEW_DESC desc;
+        pIndexedSRV->GetDesc(&desc);
+        
+        if (desc.ViewDimension == D3D11_SRV_DIMENSION::D3D10_1_SRV_DIMENSION_TEXTURE2D)
+        {
+            Image(pIndexedSRV, ImVec2(60.f, 60.f));
+        }
+        else
+        {
+            Image(nullptr, ImVec2(60.f, 60.f));
+        }
+
         if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
         {
-            ImGui::SetDragDropPayload("DND_DEMO_CELL", &loadedFile, sizeof(shared_ptr<ModelTexture>));
+            ImGui::SetDragDropPayload("DND_DEMO_CELL", &loadedFile, sizeof(shared_ptr<ModelTextureFile>));
             ImGui::EndDragDropSource();
         }
         SameLine();

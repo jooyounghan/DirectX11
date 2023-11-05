@@ -15,6 +15,13 @@ public:
 		uint8_t* pThumbNailDataIn,
 		DXGI_FORMAT eThumbNailFormatIn = DXGI_FORMAT_R8G8B8A8_UNORM
 	);
+
+	FileInterface(
+		Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn,
+		Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn,
+		const std::string& strFileNameIn
+	);
+
 	virtual ~FileInterface() {};
 
 protected:

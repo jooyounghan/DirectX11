@@ -1,7 +1,9 @@
 #include "SphereModel.h"
 #include "ID3D11Helper.h"
+#include "TransformProperties.h"
 
 using namespace std;
+using namespace DirectX;
 
 SphereModel::SphereModel(
 	Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn,
@@ -11,7 +13,7 @@ SphereModel::SphereModel(
 	const float& fCenterZ,
 	const float& fRadius,
 	const unsigned short& usLevel
-) : ModelInterface(cpDeviceIn, cpDeviceContextIn)
+) : ObjectModel(cpDeviceIn, cpDeviceContextIn)
 {
 	vector<uint32_t> vIndex;
 	vector<Vertex> vVertex;
@@ -75,9 +77,9 @@ SphereModel::SphereModel(
 
 	ui32IndexCount = UINT(vIndex.size());
 
-	sTransformationProperties.xmvTranslation.m128_f32[0] = fCenterX;
-	sTransformationProperties.xmvTranslation.m128_f32[1] = fCenterY;
-	sTransformationProperties.xmvTranslation.m128_f32[2] = fCenterZ;
+	upTransformationProperties->xmvTranslation.m128_f32[0] = fCenterX;
+	upTransformationProperties->xmvTranslation.m128_f32[1] = fCenterY;
+	upTransformationProperties->xmvTranslation.m128_f32[2] = fCenterZ;
 
 	ID3D11Helper::CreateBuffer(cpDevice.Get(), vIndex, D3D11_USAGE_IMMUTABLE, D3D11_BIND_INDEX_BUFFER, 0, 0, cpIndexBuffer.GetAddressOf());
 	ID3D11Helper::CreateBuffer(cpDevice.Get(), vVertex, D3D11_USAGE_IMMUTABLE, D3D11_BIND_VERTEX_BUFFER, 0, 0, cpVertexBuffer.GetAddressOf());

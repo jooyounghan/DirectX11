@@ -37,8 +37,11 @@ uint8_t* FileLoader::LoadFileWithStbi(const wchar_t* wFilename, UINT* x, UINT* y
 
 void FileLoader::FreeLoadedFileData(uint8_t* pRawData)
 {
-    STBI_FREE(pRawData);
-    pRawData = nullptr;
+    if (pRawData != nullptr)
+    {
+        STBI_FREE(pRawData);
+        pRawData = nullptr;
+    }
 }
 
 uint8_t* FileLoader::LoadFileWithOpenEXR(const char* pFileName, UINT* x, UINT* y, UINT* comp)
@@ -58,9 +61,9 @@ uint8_t* FileLoader::LoadFileWithOpenEXR(const wchar_t* pFileName, UINT* x, UINT
     }
     else
     {
-        *x = metaData.width;
-        *y = metaData.height;
-        *comp = metaData.dimension;
+        *x = (UINT)metaData.width;
+        *y = (UINT)metaData.height;
+        *comp = (UINT)metaData.dimension;
 
         result = (uint8_t*)malloc(scratch.GetPixelsSize());
         if (result != nullptr)

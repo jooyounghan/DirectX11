@@ -1,7 +1,7 @@
 #pragma once
-#include "ModelInterface.h"
+#include "ObjectModel.h"
 
-class SquareModel : public ModelInterface
+class SquareModel : public ObjectModel
 {
 public:
 	SquareModel(
