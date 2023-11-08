@@ -4,7 +4,15 @@
 #include <d3d11.h>
 #include <d3dcompiler.h>
 #include <wrl/client.h>
-#include "EnumVar.h"
+
+enum MoveDir
+{
+	Forward,
+	Left,
+	Backward,
+	Right,
+	NUM_DIR
+};
 
 class CameraInfo
 {

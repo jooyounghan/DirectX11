@@ -59,7 +59,8 @@ PixelOutput main(DomainOutput input)
     for (int i = 0; i < MAX_LIGHT_NUM; ++i)
     {
         float4 tolight = normalize(sLightSets[i].f4Location - input.f4ModelPos);
-        float fLightPower = clamp(dot(tolight, fNormalSampled), 0.f, 1.f);
+        float test = dot(tolight, fNormalSampled);
+        float fLightPower = clamp(test, 0.f, 1.f);
         fResultColor += fColor * fLightPower * sLightSets[i].f4Color;
     }
     

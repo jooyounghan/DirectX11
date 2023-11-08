@@ -4,15 +4,15 @@
 
 #include "ManageGuiInterface.h"
 
-class ModelInterface;
+class ObjectModel;
 
 class ModelManageGui : public ManageGuiInterface
 {
 public:
 	ModelManageGui(
-		std::vector<std::shared_ptr<ModelInterface>>& vSpModelsIn,
-		std::shared_ptr<ModelInterface>& spSelectedModelIn,
-		std::shared_ptr<ModelInterface>& spTempSelectedModelIn
+		std::vector<std::shared_ptr<ObjectModel>>& vSpModelsIn,
+		std::shared_ptr<ObjectModel>& spSelectedModelIn,
+		std::shared_ptr<ObjectModel>& spTempSelectedModelIn
 	);
 	virtual ~ModelManageGui() override;
 
@@ -24,10 +24,10 @@ private:
 	void SetModelTexture();
 
 private:
-	std::vector<std::shared_ptr<ModelInterface>>& vSpModels;
+	std::vector<std::shared_ptr<ObjectModel>>& vSpModels;
 
 private:
-	std::shared_ptr<ModelInterface>&	spSelectedModel;
-	std::shared_ptr<ModelInterface>&	spTempSelectedModel;
+	std::shared_ptr<ObjectModel>&	spSelectedModel;
+	std::shared_ptr<ObjectModel>&	spTempSelectedModel;
 };
 

@@ -10,15 +10,18 @@
 #include "BaseModelDrawer.h"
 #include "ModelOutlineDrawer.h"
 #include "NormalVectorDrawer.h"
-
-#include "Canvas.h"
+#include "CubeMapDrawer.h"
 
 #include "CameraInterface.h"
 #include "CameraNormal.h"
 
 #include "ModelInterface.h"
+#include "ObjectModel.h"
 #include "SphereModel.h"
 #include "SquareModel.h"
+#include "CubeMapModel.h"
+
+#include "ModelID.h"
 
 #include "LightManager.h"
 
@@ -51,32 +54,29 @@ void PortfolioApp::Init()
 
 	InitImGUI();
 
+	vSpModels.push_back(std::make_shared<SquareModel>(cpDevice, cpDeviceContext, 0.f, 0.f, 0.f, 2.f));
+	vSpModels.push_back(std::make_shared<SphereModel>(cpDevice, cpDeviceContext, 5.f, 0.f, 5.f, 2.f));
+	spCubeMap = make_shared<CubeMapModel>(cpDevice, cpDeviceContext);
+
 	// GUI Ãß°¡ =====================================================================================
 	vUpManageGuis.push_back(make_unique<ModelManageGui>(vSpModels, spSelectedModel, spTempSelectedModel));
 	vUpManageGuis.push_back(make_unique<LightManageGui>(spLightManager));
-	vUpManageGuis.push_back(make_unique<SettingManageGui>(bIsNormalVectorDraw, bIsWireFrameDraw));
+	vUpManageGuis.push_back(make_unique<SettingManageGui>(bIsNormalVectorDraw, bIsWireFrameDraw, spCubeMap));
 	vUpManageGuis.push_back(make_unique<CameraManageGui>(spMainCameras));
 	vUpManageGuis.push_back(make_unique<FileManageGui>(cpDevice, cpDeviceContext));
 	// ==============================================================================================
 
 	spLightManager = make_unique<LightManager>(cpDevice, cpDeviceContext);
 
-	upBaseCanvas = make_unique<Canvas<BaseModelDrawer>>();
-	upModelOutlineCanvas = make_unique<Canvas<ModelOutlineDrawer>>();
-	upNVCanvas = make_unique<Canvas<NormalVectorDrawer>>();
-
 	upModelDrawer = make_unique<BaseModelDrawer>(cpDevice, cpDeviceContext);
 	upModelOutlineDrawer = make_unique<ModelOutlineDrawer>(cpDevice, cpDeviceContext);
 	upNormalVectorDrawer = make_unique<NormalVectorDrawer>(cpDevice, cpDeviceContext);
-
+	upCubeMapDrawer = make_unique<CubeMapDrawer>(cpDevice, cpDeviceContext);
 	// SDR
 	//spMainCameras = make_shared<CameraNormal>(cpDevice, cpDeviceContext, cpSwapChain, uiWidth, uiHeight, uiNumLevelQuality);
 	
 	// HDR
 	spMainCameras = make_shared<CameraNormal>(cpDevice, cpDeviceContext, cpSwapChain, uiWidth, uiHeight, uiNumLevelQuality, DXGI_FORMAT_R16G16B16A16_FLOAT);
-
-	vSpModels.push_back(std::make_shared<SquareModel>(cpDevice, cpDeviceContext, 0.f, 0.f, 0.f, 2.f));
-	vSpModels.push_back(std::make_shared<SphereModel>(cpDevice, cpDeviceContext, 5.f, 0.f, 5.f, 2.f));
 
 	spLightManager->AddDirectionalLight(
 		XMVectorSet(0.f, 0.f, -100.f, 1.f),
@@ -95,41 +95,30 @@ void PortfolioApp::Update()
 	{
 		model->Update();
 	}
+	spCubeMap->Update();
 }
 
 void PortfolioApp::Render()
 {
 	spMainCameras->WipeOut(DirectX::XMVectorSet(0.f, 0.f, 0.f, 1.f));
 
-	upBaseCanvas->SetDrawer(upModelDrawer.get());
-	upModelOutlineCanvas->SetDrawer(upModelOutlineDrawer.get());
-	upNVCanvas->SetDrawer(upNormalVectorDrawer.get());
-
-	upModelDrawer->SetCameraAdapter(spMainCameras.get());
-	upNormalVectorDrawer->SetCameraAdapter(spMainCameras.get());
-	upModelOutlineDrawer->SetCameraAdapter(spMainCameras.get());
-
-	for (auto& model : vSpModels)
-	{
-		upModelDrawer->SetModel(model.get());
-		upModelDrawer->SetLightManager(spLightManager.get());
-		upBaseCanvas->Render();
-	}
+	upModelDrawer->Draw(spMainCameras.get(), spLightManager.get(), vSpModels);
 
 	if (bIsNormalVectorDraw)
 	{
 		for (auto& model : vSpModels)
 		{
-			upNormalVectorDrawer->SetModel(model.get());
-			upNVCanvas->Render();
+			upNormalVectorDrawer->Draw(spMainCameras.get(), model.get());
 		}
 	}
-
+	
 	if (spSelectedModel)
 	{
-		upModelOutlineDrawer->SetModel(spSelectedModel.get());
-		upModelOutlineCanvas->Render();
+		upModelOutlineDrawer->Draw(spMainCameras.get(), spSelectedModel.get());
 	}
+
+	upCubeMapDrawer->Draw(spMainCameras.get(), spCubeMap.get());
+
 	spMainCameras->DoPostProcess();
 }
 
@@ -214,7 +203,7 @@ void PortfolioApp::ResizeSwapChain(const UINT& uiWidthIn, const UINT& uiHeightIn
 void PortfolioApp::CheckMouseHoveredModel()
 {
 	ModelIDData uiSelectedModelID = spMainCameras->GetPointedModelID();
-	auto findResult = find_if(vSpModels.begin(), vSpModels.end(), [&](shared_ptr<ModelInterface> model) { return model->modelID.sIdData == uiSelectedModelID; });
+	auto findResult = find_if(vSpModels.begin(), vSpModels.end(), [&](shared_ptr<ObjectModel> model) { return model->upModelID->sIdData == uiSelectedModelID; });
 	if (findResult != vSpModels.end())
 	{
 		spTempSelectedModel = *findResult;

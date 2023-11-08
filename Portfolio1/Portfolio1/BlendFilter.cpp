@@ -57,4 +57,18 @@ void BlendFilter::StartFilter(ID3D11ShaderResourceView** ppInput1SRV, ID3D11Shad
 	cpDeviceContext->RSSetViewports(1, &sScreenViewport);
 
 	cpDeviceContext->DrawIndexed((UINT)filterInfo.vIndices.size(), 0, 0);
+
+	ID3D11Buffer* pResetBuffer = nullptr;
+	ID3D11ShaderResourceView* pResetSRV = nullptr;
+	ID3D11RenderTargetView* pResetRTV = nullptr;
+	ID3D11SamplerState* pResetSampler = nullptr;
+
+	cpDeviceContext->VSSetShader(nullptr, 0, 0);
+	cpDeviceContext->PSSetShader(nullptr, 0, 0);
+	cpDeviceContext->OMSetRenderTargets(1, &pResetRTV, NULL);
+
+	cpDeviceContext->PSSetSamplers(0, 1, &pResetSampler);
+	cpDeviceContext->PSSetShaderResources(0, 1, &pResetSRV);
+	cpDeviceContext->PSSetShaderResources(1, 1, &pResetSRV);
+	cpDeviceContext->PSSetConstantBuffers(0, 1, &pResetBuffer);
 }

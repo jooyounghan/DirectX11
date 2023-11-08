@@ -1,10 +1,9 @@
 #include "CameraNormal.h"
-#include "EnumVar.h"
 #include "ID3D11Helper.h"
 #include "TransformProperties.h"
 #include "ModelID.h"
 #include "PostProcess.h"
-
+#include "ObjectModelEnum.h"
 #include <algorithm>
 #include <string>
 
@@ -32,7 +31,7 @@ CameraNormal::~CameraNormal()
 
 void CameraNormal::SetCameraProperty()
 {
-	sCameraInfo.SetCameraInfo(0.f, 0.f, -10.f, 70.f, uiWidth / (float)uiHeight);
+	sCameraInfo.SetCameraInfo(0.f, 0.f, -10.f, 70.f, uiWidth / (float)uiHeight, 0.01f, 500.f);
 	ID3D11Helper::SetViewPort(0.f, 0.f, float(uiWidth), float(uiHeight), 0.f, 1.f, cpDeviceContext.Get(), &sScreenViewport);
 }
 
@@ -65,7 +64,7 @@ void CameraNormal::SetRSState()
 
 void CameraNormal::SetVSConstantBuffers()
 {
-	cpDeviceContext->VSSetConstantBuffers(VSConstBufferType::VS_ViewProjMatrix, 1, sCameraInfo.GetCameraInfoConstantBuffer().GetAddressOf());
+	cpDeviceContext->VSSetConstantBuffers(ObjectVSConstBufferType::OBJECT_VS_VIEWPROJMAT, 1, sCameraInfo.GetCameraInfoConstantBuffer().GetAddressOf());
 }
 
 void CameraNormal::SetHSConstantBuffers()
@@ -74,12 +73,12 @@ void CameraNormal::SetHSConstantBuffers()
 
 void CameraNormal::SetDSConstantBuffers()
 {
-	cpDeviceContext->DSSetConstantBuffers(DSConstBufferType::DS_ViewProjMatrix, 1, sCameraInfo.GetCameraInfoConstantBuffer().GetAddressOf());
+	cpDeviceContext->DSSetConstantBuffers(ObjectDSConstBufferType::OBJECT_DS_VIEWPROJMAT, 1, sCameraInfo.GetCameraInfoConstantBuffer().GetAddressOf());
 }
 
 void CameraNormal::SetGSConstantBuffers()
 {
-	cpDeviceContext->GSSetConstantBuffers(GSConstBufferType::GS_ViewProjMatrix, 1, sCameraInfo.GetCameraInfoConstantBuffer().GetAddressOf());
+	cpDeviceContext->GSSetConstantBuffers(ObjectGSConstBufferType::OBJECT_GS_VIEWPROJMAT, 1, sCameraInfo.GetCameraInfoConstantBuffer().GetAddressOf());
 }
 
 void CameraNormal::SetPSConstantBuffers()
@@ -97,9 +96,9 @@ void CameraNormal::ResetCamera()
 	cpDeviceContext->RSSetState(nullptr);
 
 	ID3D11Buffer* pResetBuffer = nullptr;
-	cpDeviceContext->VSSetConstantBuffers(VSConstBufferType::VS_ViewProjMatrix, 1, &pResetBuffer);
-	cpDeviceContext->DSSetConstantBuffers(DSConstBufferType::DS_ViewProjMatrix, 1, &pResetBuffer);
-	cpDeviceContext->GSSetConstantBuffers(GSConstBufferType::GS_ViewProjMatrix, 1, &pResetBuffer);
+	cpDeviceContext->VSSetConstantBuffers(ObjectVSConstBufferType::OBJECT_VS_VIEWPROJMAT, 1, &pResetBuffer);
+	cpDeviceContext->DSSetConstantBuffers(ObjectDSConstBufferType::OBJECT_DS_VIEWPROJMAT, 1, &pResetBuffer);
+	cpDeviceContext->GSSetConstantBuffers(ObjectGSConstBufferType::OBJECT_GS_VIEWPROJMAT, 1, &pResetBuffer);
 
 	vector<ID3D11RenderTargetView*> vResetRTV{ nullptr, nullptr };
 	cpDeviceContext->OMSetRenderTargets(UINT(vResetRTV.size()), vResetRTV.data(), nullptr);

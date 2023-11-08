@@ -16,9 +16,6 @@
     <Filter Include="Shader">
       <UniqueIdentifier>{bde71862-5778-4eda-9520-25c4f7886ae3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Model">
-      <UniqueIdentifier>{56867d9a-ae4a-41a6-8bc9-2c0570418237}</UniqueIdentifier>
-    </Filter>
     <Filter Include="헤더 파일\Model">
       <UniqueIdentifier>{343ab7e8-d942-493a-b043-e242e70ea209}</UniqueIdentifier>
     </Filter>
@@ -54,15 +51,6 @@
     </Filter>
     <Filter Include="헤더 파일\Drawer">
       <UniqueIdentifier>{de2587d0-6c05-413f-a77e-526722e806d9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\Model\Specific">
-      <UniqueIdentifier>{9da587ed-81ef-4e45-8e52-51aca6caa54d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\Canvas">
-      <UniqueIdentifier>{98e446ee-2ef2-42d8-9339-1dcc1842eb56}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\Canvas">
-      <UniqueIdentifier>{6e8fb75d-c9c4-4929-8369-9c97a87bc8e9}</UniqueIdentifier>
     </Filter>
     <Filter Include="소스 파일\GUI">
       <UniqueIdentifier>{65dbbfa6-f44f-4154-a853-85c2032c3771}</UniqueIdentifier>
@@ -130,14 +118,56 @@
     <Filter Include="소스 파일\Main">
       <UniqueIdentifier>{0505c04a-655b-4531-a921-1d69aa6249e7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Model\Object">
+    <Filter Include="헤더 파일\Model\Object">
+      <UniqueIdentifier>{8b30c530-f43e-4aae-95fb-f08b660e02e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Model\CubeMap">
+      <UniqueIdentifier>{0b41cae1-53cd-48dd-9d23-5038530dfb18}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Model\Object\Extended">
+      <UniqueIdentifier>{9da587ed-81ef-4e45-8e52-51aca6caa54d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader\CubeMap">
+      <UniqueIdentifier>{fa0a3d4c-91c5-486e-ad40-97edf521aee5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Drawer\ObjectDrawer">
+      <UniqueIdentifier>{4604a28c-c92b-4c06-a3b0-1e5df58fa4ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Drawer\ObjectDrawer\Extended">
+      <UniqueIdentifier>{64efa572-e436-4336-954b-9c617686a800}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Drawer\CubeMapDrawer">
+      <UniqueIdentifier>{d75b5e54-61c4-4420-9d66-1a50a2ef8a06}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Drawer\ObjectDrawer">
+      <UniqueIdentifier>{8d29850b-7e46-49ed-8e50-6ba57353cc53}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Drawer\ObjectDrawer\Extended">
+      <UniqueIdentifier>{8d0453ac-04cf-4785-ac56-128487989328}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Drawer\NonLightDrawer">
+      <UniqueIdentifier>{d37d8de6-8ee6-422d-8850-d3544ea1f9c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Drawer\NonLightDrawer\Extneded">
+      <UniqueIdentifier>{4c0b78fa-52ef-4a8d-8d67-a80ce6aa4ca7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Drawer\NonLightDrawer">
+      <UniqueIdentifier>{135745c0-bb35-40fd-92f4-8b1c76ddc69f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Drawer\NonLightDrawer\Extended">
+      <UniqueIdentifier>{8fab31b1-788b-4452-88b1-0410344a70b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Main\Model">
+      <UniqueIdentifier>{56867d9a-ae4a-41a6-8bc9-2c0570418237}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Main\Model\Object">
       <UniqueIdentifier>{25482c32-cffa-4bb4-bdd8-4b17ccddbbb4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Model\CubeMap">
-      <UniqueIdentifier>{f4cb0c6c-6922-4df7-90ef-9c1bf2b0a3ce}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\Model\Object\Extended">
+    <Filter Include="소스 파일\Main\Model\Object\Extended">
       <UniqueIdentifier>{2f5b774f-21dd-4323-aefc-369cf6718d92}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Main\Model\CubeMap">
+      <UniqueIdentifier>{f4cb0c6c-6922-4df7-90ef-9c1bf2b0a3ce}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -160,25 +190,16 @@
       <Filter>소스 파일\Utils</Filter>
     </ClCompile>
     <ClCompile Include="ModelID.cpp">
-      <Filter>소스 파일\Model</Filter>
+      <Filter>소스 파일\Main\Model</Filter>
     </ClCompile>
     <ClCompile Include="TransformProperties.cpp">
       <Filter>소스 파일\Transformation</Filter>
-    </ClCompile>
-    <ClCompile Include="BaseModelDrawer.cpp">
-      <Filter>소스 파일\Drawer</Filter>
-    </ClCompile>
-    <ClCompile Include="ModelOutlineDrawer.cpp">
-      <Filter>소스 파일\Drawer</Filter>
     </ClCompile>
     <ClCompile Include="DrawerInterface.cpp">
       <Filter>소스 파일\Drawer</Filter>
     </ClCompile>
     <ClCompile Include="LightManager.cpp">
       <Filter>소스 파일\Light</Filter>
-    </ClCompile>
-    <ClCompile Include="Canvas.cpp">
-      <Filter>소스 파일\Canvas</Filter>
     </ClCompile>
     <ClCompile Include="DepthStencilState.cpp">
       <Filter>소스 파일\Utils</Filter>
@@ -191,9 +212,6 @@
     </ClCompile>
     <ClCompile Include="FileManageGui.cpp">
       <Filter>소스 파일\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="NormalVectorDrawer.cpp">
-      <Filter>소스 파일\Drawer</Filter>
     </ClCompile>
     <ClCompile Include="ManageGuiInterface.cpp">
       <Filter>소스 파일\GUI</Filter>
@@ -253,23 +271,41 @@
       <Filter>소스 파일\Files\Specific</Filter>
     </ClCompile>
     <ClCompile Include="ModelInterface.cpp">
-      <Filter>소스 파일\Model</Filter>
+      <Filter>소스 파일\Main\Model</Filter>
     </ClCompile>
     <ClCompile Include="ObjectModel.cpp">
-      <Filter>소스 파일\Model\Object</Filter>
+      <Filter>소스 파일\Main\Model\Object</Filter>
     </ClCompile>
     <ClCompile Include="SphereModel.cpp">
-      <Filter>소스 파일\Model\Object\Extended</Filter>
+      <Filter>소스 파일\Main\Model\Object\Extended</Filter>
     </ClCompile>
     <ClCompile Include="SquareModel.cpp">
-      <Filter>소스 파일\Model\Object\Extended</Filter>
+      <Filter>소스 파일\Main\Model\Object\Extended</Filter>
+    </ClCompile>
+    <ClCompile Include="CubeMapModel.cpp">
+      <Filter>소스 파일\Main\Model\CubeMap</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectDrawer.cpp">
+      <Filter>소스 파일\Drawer\ObjectDrawer</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseModelDrawer.cpp">
+      <Filter>소스 파일\Drawer\ObjectDrawer\Extended</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelOutlineDrawer.cpp">
+      <Filter>소스 파일\Drawer\NonLightDrawer\Extneded</Filter>
+    </ClCompile>
+    <ClCompile Include="NormalVectorDrawer.cpp">
+      <Filter>소스 파일\Drawer\NonLightDrawer\Extneded</Filter>
+    </ClCompile>
+    <ClCompile Include="NonLightDrawer.cpp">
+      <Filter>소스 파일\Drawer\NonLightDrawer</Filter>
+    </ClCompile>
+    <ClCompile Include="CubeMapDrawer.cpp">
+      <Filter>소스 파일\Drawer\NonLightDrawer\Extneded</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ID3D11Helper.h">
-      <Filter>헤더 파일\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="EnumVar.h">
       <Filter>헤더 파일\Utils</Filter>
     </ClInclude>
     <ClInclude Include="MathematicalHelper.h">
@@ -299,23 +335,14 @@
     <ClInclude Include="TransformProperties.h">
       <Filter>헤더 파일\Transformation</Filter>
     </ClInclude>
-    <ClInclude Include="BaseModelDrawer.h">
-      <Filter>헤더 파일\Drawer</Filter>
-    </ClInclude>
     <ClInclude Include="SphereModel.h">
-      <Filter>헤더 파일\Model\Specific</Filter>
-    </ClInclude>
-    <ClInclude Include="ModelOutlineDrawer.h">
-      <Filter>헤더 파일\Drawer</Filter>
+      <Filter>헤더 파일\Model\Object\Extended</Filter>
     </ClInclude>
     <ClInclude Include="DrawerInterface.h">
       <Filter>헤더 파일\Drawer</Filter>
     </ClInclude>
     <ClInclude Include="LightManager.h">
       <Filter>헤더 파일\Light</Filter>
-    </ClInclude>
-    <ClInclude Include="Canvas.h">
-      <Filter>헤더 파일\Canvas</Filter>
     </ClInclude>
     <ClInclude Include="LightManageGui.h">
       <Filter>헤더 파일\GUI</Filter>
@@ -324,10 +351,7 @@
       <Filter>헤더 파일\GUI</Filter>
     </ClInclude>
     <ClInclude Include="SquareModel.h">
-      <Filter>헤더 파일\Model\Specific</Filter>
-    </ClInclude>
-    <ClInclude Include="NormalVectorDrawer.h">
-      <Filter>헤더 파일\Drawer</Filter>
+      <Filter>헤더 파일\Model\Object\Extended</Filter>
     </ClInclude>
     <ClInclude Include="ManageGuiInterface.h">
       <Filter>헤더 파일\GUI</Filter>
@@ -399,13 +423,37 @@
       <Filter>헤더 파일\Model</Filter>
     </ClInclude>
     <ClInclude Include="ObjectModel.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>헤더 파일\Model\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectModelEnum.h">
+      <Filter>헤더 파일\Model\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="CubeMapEnum.h">
+      <Filter>헤더 파일\Model\CubeMap</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectDrawer.h">
+      <Filter>헤더 파일\Drawer\ObjectDrawer</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseModelDrawer.h">
+      <Filter>헤더 파일\Drawer\ObjectDrawer\Extended</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelOutlineDrawer.h">
+      <Filter>헤더 파일\Drawer\NonLightDrawer\Extended</Filter>
+    </ClInclude>
+    <ClInclude Include="NormalVectorDrawer.h">
+      <Filter>헤더 파일\Drawer\NonLightDrawer\Extended</Filter>
+    </ClInclude>
+    <ClInclude Include="CubeMapDrawer.h">
+      <Filter>헤더 파일\Drawer\CubeMapDrawer</Filter>
+    </ClInclude>
+    <ClInclude Include="NonLightDrawer.h">
+      <Filter>헤더 파일\Drawer\NonLightDrawer</Filter>
+    </ClInclude>
+    <ClInclude Include="CubeMapModel.h">
+      <Filter>헤더 파일\Model\Object\Extended</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="OutlinerPS.hlsl">
-      <Filter>Shader</Filter>
-    </FxCompile>
     <FxCompile Include="BaseModelDS.hlsl">
       <Filter>Shader\BaseModel</Filter>
     </FxCompile>
@@ -433,6 +481,15 @@
     <FxCompile Include="BlendPS.hlsl">
       <Filter>Shader\Filter\Blend</Filter>
     </FxCompile>
+    <FxCompile Include="OutlinerPS.hlsl">
+      <Filter>Shader\BaseModel</Filter>
+    </FxCompile>
+    <FxCompile Include="CubeMapVS.hlsl">
+      <Filter>Shader\CubeMap</Filter>
+    </FxCompile>
+    <FxCompile Include="CubeMapPS.hlsl">
+      <Filter>Shader\CubeMap</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Common.hlsli">
@@ -440,6 +497,9 @@
     </None>
     <None Include="NormalVectorShaderType.hlsli">
       <Filter>Shader\NormalVector</Filter>
+    </None>
+    <None Include="CubeMapType.hlsli">
+      <Filter>Shader\CubeMap</Filter>
     </None>
   </ItemGroup>
 </Project>

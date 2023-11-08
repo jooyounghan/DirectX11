@@ -1,11 +1,8 @@
 #pragma once
-#include "DrawerInterface.h"
+#include "ObjectDrawer.h"
 
-class BaseModelDrawer : public DrawerInterface
+class BaseModelDrawer : public ObjectDrawer
 {
-template<typename Drawer>
-friend class Canvas;
-
 public:
 	BaseModelDrawer(
 		Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn,
@@ -13,30 +10,29 @@ public:
 	virtual ~BaseModelDrawer();
 
 protected:
-	void SetIAInputLayer();
-	void SetVSShader();
-	void SetHSShader();
-	void SetDSShader();
-	void SetGSShader();
-	void SetPSShader();
+	virtual void SetIAInputLayer() override;
+	virtual void SetVSShader() override;
+	virtual void SetHSShader() override;
+	virtual void SetDSShader() override;
+	virtual void SetGSShader() override;
+	virtual void SetPSShader() override;
 
 protected:
-	void SetOMState();
-	void ResetOMState();
+	virtual void SetOMState() override;
+	virtual void ResetOMState() override;
 
 protected:
-	void ResetDrawer();
+	virtual void ResetDrawer() override;
 
 protected:
-	Microsoft::WRL::ComPtr<ID3D11InputLayout>		cpBaseInputLayout;
+	Microsoft::WRL::ComPtr<ID3D11InputLayout>	cpBaseInputLayout;
 	Microsoft::WRL::ComPtr<ID3D11VertexShader>	cpBaseVertexShader;
 
 protected:
-	Microsoft::WRL::ComPtr<ID3D11PixelShader>		cpBasePixelShader;
+	Microsoft::WRL::ComPtr<ID3D11PixelShader>	cpBasePixelShader;
 	Microsoft::WRL::ComPtr<ID3D11SamplerState>	cpBaseSampler;
 
 protected:
-	Microsoft::WRL::ComPtr<ID3D11HullShader>		cpBaseHullShader;
+	Microsoft::WRL::ComPtr<ID3D11HullShader>	cpBaseHullShader;
 	Microsoft::WRL::ComPtr<ID3D11DomainShader>	cpBaseDomainShader;
-
 };

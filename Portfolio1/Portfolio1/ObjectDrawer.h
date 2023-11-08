@@ -3,22 +3,28 @@
 #include <d3dcompiler.h>
 #include <windows.h>
 #include <wrl/client.h>
+#include "DrawerInterface.h"
 
-class ModelInterface;
+#include <memory>
+#include <vector>
+
+class ObjectModel;
 class CameraInterface;
 class LightManager;
 
-class DrawerInterface
+class ObjectDrawer : public DrawerInterface
 {
 public:
-	DrawerInterface(
+	ObjectDrawer(
 		Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn,
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn);
-	virtual ~DrawerInterface();
+	virtual ~ObjectDrawer();
 
 protected:
-	Microsoft::WRL::ComPtr<ID3D11Device>& cpDevice;
-	Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContext;
+	
+
+public:
+	void Draw(CameraInterface* pCamera, LightManager* pLightManager, const std::vector<std::shared_ptr<ObjectModel>> vSpModels);
 
 protected:
 	virtual void SetIAInputLayer() = 0;

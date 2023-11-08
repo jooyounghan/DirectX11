@@ -7,7 +7,7 @@
 
 
 ModelOutlineDrawer::ModelOutlineDrawer(Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn, Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn)
-	: DrawerInterface(cpDeviceIn, cpDeviceContextIn)
+	: NonLightDrawer(cpDeviceIn, cpDeviceContextIn)
 {
 	std::vector<D3D11_INPUT_ELEMENT_DESC> vInputElemDesc{
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
@@ -23,6 +23,13 @@ ModelOutlineDrawer::ModelOutlineDrawer(Microsoft::WRL::ComPtr<ID3D11Device>& cpD
 
 ModelOutlineDrawer::~ModelOutlineDrawer()
 {
+}
+
+void ModelOutlineDrawer::Draw(CameraInterface* pCamera, ModelInterface* pModel)
+{
+	pModel->ScaleUp(0.1f, 0.1f, 0.1f);
+	NonLightDrawer::Draw(pCamera, pModel);
+	pModel->ScaleUp(-0.1f, -0.1f, -0.1f);
 }
 
 void ModelOutlineDrawer::SetIAInputLayer()
@@ -55,14 +62,14 @@ void ModelOutlineDrawer::SetPSShader()
 
 void ModelOutlineDrawer::SetOMState()
 {
-	pModel->ScaleUp(0.1f, 0.1f, 0.1f);
+
 	cpDeviceContext->OMSetDepthStencilState(DepthStencilState::pGetDSS(DepthStencilState::DrawNotEqualOption), 1);
 }
 
 void ModelOutlineDrawer::ResetOMState()
 {
 	cpDeviceContext->OMSetDepthStencilState(DepthStencilState::pGetDSS(DepthStencilState::DefaultOption), 0);
-	pModel->ScaleUp(-0.1f, -0.1f, -0.1f);
+
 }
 
 void ModelOutlineDrawer::ResetDrawer()

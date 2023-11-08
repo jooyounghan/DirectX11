@@ -1,15 +1,16 @@
 #pragma once
 #include "ModelInterface.h"
-#include "ObjectModelEnum.h"
+#include "CubeMapEnum.h"
 
-class ObjectModel : public ModelInterface
+class CubeMapModel : public ModelInterface
 {
 public:
-	ObjectModel(
+	CubeMapModel(
 		Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn,
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn
 	);
-	virtual ~ObjectModel();
+
+	virtual ~CubeMapModel();
 
 public:
 	virtual void Update();
@@ -31,20 +32,15 @@ public:
 	virtual void SetPSShaderResources() override;
 	virtual void ResetShaderResources() override;
 
-
 public:
-	std::shared_ptr<class ModelTextureFile>	pModelTextureSet[MODEL_TEXTURE_NUM];
-
-public:
-	std::unique_ptr<class ModelID>			upModelID;
+	std::shared_ptr<class DDSFile>	pDDSTextureFile;
 
 public:
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	cpTextureFlagBuffer;
 	struct
 	{
-		uint32_t bIsTextureOn[MODEL_TEXTURE_NUM];
-		uint32_t uiDummy[2];
+		uint32_t bIsDDSTextureOn;
+		uint32_t uiDummy[3];
 	} sPSTextureFlags;
-
 };
 

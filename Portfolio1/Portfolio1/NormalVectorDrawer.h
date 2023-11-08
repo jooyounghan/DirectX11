@@ -1,11 +1,8 @@
 #pragma once
-#include "DrawerInterface.h"
+#include "NonLightDrawer.h"
 
-class NormalVectorDrawer : public DrawerInterface
+class NormalVectorDrawer : public NonLightDrawer
 {
-	template<typename Drawer>
-	friend class Canvas;
-
 public:
 	NormalVectorDrawer(
 		Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn,
@@ -13,19 +10,19 @@ public:
 	virtual ~NormalVectorDrawer();
 
 protected:
-	void SetIAInputLayer();
-	void SetVSShader();
-	void SetHSShader();
-	void SetDSShader();
-	void SetGSShader();
-	void SetPSShader();
+	virtual void SetIAInputLayer() override;
+	virtual void SetVSShader() override;
+	virtual void SetHSShader() override;
+	virtual void SetDSShader() override;
+	virtual void SetGSShader() override;
+	virtual void SetPSShader() override;
 
 protected:
-	void SetOMState();
-	void ResetOMState();
+	virtual void SetOMState() override;
+	virtual void ResetOMState() override;
 
 protected:
-	void ResetDrawer();
+	virtual void ResetDrawer() override;
 
 protected:
 	Microsoft::WRL::ComPtr<ID3D11InputLayout>		cpNVInputLayout;

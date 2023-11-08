@@ -1,24 +1,17 @@
 #pragma once
-#include <d3d11.h>
-#include <d3dcompiler.h>
-#include <windows.h>
-#include <wrl/client.h>
 
-class ModelInterface;
-class CameraInterface;
-class LightManager;
+#include "DrawerInterface.h"
 
-class DrawerInterface
+class NonLightDrawer : public DrawerInterface
 {
 public:
-	DrawerInterface(
+	NonLightDrawer(
 		Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn,
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn);
-	virtual ~DrawerInterface();
+	virtual ~NonLightDrawer();
 
-protected:
-	Microsoft::WRL::ComPtr<ID3D11Device>& cpDevice;
-	Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContext;
+public:
+	virtual void Draw(CameraInterface* pCamera, ModelInterface* pModel);
 
 protected:
 	virtual void SetIAInputLayer() = 0;
@@ -35,4 +28,3 @@ protected:
 protected:
 	virtual void ResetDrawer() = 0;
 };
-

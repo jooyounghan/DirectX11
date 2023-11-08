@@ -5,10 +5,34 @@
 
 #include "BaseApp.h"
 
+enum KeyCode
+{
+	Zero = 0x30,
+	One,
+	Two,
+	Three,
+	Four,
+	Five,
+	Six,
+	Seven,
+	Eight,
+	Nine,
+	A = 0x41,
+	B, C, D, E, F,
+	G, H, I, J, K,
+	L, M, N, O, P, 
+	Q, R, S, T, U,
+	V, W, X, Y, Z,
+	NUM_KEY
+};
+
 typedef bool IsChecked;
 
 class CameraInterface;
 class ModelInterface;
+class ObjectModel;
+class CubeMapModel;
+
 class ManageGuiInterface;
 
 class LightManager;
@@ -16,9 +40,7 @@ class LightManager;
 class BaseModelDrawer;
 class ModelOutlineDrawer;
 class NormalVectorDrawer;
-
-template<typename T>
-class Canvas;
+class CubeMapDrawer;
 
 class PortfolioApp : public BaseApp
 {
@@ -57,22 +79,21 @@ private:
 	std::vector<std::shared_ptr<CameraInterface>>	vSpCameras;
 
 private:
-	std::shared_ptr<ModelInterface>					spSelectedModel;
-	std::shared_ptr<ModelInterface>					spTempSelectedModel;
-	std::vector<std::shared_ptr<ModelInterface>>	vSpModels;
+	std::shared_ptr<ObjectModel>					spSelectedModel;
+	std::shared_ptr<ObjectModel>					spTempSelectedModel;
+	std::vector<std::shared_ptr<ObjectModel>>		vSpModels;
 
 private:
 	std::shared_ptr<LightManager>					spLightManager;
 
 private:
-	std::unique_ptr<Canvas<BaseModelDrawer>>		upBaseCanvas;
-	std::unique_ptr<Canvas<ModelOutlineDrawer>>		upModelOutlineCanvas;
-	std::unique_ptr<Canvas<NormalVectorDrawer>>		upNVCanvas;
+	std::shared_ptr<CubeMapModel>					spCubeMap;
 
 private:
 	std::unique_ptr<BaseModelDrawer>				upModelDrawer;
 	std::unique_ptr<ModelOutlineDrawer>				upModelOutlineDrawer;
 	std::unique_ptr<NormalVectorDrawer>				upNormalVectorDrawer;
+	std::unique_ptr<CubeMapDrawer>					upCubeMapDrawer;
 
 public:
 	virtual LRESULT WINAPI AppProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) override;

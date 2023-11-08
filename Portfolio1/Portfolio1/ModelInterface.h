@@ -8,9 +8,6 @@
 
 class ModelInterface
 {
-template<typename Drawer>
-friend class Canvas;
-
 public:
 	ModelInterface(
 		Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn,
@@ -22,7 +19,7 @@ public:
 	virtual void Update();
 	void Render();
 
-protected:
+public:
 	virtual void SetIAProperties() = 0;
 	virtual void SetVSConstantBuffers() = 0;
 	virtual void SetHSConstantBuffers() = 0;
@@ -31,7 +28,7 @@ protected:
 	virtual void SetPSConstantBuffers() = 0;
 	virtual void ResetConstantBuffers() = 0;
 
-protected:
+public:
 	virtual void SetVSShaderResources() = 0;
 	virtual void SetHSShaderResources() = 0;
 	virtual void SetDSShaderResources() = 0;
@@ -55,5 +52,23 @@ public:
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	cpVertexBuffer;
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	cpIndexBuffer;
 	uint32_t								ui32IndexCount;
+
+protected:
+	static void MakeSquareVertexIndexSet(
+		ModelInterface* pModelInterface,
+		const float& fCenterX,
+		const float& fCenterY,
+		const float& fCenterZ,
+		const float& fLen,
+		const bool& bReverse = false
+	);
+	static void MakeSphereVertexIndexSet(
+		ModelInterface* pModelInterface,
+		const float& fCenterX,
+		const float& fCenterY,
+		const float& fCenterZ,
+		const float& fRadius,
+		const unsigned short& usLevel
+	);
 };
 

@@ -1,7 +1,8 @@
 #include "LightManager.h"
 #include "ID3D11Helper.h"
 #include "DefineVar.h"
-#include "EnumVar.h"
+#include "ObjectModelEnum.h"
+
 using namespace Microsoft::WRL;
 
 LightSet LightManager::sTempLightSet;
@@ -77,5 +78,11 @@ void LightManager::SetDSConstantBuffers()
 
 void LightManager::SetPSConstantBuffers()
 {
-	cpDeviceContext->PSSetConstantBuffers(PSConstBufferType::PS_LightStructure, 1, cpLightsConstantBuffer.GetAddressOf());
+	cpDeviceContext->PSSetConstantBuffers(ObjectPSConstBufferType::OBJECT_PS_LIGHT, 1, cpLightsConstantBuffer.GetAddressOf());
+}
+
+void LightManager::ResetConstantBuffers()
+{
+	ID3D11Buffer* pResetBuffer = nullptr;
+	cpDeviceContext->PSSetConstantBuffers(ObjectPSConstBufferType::OBJECT_PS_LIGHT, 1, &pResetBuffer);
 }

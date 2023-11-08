@@ -5,18 +5,20 @@
 #include <directxmath/DirectXMath.h>
 
 #include "ModelManageGui.h"
-#include "ModelInterface.h"
-
+#include "ObjectModel.h"
 #include "FileLoader.h"
+
+#include "ModelTextureFile.h"
+#include "TransformProperties.h"
 
 using namespace ImGui;
 using namespace DirectX;
 using namespace std;
 
 ModelManageGui::ModelManageGui(
-	std::vector<std::shared_ptr<ModelInterface>>& vSpModelsIn,
-	std::shared_ptr<ModelInterface>& spSelectedModelIn,
-	std::shared_ptr<ModelInterface>& spTempSelectedModelIn
+	std::vector<std::shared_ptr<ObjectModel>>& vSpModelsIn,
+	std::shared_ptr<ObjectModel>& spSelectedModelIn,
+	std::shared_ptr<ObjectModel>& spTempSelectedModelIn
 )
 	: vSpModels(vSpModelsIn),
 	spSelectedModel(spSelectedModelIn),
@@ -59,9 +61,9 @@ void ModelManageGui::RenderGui()
 
 void ModelManageGui::SetTransformModelMenu()
 {
-	SliderFloat3("Scale Vector",  spSelectedModel->upTransformationProperties.xmvScale.m128_f32, 0.f, 5.f);
-	SliderFloat3("Rotation Vector", (float*)(&spSelectedModel->upTransformationProperties.sPositionAngle), -2.f * XM_PI, 2.f * XM_PI);
-	SliderFloat3("Translation Vector", spSelectedModel->upTransformationProperties.xmvTranslation.m128_f32, -10.f, 10.f);
+	SliderFloat3("Scale Vector",  spSelectedModel->upTransformationProperties->xmvScale.m128_f32, 0.f, 5.f);
+	SliderFloat3("Rotation Vector", (float*)(&spSelectedModel->upTransformationProperties->sPositionAngle), -2.f * XM_PI, 2.f * XM_PI);
+	SliderFloat3("Translation Vector", spSelectedModel->upTransformationProperties->xmvTranslation.m128_f32, -10.f, 10.f);
 }
 
 void ModelManageGui::SetModelTexture()
@@ -84,9 +86,8 @@ void ModelManageGui::SetModelTexture()
 
 		if (ImGui::BeginDragDropTarget())
 		{
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_DEMO_CELL"))
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ModelTextureFile"))
 			{
-				IM_ASSERT(payload->DataSize == sizeof(shared_ptr<ModelTextureFile>));
 				spSelectedModel->pModelTextureSet[(MODEL_TEXTURE)idx] = *(shared_ptr<ModelTextureFile>*)payload->Data;
 			}
 			ImGui::EndDragDropTarget();

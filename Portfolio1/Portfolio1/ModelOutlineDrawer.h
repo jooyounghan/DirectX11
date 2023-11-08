@@ -1,33 +1,33 @@
 #pragma once
-#include "DrawerInterface.h"
+#include "NonLightDrawer.h"
 
 class ModelInterface;
 
-class ModelOutlineDrawer : public DrawerInterface
+class ModelOutlineDrawer : public NonLightDrawer
 {
-	template<typename Drawer>
-	friend class Canvas;
-
 public:
 	ModelOutlineDrawer(
 		Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn,
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn);
 	virtual ~ModelOutlineDrawer();
 
-protected:
-	void SetIAInputLayer();
-	void SetVSShader();
-	void SetHSShader();
-	void SetDSShader();
-	void SetGSShader();
-	void SetPSShader();
+public:
+	virtual void Draw(CameraInterface* pCamera, ModelInterface* pModel) override;
 
 protected:
-	void SetOMState();
-	void ResetOMState();
+	virtual void SetIAInputLayer();
+	virtual void SetVSShader();
+	virtual void SetHSShader();
+	virtual void SetDSShader();
+	virtual void SetGSShader();
+	virtual void SetPSShader();
 
 protected:
-	void ResetDrawer();
+	virtual void SetOMState();
+	virtual void ResetOMState();
+
+protected:
+	virtual void ResetDrawer();
 
 protected:
 	Microsoft::WRL::ComPtr<ID3D11InputLayout>		cpBaseInputLayout;

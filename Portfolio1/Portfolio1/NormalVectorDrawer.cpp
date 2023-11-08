@@ -4,7 +4,7 @@
 #include <vector>
 
 NormalVectorDrawer::NormalVectorDrawer(Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn, Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn)
-	: DrawerInterface(cpDeviceIn, cpDeviceContextIn)
+	: NonLightDrawer(cpDeviceIn, cpDeviceContextIn)
 {
 	std::vector<D3D11_INPUT_ELEMENT_DESC> vInputElemDesc{
 	{"POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
@@ -43,6 +43,7 @@ void NormalVectorDrawer::SetHSShader()
 void NormalVectorDrawer::SetDSShader()
 {
 	cpDeviceContext->DSSetShader(cpNVDomainShader.Get(), 0, 0);
+	cpDeviceContext->DSSetSamplers(0, 1, cpNVSampler.GetAddressOf());
 }
 
 void NormalVectorDrawer::SetGSShader()
@@ -73,4 +74,9 @@ void NormalVectorDrawer::ResetDrawer()
 	cpDeviceContext->DSSetShader(nullptr, 0, 0);
 	cpDeviceContext->HSSetShader(nullptr, 0, 0);
 	cpDeviceContext->VSSetShader(nullptr, 0, 0);
+
+	ID3D11SamplerState* pResetSampler = nullptr;
+	cpDeviceContext->DSSetSamplers(0, 1, &pResetSampler);
+	cpDeviceContext->GSSetSamplers(0, 1, &pResetSampler);
+	cpDeviceContext->PSSetSamplers(0, 1, &pResetSampler);
 }

@@ -150,20 +150,25 @@ void FileManageGui::SetLoadedFiles()
         D3D11_SHADER_RESOURCE_VIEW_DESC desc;
         pIndexedSRV->GetDesc(&desc);
         
-        if (desc.ViewDimension == D3D11_SRV_DIMENSION::D3D10_1_SRV_DIMENSION_TEXTURE2D)
+        if (desc.ViewDimension == D3D11_SRV_DIMENSION::D3D11_SRV_DIMENSION_TEXTURE2D)
         {
             Image(pIndexedSRV, ImVec2(60.f, 60.f));
+            if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
+            {
+                ImGui::SetDragDropPayload("ModelTextureFile", &loadedFile, sizeof(shared_ptr<ModelTextureFile>));
+                ImGui::EndDragDropSource();
+            }
         }
-        else
+        else if (desc.ViewDimension == D3D11_SRV_DIMENSION::D3D11_SRV_DIMENSION_TEXTURECUBE)
         {
             Image(nullptr, ImVec2(60.f, 60.f));
+            if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
+            {
+                ImGui::SetDragDropPayload("DDSFile", &loadedFile, sizeof(shared_ptr<DDSFile>));
+                ImGui::EndDragDropSource();
+            }
         }
 
-        if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
-        {
-            ImGui::SetDragDropPayload("DND_DEMO_CELL", &loadedFile, sizeof(shared_ptr<ModelTextureFile>));
-            ImGui::EndDragDropSource();
-        }
         SameLine();
         TextEx(loadedFile->strFileName.c_str(), (const char*)0, ImGuiTextFlags_::ImGuiTextFlags_NoWidthForLargeClippedText);
     }

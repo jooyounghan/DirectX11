@@ -4,11 +4,14 @@
 #include <imgui_internal.h>
 
 #include "SettingManageGui.h"
+#include "CubeMapModel.h"
+#include "DDSFile.h"
 
+using namespace std;
 using namespace ImGui;
 
-SettingManageGui::SettingManageGui(bool& bIsNormalVectorDrawIn, bool& bIsWireFrameDrawIn)
-	: bIsNormalVectorDraw(bIsNormalVectorDrawIn), bIsWireFrameDraw(bIsWireFrameDrawIn)
+SettingManageGui::SettingManageGui(bool& bIsNormalVectorDrawIn, bool& bIsWireFrameDrawIn, shared_ptr<class CubeMapModel> spCubeMapModelIn)
+	: bIsNormalVectorDraw(bIsNormalVectorDrawIn), bIsWireFrameDraw(bIsWireFrameDrawIn), spCubeMapModel(spCubeMapModelIn)
 {
 }
 
@@ -24,6 +27,8 @@ void SettingManageGui::RenderGui()
 		ImGui::GetIO().Framerate);
 
 	SetDrawNormalVector();
+	SetDrawWireFrame();
+	SetCubeMapTexture();
 
 	End();
 }
@@ -36,4 +41,38 @@ void SettingManageGui::SetDrawNormalVector()
 void SettingManageGui::SetDrawWireFrame()
 {
 	ImGui::Checkbox("Draw WireFrame", &bIsWireFrameDraw);
+}
+
+void SettingManageGui::SetCubeMapTexture()
+{
+	Separator();
+	Text("Cube Map Texture");
+	if (spCubeMapModel->pDDSTextureFile != nullptr)
+	{
+		Image(nullptr, ImVec2(60.f, 60.f));
+	}
+	else
+	{
+		Image(nullptr, ImVec2(60.f, 60.f));
+	}
+
+	if (ImGui::BeginDragDropTarget())
+	{
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DDSFile"))
+		{
+			spCubeMapModel->pDDSTextureFile = *(shared_ptr<DDSFile>*)payload->Data;
+		}
+		ImGui::EndDragDropTarget();
+	}
+
+	if (spCubeMapModel->pDDSTextureFile != nullptr)
+	{
+		SameLine();
+		Text(spCubeMapModel->pDDSTextureFile->strFileName.c_str());
+	}
+	else
+	{
+		SameLine();
+		Text("");
+	}
 }

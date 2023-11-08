@@ -1,6 +1,5 @@
 #include "ModelID.h"
 #include "ID3D11Helper.h"
-#include "EnumVar.h"
 
 using namespace std;
 
