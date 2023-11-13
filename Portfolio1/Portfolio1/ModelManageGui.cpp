@@ -70,7 +70,7 @@ void ModelManageGui::SetModelTexture()
 {
 	ImGuiWindowFlags window_flags = ImGuiWindowFlags_HorizontalScrollbar;
 	ImGui::BeginChild("ModelTextureSet", ImGui::GetContentRegionAvail(), false, window_flags);
-	for (unsigned short idx = 0; idx < MODEL_TEXTURE::MODEL_TEXTURE_NUM; ++idx)
+	for (unsigned short idx = 0; idx < PS_SRV_MODEL_TEXTURE_NUM; ++idx)
 	{
 		Separator();
 		Text(ModelTextureFile::strTextureType[idx].c_str());
@@ -88,7 +88,7 @@ void ModelManageGui::SetModelTexture()
 		{
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ModelTextureFile"))
 			{
-				spSelectedModel->pModelTextureSet[(MODEL_TEXTURE)idx] = *(shared_ptr<ModelTextureFile>*)payload->Data;
+				spSelectedModel->pModelTextureSet[(PSSRVType)idx] = *(shared_ptr<ModelTextureFile>*)payload->Data;
 			}
 			ImGui::EndDragDropTarget();
 		}

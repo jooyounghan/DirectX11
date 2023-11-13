@@ -425,12 +425,6 @@
     <ClInclude Include="ObjectModel.h">
       <Filter>헤더 파일\Model\Object</Filter>
     </ClInclude>
-    <ClInclude Include="ObjectModelEnum.h">
-      <Filter>헤더 파일\Model\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="CubeMapEnum.h">
-      <Filter>헤더 파일\Model\CubeMap</Filter>
-    </ClInclude>
     <ClInclude Include="ObjectDrawer.h">
       <Filter>헤더 파일\Drawer\ObjectDrawer</Filter>
     </ClInclude>
@@ -449,8 +443,11 @@
     <ClInclude Include="NonLightDrawer.h">
       <Filter>헤더 파일\Drawer\NonLightDrawer</Filter>
     </ClInclude>
+    <ClInclude Include="ShaderTypeEnum.h">
+      <Filter>Shader</Filter>
+    </ClInclude>
     <ClInclude Include="CubeMapModel.h">
-      <Filter>헤더 파일\Model\Object\Extended</Filter>
+      <Filter>헤더 파일\Model\CubeMap</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

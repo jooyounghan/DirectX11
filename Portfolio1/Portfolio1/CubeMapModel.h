@@ -1,6 +1,5 @@
 #pragma once
 #include "ModelInterface.h"
-#include "CubeMapEnum.h"
 
 class CubeMapModel : public ModelInterface
 {

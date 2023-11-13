@@ -4,7 +4,7 @@
 #include <windows.h>
 #include <wrl/client.h>
 #include "FileInterface.h"
-#include "ModelStruct.h"
+#include "ShaderTypeEnum.h"
 
 class ModelTextureFile : public FileInterface
 {
@@ -24,5 +24,5 @@ public:
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>	cpModelTextureSRV;
 
 public:
-	static std::string strTextureType[MODEL_TEXTURE_NUM];
+	static std::string strTextureType[PS_SRV_MODEL_TEXTURE_NUM];
 };

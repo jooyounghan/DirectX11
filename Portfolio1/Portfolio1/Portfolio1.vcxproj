@@ -190,7 +190,6 @@
     <ClInclude Include="CameraManageGui.h" />
     <ClInclude Include="CameraNormal.h" />
     <ClInclude Include="CubeMapDrawer.h" />
-    <ClInclude Include="CubeMapEnum.h" />
     <ClInclude Include="CubeMapModel.h" />
     <ClInclude Include="DDSFile.h" />
     <ClInclude Include="FileInterface.h" />
@@ -206,9 +205,9 @@
     <ClInclude Include="NormalVectorDrawer.h" />
     <ClInclude Include="ObjectDrawer.h" />
     <ClInclude Include="ObjectModel.h" />
-    <ClInclude Include="ObjectModelEnum.h" />
     <ClInclude Include="PostProcess.h" />
     <ClInclude Include="SettingManageGui.h" />
+    <ClInclude Include="ShaderTypeEnum.h" />
     <ClInclude Include="SingleFilterInterface.h" />
     <ClInclude Include="SphereModel.h" />
     <ClInclude Include="DefineVar.h" />

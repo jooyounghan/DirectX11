@@ -1,6 +1,6 @@
 #pragma once
 #include "ModelInterface.h"
-#include "ObjectModelEnum.h"
+#include "ShaderTypeEnum.h"
 
 class ObjectModel : public ModelInterface
 {
@@ -33,7 +33,8 @@ public:
 
 
 public:
-	std::shared_ptr<class ModelTextureFile>	pModelTextureSet[MODEL_TEXTURE_NUM];
+	std::shared_ptr<class ModelTextureFile>	pModelTextureSet[PS_SRV_MODEL_TEXTURE_NUM];
+	std::shared_ptr<class ModelTextureFile>	pHeightTexture;
 
 public:
 	std::unique_ptr<class ModelID>			upModelID;
@@ -42,7 +43,7 @@ public:
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	cpTextureFlagBuffer;
 	struct
 	{
-		uint32_t bIsTextureOn[MODEL_TEXTURE_NUM];
+		uint32_t bIsTextureOn[PS_SRV_MODEL_TEXTURE_NUM];
 		uint32_t uiDummy[2];
 	} sPSTextureFlags;
 

@@ -1,6 +1,7 @@
 #include "CubeMapModel.h"
 #include "ID3D11Helper.h"
 #include "DDSFile.h"
+#include "ShaderTypeEnum.h"
 
 CubeMapModel::CubeMapModel(
 	Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn,
@@ -68,14 +69,14 @@ void CubeMapModel::SetGSConstantBuffers()
 
 void CubeMapModel::SetPSConstantBuffers()
 {
-	cpDeviceContext->PSSetConstantBuffers(CubeMapPSConstBufferType::CUBEMAP_PS_TEXTUREFLAGS, 1, cpTextureFlagBuffer.GetAddressOf());
+	cpDeviceContext->PSSetConstantBuffers(PS_CBUFF_TEXTUREFLAGS, 1, cpTextureFlagBuffer.GetAddressOf());
 }
 
 void CubeMapModel::ResetConstantBuffers()
 {
 	ID3D11Buffer* pResetBuffer = nullptr;
-	cpDeviceContext->VSSetConstantBuffers(CubeMapVSConstBufferType::CUBEMAP_VS_VIEWPROJMAT, 1, &pResetBuffer);
-	cpDeviceContext->PSSetConstantBuffers(CubeMapPSConstBufferType::CUBEMAP_PS_TEXTUREFLAGS, 1, &pResetBuffer);
+	cpDeviceContext->VSSetConstantBuffers(VS_CBUFF_VIEWPROJMAT, 1, &pResetBuffer);
+	cpDeviceContext->PSSetConstantBuffers(PS_CBUFF_TEXTUREFLAGS, 1, &pResetBuffer);
 }
 
 void CubeMapModel::SetVSShaderResources()
@@ -99,12 +100,12 @@ void CubeMapModel::SetPSShaderResources()
 	if (pDDSTextureFile != nullptr)
 	{
 		ID3D11ShaderResourceView** ppDDSSRV = pDDSTextureFile->cpDDSSRV.GetAddressOf();
-		ppDDSSRV != nullptr ? cpDeviceContext->PSSetShaderResources(CubeMapPSSRVType::CUBEMAP_PS_CUBEMAP, 1, ppDDSSRV) : void();
+		ppDDSSRV != nullptr ? cpDeviceContext->PSSetShaderResources(PS_SRV_CUBEMAP_SPECULAR, 1, ppDDSSRV) : void();
 	}
 }
 
 void CubeMapModel::ResetShaderResources()
 {
 	ID3D11ShaderResourceView* pResetSRV = nullptr;
-	cpDeviceContext->PSSetShaderResources(CubeMapPSSRVType::CUBEMAP_PS_CUBEMAP, 1, &pResetSRV);
+	cpDeviceContext->PSSetShaderResources(PS_SRV_CUBEMAP_SPECULAR, 1, &pResetSRV);
 }

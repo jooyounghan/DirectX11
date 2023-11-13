@@ -30,18 +30,16 @@ void ObjectModel::Update()
 {
 	ModelInterface::Update();
 
-	sPSTextureFlags.bIsTextureOn[MODEL_TEXTURE_AO]
-		= pModelTextureSet[MODEL_TEXTURE_AO] != nullptr ? true : false;
-	sPSTextureFlags.bIsTextureOn[MODEL_TEXTURE_COLOR]
-		= pModelTextureSet[MODEL_TEXTURE_COLOR] != nullptr ? true : false;
-	sPSTextureFlags.bIsTextureOn[MODEL_TEXTURE_METALNESS]
-		= pModelTextureSet[MODEL_TEXTURE_METALNESS] != nullptr ? true : false;
-	sPSTextureFlags.bIsTextureOn[MODEL_TEXTURE_ROUGHNESS]
-		= pModelTextureSet[MODEL_TEXTURE_ROUGHNESS] != nullptr ? true : false;
-	sPSTextureFlags.bIsTextureOn[MODEL_TEXTURE_NORMAL]
-		= pModelTextureSet[MODEL_TEXTURE_NORMAL] != nullptr ? true : false;
-	sPSTextureFlags.bIsTextureOn[MODEL_TEXTURE_HEIGHT]
-		= pModelTextureSet[MODEL_TEXTURE_HEIGHT] != nullptr ? true : false;
+	sPSTextureFlags.bIsTextureOn[PS_SRV_AO]
+		= pModelTextureSet[PS_SRV_AO] != nullptr ? true : false;
+	sPSTextureFlags.bIsTextureOn[PS_SRV_COLOR]
+		= pModelTextureSet[PS_SRV_COLOR] != nullptr ? true : false;
+	sPSTextureFlags.bIsTextureOn[PS_SRV_METALNESS]
+		= pModelTextureSet[PS_SRV_METALNESS] != nullptr ? true : false;
+	sPSTextureFlags.bIsTextureOn[PS_SRV_ROUGHNESS]
+		= pModelTextureSet[PS_SRV_ROUGHNESS] != nullptr ? true : false;
+	sPSTextureFlags.bIsTextureOn[PS_SRV_NORMAL]
+		= pModelTextureSet[PS_SRV_NORMAL] != nullptr ? true : false;
 
 	ID3D11Helper::UpdateBuffer(
 		cpDeviceContext.Get(),
@@ -63,7 +61,7 @@ void ObjectModel::SetIAProperties()
 
 void ObjectModel::SetVSConstantBuffers()
 {
-	cpDeviceContext->VSSetConstantBuffers(ObjectVSConstBufferType::OBJECT_VS_MODELMAT, 1, cpTransformationDataBuffer.GetAddressOf());
+	cpDeviceContext->VSSetConstantBuffers(VS_CBUFF_MODELMAT, 1, cpTransformationDataBuffer.GetAddressOf());
 }
 
 void ObjectModel::SetHSConstantBuffers()
@@ -76,22 +74,22 @@ void ObjectModel::SetDSConstantBuffers()
 
 void ObjectModel::SetGSConstantBuffers()
 {
-	cpDeviceContext->GSSetConstantBuffers(ObjectGSConstBufferType::OBJECT_GS_TEXTUREFLAGS, 1, cpTextureFlagBuffer.GetAddressOf());
+	cpDeviceContext->GSSetConstantBuffers(GS_CBUFF_TEXTUREFLAGS, 1, cpTextureFlagBuffer.GetAddressOf());
 }
 
 void ObjectModel::SetPSConstantBuffers()
 {
-	cpDeviceContext->PSSetConstantBuffers(ObjectPSConstBufferType::OBJECT_PS_MODELID, 1, upModelID->GetAddressOfTextureIDBuffer());
-	cpDeviceContext->PSSetConstantBuffers(ObjectPSConstBufferType::OBJECT_PS_TEXTUREFLAGS, 1, cpTextureFlagBuffer.GetAddressOf());
+	cpDeviceContext->PSSetConstantBuffers(PS_CBUFF_MODELID, 1, upModelID->GetAddressOfTextureIDBuffer());
+	cpDeviceContext->PSSetConstantBuffers(PS_CBUFF_TEXTUREFLAGS, 1, cpTextureFlagBuffer.GetAddressOf());
 }
 
 void ObjectModel::ResetConstantBuffers()
 {
 	ID3D11Buffer* pResetBuffer = nullptr;
-	cpDeviceContext->VSSetConstantBuffers(ObjectVSConstBufferType::OBJECT_VS_MODELMAT, 1, &pResetBuffer);
-	cpDeviceContext->GSSetConstantBuffers(ObjectGSConstBufferType::OBJECT_GS_TEXTUREFLAGS, 1, &pResetBuffer);
-	cpDeviceContext->PSSetConstantBuffers(ObjectPSConstBufferType::OBJECT_PS_MODELID, 1, &pResetBuffer);
-	cpDeviceContext->PSSetConstantBuffers(ObjectPSConstBufferType::OBJECT_PS_TEXTUREFLAGS, 1, &pResetBuffer);
+	cpDeviceContext->VSSetConstantBuffers(VS_CBUFF_MODELMAT, 1, &pResetBuffer);
+	cpDeviceContext->GSSetConstantBuffers(GS_CBUFF_TEXTUREFLAGS, 1, &pResetBuffer);
+	cpDeviceContext->PSSetConstantBuffers(PS_CBUFF_MODELID, 1, &pResetBuffer);
+	cpDeviceContext->PSSetConstantBuffers(PS_CBUFF_TEXTUREFLAGS, 1, &pResetBuffer);
 }
 
 void ObjectModel::SetVSShaderResources()
@@ -104,62 +102,62 @@ void ObjectModel::SetHSShaderResources()
 
 void ObjectModel::SetDSShaderResources()
 {
-	if (pModelTextureSet[MODEL_TEXTURE_HEIGHT] != nullptr)
+	if (pHeightTexture != nullptr)
 	{
-		ID3D11ShaderResourceView** ppHeightSRV = pModelTextureSet[MODEL_TEXTURE_HEIGHT]->cpModelTextureSRV.GetAddressOf();
-		ppHeightSRV != nullptr ? cpDeviceContext->DSSetShaderResources(ObjectDSSRVType::OBJECT_DS_HEIGHT, 1, ppHeightSRV) : void();
+		ID3D11ShaderResourceView** ppHeightSRV = pHeightTexture->cpModelTextureSRV.GetAddressOf();
+		ppHeightSRV != nullptr ? cpDeviceContext->DSSetShaderResources(DS_SRV_HEIGHT, 1, ppHeightSRV) : void();
 	}
 }
 
 void ObjectModel::SetGSShaderResources()
 {
-	if (pModelTextureSet[MODEL_TEXTURE_NORMAL] != nullptr)
+	if (pModelTextureSet[PS_SRV_NORMAL] != nullptr)
 	{
-		ID3D11ShaderResourceView** ppNormalSRV = pModelTextureSet[MODEL_TEXTURE_NORMAL]->cpModelTextureSRV.GetAddressOf();
-		ppNormalSRV != nullptr ? cpDeviceContext->GSSetShaderResources(ObjectGSSRVType::OBJECT_GS_NORMAL, 1, ppNormalSRV) : void();
+		ID3D11ShaderResourceView** ppNormalSRV = pModelTextureSet[PS_SRV_NORMAL]->cpModelTextureSRV.GetAddressOf();
+		ppNormalSRV != nullptr ? cpDeviceContext->GSSetShaderResources(GS_SRV_NORMAL, 1, ppNormalSRV) : void();
 	}
 }
 
 void ObjectModel::SetPSShaderResources()
 {
-	if (pModelTextureSet[MODEL_TEXTURE_AO] != nullptr)
+	if (pModelTextureSet[PS_SRV_AO] != nullptr)
 	{
-		ID3D11ShaderResourceView** ppAoSRV = pModelTextureSet[MODEL_TEXTURE_AO]->cpModelTextureSRV.GetAddressOf();
-		ppAoSRV != nullptr ? cpDeviceContext->PSSetShaderResources(ObjectPSSRVType::OBJECT_PS_AO, 1, ppAoSRV) : void();
+		ID3D11ShaderResourceView** ppAoSRV = pModelTextureSet[PS_SRV_AO]->cpModelTextureSRV.GetAddressOf();
+		ppAoSRV != nullptr ? cpDeviceContext->PSSetShaderResources(PS_SRV_AO, 1, ppAoSRV) : void();
 	}
 
-	if (pModelTextureSet[MODEL_TEXTURE_COLOR] != nullptr)
+	if (pModelTextureSet[PS_SRV_COLOR] != nullptr)
 	{
-		ID3D11ShaderResourceView** ppColorSRV = pModelTextureSet[MODEL_TEXTURE_COLOR]->cpModelTextureSRV.GetAddressOf();
-		ppColorSRV != nullptr ? cpDeviceContext->PSSetShaderResources(ObjectPSSRVType::OBJECT_PS_COLOR, 1, ppColorSRV) : void();
+		ID3D11ShaderResourceView** ppColorSRV = pModelTextureSet[PS_SRV_COLOR]->cpModelTextureSRV.GetAddressOf();
+		ppColorSRV != nullptr ? cpDeviceContext->PSSetShaderResources(PS_SRV_COLOR, 1, ppColorSRV) : void();
 	}
 
-	if (pModelTextureSet[MODEL_TEXTURE_METALNESS] != nullptr)
+	if (pModelTextureSet[PS_SRV_METALNESS] != nullptr)
 	{
-		ID3D11ShaderResourceView** ppMetalnessSRV = pModelTextureSet[MODEL_TEXTURE_METALNESS]->cpModelTextureSRV.GetAddressOf();
-		ppMetalnessSRV != nullptr ? cpDeviceContext->PSSetShaderResources(ObjectPSSRVType::OBJECT_PS_METALNESS, 1, ppMetalnessSRV) : void();
+		ID3D11ShaderResourceView** ppMetalnessSRV = pModelTextureSet[PS_SRV_METALNESS]->cpModelTextureSRV.GetAddressOf();
+		ppMetalnessSRV != nullptr ? cpDeviceContext->PSSetShaderResources(PS_SRV_METALNESS, 1, ppMetalnessSRV) : void();
 	}
 
-	if (pModelTextureSet[MODEL_TEXTURE_ROUGHNESS] != nullptr)
+	if (pModelTextureSet[PS_SRV_ROUGHNESS] != nullptr)
 	{
-		ID3D11ShaderResourceView** ppRoughnessSRV = pModelTextureSet[MODEL_TEXTURE_ROUGHNESS]->cpModelTextureSRV.GetAddressOf();
-		ppRoughnessSRV != nullptr ? cpDeviceContext->PSSetShaderResources(ObjectPSSRVType::OBJECT_PS_ROUGHNESS, 1, ppRoughnessSRV) : void();
+		ID3D11ShaderResourceView** ppRoughnessSRV = pModelTextureSet[PS_SRV_ROUGHNESS]->cpModelTextureSRV.GetAddressOf();
+		ppRoughnessSRV != nullptr ? cpDeviceContext->PSSetShaderResources(PS_SRV_ROUGHNESS, 1, ppRoughnessSRV) : void();
 	}
 
-	if (pModelTextureSet[MODEL_TEXTURE_NORMAL] != nullptr)
+	if (pModelTextureSet[PS_SRV_NORMAL] != nullptr)
 	{
-		ID3D11ShaderResourceView** ppNormalSRV = pModelTextureSet[MODEL_TEXTURE_NORMAL]->cpModelTextureSRV.GetAddressOf();
-		ppNormalSRV != nullptr ? cpDeviceContext->PSSetShaderResources(ObjectPSSRVType::OBJECT_PS_NORMAL, 1, ppNormalSRV) : void();
+		ID3D11ShaderResourceView** ppNormalSRV = pModelTextureSet[PS_SRV_NORMAL]->cpModelTextureSRV.GetAddressOf();
+		ppNormalSRV != nullptr ? cpDeviceContext->PSSetShaderResources(PS_SRV_NORMAL, 1, ppNormalSRV) : void();
 	}
 }
 
 void ObjectModel::ResetShaderResources()
 {
 	ID3D11ShaderResourceView* pResetSRV = nullptr;
-	cpDeviceContext->DSSetShaderResources(ObjectDSSRVType::OBJECT_DS_HEIGHT, 1, &pResetSRV);
-	cpDeviceContext->PSSetShaderResources(ObjectPSSRVType::OBJECT_PS_AO, 1, &pResetSRV);
-	cpDeviceContext->PSSetShaderResources(ObjectPSSRVType::OBJECT_PS_COLOR, 1, &pResetSRV);
-	cpDeviceContext->PSSetShaderResources(ObjectPSSRVType::OBJECT_PS_METALNESS, 1, &pResetSRV);
-	cpDeviceContext->PSSetShaderResources(ObjectPSSRVType::OBJECT_PS_ROUGHNESS, 1, &pResetSRV);
-	cpDeviceContext->PSSetShaderResources(ObjectPSSRVType::OBJECT_PS_NORMAL, 1, &pResetSRV);
+	cpDeviceContext->DSSetShaderResources(DS_SRV_HEIGHT, 1, &pResetSRV);
+	cpDeviceContext->PSSetShaderResources(PS_SRV_AO, 1, &pResetSRV);
+	cpDeviceContext->PSSetShaderResources(PS_SRV_COLOR, 1, &pResetSRV);
+	cpDeviceContext->PSSetShaderResources(PS_SRV_METALNESS, 1, &pResetSRV);
+	cpDeviceContext->PSSetShaderResources(PS_SRV_ROUGHNESS, 1, &pResetSRV);
+	cpDeviceContext->PSSetShaderResources(PS_SRV_NORMAL, 1, &pResetSRV);
 }

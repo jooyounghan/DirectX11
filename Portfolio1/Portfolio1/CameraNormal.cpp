@@ -3,7 +3,8 @@
 #include "TransformProperties.h"
 #include "ModelID.h"
 #include "PostProcess.h"
-#include "ObjectModelEnum.h"
+#include "ShaderTypeEnum.h"
+
 #include <algorithm>
 #include <string>
 
@@ -64,7 +65,7 @@ void CameraNormal::SetRSState()
 
 void CameraNormal::SetVSConstantBuffers()
 {
-	cpDeviceContext->VSSetConstantBuffers(ObjectVSConstBufferType::OBJECT_VS_VIEWPROJMAT, 1, sCameraInfo.GetCameraInfoConstantBuffer().GetAddressOf());
+	cpDeviceContext->VSSetConstantBuffers(VS_CBUFF_VIEWPROJMAT, 1, sCameraInfo.GetCameraInfoConstantBuffer().GetAddressOf());
 }
 
 void CameraNormal::SetHSConstantBuffers()
@@ -73,12 +74,12 @@ void CameraNormal::SetHSConstantBuffers()
 
 void CameraNormal::SetDSConstantBuffers()
 {
-	cpDeviceContext->DSSetConstantBuffers(ObjectDSConstBufferType::OBJECT_DS_VIEWPROJMAT, 1, sCameraInfo.GetCameraInfoConstantBuffer().GetAddressOf());
+	cpDeviceContext->DSSetConstantBuffers(DS_CBUFF_VIEWPROJMAT, 1, sCameraInfo.GetCameraInfoConstantBuffer().GetAddressOf());
 }
 
 void CameraNormal::SetGSConstantBuffers()
 {
-	cpDeviceContext->GSSetConstantBuffers(ObjectGSConstBufferType::OBJECT_GS_VIEWPROJMAT, 1, sCameraInfo.GetCameraInfoConstantBuffer().GetAddressOf());
+	cpDeviceContext->GSSetConstantBuffers(GS_CBUFF_VIEWPROJMAT, 1, sCameraInfo.GetCameraInfoConstantBuffer().GetAddressOf());
 }
 
 void CameraNormal::SetPSConstantBuffers()
@@ -96,9 +97,9 @@ void CameraNormal::ResetCamera()
 	cpDeviceContext->RSSetState(nullptr);
 
 	ID3D11Buffer* pResetBuffer = nullptr;
-	cpDeviceContext->VSSetConstantBuffers(ObjectVSConstBufferType::OBJECT_VS_VIEWPROJMAT, 1, &pResetBuffer);
-	cpDeviceContext->DSSetConstantBuffers(ObjectDSConstBufferType::OBJECT_DS_VIEWPROJMAT, 1, &pResetBuffer);
-	cpDeviceContext->GSSetConstantBuffers(ObjectGSConstBufferType::OBJECT_GS_VIEWPROJMAT, 1, &pResetBuffer);
+	cpDeviceContext->VSSetConstantBuffers(VS_CBUFF_VIEWPROJMAT, 1, &pResetBuffer);
+	cpDeviceContext->DSSetConstantBuffers(DS_CBUFF_VIEWPROJMAT, 1, &pResetBuffer);
+	cpDeviceContext->GSSetConstantBuffers(GS_CBUFF_VIEWPROJMAT, 1, &pResetBuffer);
 
 	vector<ID3D11RenderTargetView*> vResetRTV{ nullptr, nullptr };
 	cpDeviceContext->OMSetRenderTargets(UINT(vResetRTV.size()), vResetRTV.data(), nullptr);

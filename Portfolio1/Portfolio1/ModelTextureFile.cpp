@@ -7,7 +7,7 @@ using namespace Microsoft::WRL;
 
 extern void Console(const char* text);
 
-string ModelTextureFile::strTextureType[MODEL_TEXTURE_NUM] = { string("Ambient Occulusion"), string("Color"), string("Metalness"), string("Roughness"), string("Normal"), string("Height") };
+string ModelTextureFile::strTextureType[PS_SRV_MODEL_TEXTURE_NUM] = { string("Ambient Occulusion"), string("Color"), string("Metalness"), string("Roughness"), string("Normal") };
 
 ModelTextureFile::ModelTextureFile(
 	Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn,
