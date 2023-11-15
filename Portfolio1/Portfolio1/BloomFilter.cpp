@@ -1,5 +1,6 @@
 #include "BloomFilter.h"
 #include "ID3D11Helper.h"
+#include "ShaderTypeEnum.h"
 
 BloomShader::BloomShader(Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn)
 {
@@ -51,8 +52,8 @@ void BloomFilter::StartFilter(ID3D11ShaderResourceView** ppInputSRV)
 
 	cpDeviceContext->PSSetShader(BloomShader.cpBloomPS.Get(), NULL, NULL);
 	cpDeviceContext->PSSetSamplers(0, 1, filterInfo.cpPSSamplerState.GetAddressOf());
-	cpDeviceContext->PSSetShaderResources(0, 1, ppInputSRV);
-	cpDeviceContext->PSSetConstantBuffers(0, 1, cpViewportConstantBuffer.GetAddressOf());
+	cpDeviceContext->PSSetShaderResources(PS_SRV_FILTER1, 1, ppInputSRV);
+	cpDeviceContext->PSSetConstantBuffers(PS_CBUFF_VIEWPORT, 1, cpViewportConstantBuffer.GetAddressOf());
 
 	cpDeviceContext->RSSetViewports(1, &sScreenViewport);
 
@@ -68,6 +69,6 @@ void BloomFilter::StartFilter(ID3D11ShaderResourceView** ppInputSRV)
 	cpDeviceContext->OMSetRenderTargets(1, &pResetRTV, NULL);
 
 	cpDeviceContext->PSSetSamplers(0, 1, &pResetSampler);
-	cpDeviceContext->PSSetShaderResources(0, 1, &pResetSRV);
-	cpDeviceContext->PSSetConstantBuffers(0, 1, &pResetBuffer);
+	cpDeviceContext->PSSetShaderResources(PS_SRV_FILTER1, 1, &pResetSRV);
+	cpDeviceContext->PSSetConstantBuffers(PS_CBUFF_VIEWPORT, 1, &pResetBuffer);
 }

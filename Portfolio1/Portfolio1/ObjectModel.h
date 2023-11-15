@@ -44,7 +44,7 @@ public:
 	struct
 	{
 		uint32_t bIsTextureOn[PS_SRV_MODEL_TEXTURE_NUM];
-		uint32_t uiDummy[2];
+		uint32_t uiDummy[3];
 	} sPSTextureFlags;
 
 };

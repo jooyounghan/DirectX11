@@ -1,6 +1,6 @@
 #include "BlendFilter.h"
 #include "ID3D11Helper.h"
-#include "DefineVar.h"
+#include "ShaderTypeEnum.h"
 
 BlendShader::BlendShader(
 	Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn
@@ -51,9 +51,9 @@ void BlendFilter::StartFilter(ID3D11ShaderResourceView** ppInput1SRV, ID3D11Shad
 
 	cpDeviceContext->PSSetShader(blendShader.cpBlendPS.Get(), NULL, NULL);
 	cpDeviceContext->PSSetSamplers(0, 1, filterInfo.cpPSSamplerState.GetAddressOf());
-	cpDeviceContext->PSSetShaderResources(0, 1, ppInput1SRV);
-	cpDeviceContext->PSSetShaderResources(1, 1, ppInput2SRV);
-	cpDeviceContext->PSSetConstantBuffers(0, 1, cpBlendConstantBuffer.GetAddressOf());
+	cpDeviceContext->PSSetShaderResources(PS_SRV_FILTER1, 1, ppInput1SRV);
+	cpDeviceContext->PSSetShaderResources(PS_SRV_FILTER2, 1, ppInput2SRV);
+	cpDeviceContext->PSSetConstantBuffers(PS_CBUFF_BLEND_CONST, 1, cpBlendConstantBuffer.GetAddressOf());
 	cpDeviceContext->RSSetViewports(1, &sScreenViewport);
 
 	cpDeviceContext->DrawIndexed((UINT)filterInfo.vIndices.size(), 0, 0);
@@ -68,7 +68,7 @@ void BlendFilter::StartFilter(ID3D11ShaderResourceView** ppInput1SRV, ID3D11Shad
 	cpDeviceContext->OMSetRenderTargets(1, &pResetRTV, NULL);
 
 	cpDeviceContext->PSSetSamplers(0, 1, &pResetSampler);
-	cpDeviceContext->PSSetShaderResources(0, 1, &pResetSRV);
-	cpDeviceContext->PSSetShaderResources(1, 1, &pResetSRV);
-	cpDeviceContext->PSSetConstantBuffers(0, 1, &pResetBuffer);
+	cpDeviceContext->PSSetShaderResources(PS_SRV_FILTER1, 1, &pResetSRV);
+	cpDeviceContext->PSSetShaderResources(PS_SRV_FILTER2, 1, &pResetSRV);
+	cpDeviceContext->PSSetConstantBuffers(PS_CBUFF_BLEND_CONST, 1, &pResetBuffer);
 }

@@ -1,8 +1,8 @@
 SamplerState Sampler : register(s0);
 
-Texture2D InputSRV : register(t0);
+Texture2D InputSRV : register(t8);
 
-cbuffer ViewportConstantData : register(b0)
+cbuffer ViewportConstantData : register(b4)
 {
     float fDeltaWidth;
     float fDeltaHeight;

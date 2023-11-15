@@ -3,7 +3,7 @@
 
 SamplerState Sampler : register(s0);
 
-Texture2D NormalTexture : register(t0);
+Texture2D NormalTexture : register(t4);
 
 cbuffer TextureFlagBuffer : register(b0)
 {
