@@ -47,7 +47,7 @@ void ModelManageGui::RenderGui()
 
 		if (CollapsingHeader("Set Texture"))
 		{
-			SetModelTexture();
+			SetModelTextures();
 		}
 		
 	}
@@ -66,44 +66,85 @@ void ModelManageGui::SetTransformModelMenu()
 	SliderFloat3("Translation Vector", spSelectedModel->upTransformationProperties->xmvTranslation.m128_f32, -10.f, 10.f);
 }
 
-void ModelManageGui::SetModelTexture()
+void ModelManageGui::SetModelTextures()
 {
 	ImGuiWindowFlags window_flags = ImGuiWindowFlags_HorizontalScrollbar;
 	ImGui::BeginChild("ModelTextureSet", ImGui::GetContentRegionAvail(), false, window_flags);
-	for (unsigned short idx = 0; idx < PS_SRV_MODEL_TEXTURE_NUM; ++idx)
+	for (unsigned short idx = 0; idx < TEXTURE_MAP_NUM; ++idx)
 	{
-		Separator();
-		Text(ModelTextureFile::strTextureType[idx].c_str());
-		if (spSelectedModel->pModelTextureSet[idx] != nullptr)
-		{
-			Image(spSelectedModel->pModelTextureSet[idx]->cpFileThumbNailSRV.Get(), ImVec2(60.f, 60.f));
-		}
-		else
-		{
-			Image(nullptr, ImVec2(60.f, 60.f));
-
-		}
-
-		if (ImGui::BeginDragDropTarget())
-		{
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ModelTextureFile"))
-			{
-				spSelectedModel->pModelTextureSet[(PSSRVType)idx] = *(shared_ptr<ModelTextureFile>*)payload->Data;
-			}
-			ImGui::EndDragDropTarget();
-		}
-
-		if (spSelectedModel->pModelTextureSet[idx] != nullptr)
-		{
-			SameLine();
-			Text(spSelectedModel->pModelTextureSet[idx]->strFileName.c_str());
-		}
-		else
-		{
-			SameLine();
-			Text("");
-		}
+		SetModelTextureMap(idx);
 	}
+	SetModelHeightMap();
 	ImGui::EndChild();
+}
+
+void ModelManageGui::SetModelTextureMap(const unsigned short& wTextureIdx)
+{
+	Separator();
+	Text(ModelTextureFile::strTextureType[wTextureIdx].c_str());
+	if (spSelectedModel->pModelTextureSet[wTextureIdx] != nullptr)
+	{
+		Image(spSelectedModel->pModelTextureSet[wTextureIdx]->cpFileThumbNailSRV.Get(), ImVec2(60.f, 60.f));
+	}
+	else
+	{
+		Image(nullptr, ImVec2(60.f, 60.f));
+
+	}
+
+	if (ImGui::BeginDragDropTarget())
+	{
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Texture2D"))
+		{
+			spSelectedModel->pModelTextureSet[(PSSRVType)wTextureIdx] = *(shared_ptr<ModelTextureFile>*)payload->Data;
+		}
+		ImGui::EndDragDropTarget();
+	}
+
+	if (spSelectedModel->pModelTextureSet[wTextureIdx] != nullptr)
+	{
+		SameLine();
+		Text(spSelectedModel->pModelTextureSet[wTextureIdx]->strFileName.c_str());
+	}
+	else
+	{
+		SameLine();
+		Text("");
+	}
+}
+
+void ModelManageGui::SetModelHeightMap()
+{
+	Separator();
+	Text("Height");
+	if (spSelectedModel->pHeightTexture != nullptr)
+	{
+		Image(spSelectedModel->pHeightTexture->cpFileThumbNailSRV.Get(), ImVec2(60.f, 60.f));
+	}
+	else
+	{
+		Image(nullptr, ImVec2(60.f, 60.f));
+
+	}
+
+	if (ImGui::BeginDragDropTarget())
+	{
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Texture2D"))
+		{
+			spSelectedModel->pHeightTexture = *(shared_ptr<ModelTextureFile>*)payload->Data;
+		}
+		ImGui::EndDragDropTarget();
+	}
+
+	if (spSelectedModel->pHeightTexture != nullptr)
+	{
+		SameLine();
+		Text(spSelectedModel->pHeightTexture->strFileName.c_str());
+	}
+	else
+	{
+		SameLine();
+		Text("");
+	}
 }
 

@@ -1,14 +1,17 @@
 #include "FileInterface.h"
 #include "ID3D11Helper.h"
 
+using namespace std;
+
 FileInterface::FileInterface(
+	const FileType& strFileTypeIn,
 	Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn,
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn,
-	const std::string& strFileNameIn,
+	const string& strFileNameIn,
 	uint8_t* pThumbNailDataIn,
 	DXGI_FORMAT eThumbNailFormatIn
 )
-	: cpDevice(cpDeviceIn), cpDeviceContext(cpDeviceContextIn), strFileName(strFileNameIn), eThumbNailFormat(eThumbNailFormatIn)
+	: eFileType(strFileTypeIn), cpDevice(cpDeviceIn), cpDeviceContext(cpDeviceContextIn), strFileName(strFileNameIn), eThumbNailFormat(eThumbNailFormatIn)
 {
 	if (pThumbNailDataIn)
 	{
@@ -18,10 +21,11 @@ FileInterface::FileInterface(
 }
 
 FileInterface::FileInterface(
+	const FileType& strFileTypeIn,
 	Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn,
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn,
 	const std::string& strFileNameIn
 )
-	: cpDevice(cpDeviceIn), cpDeviceContext(cpDeviceContextIn), strFileName(strFileNameIn), eThumbNailFormat(DXGI_FORMAT_R8G8B8A8_UNORM)
+	: eFileType(strFileTypeIn), cpDevice(cpDeviceIn), cpDeviceContext(cpDeviceContextIn), strFileName(strFileNameIn), eThumbNailFormat(DXGI_FORMAT_R8G8B8A8_UNORM)
 {
 }

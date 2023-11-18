@@ -1,7 +1,7 @@
 #pragma once
 #include "ManageGuiInterface.h"
 #include <memory>
-
+#include <string>
 
 class SettingManageGui : public ManageGuiInterface
 {
@@ -20,6 +20,10 @@ private:
 private:
 	bool& bIsNormalVectorDraw;
 	bool& bIsWireFrameDraw;
+
+private:
+	void SetDDSTexture(const std::string& strDescription, std::shared_ptr<class DDSFile>& spDDSFile);
+	void SetModelTexture(const std::string& strDescription, std::shared_ptr<class ModelTextureFile>& spModelTextureFile);
 
 private:
 	std::shared_ptr<CubeMapModel> spCubeMapModel;

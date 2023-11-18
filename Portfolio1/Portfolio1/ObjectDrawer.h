@@ -11,6 +11,7 @@
 class ObjectModel;
 class CameraInterface;
 class LightManager;
+class CubeMapModel;
 
 class ObjectDrawer : public DrawerInterface
 {
@@ -24,7 +25,12 @@ protected:
 	
 
 public:
-	void Draw(CameraInterface* pCamera, LightManager* pLightManager, const std::vector<std::shared_ptr<ObjectModel>> vSpModels);
+	void Draw(
+		CameraInterface* pCamera, 
+		LightManager* pLightManager, 
+		const std::vector<std::shared_ptr<ObjectModel>> vSpModels,
+		CubeMapModel* pEnvironmentCubeMap
+	);
 
 protected:
 	virtual void SetIAInputLayer() = 0;

@@ -102,7 +102,7 @@ void PortfolioApp::Render()
 {
 	spMainCameras->WipeOut(DirectX::XMVectorSet(0.f, 0.f, 0.f, 1.f));
 
-	upModelDrawer->Draw(spMainCameras.get(), spLightManager.get(), vSpModels);
+	upModelDrawer->Draw(spMainCameras.get(), spLightManager.get(), vSpModels, spCubeMap.get());
 
 	if (bIsNormalVectorDraw)
 	{

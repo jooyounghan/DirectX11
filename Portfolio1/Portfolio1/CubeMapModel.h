@@ -32,14 +32,18 @@ public:
 	virtual void ResetShaderResources() override;
 
 public:
-	std::shared_ptr<class DDSFile>	pDDSTextureFile;
+	std::shared_ptr<class DDSFile>				spEnvSpecularTextureFile;
+	std::shared_ptr<class DDSFile>				spEnvIrradianceTextureFile;
+	std::shared_ptr<class ModelTextureFile>		spEnvBrdfTextureFile;
 
 public:
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	cpTextureFlagBuffer;
 	struct
 	{
-		uint32_t bIsDDSTextureOn;
-		uint32_t uiDummy[3];
+		uint32_t bIsSpecularTextureOn;
+		uint32_t bIsIrradianceTextureOn;
+		uint32_t bIsBrdfTextureOn;
+		uint32_t uiDummy[1];
 	} sPSTextureFlags;
 };
 

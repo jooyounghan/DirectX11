@@ -7,7 +7,14 @@ using namespace Microsoft::WRL;
 
 extern void Console(const char* text);
 
-string ModelTextureFile::strTextureType[PS_SRV_MODEL_TEXTURE_NUM] = { string("Ambient Occulusion"), string("Color"), string("Metalness"), string("Roughness"), string("Normal") };
+string ModelTextureFile::strTextureType[TEXTURE_MAP_NUM] = { 
+	string("Ambient Occulusion"), 
+	string("Color"), 
+	string("Metalness"), 
+	string("Roughness"), 
+	string("Emission"),
+	string("Normal") 
+};
 
 ModelTextureFile::ModelTextureFile(
 	Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn,
@@ -15,11 +22,11 @@ ModelTextureFile::ModelTextureFile(
 	const std::string& strFileNameIn,
 	const UINT& uiWidthIn, const UINT& uiHeightIn,
 	uint8_t* pTextureDataIn,
-	DXGI_FORMAT eThumbNailFormatIn
+	DXGI_FORMAT eTextureFormatIn
 )
-	: FileInterface(cpDeviceIn, cpDeviceContextIn, strFileNameIn, nullptr, eThumbNailFormatIn)
+	: FileInterface(FileType::ModelTextureFileType, cpDeviceIn, cpDeviceContextIn, strFileNameIn, nullptr, eTextureFormatIn)
 {
-	ID3D11Helper::CreateTexture2D(cpDevice.Get(), cpDeviceContext.Get(), uiWidthIn, uiHeightIn, eThumbNailFormat, pTextureDataIn, cpModelTextureTexture2D.GetAddressOf());
+	ID3D11Helper::CreateTexture2D(cpDevice.Get(), cpDeviceContext.Get(), uiWidthIn, uiHeightIn, eTextureFormatIn, pTextureDataIn, cpModelTextureTexture2D.GetAddressOf());
 	ID3D11Helper::CreateShaderResoureView(cpDevice.Get(), cpModelTextureTexture2D.Get(), cpModelTextureSRV.GetAddressOf());
 	cpDeviceContext->GenerateMips(cpModelTextureSRV.Get());
 

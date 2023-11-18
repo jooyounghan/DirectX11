@@ -5,7 +5,9 @@
 
 #include "SettingManageGui.h"
 #include "CubeMapModel.h"
+
 #include "DDSFile.h"
+#include "ModelTextureFile.h"
 
 using namespace std;
 using namespace ImGui;
@@ -46,33 +48,65 @@ void SettingManageGui::SetDrawWireFrame()
 void SettingManageGui::SetCubeMapTexture()
 {
 	Separator();
-	Text("Cube Map Texture");
-	if (spCubeMapModel->pDDSTextureFile != nullptr)
+	SetDDSTexture("Environment Specular", spCubeMapModel->spEnvSpecularTextureFile);
+	SetDDSTexture("Environment Irradiance", spCubeMapModel->spEnvIrradianceTextureFile);
+	SetModelTexture("Environment BRDF", spCubeMapModel->spEnvBrdfTextureFile);
+}
+
+void SettingManageGui::SetDDSTexture(const string& strDescription, shared_ptr<DDSFile>& spDDSFile)
+{
+	Separator();
+	Text(strDescription.c_str());
+	BeginGroup();
+	if (spDDSFile != nullptr)
 	{
-		Image(nullptr, ImVec2(60.f, 60.f));
+		Image(spDDSFile->cpFileThumbNailSRV.Get(), ImVec2(60.f, 60.f));
+		SameLine();
+		Text(spDDSFile->strFileName.c_str());
 	}
 	else
 	{
 		Image(nullptr, ImVec2(60.f, 60.f));
+		SameLine();
+		Text("");
 	}
+	EndGroup();
 
 	if (ImGui::BeginDragDropTarget())
 	{
-		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DDSFile"))
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CubeMap"))
 		{
-			spCubeMapModel->pDDSTextureFile = *(shared_ptr<DDSFile>*)payload->Data;
+			spDDSFile = *(shared_ptr<DDSFile>*)payload->Data;
 		}
 		ImGui::EndDragDropTarget();
 	}
+}
 
-	if (spCubeMapModel->pDDSTextureFile != nullptr)
+void SettingManageGui::SetModelTexture(const std::string& strDescription, shared_ptr<ModelTextureFile>& spModelTextureFile)
+{
+	Separator();
+	Text(strDescription.c_str());
+	BeginGroup();
+	if (spModelTextureFile != nullptr)
 	{
+		Image(spModelTextureFile->cpFileThumbNailSRV.Get(), ImVec2(60.f, 60.f));
 		SameLine();
-		Text(spCubeMapModel->pDDSTextureFile->strFileName.c_str());
+		Text(spModelTextureFile->strFileName.c_str());
 	}
 	else
 	{
+		Image(nullptr, ImVec2(60.f, 60.f));
 		SameLine();
 		Text("");
+	}
+	EndGroup();
+
+	if (ImGui::BeginDragDropTarget())
+	{
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Texture2D"))
+		{
+			spModelTextureFile = *(shared_ptr<ModelTextureFile>*)payload->Data;
+		}
+		ImGui::EndDragDropTarget();
 	}
 }

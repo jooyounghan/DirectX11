@@ -5,10 +5,17 @@
 #include <wrl/client.h>
 #include <string>
 
+enum FileType
+{
+	ModelTextureFileType,
+	CubeMapTextureType,
+};
+
 class FileInterface
 {
 public:
 	FileInterface(
+		const FileType& strFileTypeName,
 		Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn,
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn,
 		const std::string& strFileNameIn,
@@ -17,6 +24,7 @@ public:
 	);
 
 	FileInterface(
+		const FileType& strFileTypeName,
 		Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn,
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn,
 		const std::string& strFileNameIn
@@ -27,6 +35,12 @@ public:
 protected:
 	Microsoft::WRL::ComPtr<ID3D11Device>& cpDevice;
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContext;
+
+private:
+	FileType eFileType;
+
+public:
+	inline FileType GetFileType() { return eFileType; }
 
 public:
 	std::string strFileName;

@@ -94,7 +94,7 @@ void FileManageGui::LoadImages(const string& strExtention, const string& strFile
         }
         else if (strExtention == ".dds")
         {
-            spFileInterface = make_shared<DDSFile>(cpDevice, cpDeviceContext, strFilePathIn);
+            spFileInterface = make_shared<DDSFile>(cpDevice, cpDeviceContext, strFilePathIn, strFilePathIn.find("Brdf") == string::npos);
         }
         else
         {
@@ -147,30 +147,34 @@ void FileManageGui::SetLoadedFiles()
     {
         Separator();
         ID3D11ShaderResourceView* pIndexedSRV = loadedFile->cpFileThumbNailSRV.Get();
-        D3D11_SHADER_RESOURCE_VIEW_DESC desc;
-        pIndexedSRV->GetDesc(&desc);
-        
-        if (desc.ViewDimension == D3D11_SRV_DIMENSION::D3D11_SRV_DIMENSION_TEXTURE2D)
-        {
-            Image(pIndexedSRV, ImVec2(60.f, 60.f));
-            if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
-            {
-                ImGui::SetDragDropPayload("ModelTextureFile", &loadedFile, sizeof(shared_ptr<ModelTextureFile>));
-                ImGui::EndDragDropSource();
-            }
-        }
-        else if (desc.ViewDimension == D3D11_SRV_DIMENSION::D3D11_SRV_DIMENSION_TEXTURECUBE)
-        {
-            Image(nullptr, ImVec2(60.f, 60.f));
-            if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
-            {
-                ImGui::SetDragDropPayload("DDSFile", &loadedFile, sizeof(shared_ptr<DDSFile>));
-                ImGui::EndDragDropSource();
-            }
-        }
 
-        SameLine();
-        TextEx(loadedFile->strFileName.c_str(), (const char*)0, ImGuiTextFlags_::ImGuiTextFlags_NoWidthForLargeClippedText);
+        if (pIndexedSRV != nullptr)
+        {
+            BeginGroup();
+            Image(pIndexedSRV, ImVec2(60.f, 60.f));
+            SameLine();
+            TextEx(loadedFile->strFileName.c_str(), (const char*)0, ImGuiTextFlags_::ImGuiTextFlags_NoWidthForLargeClippedText);
+            EndGroup();
+    
+            const FileType& eFileType = loadedFile->GetFileType();
+            if (eFileType == FileType::ModelTextureFileType)
+            {
+                if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
+                {
+                    ImGui::SetDragDropPayload("Texture2D", &loadedFile, sizeof(shared_ptr<ModelTextureFile>));
+                    ImGui::EndDragDropSource();
+                }
+            }
+            else if (eFileType == FileType::CubeMapTextureType)
+            {
+                if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
+                {
+                    ImGui::SetDragDropPayload("CubeMap", &loadedFile, sizeof(shared_ptr<DDSFile>));
+                    ImGui::EndDragDropSource();
+                }
+            }
+            else;
+        }
     }
     ImGui::EndChild();
 }

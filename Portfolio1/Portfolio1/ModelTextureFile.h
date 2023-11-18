@@ -4,7 +4,17 @@
 #include <windows.h>
 #include <wrl/client.h>
 #include "FileInterface.h"
-#include "ShaderTypeEnum.h"
+
+enum ModelTextureMap
+{
+	AO_TEXUTRE_MAP,
+	COLOR_TEXTURE_MAP,
+	METALNESS_TEXTURE_MAP,
+	ROUGHNESS_TEXTURE_MAP,
+	EMISSION_TEXTURE_MAP,
+	NORMAL_TEXTURE_MAP,
+	TEXTURE_MAP_NUM
+};
 
 class ModelTextureFile : public FileInterface
 {
@@ -15,7 +25,7 @@ public:
 		const std::string& strFileNameIn,
 		const UINT& uiWidthIn, const UINT& uiHeightIn,
 		uint8_t* pTextureDataIn,
-		DXGI_FORMAT eThumbNailFormatIn = DXGI_FORMAT_R8G8B8A8_UNORM
+		DXGI_FORMAT eTextureFormatIn = DXGI_FORMAT_R8G8B8A8_UNORM
 	);
 	virtual ~ModelTextureFile() override;
 
@@ -24,5 +34,5 @@ public:
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>	cpModelTextureSRV;
 
 public:
-	static std::string strTextureType[PS_SRV_MODEL_TEXTURE_NUM];
+	static std::string strTextureType[TEXTURE_MAP_NUM];
 };

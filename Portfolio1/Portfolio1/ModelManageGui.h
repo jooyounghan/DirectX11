@@ -21,7 +21,11 @@ public:
 
 private:
 	void SetTransformModelMenu();
-	void SetModelTexture();
+	void SetModelTextures();
+
+private:
+	void SetModelTextureMap(const unsigned short& wTextureIdx);
+	void SetModelHeightMap();
 
 private:
 	std::vector<std::shared_ptr<ObjectModel>>& vSpModels;

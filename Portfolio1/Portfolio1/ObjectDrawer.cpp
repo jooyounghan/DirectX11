@@ -2,6 +2,7 @@
 #include "ObjectModel.h"
 #include "CameraInterface.h"
 #include "LightManager.h"
+#include "CubeMapModel.h"
 
 ObjectDrawer::ObjectDrawer(
 	Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn,
@@ -15,7 +16,12 @@ ObjectDrawer::~ObjectDrawer()
 {
 }
 
-void ObjectDrawer::Draw(CameraInterface* pCamera, LightManager* pLightManager, const std::vector<std::shared_ptr<ObjectModel>> vSpModels)
+void ObjectDrawer::Draw(
+	CameraInterface* pCamera,
+	LightManager* pLightManager,
+	const std::vector<std::shared_ptr<ObjectModel>> vSpModels,
+	CubeMapModel* pEnvironmentCubeMap
+)
 {
 	SetIAInputLayer();
 	SetVSShader();
@@ -34,6 +40,9 @@ void ObjectDrawer::Draw(CameraInterface* pCamera, LightManager* pLightManager, c
 	pCamera->OMSetRenderTargets();
 
 	pLightManager->SetPSConstantBuffers();
+
+	pEnvironmentCubeMap->SetPSConstantBuffers();
+	pEnvironmentCubeMap->SetPSShaderResources();
 
 	for (auto& pObjectModel : vSpModels)
 	{
@@ -55,6 +64,9 @@ void ObjectDrawer::Draw(CameraInterface* pCamera, LightManager* pLightManager, c
 		pObjectModel->ResetShaderResources();
 
 	}
+
+	pEnvironmentCubeMap->ResetConstantBuffers();
+	pEnvironmentCubeMap->ResetShaderResources();
 
 	pLightManager->ResetConstantBuffers();
 

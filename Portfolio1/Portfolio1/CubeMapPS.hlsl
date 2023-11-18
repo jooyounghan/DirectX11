@@ -1,22 +1,38 @@
 #include "CubeMapType.hlsli"
 
-cbuffer TextureFlagBuffer : register(b2)
+cbuffer TextureFlagBuffer : register(b3)
 {
-    bool    bTextureCubeOn;
-    uint3   uiDummy[3];
+    bool    bIsSpecularOn;
+    bool    bIsIrradianceOn;
+    bool    bIsBRDFOn;
+    uint3   uiDummy[1];
 };
 
 SamplerState Sampler : register(s0);
 
-TextureCube DDSCubeMap : register(t6);
+TextureCube EnvSpecularCubeMap : register(t6);
+TextureCube EnvIrradianceCubeMap : register(t7);
 
 float4 main(CubeMapPixelInput input) : SV_Target
 {
-    float4 result = (1.f, 0.f, 0.f, 1.f);
-
-    if (bTextureCubeOn)
+    float3 result = float3(0.f, 0.f, 0.f);
+    int divider = 0;
+    if (bIsSpecularOn)
     {
-        result = DDSCubeMap.SampleLevel(Sampler, input.f4WorldPos.xyz, 0.f);
+        result += EnvSpecularCubeMap.SampleLevel(Sampler, input.f4WorldPos.xyz, 0.f).xyz;
+        divider += 1;
     }
-    return result;
+    if (bIsIrradianceOn)
+    {
+        result += EnvIrradianceCubeMap.SampleLevel(Sampler, input.f4WorldPos.xyz, 0.f).xyz;
+        divider += 1;
+    }
+    
+    if (divider > 0)
+    {
+        result = result / divider;
+
+    }
+    
+    return float4(result, 0.f);
 }

@@ -6,7 +6,8 @@ Texture2D AOTexture : register(t0);
 Texture2D ColorTexture : register(t1);
 Texture2D MetalnessTexture : register(t2);
 Texture2D RoughnessTexture : register(t3);
-Texture2D NormalTexture : register(t4);
+Texture2D EmissionTexture : register(t4);
+Texture2D NormalTexture : register(t5);
 
 cbuffer LightSetsBuffer : register(b0)
 {
@@ -24,8 +25,8 @@ cbuffer TextureFlagBuffer : register(b2)
     bool    bIsColorTexture;
     bool    bIsMetalnessTexture;
     bool    bIsRoughnessTexture;
+    bool    bIsEmissionTexture;
     bool    bIsNormalTexture;
-    bool    bIsHeightTexture;
     uint2   uiDummy;
 };
 
