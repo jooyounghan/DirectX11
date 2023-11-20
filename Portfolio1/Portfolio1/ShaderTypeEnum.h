@@ -4,7 +4,7 @@
 enum VSConstBufferType : unsigned int
 {
 	VS_CBUFF_MODELMAT,
-	VS_CBUFF_VIEWPROJMAT
+	VS_CBUFF_CAMERA_INFO
 };
 
 enum DSSRVType : unsigned int
@@ -14,7 +14,7 @@ enum DSSRVType : unsigned int
 
 enum DSConstBufferType : unsigned int
 {
-	DS_CBUFF_VIEWPROJMAT
+	DS_CBUFF_CAMERA_INFO
 };
 
 enum PSConstBufferType : unsigned int
@@ -22,8 +22,10 @@ enum PSConstBufferType : unsigned int
 	PS_CBUFF_LIGHT,
 	PS_CBUFF_MODELID,
 	PS_CBUFF_MODEL_TEXTURE_FLAGS,
+	PS_CBUFF_MODEL_CONST,
 	PS_CBUFF_CUBE_TEXTURE_FLAGS,
 	PS_CBUFF_BLEND_CONST,
+	PS_CBUFF_CAMERA_INFO,
 	PS_CBUFF_VIEWPORT
 };
 
@@ -46,7 +48,7 @@ enum PSSRVType : unsigned int
 enum GSConstBufferType : unsigned int
 {
 	GS_CBUFF_TEXTUREFLAGS,
-	GS_CBUFF_VIEWPROJMAT
+	GS_CBUFF_CAMERA_INFO
 };
 
 enum GSSRVType : unsigned int

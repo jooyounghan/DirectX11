@@ -5,6 +5,8 @@
 #include <d3dcompiler.h>
 #include <wrl/client.h>
 
+#include "TransformProperties.h"
+
 enum MoveDir
 {
 	Forward,
@@ -41,8 +43,6 @@ public:
 public:
 	struct {
 		unsigned int			uiMouseLocation[2];
-		DirectX::XMVECTOR		xmvCameraPosition;
-
 		float	fRoll;
 		float	fPitch;
 		float	fYaw;
@@ -53,9 +53,16 @@ public:
 		float	fMoveSpeed;
 		float	fMouseMovablePitchAngleDegree;
 		float	fMouseMovableYawAngleDegree;
-		bool			bMoveDirection[MoveDir::NUM_DIR];
-		bool			bFirstView;
-	} sInfoData;
+		bool	bMoveDirection[MoveDir::NUM_DIR];
+		bool	bFirstView;
+	} sCameraInteractionData;
+
+public:
+	struct
+	{
+		DirectX::XMVECTOR			xmvCameraPosition;
+		TransformationBufferData	sTransformationBufferData;
+	} sCameraInfo;
 
 public:
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	cpCameraInfoConstantBuffer;

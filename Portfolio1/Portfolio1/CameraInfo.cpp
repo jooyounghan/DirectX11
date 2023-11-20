@@ -1,7 +1,6 @@
 #include "CameraInfo.h"
 #include "DefineVar.h"
 #include "ID3D11Helper.h"
-#include "TransformProperties.h"
 
 using namespace DirectX;
 using namespace Microsoft::WRL;
@@ -19,7 +18,7 @@ CameraInfo::CameraInfo(
 	: cpDevice(cpDeviceIn), cpDeviceContext(cpDeviceContextIn),
 	uiWidth(uiWidthIn), uiHeight(uiHeightIn)
 {
-	AutoZeroMemory(sInfoData);
+	AutoZeroMemory(sCameraInteractionData);
 }
 
 void CameraInfo::SetCameraInfo(
@@ -35,22 +34,25 @@ void CameraInfo::SetCameraInfo(
 	IN const float& fMouseMovableYawAngleDegreeIn
 )
 {
-	sInfoData.xmvCameraPosition = XMVectorSet(fPosX, fPosY, fPosZ, 0.f);
-	sInfoData.fRoll = 0.f;
-	sInfoData.fPitch = 0.f;
-	sInfoData.fYaw = 0.f;
-	sInfoData.fFovAngle = XMConvertToRadians(fFovAngleDegreeIn);
-	sInfoData.fAspectRatio = fAspectRatioIn;
-	sInfoData.fNearZ = fNearZIn;
-	sInfoData.fFarZ = fFarZIn;
-	sInfoData.fMoveSpeed = fMoveSpeedIn;
-	sInfoData.fMouseMovablePitchAngleDegree = XMConvertToRadians(fMouseMovablePitchAngleDegreeIn);
-	sInfoData.fMouseMovableYawAngleDegree = XMConvertToRadians(fMouseMovableYawAngleDegreeIn);
+	sCameraInfo.xmvCameraPosition = XMVectorSet(fPosX, fPosY, fPosZ, 0.f);
+	sCameraInfo.sTransformationBufferData = TransformationBufferData();
+
+	sCameraInteractionData.fRoll = 0.f;
+	sCameraInteractionData.fPitch = 0.f;
+	sCameraInteractionData.fYaw = 0.f;
+	sCameraInteractionData.fFovAngle = XMConvertToRadians(fFovAngleDegreeIn);
+	sCameraInteractionData.fAspectRatio = fAspectRatioIn;
+	sCameraInteractionData.fNearZ = fNearZIn;
+	sCameraInteractionData.fFarZ = fFarZIn;
+	sCameraInteractionData.fMoveSpeed = fMoveSpeedIn;
+	sCameraInteractionData.fMouseMovablePitchAngleDegree = XMConvertToRadians(fMouseMovablePitchAngleDegreeIn);
+	sCameraInteractionData.fMouseMovableYawAngleDegree = XMConvertToRadians(fMouseMovableYawAngleDegreeIn);
 
 	ID3D11Helper::CreateBuffer(
 		cpDevice.Get(),
-		TransformationBufferData(),
-		D3D11_USAGE_DYNAMIC, D3D11_BIND_CONSTANT_BUFFER, D3D11_CPU_ACCESS_WRITE, NULL, cpCameraInfoConstantBuffer.GetAddressOf()
+		sCameraInfo,
+		D3D11_USAGE_DYNAMIC, D3D11_BIND_CONSTANT_BUFFER,
+		D3D11_CPU_ACCESS_WRITE, NULL, cpCameraInfoConstantBuffer.GetAddressOf()
 	);
 }
 
@@ -58,23 +60,25 @@ void CameraInfo::SetCameraInfo(
 
 void CameraInfo::Update()
 {
-	XMMATRIX xmRotationMat = XMMatrixRotationRollPitchYaw(sInfoData.fPitch, sInfoData.fYaw, sInfoData.fRoll);
+	XMMATRIX xmRotationMat = XMMatrixRotationRollPitchYaw(sCameraInteractionData.fPitch, sCameraInteractionData.fYaw, sCameraInteractionData.fRoll);
 
 	XMVECTOR xmvCameraDirection = XMVector4Transform(DefaultDirection, xmRotationMat);
 	XMVECTOR xmvCameraUp = XMVector4Transform(DefaultUp, xmRotationMat);
 	XMVECTOR xmvCameraRight = XMVector4Transform(DefaultRight, xmRotationMat);
 
 	// Key에 대한 업데이트
-	sInfoData.xmvCameraPosition = sInfoData.bFirstView && sInfoData.bMoveDirection[MoveDir::Forward] ? sInfoData.xmvCameraPosition + (sInfoData.fMoveSpeed * xmvCameraDirection) : sInfoData.xmvCameraPosition;
-	sInfoData.xmvCameraPosition = sInfoData.bFirstView && sInfoData.bMoveDirection[MoveDir::Left] ? sInfoData.xmvCameraPosition - (sInfoData.fMoveSpeed * xmvCameraRight) : sInfoData.xmvCameraPosition;
-	sInfoData.xmvCameraPosition = sInfoData.bFirstView && sInfoData.bMoveDirection[MoveDir::Backward] ? sInfoData.xmvCameraPosition - (sInfoData.fMoveSpeed * xmvCameraDirection) : sInfoData.xmvCameraPosition;
-	sInfoData.xmvCameraPosition = sInfoData.bFirstView && sInfoData.bMoveDirection[MoveDir::Right] ? sInfoData.xmvCameraPosition + (sInfoData.fMoveSpeed * xmvCameraRight) : sInfoData.xmvCameraPosition;
+	sCameraInfo.xmvCameraPosition = sCameraInteractionData.bFirstView && sCameraInteractionData.bMoveDirection[MoveDir::Forward] ? sCameraInfo.xmvCameraPosition + (sCameraInteractionData.fMoveSpeed * xmvCameraDirection) : sCameraInfo.xmvCameraPosition;
+	sCameraInfo.xmvCameraPosition = sCameraInteractionData.bFirstView && sCameraInteractionData.bMoveDirection[MoveDir::Left] ? sCameraInfo.xmvCameraPosition - (sCameraInteractionData.fMoveSpeed * xmvCameraRight) : sCameraInfo.xmvCameraPosition;
+	sCameraInfo.xmvCameraPosition = sCameraInteractionData.bFirstView && sCameraInteractionData.bMoveDirection[MoveDir::Backward] ? sCameraInfo.xmvCameraPosition - (sCameraInteractionData.fMoveSpeed * xmvCameraDirection) : sCameraInfo.xmvCameraPosition;
+	sCameraInfo.xmvCameraPosition = sCameraInteractionData.bFirstView && sCameraInteractionData.bMoveDirection[MoveDir::Right] ? sCameraInfo.xmvCameraPosition + (sCameraInteractionData.fMoveSpeed * xmvCameraRight) : sCameraInfo.xmvCameraPosition;
 
 	// Mouse Angle에 대한 카메라 업데이트
 	XMMATRIX viewProjMatrix = GetViewProj(xmvCameraDirection, xmvCameraUp);
+	TransformationBufferData::CreateTransfomredMatrix(&viewProjMatrix, &sCameraInfo.sTransformationBufferData);
+
 	ID3D11Helper::UpdateBuffer(
 		cpDeviceContext.Get(),
-		TransformationBufferData::CreateTransfomredMatrix(&viewProjMatrix),
+		sCameraInfo,
 		D3D11_MAP::D3D11_MAP_WRITE_DISCARD,
 		cpCameraInfoConstantBuffer.Get()
 	);
@@ -100,7 +104,7 @@ XMMATRIX CameraInfo::GetViewProj(
 	// (V * P)_T = P_T * V_T 이므로,
 	// CPU(DirectX11)에서 V * P를 계산하고 전치를 처리해준 다음에 GPU(HLSL)로 보내준다.
 
-	return XMMatrixLookToLH(sInfoData.xmvCameraPosition, xmvCameraDirection, xmvCameraUp) *
-		XMMatrixPerspectiveFovLH(sInfoData.fFovAngle, sInfoData.fAspectRatio, sInfoData.fNearZ, sInfoData.fFarZ);
+	return XMMatrixLookToLH(sCameraInfo.xmvCameraPosition, xmvCameraDirection, xmvCameraUp) *
+		XMMatrixPerspectiveFovLH(sCameraInteractionData.fFovAngle, sCameraInteractionData.fAspectRatio, sCameraInteractionData.fNearZ, sCameraInteractionData.fFarZ);
 }
 

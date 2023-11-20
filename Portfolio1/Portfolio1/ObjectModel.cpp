@@ -12,6 +12,8 @@ ObjectModel::ObjectModel(
 	: ModelInterface(cpDeviceIn, cpDeviceContextIn), upModelID(make_unique<ModelID>(cpDevice.Get()))
 {
 	AutoZeroMemory(sPSTextureFlags);
+	AutoZeroMemory(sPSTextureConstants);
+
 	ID3D11Helper::CreateBuffer(
 		cpDevice.Get(),
 		sPSTextureFlags,
@@ -20,6 +22,16 @@ ObjectModel::ObjectModel(
 		D3D11_CPU_ACCESS_WRITE,
 		0,
 		cpTextureFlagBuffer.GetAddressOf()
+	);
+
+	ID3D11Helper::CreateBuffer(
+		cpDevice.Get(),
+		sPSTextureConstants,
+		D3D11_USAGE_DYNAMIC,
+		D3D11_BIND_CONSTANT_BUFFER,
+		D3D11_CPU_ACCESS_WRITE,
+		0,
+		cpTextureConstantBuffer.GetAddressOf()
 	);
 }
 ObjectModel::~ObjectModel()
@@ -41,6 +53,13 @@ void ObjectModel::Update()
 		sPSTextureFlags,
 		D3D11_MAP_WRITE_DISCARD,
 		cpTextureFlagBuffer.Get()
+	);
+
+	ID3D11Helper::UpdateBuffer(
+		cpDeviceContext.Get(),
+		sPSTextureConstants,
+		D3D11_MAP_WRITE_DISCARD,
+		cpTextureConstantBuffer.Get()
 	);
 }
 
@@ -76,6 +95,7 @@ void ObjectModel::SetPSConstantBuffers()
 {
 	cpDeviceContext->PSSetConstantBuffers(PS_CBUFF_MODELID, 1, upModelID->GetAddressOfTextureIDBuffer());
 	cpDeviceContext->PSSetConstantBuffers(PS_CBUFF_MODEL_TEXTURE_FLAGS, 1, cpTextureFlagBuffer.GetAddressOf());
+	cpDeviceContext->PSSetConstantBuffers(PS_CBUFF_MODEL_CONST, 1, cpTextureConstantBuffer.GetAddressOf());
 }
 
 void ObjectModel::ResetConstantBuffers()
@@ -85,6 +105,7 @@ void ObjectModel::ResetConstantBuffers()
 	cpDeviceContext->GSSetConstantBuffers(GS_CBUFF_TEXTUREFLAGS, 1, &pResetBuffer);
 	cpDeviceContext->PSSetConstantBuffers(PS_CBUFF_MODELID, 1, &pResetBuffer);
 	cpDeviceContext->PSSetConstantBuffers(PS_CBUFF_MODEL_TEXTURE_FLAGS, 1, &pResetBuffer);
+	cpDeviceContext->PSSetConstantBuffers(PS_CBUFF_MODEL_CONST, 1, &pResetBuffer);
 }
 
 void ObjectModel::SetVSShaderResources()

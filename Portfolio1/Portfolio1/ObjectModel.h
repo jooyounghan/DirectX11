@@ -48,5 +48,12 @@ public:
 		uint32_t uiDummy[2];
 	} sPSTextureFlags;
 
+public:
+	Microsoft::WRL::ComPtr<ID3D11Buffer>	cpTextureConstantBuffer;
+	struct
+	{
+		float	fFrenelConstant[3];
+		uint32_t uiDummy;
+	} sPSTextureConstants;
 };
 

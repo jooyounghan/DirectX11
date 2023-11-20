@@ -6,8 +6,9 @@ cbuffer ModelMatrix : register(b0)
     matrix mModelInvTranspose;
 };
 
-cbuffer ViewProjMatrix : register(b1)
+cbuffer CameraInfo : register(b1)
 {
+    float4 f4CameraPos;
     matrix mViewProj;
     matrix mViewProjInv;
 };

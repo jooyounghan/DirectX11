@@ -83,7 +83,7 @@ void CubeMapModel::SetPSConstantBuffers()
 void CubeMapModel::ResetConstantBuffers()
 {
 	ID3D11Buffer* pResetBuffer = nullptr;
-	cpDeviceContext->VSSetConstantBuffers(VS_CBUFF_VIEWPROJMAT, 1, &pResetBuffer);
+	cpDeviceContext->VSSetConstantBuffers(VS_CBUFF_CAMERA_INFO, 1, &pResetBuffer);
 	cpDeviceContext->PSSetConstantBuffers(PS_CBUFF_CUBE_TEXTURE_FLAGS, 1, &pResetBuffer);
 }
 

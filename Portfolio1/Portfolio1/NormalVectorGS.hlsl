@@ -16,8 +16,9 @@ cbuffer TextureFlagBuffer : register(b0)
     uint2 uiDummy;
 };
 
-cbuffer ViewProjMatrix : register(b1)
+cbuffer CameraInfoBuffer : register(b1)
 {
+    float4 f4CameraPos;
     matrix mViewProj;
     matrix mViewProjInv;
 };

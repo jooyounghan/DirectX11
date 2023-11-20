@@ -49,7 +49,7 @@ void ModelManageGui::RenderGui()
 		{
 			SetModelTextures();
 		}
-		
+		SliderFloat3("Frenel Reflectance Constant", spSelectedModel->sPSTextureConstants.fFrenelConstant, 0.f, 1.f);
 	}
 	else
 	{

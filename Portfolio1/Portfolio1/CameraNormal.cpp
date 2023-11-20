@@ -44,7 +44,7 @@ void CameraNormal::Update()
 
 void CameraNormal::Resize(const float& fAspectRatioIn)
 {
-	sCameraInfo.sInfoData.fAspectRatio = fAspectRatioIn;
+	sCameraInfo.sCameraInteractionData.fAspectRatio = fAspectRatioIn;
 	cpBackBuffer.Reset();
 	cpCameraOutputRTV.Reset();
 	cpModelIDTexture.Reset();
@@ -65,7 +65,7 @@ void CameraNormal::SetRSState()
 
 void CameraNormal::SetVSConstantBuffers()
 {
-	cpDeviceContext->VSSetConstantBuffers(VS_CBUFF_VIEWPROJMAT, 1, sCameraInfo.GetCameraInfoConstantBuffer().GetAddressOf());
+	cpDeviceContext->VSSetConstantBuffers(VS_CBUFF_CAMERA_INFO, 1, sCameraInfo.GetCameraInfoConstantBuffer().GetAddressOf());
 }
 
 void CameraNormal::SetHSConstantBuffers()
@@ -74,16 +74,17 @@ void CameraNormal::SetHSConstantBuffers()
 
 void CameraNormal::SetDSConstantBuffers()
 {
-	cpDeviceContext->DSSetConstantBuffers(DS_CBUFF_VIEWPROJMAT, 1, sCameraInfo.GetCameraInfoConstantBuffer().GetAddressOf());
+	cpDeviceContext->DSSetConstantBuffers(DS_CBUFF_CAMERA_INFO, 1, sCameraInfo.GetCameraInfoConstantBuffer().GetAddressOf());
 }
 
 void CameraNormal::SetGSConstantBuffers()
 {
-	cpDeviceContext->GSSetConstantBuffers(GS_CBUFF_VIEWPROJMAT, 1, sCameraInfo.GetCameraInfoConstantBuffer().GetAddressOf());
+	cpDeviceContext->GSSetConstantBuffers(GS_CBUFF_CAMERA_INFO, 1, sCameraInfo.GetCameraInfoConstantBuffer().GetAddressOf());
 }
 
 void CameraNormal::SetPSConstantBuffers()
 {
+	cpDeviceContext->PSSetConstantBuffers(PS_CBUFF_CAMERA_INFO, 1, sCameraInfo.cpCameraInfoConstantBuffer.GetAddressOf());
 }
 
 void CameraNormal::OMSetRenderTargets()
@@ -97,9 +98,10 @@ void CameraNormal::ResetCamera()
 	cpDeviceContext->RSSetState(nullptr);
 
 	ID3D11Buffer* pResetBuffer = nullptr;
-	cpDeviceContext->VSSetConstantBuffers(VS_CBUFF_VIEWPROJMAT, 1, &pResetBuffer);
-	cpDeviceContext->DSSetConstantBuffers(DS_CBUFF_VIEWPROJMAT, 1, &pResetBuffer);
-	cpDeviceContext->GSSetConstantBuffers(GS_CBUFF_VIEWPROJMAT, 1, &pResetBuffer);
+	cpDeviceContext->VSSetConstantBuffers(VS_CBUFF_CAMERA_INFO, 1, &pResetBuffer);
+	cpDeviceContext->DSSetConstantBuffers(DS_CBUFF_CAMERA_INFO, 1, &pResetBuffer);
+	cpDeviceContext->GSSetConstantBuffers(GS_CBUFF_CAMERA_INFO, 1, &pResetBuffer);
+	cpDeviceContext->PSSetConstantBuffers(PS_CBUFF_CAMERA_INFO, 1, &pResetBuffer);
 
 	vector<ID3D11RenderTargetView*> vResetRTV{ nullptr, nullptr };
 	cpDeviceContext->OMSetRenderTargets(UINT(vResetRTV.size()), vResetRTV.data(), nullptr);
@@ -114,9 +116,9 @@ ModelIDData CameraNormal::GetPointedModelID()
 
 		D3D11_BOX sBox;
 		AutoZeroMemory(sBox);
-		sBox.left = sCameraInfo.sInfoData.uiMouseLocation[0];
+		sBox.left = sCameraInfo.sCameraInteractionData.uiMouseLocation[0];
 		sBox.right = sBox.left + 1;
-		sBox.top = sCameraInfo.sInfoData.uiMouseLocation[1];
+		sBox.top = sCameraInfo.sCameraInteractionData.uiMouseLocation[1];
 		sBox.bottom = sBox.top + 1;
 		sBox.front = 0;
 		sBox.back = 1;

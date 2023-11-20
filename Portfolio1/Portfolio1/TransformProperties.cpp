@@ -46,3 +46,12 @@ TransformationBufferData TransformationBufferData::CreateTransfomredMatrix(IN Di
 	result.xmmInvTransformedMat = XMMatrixInverse(nullptr, *pXmmTransformedMatIn);
 	return result;
 }
+
+void TransformationBufferData::CreateTransfomredMatrix(
+	IN DirectX::XMMATRIX* pXmmTransformedMatIn,
+	OUT TransformationBufferData* pTransformationBufferDataIn
+)
+{
+	pTransformationBufferDataIn->xmmTransformedMat = XMMatrixTranspose(*pXmmTransformedMatIn);
+	pTransformationBufferDataIn->xmmInvTransformedMat = XMMatrixInverse(nullptr, *pXmmTransformedMatIn);
+}

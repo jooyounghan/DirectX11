@@ -31,4 +31,5 @@ public:
 
 public:
 	static TransformationBufferData CreateTransfomredMatrix(IN DirectX::XMMATRIX* pXmmTransformedMatIn);
+	static void CreateTransfomredMatrix(IN DirectX::XMMATRIX* pXmmTransformedMatIn, OUT TransformationBufferData* pTransformationBufferDataIn);
 };

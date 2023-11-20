@@ -44,36 +44,36 @@ CameraInterface::~CameraInterface()
 
 void CameraInterface::StartMove(MoveDir moveDir)
 {
-	sCameraInfo.sInfoData.bMoveDirection[moveDir] = true;
+	sCameraInfo.sCameraInteractionData.bMoveDirection[moveDir] = true;
 }
 void CameraInterface::StopMove(MoveDir moveDir)
 {
-	sCameraInfo.sInfoData.bMoveDirection[moveDir] = false;
+	sCameraInfo.sCameraInteractionData.bMoveDirection[moveDir] = false;
 }
 
 void CameraInterface::SetFromMouseXY(const int& iMouseX, const int& iMouseY)
 {
-	sCameraInfo.sInfoData.uiMouseLocation[0] = clamp((unsigned int)iMouseX, 0x0000u, (UINT)sScreenViewport.Width - 1);
-	sCameraInfo.sInfoData.uiMouseLocation[1] = clamp((unsigned int)iMouseY, 0x0000u, (UINT)sScreenViewport.Height - 1);
+	sCameraInfo.sCameraInteractionData.uiMouseLocation[0] = clamp((unsigned int)iMouseX, 0x0000u, (UINT)sScreenViewport.Width - 1);
+	sCameraInfo.sCameraInteractionData.uiMouseLocation[1] = clamp((unsigned int)iMouseY, 0x0000u, (UINT)sScreenViewport.Height - 1);
 
-	float fNdcX = sCameraInfo.sInfoData.uiMouseLocation[0] * 2.f / uiWidth - 1.f;
-	float fNdcY = sCameraInfo.sInfoData.uiMouseLocation[1] * 2.f / uiHeight - 1.f;
+	float fNdcX = sCameraInfo.sCameraInteractionData.uiMouseLocation[0] * 2.f / uiWidth - 1.f;
+	float fNdcY = sCameraInfo.sCameraInteractionData.uiMouseLocation[1] * 2.f / uiHeight - 1.f;
 
-	if (sCameraInfo.sInfoData.bFirstView)
+	if (sCameraInfo.sCameraInteractionData.bFirstView)
 	{
-		sCameraInfo.sInfoData.fPitch = sCameraInfo.sInfoData.fMouseMovablePitchAngleDegree * fNdcY;
-		sCameraInfo.sInfoData.fYaw = sCameraInfo.sInfoData.fMouseMovableYawAngleDegree * fNdcX;
+		sCameraInfo.sCameraInteractionData.fPitch = sCameraInfo.sCameraInteractionData.fMouseMovablePitchAngleDegree * fNdcY;
+		sCameraInfo.sCameraInteractionData.fYaw = sCameraInfo.sCameraInteractionData.fMouseMovableYawAngleDegree * fNdcX;
 	}
 	else
 	{
-		sCameraInfo.sInfoData.fPitch = sCameraInfo.sInfoData.fPitch;
-		sCameraInfo.sInfoData.fYaw = sCameraInfo.sInfoData.fYaw;
+		sCameraInfo.sCameraInteractionData.fPitch = sCameraInfo.sCameraInteractionData.fPitch;
+		sCameraInfo.sCameraInteractionData.fYaw = sCameraInfo.sCameraInteractionData.fYaw;
 	}
 }
 
 void CameraInterface::SwitchFirstView()
 {
-	sCameraInfo.sInfoData.bFirstView = !sCameraInfo.sInfoData.bFirstView;
+	sCameraInfo.sCameraInteractionData.bFirstView = !sCameraInfo.sCameraInteractionData.bFirstView;
 }
 
 
