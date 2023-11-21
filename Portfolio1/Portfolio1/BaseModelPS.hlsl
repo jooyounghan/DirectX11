@@ -1,6 +1,8 @@
 #include "Common.hlsli"
+#include "BrdfFunction.hlsli"
 
-SamplerState Sampler : register(s0);
+SamplerState WrapSampler : register(s0);
+SamplerState ClampSampler : register(s1);
 
 Texture2D   AOTexture           : register(t0);
 Texture2D   ColorTexture        : register(t1);
@@ -40,6 +42,13 @@ cbuffer TextureConstantBuffer : register(b3)
     uint    uiDummy2;
 };
 
+cbuffer CameraInfo : register(b6)
+{
+    float4 f4CameraPos;
+    matrix mViewProj;
+    matrix mViewProjInv;
+};
+
 PixelOutput main(DomainOutput input)
 {
     PixelOutput result;
@@ -50,7 +59,7 @@ PixelOutput main(DomainOutput input)
     float4 fNormalSampled;
     if (bIsNormalTexture)
     {
-        fNormalSampled = GetSampledNormalFromTBN(Sampler, NormalTexture, input.f2TexCoord, input.f4ModelNormal, input.f4ModelTangent, input.f4ModelBiTangent);
+        fNormalSampled = GetSampledNormalFromTBN(ClampSampler, NormalTexture, input.f2TexCoord, input.f4ModelNormal, input.f4ModelTangent, input.f4ModelBiTangent);
     }
     else
     {
@@ -59,21 +68,41 @@ PixelOutput main(DomainOutput input)
     
     if (bIsColorTexture)
     {
-        fColor = ColorTexture.Sample(Sampler, input.f2TexCoord);
+        fColor = ColorTexture.Sample(ClampSampler, input.f2TexCoord);
     }
     else
     {
     }
+
+    float3 toEyes = f4CameraPos.xyz - input.f4ModelPos.xyz;    
+    float roughness = RoughnessTexture.Sample(ClampSampler, input.f2TexCoord).x;
+    float metallic = MetalnessTexture.Sample(ClampSampler, input.f2TexCoord).x;
+   
     
     // 이미지 기반 조명에 대한 계산
-    
-    // 간접 조명에 대한 계산
 
+    
+    
+    
+    
+    
+    
+    
+    float3 diffuseBrdf = lerp(fFrenelConstant, fColor.xyz, metallic) / 3.141592;    
+    // 조명에 대한 계산
+    
     [unroll]
     for (int i = 0; i < MAX_LIGHT_NUM; ++i)
     {
-        float4 tolight = normalize(sLightSets[i].f4Location - input.f4ModelPos);
-        float test = dot(tolight, fNormalSampled);
+        float3 toLight = sLightSets[i].f4Location.xyz - input.f4ModelPos.xyz;
+
+        float3 specularBrdf = float3();
+
+
+
+
+
+        
         float fLightPower = clamp(test, 0.f, 1.f);
         fResultColor += fColor * fLightPower * sLightSets[i].f4Color;
     }

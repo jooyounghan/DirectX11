@@ -1,6 +1,7 @@
 #include "Common.hlsli"
 
-SamplerState Sampler : register(s0);
+SamplerState WrapSampler : register(s0);
+SamplerState ClampSampler : register(s1);
 
 Texture2D HeightTexture : register(t0);
 
@@ -10,7 +11,6 @@ cbuffer ViewProjMatrix : register(b0)
     matrix mViewProj;
     matrix mViewProjInv;
 };
-
 
 #define NUM_CONTROL_POINTS 3
 
@@ -45,7 +45,7 @@ DomainOutput main(
 
     Output.f4ModelPos = patch[0].f4ModelPos * domain.x + patch[1].f4ModelPos * domain.y + patch[2].f4ModelPos * domain.z;
 
-    float fHeightSampled = 2.f * HeightTexture.SampleLevel(Sampler, Output.f2TexCoord, 0.f).x - 1.f;
+    float fHeightSampled = 2.f * HeightTexture.SampleLevel(WrapSampler, Output.f2TexCoord, 0.f).x - 1.f;
     fHeightSampled = 0.1 * fHeightSampled;
     
     Output.f4ModelPos += fHeightSampled * Output.f4ModelNormal;

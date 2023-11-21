@@ -319,6 +319,7 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="BrdfFunction.hlsli" />
     <None Include="Common.hlsli" />
     <None Include="CubeMapType.hlsli" />
     <None Include="NormalVectorShaderType.hlsli" />

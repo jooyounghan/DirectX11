@@ -498,5 +498,8 @@
     <None Include="CubeMapType.hlsli">
       <Filter>Shader\CubeMap</Filter>
     </None>
+    <None Include="BrdfFunction.hlsli">
+      <Filter>Shader\BaseModel</Filter>
+    </None>
   </ItemGroup>
 </Project>
