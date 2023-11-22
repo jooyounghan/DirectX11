@@ -127,9 +127,9 @@ void ObjectModel::SetDSShaderResources()
 
 void ObjectModel::SetGSShaderResources()
 {
-	if (pModelTextureSet[PS_SRV_NORMAL] != nullptr)
+	if (pModelTextureSet[ModelTextureMap::NORMAL_TEXTURE_MAP] != nullptr)
 	{
-		ID3D11ShaderResourceView** ppNormalSRV = pModelTextureSet[PS_SRV_NORMAL]->cpModelTextureSRV.GetAddressOf();
+		ID3D11ShaderResourceView** ppNormalSRV = pModelTextureSet[ModelTextureMap::NORMAL_TEXTURE_MAP]->cpModelTextureSRV.GetAddressOf();
 		ppNormalSRV != nullptr ? cpDeviceContext->GSSetShaderResources(GS_SRV_NORMAL, 1, ppNormalSRV) : void();
 	}
 }
@@ -149,6 +149,7 @@ void ObjectModel::SetPSShaderResources()
 void ObjectModel::ResetShaderResources()
 {
 	ID3D11ShaderResourceView* pResetSRV = nullptr;
+	cpDeviceContext->GSSetShaderResources(GS_SRV_NORMAL, 1, &pResetSRV);
 	cpDeviceContext->DSSetShaderResources(DS_SRV_HEIGHT, 1, &pResetSRV);
 	for (size_t idx = 0; idx < TEXTURE_MAP_NUM; ++idx)
 	{

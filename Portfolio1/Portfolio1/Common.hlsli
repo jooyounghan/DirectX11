@@ -54,7 +54,7 @@ struct LightSet
     float4 f4Location;
     float4 f4Color;
     float4 f4Direction;
-    float f4LightStrength;
+    float fLightStrength;
     float fFallOffStart;
     float fFallOffEnd;
     float fSpotPower;

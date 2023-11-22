@@ -3,7 +3,7 @@
 
 SamplerState Sampler : register(s0);
 
-Texture2D NormalTexture : register(t4);
+Texture2D NormalTexture : register(t0);
 
 cbuffer TextureFlagBuffer : register(b0)
 {
@@ -11,8 +11,8 @@ cbuffer TextureFlagBuffer : register(b0)
     bool bIsColorTexture;
     bool bIsMetalnessTexture;
     bool bIsRoughnessTexture;
+    bool bIsEmissionTexture;
     bool bIsNormalTexture;
-    bool bIsHeightTexture;
     uint2 uiDummy;
 };
 
@@ -37,7 +37,10 @@ void main(
         float4 fNormalSampled;
         if (bIsNormalTexture)
         {
-            fNormalSampled = GetSampleLeveledNormalFromTBN(Sampler, NormalTexture, input[i].f2TexCoord, input[i].f4ModelNormal, input[i].f4ModelTangent, input[i].f4ModelBiTangent);
+            fNormalSampled = GetSampleLeveledNormalFromTBN(
+            Sampler, NormalTexture, input[i].f2TexCoord, 
+            input[i].f4ModelNormal, input[i].f4ModelTangent, input[i].f4ModelBiTangent
+            );
         }
         else
         {
