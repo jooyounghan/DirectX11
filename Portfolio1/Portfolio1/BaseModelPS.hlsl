@@ -50,14 +50,16 @@ cbuffer CameraInfo : register(b6)
 };
 
 PixelOutput main(DomainOutput input)
-{
+{  
     PixelOutput result;
     
     float3 fDirectColor = { 0.f, 0.f, 0.f };
     float3 fAmbientColor = { 0.f, 0.f, 0.f };
     
-    
+    float roughness = RoughnessTexture.Sample(ClampSampler, input.f2TexCoord).x;
+    float metallic = MetalnessTexture.Sample(ClampSampler, input.f2TexCoord).x;
     float4 normalSampled;
+        
     if (bIsNormalTexture)
     {
         normalSampled = GetSampledNormalFromTBN(ClampSampler, NormalTexture, input.f2TexCoord, input.f4ModelNormal, input.f4ModelTangent, input.f4ModelBiTangent);
@@ -67,30 +69,26 @@ PixelOutput main(DomainOutput input)
         normalSampled = input.f4ModelNormal;
     }
     
-    float3 albedo   = ColorTexture.Sample(ClampSampler, input.f2TexCoord).xyz;
+    
+    float3 surfaceColor = ColorTexture.Sample(ClampSampler, input.f2TexCoord).xyz;
     float3 ao = AOTexture.Sample(ClampSampler, input.f2TexCoord).xyz;
 
     float3 normalVec = normalize(normalSampled.xyz);
     float3 toEyes = normalize(f4CameraPos.xyz - input.f4ModelPos.xyz);
 
-    float roughness = RoughnessTexture.Sample(ClampSampler, input.f2TexCoord).x;
-    float metallic = MetalnessTexture.Sample(ClampSampler, input.f2TexCoord).x;
-    
-
     float NDotE = max(0.f, dot(normalVec, toEyes));
-    float3 SpecularReflectance = lerp(fFrenelConstant, albedo, metallic);        
-    float3 F = GetFrenelSchlick(NDotE, SpecularReflectance);
-    float3 kd = lerp(float3(1.f, 1.f, 1.f) - F, float3(0.f, 0.f, 0.f), metallic);
+    float3 F0 = lerp(fFrenelConstant, surfaceColor, metallic);
+    float3 F = GetFrenelSchlick(NDotE, F0);
+    float3 diffuseColor = lerp(surfaceColor, float3(0, 0, 0), metallic);
     
     // Ambient Lighting °è»ê
     float3 diffuseSampled = EnvDiffuseTexture.Sample(ClampSampler, normalVec).xyz;
     float3 specularIBLSampled = EnvSpecularTexture.SampleLevel(ClampSampler, reflect(-toEyes, normalVec), roughness * 5.f).xyz;
     
-    float3 diffuseIBL = kd * albedo * diffuseSampled;
-
-    float2 IBLBrdf = EnvBrdfTexture.Sample(ClampSampler, float2(1.f - roughness, NDotE));
+    float2 IBLBrdf = EnvBrdfTexture.Sample(ClampSampler, float2(1.f - roughness, NDotE)).xy;
     
-    float3 specularIBL = (SpecularReflectance * IBLBrdf.x + IBLBrdf.y) * specularIBLSampled;
+    float3 diffuseIBL = (float3(1.f, 1.f, 1.f) - F) * diffuseColor * diffuseSampled;
+    float3 specularIBL = (F0 * IBLBrdf.x + IBLBrdf.y) * specularIBLSampled;
 
     fAmbientColor = (diffuseIBL + specularIBL) * ao;
     
@@ -107,10 +105,10 @@ PixelOutput main(DomainOutput input)
         float G = GetGMasking(NDotL, NDotE, roughness);
         float D = GetNDF(NDotH, roughness);
         
-        float3 diffuseBrdf = kd * albedo;
+        float3 diffuseBrdf = (float3(1, 1, 1) - F) * diffuseColor;
         float3 specularBrdf = (F * D * G) / (max(1e-6, 4.0 * NDotL * NDotE));
         
-        fDirectColor += float4((diffuseBrdf + specularBrdf) * sLightSets[i].fLightStrength * NDotL * sLightSets[i].f4Color.xyz, 0.f);
+        fDirectColor += (diffuseBrdf + specularBrdf) * sLightSets[i].fLightStrength * NDotL * sLightSets[i].f4Color.xyz;
     }
     
        
