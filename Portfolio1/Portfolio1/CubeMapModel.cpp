@@ -28,10 +28,8 @@ CubeMapModel::~CubeMapModel()
 {
 }
 
-void CubeMapModel::Update()
+void CubeMapModel::Update(const float& fDelta)
 {
-	ModelInterface::Update();
-	
 	sPSTextureFlags.bIsSpecularTextureOn
 		= spEnvSpecularTextureFile != nullptr ? true : false;
 
@@ -48,6 +46,12 @@ void CubeMapModel::Update()
 		cpTextureFlagBuffer.Get()
 	);
 }
+
+void CubeMapModel::Render()
+{
+	cpDeviceContext->DrawIndexed(ui32IndexCount, 0, 0);
+}
+
 
 void CubeMapModel::SetIAProperties()
 {

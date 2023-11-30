@@ -4,15 +4,15 @@
 
 #include "ManageGuiInterface.h"
 
+class PickableModel;
 class ObjectModel;
 
 class ModelManageGui : public ManageGuiInterface
 {
 public:
 	ModelManageGui(
-		std::vector<std::shared_ptr<ObjectModel>>& vSpModelsIn,
-		std::shared_ptr<ObjectModel>& spSelectedModelIn,
-		std::shared_ptr<ObjectModel>& spTempSelectedModelIn
+		std::vector<std::shared_ptr<PickableModel>>& vSpModelsIn,
+		std::shared_ptr<PickableModel>& spSelectedModelIn
 	);
 	virtual ~ModelManageGui() override;
 
@@ -28,10 +28,10 @@ private:
 	void SetModelHeightMap();
 
 private:
-	std::vector<std::shared_ptr<ObjectModel>>& vSpModels;
+	std::vector<std::shared_ptr<PickableModel>>& vSpModels;
 
 private:
-	std::shared_ptr<ObjectModel>&	spSelectedModel;
-	std::shared_ptr<ObjectModel>&	spTempSelectedModel;
+	std::shared_ptr<PickableModel>&	spSelectedModel;
+	ObjectModel* pSelectedObjectModel;
 };
 

@@ -62,7 +62,7 @@ protected:
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView>	cpDepthStencilView;
 
 public:
-	virtual void Update() = 0;
+	virtual void Update(const float& fDelta) = 0;
 	virtual void Resize(const float& fAspectRatioIn) = 0;
 
 public:

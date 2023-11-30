@@ -39,19 +39,19 @@ TransformationBufferData::TransformationBufferData()
 
 }
 
-TransformationBufferData TransformationBufferData::CreateTransfomredMatrix(IN DirectX::XMMATRIX* pXmmTransformedMatIn)
+TransformationBufferData TransformationBufferData::CreateTransfomredMatrix(IN const DirectX::XMMATRIX& xmmTransformedMatIn)
 {
 	TransformationBufferData result;
-	result.xmmTransformedMat = XMMatrixTranspose(*pXmmTransformedMatIn);
-	result.xmmInvTransformedMat = XMMatrixInverse(nullptr, *pXmmTransformedMatIn);
+	result.xmmTransformedMat = XMMatrixTranspose(xmmTransformedMatIn);
+	result.xmmInvTransformedMat = XMMatrixInverse(nullptr, xmmTransformedMatIn);
 	return result;
 }
 
 void TransformationBufferData::CreateTransfomredMatrix(
-	IN DirectX::XMMATRIX* pXmmTransformedMatIn,
+	IN const DirectX::XMMATRIX& xmmTransformedMatIn,
 	OUT TransformationBufferData* pTransformationBufferDataIn
 )
 {
-	pTransformationBufferDataIn->xmmTransformedMat = XMMatrixTranspose(*pXmmTransformedMatIn);
-	pTransformationBufferDataIn->xmmInvTransformedMat = XMMatrixInverse(nullptr, *pXmmTransformedMatIn);
+	pTransformationBufferDataIn->xmmTransformedMat = XMMatrixTranspose(xmmTransformedMatIn);
+	pTransformationBufferDataIn->xmmInvTransformedMat = XMMatrixInverse(nullptr, xmmTransformedMatIn);
 }

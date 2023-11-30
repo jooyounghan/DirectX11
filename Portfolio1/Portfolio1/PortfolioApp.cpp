@@ -59,7 +59,7 @@ void PortfolioApp::Init()
 	spCubeMap = make_shared<CubeMapModel>(cpDevice, cpDeviceContext);
 
 	// GUI Ãß°¡ =====================================================================================
-	vUpManageGuis.push_back(make_unique<ModelManageGui>(vSpModels, spSelectedModel, spTempSelectedModel));
+	vUpManageGuis.push_back(make_unique<ModelManageGui>(vSpModels, spSelectedModel));
 	vUpManageGuis.push_back(make_unique<LightManageGui>(spLightManager));
 	vUpManageGuis.push_back(make_unique<SettingManageGui>(bIsNormalVectorDraw, bIsWireFrameDraw, spCubeMap));
 	vUpManageGuis.push_back(make_unique<CameraManageGui>(spMainCameras));
@@ -86,16 +86,16 @@ void PortfolioApp::Init()
 	// ==============================================================================================
 }
 
-void PortfolioApp::Update()
+void PortfolioApp::Update(const float& fDelta)
 {
-	spMainCameras->Update();
+	spMainCameras->Update(fDelta);
 	spLightManager->Update();
 
 	for (auto& model : vSpModels)
 	{
-		model->Update();
+		model->Update(fDelta);
 	}
-	spCubeMap->Update();
+	spCubeMap->Update(fDelta);
 }
 
 void PortfolioApp::Render()
@@ -133,8 +133,7 @@ void PortfolioApp::Run()
 		}
 		else {
 			SetImGUIRendering();
-
-			Update();
+			Update(1.f / ImGui::GetIO().Framerate);
 			Render();
 
 			RenderImGUI();
@@ -203,7 +202,7 @@ void PortfolioApp::ResizeSwapChain(const UINT& uiWidthIn, const UINT& uiHeightIn
 void PortfolioApp::CheckMouseHoveredModel()
 {
 	ModelIDData uiSelectedModelID = spMainCameras->GetPointedModelID();
-	auto findResult = find_if(vSpModels.begin(), vSpModels.end(), [&](shared_ptr<ObjectModel> model) { return model->upModelID->sIdData == uiSelectedModelID; });
+	auto findResult = find_if(vSpModels.begin(), vSpModels.end(), [&](shared_ptr<PickableModel> model) { return model->upModelID->sIdData == uiSelectedModelID; });
 	if (findResult != vSpModels.end())
 	{
 		spTempSelectedModel = *findResult;

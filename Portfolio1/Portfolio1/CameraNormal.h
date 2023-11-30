@@ -17,7 +17,7 @@ public:
 	virtual void SetCameraProperty() override;
 
 public:
-	virtual void Update() override;
+	virtual void Update(const float& fDelta) override;
 	virtual void Resize(const float& fAspectRatioIn) override;
 
 public:

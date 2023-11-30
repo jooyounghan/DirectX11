@@ -1,7 +1,7 @@
 #include "ModelOutlineDrawer.h"
 #include "ID3D11Helper.h"
 #include "DepthStencilState.h"
-#include "ModelInterface.h"
+#include "PickableModel.h"
 
 #include <vector>
 
@@ -27,9 +27,13 @@ ModelOutlineDrawer::~ModelOutlineDrawer()
 
 void ModelOutlineDrawer::Draw(CameraInterface* pCamera, ModelInterface* pModel)
 {
-	pModel->ScaleUp(0.1f, 0.1f, 0.1f);
-	NonLightDrawer::Draw(pCamera, pModel);
-	pModel->ScaleUp(-0.1f, -0.1f, -0.1f);
+	PickableModel* pPickable = dynamic_cast<PickableModel*>(pModel);
+	if (pPickable != nullptr)
+	{
+		pPickable->ScaleUp(0.1f, 0.1f, 0.1f);
+		NonLightDrawer::Draw(pCamera, pModel);
+		pPickable->ScaleUp(-0.1f, -0.1f, -0.1f);
+	}
 }
 
 void ModelOutlineDrawer::SetIAInputLayer()

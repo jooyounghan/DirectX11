@@ -9,7 +9,7 @@ ObjectModel::ObjectModel(
 	Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn,
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn
 )
-	: ModelInterface(cpDeviceIn, cpDeviceContextIn), upModelID(make_unique<ModelID>(cpDevice.Get()))
+	: PickableModel(cpDeviceIn, cpDeviceContextIn)
 {
 	AutoZeroMemory(sPSTextureFlags);
 	AutoZeroMemory(sPSTextureConstants);
@@ -38,9 +38,9 @@ ObjectModel::~ObjectModel()
 {
 }
 
-void ObjectModel::Update()
+void ObjectModel::Update(const float& fDelta)
 {
-	ModelInterface::Update();
+	PickableModel::Update(fDelta);
 
 	for (size_t idx = 0; idx < TEXTURE_MAP_NUM; ++idx)
 	{

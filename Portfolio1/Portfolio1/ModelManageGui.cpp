@@ -16,13 +16,12 @@ using namespace DirectX;
 using namespace std;
 
 ModelManageGui::ModelManageGui(
-	std::vector<std::shared_ptr<ObjectModel>>& vSpModelsIn,
-	std::shared_ptr<ObjectModel>& spSelectedModelIn,
-	std::shared_ptr<ObjectModel>& spTempSelectedModelIn
+	std::vector<std::shared_ptr<PickableModel>>& vSpModelsIn,
+	std::shared_ptr<PickableModel>& spSelectedModelIn
 )
 	: vSpModels(vSpModelsIn),
 	spSelectedModel(spSelectedModelIn),
-	spTempSelectedModel(spTempSelectedModelIn)
+	pSelectedObjectModel(nullptr)
 {
 }
 
@@ -45,11 +44,19 @@ void ModelManageGui::RenderGui()
 			SetTransformModelMenu();
 		}
 
-		if (CollapsingHeader("Set Texture"))
+		if (spSelectedModel.get() != pSelectedObjectModel)
 		{
-			SetModelTextures();
+			pSelectedObjectModel = dynamic_cast<ObjectModel*>(spSelectedModel.get());
 		}
-		SliderFloat3("Frenel Reflectance Constant", spSelectedModel->sPSTextureConstants.fFrenelConstant, 0.f, 1.f);
+
+		if (pSelectedObjectModel != nullptr)
+		{
+			SliderFloat3("Frenel Reflectance Constant", pSelectedObjectModel->sPSTextureConstants.fFrenelConstant, 0.f, 1.f);
+			if (CollapsingHeader("Set Texture"))
+			{
+				SetModelTextures();
+			}
+		}
 	}
 	else
 	{
@@ -82,9 +89,9 @@ void ModelManageGui::SetModelTextureMap(const unsigned short& wTextureIdx)
 {
 	Separator();
 	Text(ModelTextureFile::strTextureType[wTextureIdx].c_str());
-	if (spSelectedModel->pModelTextureSet[wTextureIdx] != nullptr)
+	if (pSelectedObjectModel->pModelTextureSet[wTextureIdx] != nullptr)
 	{
-		Image(spSelectedModel->pModelTextureSet[wTextureIdx]->cpFileThumbNailSRV.Get(), ImVec2(60.f, 60.f));
+		Image(pSelectedObjectModel->pModelTextureSet[wTextureIdx]->cpFileThumbNailSRV.Get(), ImVec2(60.f, 60.f));
 	}
 	else
 	{
@@ -96,15 +103,15 @@ void ModelManageGui::SetModelTextureMap(const unsigned short& wTextureIdx)
 	{
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Texture2D"))
 		{
-			spSelectedModel->pModelTextureSet[(PSSRVType)wTextureIdx] = *(shared_ptr<ModelTextureFile>*)payload->Data;
+			pSelectedObjectModel->pModelTextureSet[(PSSRVType)wTextureIdx] = *(shared_ptr<ModelTextureFile>*)payload->Data;
 		}
 		ImGui::EndDragDropTarget();
 	}
 
-	if (spSelectedModel->pModelTextureSet[wTextureIdx] != nullptr)
+	if (pSelectedObjectModel->pModelTextureSet[wTextureIdx] != nullptr)
 	{
 		SameLine();
-		Text(spSelectedModel->pModelTextureSet[wTextureIdx]->strFileName.c_str());
+		Text(pSelectedObjectModel->pModelTextureSet[wTextureIdx]->strFileName.c_str());
 	}
 	else
 	{
@@ -117,9 +124,9 @@ void ModelManageGui::SetModelHeightMap()
 {
 	Separator();
 	Text("Height");
-	if (spSelectedModel->pHeightTexture != nullptr)
+	if (pSelectedObjectModel->pHeightTexture != nullptr)
 	{
-		Image(spSelectedModel->pHeightTexture->cpFileThumbNailSRV.Get(), ImVec2(60.f, 60.f));
+		Image(pSelectedObjectModel->pHeightTexture->cpFileThumbNailSRV.Get(), ImVec2(60.f, 60.f));
 	}
 	else
 	{
@@ -131,15 +138,15 @@ void ModelManageGui::SetModelHeightMap()
 	{
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Texture2D"))
 		{
-			spSelectedModel->pHeightTexture = *(shared_ptr<ModelTextureFile>*)payload->Data;
+			pSelectedObjectModel->pHeightTexture = *(shared_ptr<ModelTextureFile>*)payload->Data;
 		}
 		ImGui::EndDragDropTarget();
 	}
 
-	if (spSelectedModel->pHeightTexture != nullptr)
+	if (pSelectedObjectModel->pHeightTexture != nullptr)
 	{
 		SameLine();
-		Text(spSelectedModel->pHeightTexture->strFileName.c_str());
+		Text(pSelectedObjectModel->pHeightTexture->strFileName.c_str());
 	}
 	else
 	{

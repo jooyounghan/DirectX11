@@ -29,7 +29,9 @@ enum KeyCode
 typedef bool IsChecked;
 
 class CameraInterface;
+
 class ModelInterface;
+class PickableModel;
 class ObjectModel;
 class CubeMapModel;
 
@@ -50,7 +52,7 @@ public:
 
 public:
 	virtual void Init() override;
-	virtual void Update() override;
+	virtual void Update(const float& fDelta) override;
 	virtual void Render() override;
 	virtual void Run() override;
 	virtual void Quit() override;
@@ -79,9 +81,9 @@ private:
 	std::vector<std::shared_ptr<CameraInterface>>	vSpCameras;
 
 private:
-	std::shared_ptr<ObjectModel>					spSelectedModel;
-	std::shared_ptr<ObjectModel>					spTempSelectedModel;
-	std::vector<std::shared_ptr<ObjectModel>>		vSpModels;
+	std::shared_ptr<PickableModel>					spSelectedModel;
+	std::shared_ptr<PickableModel>					spTempSelectedModel;
+	std::vector<std::shared_ptr<PickableModel>>		vSpModels;
 
 private:
 	std::shared_ptr<LightManager>					spLightManager;

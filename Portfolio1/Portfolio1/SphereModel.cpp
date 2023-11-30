@@ -15,7 +15,7 @@ SphereModel::SphereModel(
 	const unsigned short& usLevel
 ) : ObjectModel(cpDeviceIn, cpDeviceContextIn)
 {
-	ModelInterface::MakeSphereVertexIndexSet(this, fCenterX, fCenterY, fCenterZ, fRadius, usLevel);
+	PickableModel::MakeSphereVertexIndexSet(this, fCenterX, fCenterY, fCenterZ, fRadius, usLevel);
 }
 
 SphereModel::~SphereModel()

@@ -8,7 +8,7 @@
 #include <memory>
 #include <vector>
 
-class ObjectModel;
+class PickableModel;
 class CameraInterface;
 class LightManager;
 class CubeMapModel;
@@ -28,7 +28,7 @@ public:
 	void Draw(
 		CameraInterface* pCamera, 
 		LightManager* pLightManager, 
-		const std::vector<std::shared_ptr<ObjectModel>> vSpModels,
+		const std::vector<std::shared_ptr<PickableModel>> vSpModels,
 		CubeMapModel* pEnvironmentCubeMap
 	);
 

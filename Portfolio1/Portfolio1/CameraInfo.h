@@ -35,7 +35,7 @@ public:
 		IN const float& fAspectRatioIn,
 		IN const float& fNearZIn = 0.01f,
 		IN const float& fFarZIn = 100.f,
-		IN const float& fMoveSpeedIn = 0.1f,
+		IN const float& fMoveSpeedIn = 10.f,
 		IN const float& fMouseMovablePitchAngleDegreeIn = 90.f,
 		IN const float& fMouseMovableYawAngleDegreeIn = 180.f
 	);
@@ -62,7 +62,7 @@ public:
 	{
 		DirectX::XMVECTOR			xmvCameraPosition;
 		TransformationBufferData	sTransformationBufferData;
-	} sCameraInfo;
+	} sCameraViewPosData;
 
 public:
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	cpCameraInfoConstantBuffer;
@@ -71,7 +71,7 @@ public:
 	inline const Microsoft::WRL::ComPtr<ID3D11Buffer>& GetCameraInfoConstantBuffer() { return cpCameraInfoConstantBuffer; }
 
 public:
-	void Update();
+	void Update(const float& fDelta);
 
 public:
 	DirectX::XMMATRIX GetViewProj(

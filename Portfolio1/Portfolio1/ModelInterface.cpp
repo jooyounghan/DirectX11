@@ -11,18 +11,8 @@ ModelInterface::ModelInterface(
 	ComPtr<ID3D11Device>& cpDeviceIn,
 	ComPtr<ID3D11DeviceContext>& cpDeviceContextIn
 )
-	: cpDevice(cpDeviceIn), cpDeviceContext(cpDeviceContextIn), upTransformationProperties(make_unique<TransformProperties>()), upTransformationBufferData(make_unique<TransformationBufferData>())
+	: cpDevice(cpDeviceIn), cpDeviceContext(cpDeviceContextIn)
 {
-	XMMATRIX transformMatrix = TransformProperties::GetAffineTransformMatrix(upTransformationProperties.get());
-	ID3D11Helper::CreateBuffer(
-		cpDevice.Get(),
-		TransformationBufferData::CreateTransfomredMatrix(&transformMatrix),
-		D3D11_USAGE_DYNAMIC,
-		D3D11_BIND_CONSTANT_BUFFER,
-		D3D11_CPU_ACCESS_WRITE,
-		0,
-		cpTransformationDataBuffer.GetAddressOf()
-	);
 }
 
 ModelInterface::~ModelInterface()
@@ -30,39 +20,46 @@ ModelInterface::~ModelInterface()
 
 }
 
-void ModelInterface::Update()
+void ModelInterface::MakePlaneVertexIndexSet(
+	ModelInterface* pModelInterface,
+	XMVECTOR& xmvDirection,
+	XMVECTOR& xmvUp,
+	const float& fCenterX,
+	const float& fCenterY,
+	const float& fCenterZ,
+	const float& fWidth,
+	const float& fHeight
+)
 {
-	XMMATRIX transformMatrix = TransformProperties::GetAffineTransformMatrix(upTransformationProperties.get());
-	ID3D11Helper::UpdateBuffer(
-		cpDeviceContext.Get(),
-		TransformationBufferData::CreateTransfomredMatrix(&transformMatrix),
-		D3D11_MAP_WRITE_DISCARD,
-		cpTransformationDataBuffer.Get()
-	);
+	if (pModelInterface != nullptr)
+	{
+		vector<uint32_t> vIndex{
+			0, 1, 2,
+			0, 2, 3,
+		};
+
+		pModelInterface->ui32IndexCount = UINT(vIndex.size());
+
+		vector<Vertex> vVertex{
+			{{fCenterX - (fWidth / 2.f), fCenterY + (fHeight / 2.f), fCenterZ}, {0.f, 0.f}, {0.f, 0.f, -1.f, 0.f}},
+			{{fCenterX - (fWidth / 2.f), fCenterY - (fHeight / 2.f), fCenterZ}, {0.f, 1.f}, {0.f, 0.f, -1.f, 0.f}},
+			{{fCenterX + (fWidth / 2.f), fCenterY + (fHeight / 2.f), fCenterZ}, {1.f, 1.f}, {0.f, 0.f, -1.f, 0.f}},
+			{{fCenterX + (fWidth / 2.f), fCenterY - (fHeight / 2.f), fCenterZ}, {1.f, 0.f}, {0.f, 0.f, -1.f, 0.f}}
+		};
+
+		ID3D11Helper::CreateBuffer(pModelInterface->cpDevice.Get(), vIndex, D3D11_USAGE_IMMUTABLE, D3D11_BIND_INDEX_BUFFER, 0, 0, pModelInterface->cpIndexBuffer.GetAddressOf());
+		ID3D11Helper::CreateBuffer(pModelInterface->cpDevice.Get(), vVertex, D3D11_USAGE_IMMUTABLE, D3D11_BIND_VERTEX_BUFFER, 0, 0, pModelInterface->cpVertexBuffer.GetAddressOf());
+	}
 }
 
-void ModelInterface::Render()
-{
-	cpDeviceContext->DrawIndexed(ui32IndexCount, 0, 0);
-}
-
-void ModelInterface::ScaleUp(const float& x, const float& y, const float& z)
-{
-	upTransformationProperties->xmvScale.m128_f32[0] += x;
-	upTransformationProperties->xmvScale.m128_f32[1] += y;
-	upTransformationProperties->xmvScale.m128_f32[2] += z;
-
-	XMMATRIX transformMatrix = TransformProperties::GetAffineTransformMatrix(upTransformationProperties.get());
-
-	ID3D11Helper::UpdateBuffer(
-		cpDeviceContext.Get(),
-		TransformationBufferData::CreateTransfomredMatrix(&transformMatrix),
-		D3D11_MAP_WRITE_DISCARD,
-		cpTransformationDataBuffer.Get()
-	);
-}
-
-void ModelInterface::MakeSquareVertexIndexSet(ModelInterface* pModelInterface, const float& fCenterX, const float& fCenterY, const float& fCenterZ, const float& fLen, const bool& bReverse)
+void ModelInterface::MakeSquareVertexIndexSet(
+	ModelInterface* pModelInterface,
+	const float& fCenterX,
+	const float& fCenterY,
+	const float& fCenterZ,
+	const float& fLen,
+	const bool& bReverse
+)
 {
 	if (pModelInterface != nullptr)
 	{
@@ -87,10 +84,6 @@ void ModelInterface::MakeSquareVertexIndexSet(ModelInterface* pModelInterface, c
 		};
 
 		pModelInterface->ui32IndexCount = UINT(vIndex.size());
-
-		pModelInterface->upTransformationProperties->xmvTranslation.m128_f32[0] = fCenterX;
-		pModelInterface->upTransformationProperties->xmvTranslation.m128_f32[1] = fCenterY;
-		pModelInterface->upTransformationProperties->xmvTranslation.m128_f32[2] = fCenterZ;
 
 		vector<Vertex> vVertex{
 			{{-fLen / 2.f, -fLen / 2.f, -fLen / 2.f}, {0.f, 1.f}, {0.f, 0.f, -1.f, 0.f}},
@@ -224,10 +217,6 @@ void ModelInterface::MakeSphereVertexIndexSet(
 		}
 
 		pModelInterface->ui32IndexCount = UINT(vIndex.size());
-
-		pModelInterface->upTransformationProperties->xmvTranslation.m128_f32[0] = fCenterX;
-		pModelInterface->upTransformationProperties->xmvTranslation.m128_f32[1] = fCenterY;
-		pModelInterface->upTransformationProperties->xmvTranslation.m128_f32[2] = fCenterZ;
 
 		ID3D11Helper::CreateBuffer(pModelInterface->cpDevice.Get(), vIndex, D3D11_USAGE_IMMUTABLE, D3D11_BIND_INDEX_BUFFER, 0, 0, pModelInterface->cpIndexBuffer.GetAddressOf());
 		ID3D11Helper::CreateBuffer(pModelInterface->cpDevice.Get(), vVertex, D3D11_USAGE_IMMUTABLE, D3D11_BIND_VERTEX_BUFFER, 0, 0, pModelInterface->cpVertexBuffer.GetAddressOf());

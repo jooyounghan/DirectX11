@@ -152,10 +152,12 @@
     <ClCompile Include="FilterInterface.cpp" />
     <ClCompile Include="ImGuiFileDialog.cpp" />
     <ClCompile Include="ManageGuiInterface.cpp" />
+    <ClCompile Include="MirrorModel.cpp" />
     <ClCompile Include="NonLightDrawer.cpp" />
     <ClCompile Include="NormalVectorDrawer.cpp" />
     <ClCompile Include="ObjectDrawer.cpp" />
     <ClCompile Include="ObjectModel.cpp" />
+    <ClCompile Include="PickableModel.cpp" />
     <ClCompile Include="PostProcess.cpp" />
     <ClCompile Include="SettingManageGui.cpp" />
     <ClCompile Include="SingleFilterInterface.cpp" />
@@ -200,11 +202,13 @@
     <ClInclude Include="ImGuiFileDialog.h" />
     <ClInclude Include="ImGuiFileDialogConfig.h" />
     <ClInclude Include="ManageGuiInterface.h" />
+    <ClInclude Include="MirrorModel.h" />
     <ClInclude Include="ModelStruct.h" />
     <ClInclude Include="NonLightDrawer.h" />
     <ClInclude Include="NormalVectorDrawer.h" />
     <ClInclude Include="ObjectDrawer.h" />
     <ClInclude Include="ObjectModel.h" />
+    <ClInclude Include="PickableModel.h" />
     <ClInclude Include="PostProcess.h" />
     <ClInclude Include="SettingManageGui.h" />
     <ClInclude Include="ShaderTypeEnum.h" />

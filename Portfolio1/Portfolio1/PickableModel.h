@@ -1,26 +1,18 @@
 #pragma once
-#include <memory>
-#include <d3d11.h>
-#include <d3dcompiler.h>
-#include <windows.h>
-#include <wrl/client.h>
-#include <directxmath/DirectXMath.h>
-#include "ModelStruct.h"
+#include "ModelInterface.h"
 
-class ModelInterface
+class PickableModel : public ModelInterface
 {
 public:
-	ModelInterface(
+	PickableModel(
 		Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn,
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn
 	);
-	virtual ~ModelInterface();
+	virtual ~PickableModel();
 
 public:
-	virtual void Update(const float& fDelta) = 0;
-
-public:
-	virtual void Render() = 0;
+	virtual void Update(const float& fDelta);
+	virtual void Render() override;
 
 public:
 	virtual void SetIAProperties() = 0;
@@ -39,18 +31,20 @@ public:
 	virtual void SetPSShaderResources() = 0;
 	virtual void ResetShaderResources() = 0;
 
-protected:
-	Microsoft::WRL::ComPtr<ID3D11Device>&			cpDevice;
-	Microsoft::WRL::ComPtr<ID3D11DeviceContext>&	cpDeviceContext;
+public:
+	std::unique_ptr<class ModelID>			upModelID;
 
 public:
-	Microsoft::WRL::ComPtr<ID3D11Buffer>	cpVertexBuffer;
-	Microsoft::WRL::ComPtr<ID3D11Buffer>	cpIndexBuffer;
-	uint32_t								ui32IndexCount;
+	std::unique_ptr<class TransformProperties >			upTransformationProperties;
+	std::unique_ptr<class TransformationBufferData>		upTransformationBufferData;
+	Microsoft::WRL::ComPtr<ID3D11Buffer>				cpTransformationDataBuffer;
+
+public:
+	void ScaleUp(const float& x, const float& y, const float& z);
 
 protected:
 	static void MakePlaneVertexIndexSet(
-		ModelInterface* pModelInterface,
+		PickableModel* pModelInterface,
 		DirectX::XMVECTOR& xmvDirection,
 		DirectX::XMVECTOR& xmvUp,
 		const float& fCenterX,
@@ -61,7 +55,7 @@ protected:
 	);
 
 	static void MakeSquareVertexIndexSet(
-		ModelInterface* pModelInterface,
+		PickableModel* pModelInterface,
 		const float& fCenterX,
 		const float& fCenterY,
 		const float& fCenterZ,
@@ -69,7 +63,7 @@ protected:
 		const bool& bReverse = false
 	);
 	static void MakeSphereVertexIndexSet(
-		ModelInterface* pModelInterface,
+		PickableModel* pModelInterface,
 		const float& fCenterX,
 		const float& fCenterY,
 		const float& fCenterZ,

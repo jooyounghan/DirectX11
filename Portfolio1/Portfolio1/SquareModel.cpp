@@ -14,7 +14,7 @@ SquareModel::SquareModel(
 	const float& fLen
 ) : ObjectModel(cpDeviceIn, cpDeviceContextIn)
 {
-	ModelInterface::MakeSquareVertexIndexSet(this, fCenterX, fCenterY, fCenterZ, fLen);
+	PickableModel::MakeSquareVertexIndexSet(this, fCenterX, fCenterY, fCenterZ, fLen);
 }
 
 SquareModel::~SquareModel()

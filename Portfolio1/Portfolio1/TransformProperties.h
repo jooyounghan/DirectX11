@@ -30,6 +30,6 @@ public:
 	DirectX::XMMATRIX xmmInvTransformedMat;
 
 public:
-	static TransformationBufferData CreateTransfomredMatrix(IN DirectX::XMMATRIX* pXmmTransformedMatIn);
-	static void CreateTransfomredMatrix(IN DirectX::XMMATRIX* pXmmTransformedMatIn, OUT TransformationBufferData* pTransformationBufferDataIn);
+	static TransformationBufferData CreateTransfomredMatrix(IN const DirectX::XMMATRIX& xmmTransformedMatIn);
+	static void CreateTransfomredMatrix(IN const DirectX::XMMATRIX& xmmTransformedMatIn, OUT TransformationBufferData* pTransformationBufferDataIn);
 };

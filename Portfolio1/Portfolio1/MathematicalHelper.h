@@ -5,5 +5,5 @@
 class MathematicalHelper
 {
 public:
-	static DirectX::XMVECTOR MakeQuaternion(const DirectX::XMVECTOR& RotOrigin, const float& fDegree);
+	static DirectX::XMVECTOR MakeReflect(const DirectX::XMVECTOR& normalVec, const DirectX::XMVECTOR& inVec);
 };

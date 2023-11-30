@@ -1,9 +1,10 @@
 #pragma once
-#include "ModelInterface.h"
+
+#include "PickableModel.h"
 #include "ShaderTypeEnum.h"
 #include "ModelTextureFile.h"
 
-class ObjectModel : public ModelInterface
+class ObjectModel : public PickableModel
 {
 public:
 	ObjectModel(
@@ -13,7 +14,7 @@ public:
 	virtual ~ObjectModel();
 
 public:
-	virtual void Update();
+	virtual void Update(const float& fDelta);
 
 public:
 	virtual void SetIAProperties() override;
@@ -32,13 +33,9 @@ public:
 	virtual void SetPSShaderResources() override;
 	virtual void ResetShaderResources() override;
 
-
 public:
 	std::shared_ptr<class ModelTextureFile>	pModelTextureSet[TEXTURE_MAP_NUM];
 	std::shared_ptr<class ModelTextureFile>	pHeightTexture;
-
-public:
-	std::unique_ptr<class ModelID>			upModelID;
 
 public:
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	cpTextureFlagBuffer;

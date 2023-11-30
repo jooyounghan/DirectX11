@@ -36,9 +36,9 @@ void CameraNormal::SetCameraProperty()
 	ID3D11Helper::SetViewPort(0.f, 0.f, float(uiWidth), float(uiHeight), 0.f, 1.f, cpDeviceContext.Get(), &sScreenViewport);
 }
 
-void CameraNormal::Update()
+void CameraNormal::Update(const float& fDelta)
 {
-	sCameraInfo.Update();
+	sCameraInfo.Update(fDelta);
 	if (pPostProcess != nullptr) pPostProcess->Update();
 }
 

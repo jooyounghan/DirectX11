@@ -157,17 +157,23 @@
     <Filter Include="헤더 파일\Drawer\NonLightDrawer\Extended">
       <UniqueIdentifier>{8fab31b1-788b-4452-88b1-0410344a70b6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Main\Model">
+    <Filter Include="헤더 파일\Model\Mirror">
+      <UniqueIdentifier>{c953dbf6-27cb-4a77-a783-3c313569144e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Model">
       <UniqueIdentifier>{56867d9a-ae4a-41a6-8bc9-2c0570418237}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Main\Model\Object">
+    <Filter Include="소스 파일\Model\Object">
       <UniqueIdentifier>{25482c32-cffa-4bb4-bdd8-4b17ccddbbb4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Main\Model\Object\Extended">
+    <Filter Include="소스 파일\Model\Object\Extended">
       <UniqueIdentifier>{2f5b774f-21dd-4323-aefc-369cf6718d92}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Main\Model\CubeMap">
+    <Filter Include="소스 파일\Model\CubeMap">
       <UniqueIdentifier>{f4cb0c6c-6922-4df7-90ef-9c1bf2b0a3ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Model\Mirror">
+      <UniqueIdentifier>{589fb263-11d8-4de5-95a9-1d302288f171}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -190,7 +196,7 @@
       <Filter>소스 파일\Utils</Filter>
     </ClCompile>
     <ClCompile Include="ModelID.cpp">
-      <Filter>소스 파일\Main\Model</Filter>
+      <Filter>소스 파일\Model</Filter>
     </ClCompile>
     <ClCompile Include="TransformProperties.cpp">
       <Filter>소스 파일\Transformation</Filter>
@@ -271,19 +277,19 @@
       <Filter>소스 파일\Files\Specific</Filter>
     </ClCompile>
     <ClCompile Include="ModelInterface.cpp">
-      <Filter>소스 파일\Main\Model</Filter>
+      <Filter>소스 파일\Model</Filter>
     </ClCompile>
     <ClCompile Include="ObjectModel.cpp">
-      <Filter>소스 파일\Main\Model\Object</Filter>
+      <Filter>소스 파일\Model\Object</Filter>
     </ClCompile>
     <ClCompile Include="SphereModel.cpp">
-      <Filter>소스 파일\Main\Model\Object\Extended</Filter>
+      <Filter>소스 파일\Model\Object\Extended</Filter>
     </ClCompile>
     <ClCompile Include="SquareModel.cpp">
-      <Filter>소스 파일\Main\Model\Object\Extended</Filter>
+      <Filter>소스 파일\Model\Object\Extended</Filter>
     </ClCompile>
     <ClCompile Include="CubeMapModel.cpp">
-      <Filter>소스 파일\Main\Model\CubeMap</Filter>
+      <Filter>소스 파일\Model\CubeMap</Filter>
     </ClCompile>
     <ClCompile Include="ObjectDrawer.cpp">
       <Filter>소스 파일\Drawer\ObjectDrawer</Filter>
@@ -302,6 +308,12 @@
     </ClCompile>
     <ClCompile Include="CubeMapDrawer.cpp">
       <Filter>소스 파일\Drawer\NonLightDrawer\Extneded</Filter>
+    </ClCompile>
+    <ClCompile Include="MirrorModel.cpp">
+      <Filter>소스 파일\Model\Mirror</Filter>
+    </ClCompile>
+    <ClCompile Include="PickableModel.cpp">
+      <Filter>소스 파일\Model</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -448,6 +460,12 @@
     </ClInclude>
     <ClInclude Include="CubeMapModel.h">
       <Filter>헤더 파일\Model\CubeMap</Filter>
+    </ClInclude>
+    <ClInclude Include="MirrorModel.h">
+      <Filter>헤더 파일\Model\Mirror</Filter>
+    </ClInclude>
+    <ClInclude Include="PickableModel.h">
+      <Filter>헤더 파일\Model</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

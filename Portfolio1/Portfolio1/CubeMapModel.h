@@ -12,7 +12,8 @@ public:
 	virtual ~CubeMapModel();
 
 public:
-	virtual void Update();
+	virtual void Update(const float& fDelta);
+	virtual void Render() override;
 
 public:
 	virtual void SetIAProperties() override;
