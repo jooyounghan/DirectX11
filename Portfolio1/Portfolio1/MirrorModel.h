@@ -18,23 +18,30 @@ public:
 
 public:
 	virtual void Update(const float& fDelta) override;
-	virtual void Render() override;
-public:
-	virtual void SetIAProperties() = 0;
-	virtual void SetVSConstantBuffers() = 0;
-	virtual void SetHSConstantBuffers() = 0;
-	virtual void SetDSConstantBuffers() = 0;
-	virtual void SetGSConstantBuffers() = 0;
-	virtual void SetPSConstantBuffers() = 0;
-	virtual void ResetConstantBuffers() = 0;
 
 public:
-	virtual void SetVSShaderResources() = 0;
-	virtual void SetHSShaderResources() = 0;
-	virtual void SetDSShaderResources() = 0;
-	virtual void SetGSShaderResources() = 0;
-	virtual void SetPSShaderResources() = 0;
-	virtual void ResetShaderResources() = 0;
+	virtual void	SetIAProperties();
+	virtual void	SetVSConstantBuffers();
+	virtual void	SetHSConstantBuffers();
+	virtual void	SetDSConstantBuffers();
+	virtual void	SetGSConstantBuffers();
+	virtual void	SetPSConstantBuffers();
+	virtual void	ResetConstantBuffers();
+
+public:
+	virtual void	SetVSShaderResources();
+	virtual void	SetHSShaderResources();
+	virtual void	SetDSShaderResources();
+	virtual void	SetGSShaderResources();
+	virtual void	SetPSShaderResources();
+	virtual void	ResetShaderResources();
+
+public:
+	void			SetPSMirrorConstantBuffer();
+	void			SetPSMirrorShaderResources();
+
+	void			ResetPSMirrorConstantBuffer();
+	void			ResetPSMirrorShaderResources();
 
 protected:
 	float fMirrorWidth;

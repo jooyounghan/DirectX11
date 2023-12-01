@@ -1,8 +1,4 @@
 #pragma once
-#include <d3d11.h>
-#include <d3dcompiler.h>
-#include <windows.h>
-#include <wrl/client.h>
 #include "DrawerInterface.h"
 
 #include <memory>
@@ -20,9 +16,6 @@ public:
 		Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn,
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn);
 	virtual ~ObjectDrawer();
-
-protected:
-	
 
 public:
 	void Draw(

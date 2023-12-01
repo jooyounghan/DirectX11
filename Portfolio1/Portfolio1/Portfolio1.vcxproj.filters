@@ -175,6 +175,9 @@
     <Filter Include="소스 파일\Model\Mirror">
       <UniqueIdentifier>{589fb263-11d8-4de5-95a9-1d302288f171}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shader\Mirror">
+      <UniqueIdentifier>{8bcb6dc4-e3cb-4737-be6a-bd469c0402b0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ID3D11Helper.cpp">
@@ -314,6 +317,9 @@
     </ClCompile>
     <ClCompile Include="PickableModel.cpp">
       <Filter>소스 파일\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="MirrorDrawer.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -467,6 +473,9 @@
     <ClInclude Include="PickableModel.h">
       <Filter>헤더 파일\Model</Filter>
     </ClInclude>
+    <ClInclude Include="MirrorDrawer.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="BaseModelDS.hlsl">
@@ -504,6 +513,9 @@
     </FxCompile>
     <FxCompile Include="CubeMapPS.hlsl">
       <Filter>Shader\CubeMap</Filter>
+    </FxCompile>
+    <FxCompile Include="MirrorModelPS.hlsl">
+      <Filter>Shader\Mirror</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

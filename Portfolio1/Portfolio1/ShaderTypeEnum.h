@@ -49,6 +49,7 @@ enum PSSRVType : unsigned int
 	PS_SRV_CUBEMAP_BRDF,
 	PS_SRV_FILTER1,
 	PS_SRV_FILTER2,
+	PS_SRV_MIRROR_SELF
 };
 
 enum PSSamplerType : unsigned int
