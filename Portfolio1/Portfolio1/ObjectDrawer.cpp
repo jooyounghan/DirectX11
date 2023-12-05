@@ -19,7 +19,36 @@ ObjectDrawer::~ObjectDrawer()
 void ObjectDrawer::Draw(
 	CameraInterface* pCamera,
 	LightManager* pLightManager,
-	const std::vector<std::shared_ptr<PickableModel>> vSpModels,
+	const std::vector<std::shared_ptr<ObjectModel>> vSpModels,
+	CubeMapModel* pEnvironmentCubeMap
+)
+{
+	PresetConfig(pCamera, pLightManager, pEnvironmentCubeMap);
+	for (auto& pObjectModel : vSpModels)
+	{
+		pObjectModel->SetIAProperties();
+		pObjectModel->SetVSConstantBuffers();
+		pObjectModel->SetVSShaderResources();
+		pObjectModel->SetGSConstantBuffers();
+		pObjectModel->SetGSShaderResources();
+		pObjectModel->SetHSConstantBuffers();
+		pObjectModel->SetHSShaderResources();
+		pObjectModel->SetDSConstantBuffers();
+		pObjectModel->SetDSShaderResources();
+		pObjectModel->SetPSConstantBuffers();
+		pObjectModel->SetPSShaderResources();
+
+		pObjectModel->Render();
+
+		pObjectModel->ResetConstantBuffers();
+		pObjectModel->ResetShaderResources();
+	}
+	ResetConfig(pCamera, pLightManager, pEnvironmentCubeMap);
+}
+
+void ObjectDrawer::PresetConfig(
+	CameraInterface* pCamera,
+	LightManager* pLightManager,
 	CubeMapModel* pEnvironmentCubeMap
 )
 {
@@ -43,28 +72,14 @@ void ObjectDrawer::Draw(
 
 	pEnvironmentCubeMap->SetPSConstantBuffers();
 	pEnvironmentCubeMap->SetPSShaderResources();
+}
 
-	for (auto& pObjectModel : vSpModels)
-	{
-		pObjectModel->SetIAProperties();
-		pObjectModel->SetVSConstantBuffers();
-		pObjectModel->SetVSShaderResources();
-		pObjectModel->SetGSConstantBuffers();
-		pObjectModel->SetGSShaderResources();
-		pObjectModel->SetHSConstantBuffers();
-		pObjectModel->SetHSShaderResources();
-		pObjectModel->SetDSConstantBuffers();
-		pObjectModel->SetDSShaderResources();
-		pObjectModel->SetPSConstantBuffers();
-		pObjectModel->SetPSShaderResources();
-
-		pObjectModel->Render();
-
-		pObjectModel->ResetConstantBuffers();
-		pObjectModel->ResetShaderResources();
-
-	}
-
+void ObjectDrawer::ResetConfig(
+	CameraInterface* pCamera, 
+	LightManager* pLightManager, 
+	CubeMapModel* pEnvironmentCubeMap
+)
+{
 	pEnvironmentCubeMap->ResetConstantBuffers();
 	pEnvironmentCubeMap->ResetShaderResources();
 

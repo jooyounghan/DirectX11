@@ -20,6 +20,9 @@ public:
 	virtual void Update(const float& fDelta) override;
 
 public:
+	void WipeOut(const DirectX::XMVECTOR& xmvClearColor = DirectX::XMVectorSet(0.f, 0.f, 0.f, 1.f));
+
+public:
 	virtual void	SetIAProperties();
 	virtual void	SetVSConstantBuffers();
 	virtual void	SetHSConstantBuffers();
@@ -37,11 +40,12 @@ public:
 	virtual void	ResetShaderResources();
 
 public:
-	void			SetPSMirrorConstantBuffer();
-	void			SetPSMirrorShaderResources();
+	void			SetMirrorConstantBuffer();
+	void			ResetMirrorConstantBuffer();
 
-	void			ResetPSMirrorConstantBuffer();
-	void			ResetPSMirrorShaderResources();
+public:
+	void			SetOMMirrorRenderTarget();
+	void			ResetOMMirrorRenderTarget();
 
 protected:
 	float fMirrorWidth;
@@ -65,8 +69,14 @@ protected:
 
 protected:
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> cpMirrorTexture;
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> cpMirrorSRV;
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> cpMirrorRTV;
 
+protected:
+	Microsoft::WRL::ComPtr<ID3D11Texture2D> cpMirrorResolvedTexture;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> cpMirrorResolvedSRV;
+
+protected:
+	Microsoft::WRL::ComPtr<ID3D11Texture2D>			cpMirrorDepthStencilTexture2D;
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilView>	cpMirrorepthStencilView;
 };
 

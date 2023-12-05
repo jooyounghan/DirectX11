@@ -10,7 +10,7 @@ CubeMapModel::CubeMapModel(
 )
 	: ModelInterface(cpDeviceIn, cpDeviceContextIn)
 {
-	ModelInterface::MakeSquareVertexIndexSet(this, 0.f, 0.f, 0.f, 500.f, true);
+	ModelInterface::MakeSquareVertexIndexSet(this, 500.f, true);
 
 	AutoZeroMemory(sPSTextureFlags);
 	ID3D11Helper::CreateBuffer(

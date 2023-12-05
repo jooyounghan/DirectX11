@@ -79,7 +79,7 @@ void PickableModel::MakePlaneVertexIndexSet(
 		pPickableModel->upTransformationProperties->xmvTranslation.m128_f32[1] = fCenterY;
 		pPickableModel->upTransformationProperties->xmvTranslation.m128_f32[2] = fCenterZ;
 
-		ModelInterface::MakePlaneVertexIndexSet(pPickableModel, xmvDirection, xmvUp, fCenterX, fCenterY, fCenterZ, fWidth, fHeight);
+		ModelInterface::MakePlaneVertexIndexSet(pPickableModel, xmvDirection, xmvUp, fWidth, fHeight);
 	}
 }
 
@@ -98,7 +98,7 @@ void PickableModel::MakeSquareVertexIndexSet(
 		pPickableModel->upTransformationProperties->xmvTranslation.m128_f32[1] = fCenterY;
 		pPickableModel->upTransformationProperties->xmvTranslation.m128_f32[2] = fCenterZ;
 
-		ModelInterface::MakeSquareVertexIndexSet(pPickableModel, fCenterX, fCenterY, fCenterZ, fLen, bReverse);
+		ModelInterface::MakeSquareVertexIndexSet(pPickableModel, fLen, bReverse);
 	}
 }
 
@@ -116,6 +116,6 @@ void PickableModel::MakeSphereVertexIndexSet(
 		pPickableModel->upTransformationProperties->xmvTranslation.m128_f32[0] = fCenterX;
 		pPickableModel->upTransformationProperties->xmvTranslation.m128_f32[1] = fCenterY;
 		pPickableModel->upTransformationProperties->xmvTranslation.m128_f32[2] = fCenterZ;
-		ModelInterface::MakeSphereVertexIndexSet(pPickableModel, fCenterX, fCenterY, fCenterZ, fRadius, usLevel);
+		ModelInterface::MakeSphereVertexIndexSet(pPickableModel, fRadius, usLevel);
 	}
 }

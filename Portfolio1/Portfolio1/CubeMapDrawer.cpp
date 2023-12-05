@@ -3,6 +3,7 @@
 #include "DepthStencilState.h"
 
 #include "CubeMapModel.h"
+#include "ShaderTypeEnum.h"
 
 #include <vector>
 
@@ -23,16 +24,10 @@ CubeMapDrawer::CubeMapDrawer(
 
 		ID3D11Helper::CreateVSInputLayOut(cpDevice.Get(), L"CubeMapVS.hlsl", vInputElemDesc, cpCubeMapVertexShader.GetAddressOf(), cpCubeMapInputLayout.GetAddressOf());
 		ID3D11Helper::CreatePS(cpDevice.Get(), L"CubeMapPS.hlsl", cpCubeMapPixelShader.GetAddressOf());
-		ID3D11Helper::CreateSampler(D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_CLAMP, NULL, cpDevice.Get(), cpCubeMapSampler.GetAddressOf());
 }
 
 CubeMapDrawer::~CubeMapDrawer()
 {
-}
-
-void CubeMapDrawer::Draw(CameraInterface* pCamera, CubeMapModel* pCubeMap)
-{
-	NonLightDrawer::Draw(pCamera, pCubeMap);
 }
 
 void CubeMapDrawer::SetIAInputLayer()
@@ -61,7 +56,8 @@ void CubeMapDrawer::SetGSShader()
 void CubeMapDrawer::SetPSShader()
 {
 	cpDeviceContext->PSSetShader(cpCubeMapPixelShader.Get(), 0, 0);
-	cpDeviceContext->PSSetSamplers(0, 1, cpCubeMapSampler.GetAddressOf());
+	cpDeviceContext->PSSetSamplers(PSSamplerType::PS_WRAP_SAMPLER, 1, cpDrawerWrapSampler.GetAddressOf());
+	cpDeviceContext->PSSetSamplers(PSSamplerType::PS_CLAMP_SAMPLER, 1, cpDrawerClampSampler.GetAddressOf());
 }
 
 void CubeMapDrawer::SetOMState()
@@ -79,5 +75,6 @@ void CubeMapDrawer::ResetDrawer()
 	cpDeviceContext->VSSetShader(nullptr, 0, 0);
 
 	ID3D11SamplerState* pResetSampler = nullptr;
-	cpDeviceContext->PSSetSamplers(0, 1, &pResetSampler);
+	cpDeviceContext->PSSetSamplers(PSSamplerType::PS_WRAP_SAMPLER, 1, &pResetSampler);
+	cpDeviceContext->PSSetSamplers(PSSamplerType::PS_CLAMP_SAMPLER, 1, &pResetSampler);
 }

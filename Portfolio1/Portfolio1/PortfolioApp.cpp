@@ -11,6 +11,7 @@
 #include "ModelOutlineDrawer.h"
 #include "NormalVectorDrawer.h"
 #include "CubeMapDrawer.h"
+#include "MirrorDrawer.h"
 
 #include "CameraInterface.h"
 #include "CameraNormal.h"
@@ -20,6 +21,7 @@
 #include "SphereModel.h"
 #include "SquareModel.h"
 #include "CubeMapModel.h"
+#include "MirrorModel.h"
 
 #include "ModelID.h"
 
@@ -53,36 +55,48 @@ void PortfolioApp::Init()
 	ID3D11Helper::Init(cpDevice.Get(), cpDeviceContext.Get());
 
 	InitImGUI();
-
-	vSpModels.push_back(std::make_shared<SquareModel>(cpDevice, cpDeviceContext, 0.f, 0.f, 0.f, 2.f));
-	vSpModels.push_back(std::make_shared<SphereModel>(cpDevice, cpDeviceContext, 5.f, 0.f, 5.f, 2.f));
-	spCubeMap = make_shared<CubeMapModel>(cpDevice, cpDeviceContext);
-
-	// GUI 추가 =====================================================================================
-	vUpManageGuis.push_back(make_unique<ModelManageGui>(vSpModels, spSelectedModel));
-	vUpManageGuis.push_back(make_unique<LightManageGui>(spLightManager));
-	vUpManageGuis.push_back(make_unique<SettingManageGui>(bIsNormalVectorDraw, bIsWireFrameDraw, spCubeMap));
-	vUpManageGuis.push_back(make_unique<CameraManageGui>(spMainCameras));
-	vUpManageGuis.push_back(make_unique<FileManageGui>(cpDevice, cpDeviceContext));
-	// ==============================================================================================
-
-	spLightManager = make_unique<LightManager>(cpDevice, cpDeviceContext);
-
-	upModelDrawer = make_unique<BaseModelDrawer>(cpDevice, cpDeviceContext);
-	upModelOutlineDrawer = make_unique<ModelOutlineDrawer>(cpDevice, cpDeviceContext);
-	upNormalVectorDrawer = make_unique<NormalVectorDrawer>(cpDevice, cpDeviceContext);
-	upCubeMapDrawer = make_unique<CubeMapDrawer>(cpDevice, cpDeviceContext);
+	
+	// =================================================================================================
 	// SDR
 	//spMainCameras = make_shared<CameraNormal>(cpDevice, cpDeviceContext, cpSwapChain, uiWidth, uiHeight, uiNumLevelQuality);
-	
+
 	// HDR
 	spMainCameras = make_shared<CameraNormal>(cpDevice, cpDeviceContext, cpSwapChain, uiWidth, uiHeight, uiNumLevelQuality, DXGI_FORMAT_R16G16B16A16_FLOAT);
+	// =================================================================================================
+	
+	
+	shared_ptr<SphereModel> spSphere = make_shared<SphereModel>(cpDevice, cpDeviceContext, 0.f, 0.f, 0.f, 2.f);
+	vSpPickableModels.push_back(spSphere);
+	vSpObjectModels.push_back(spSphere);
 
+	shared_ptr<MirrorModel> spMirrorLeft = make_shared<MirrorModel>(cpDevice, cpDeviceContext, 5.f, 5.f, -5.f, 0.f, 0.f, spMainCameras);
+	shared_ptr<MirrorModel> spMirrorRight = make_shared<MirrorModel>(cpDevice, cpDeviceContext, 5.f, 5.f, 5.f, 0.f, 0.f, spMainCameras);
+	vSpPickableModels.push_back(spMirrorLeft);
+	vSpPickableModels.push_back(spMirrorRight);
+	vSpMirrorModels.push_back(spMirrorLeft);
+	vSpMirrorModels.push_back(spMirrorRight);
+
+	spCubeMap = make_shared<CubeMapModel>(cpDevice, cpDeviceContext);
+
+	spLightManager = make_unique<LightManager>(cpDevice, cpDeviceContext);
 	spLightManager->AddDirectionalLight(
 		XMVectorSet(0.f, 0.f, -100.f, 1.f),
 		XMVectorSet(1.f, 0.1f, 0.1f, 1.f),
 		XMVectorSet(0.f, 0.f, 1.f, 0.f)
 	);
+
+	// GUI 추가 =====================================================================================
+	vUpManageGuis.push_back(make_unique<ModelManageGui>(vSpPickableModels, spSelectedModel));
+	vUpManageGuis.push_back(make_unique<LightManageGui>(spLightManager));
+	vUpManageGuis.push_back(make_unique<SettingManageGui>(bIsNormalVectorDraw, bIsWireFrameDraw, spCubeMap));
+	vUpManageGuis.push_back(make_unique<CameraManageGui>(spMainCameras));
+	vUpManageGuis.push_back(make_unique<FileManageGui>(cpDevice, cpDeviceContext));
+	// ==============================================================================================
+	upModelDrawer = make_unique<BaseModelDrawer>(cpDevice, cpDeviceContext);
+	upModelOutlineDrawer = make_unique<ModelOutlineDrawer>(cpDevice, cpDeviceContext);
+	upNormalVectorDrawer = make_unique<NormalVectorDrawer>(cpDevice, cpDeviceContext);
+	upCubeMapDrawer = make_unique<CubeMapDrawer>(cpDevice, cpDeviceContext);
+	upMirrorDrawer = make_unique<MirrorDrawer>(cpDevice, cpDeviceContext);
 	// ==============================================================================================
 }
 
@@ -91,7 +105,7 @@ void PortfolioApp::Update(const float& fDelta)
 	spMainCameras->Update(fDelta);
 	spLightManager->Update();
 
-	for (auto& model : vSpModels)
+	for (auto& model : vSpPickableModels)
 	{
 		model->Update(fDelta);
 	}
@@ -102,11 +116,16 @@ void PortfolioApp::Render()
 {
 	spMainCameras->WipeOut(DirectX::XMVectorSet(0.f, 0.f, 0.f, 1.f));
 
-	upModelDrawer->Draw(spMainCameras.get(), spLightManager.get(), vSpModels, spCubeMap.get());
+	for (auto& pMirror : vSpMirrorModels)
+	{
+		pMirror->WipeOut(DirectX::XMVectorSet(0.f, 0.f, 0.f, 1.f));
+	}
+
+	upModelDrawer->Draw(spMainCameras.get(), spLightManager.get(), vSpObjectModels, spCubeMap.get());
 
 	if (bIsNormalVectorDraw)
 	{
-		for (auto& model : vSpModels)
+		for (auto& model : vSpPickableModels)
 		{
 			upNormalVectorDrawer->Draw(spMainCameras.get(), model.get());
 		}
@@ -118,6 +137,8 @@ void PortfolioApp::Render()
 	}
 
 	upCubeMapDrawer->Draw(spMainCameras.get(), spCubeMap.get());
+
+	upMirrorDrawer->Draw(upModelDrawer.get(), upCubeMapDrawer.get(), spMainCameras.get(), spLightManager.get(), vSpObjectModels, spCubeMap.get(), vSpMirrorModels);
 
 	spMainCameras->DoPostProcess();
 }
@@ -202,8 +223,8 @@ void PortfolioApp::ResizeSwapChain(const UINT& uiWidthIn, const UINT& uiHeightIn
 void PortfolioApp::CheckMouseHoveredModel()
 {
 	ModelIDData uiSelectedModelID = spMainCameras->GetPointedModelID();
-	auto findResult = find_if(vSpModels.begin(), vSpModels.end(), [&](shared_ptr<PickableModel> model) { return model->upModelID->sIdData == uiSelectedModelID; });
-	if (findResult != vSpModels.end())
+	auto findResult = find_if(vSpPickableModels.begin(), vSpPickableModels.end(), [&](shared_ptr<PickableModel> model) { return model->upModelID->sIdData == uiSelectedModelID; });
+	if (findResult != vSpPickableModels.end())
 	{
 		spTempSelectedModel = *findResult;
 	}

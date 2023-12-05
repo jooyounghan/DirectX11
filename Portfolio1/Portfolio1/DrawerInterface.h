@@ -34,5 +34,9 @@ protected:
 
 protected:
 	virtual void ResetDrawer() = 0;
+
+protected:
+	Microsoft::WRL::ComPtr<ID3D11SamplerState>	cpDrawerWrapSampler;
+	Microsoft::WRL::ComPtr<ID3D11SamplerState>	cpDrawerClampSampler;
 };
 

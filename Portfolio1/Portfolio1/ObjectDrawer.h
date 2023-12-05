@@ -4,13 +4,15 @@
 #include <memory>
 #include <vector>
 
-class PickableModel;
+class ObjectModel;
 class CameraInterface;
 class LightManager;
 class CubeMapModel;
 
 class ObjectDrawer : public DrawerInterface
 {
+	friend class MirrorDrawer;
+
 public:
 	ObjectDrawer(
 		Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn,
@@ -21,7 +23,7 @@ public:
 	void Draw(
 		CameraInterface* pCamera, 
 		LightManager* pLightManager, 
-		const std::vector<std::shared_ptr<PickableModel>> vSpModels,
+		const std::vector<std::shared_ptr<ObjectModel>> vSpModels,
 		CubeMapModel* pEnvironmentCubeMap
 	);
 
@@ -39,5 +41,18 @@ protected:
 
 protected:
 	virtual void ResetDrawer() = 0;
+
+protected:
+	void PresetConfig(
+		CameraInterface* pCamera,
+		LightManager* pLightManager,
+		CubeMapModel* pEnvironmentCubeMap
+	);
+
+	void ResetConfig(
+		CameraInterface* pCamera,
+		LightManager* pLightManager,
+		CubeMapModel* pEnvironmentCubeMap
+	);
 };
 

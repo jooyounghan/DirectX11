@@ -86,7 +86,7 @@ protected:
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView>		cpCameraOutputRTV;
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>	cpCameraOutputSRV;
 
-protected:
+public:
 	Microsoft::WRL::ComPtr<ID3D11Texture2D>				cpModelIDTexture;
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView>		cpModelIDRTV;
 

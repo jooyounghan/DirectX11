@@ -34,6 +34,7 @@ class ModelInterface;
 class PickableModel;
 class ObjectModel;
 class CubeMapModel;
+class MirrorModel;
 
 class ManageGuiInterface;
 
@@ -43,6 +44,7 @@ class BaseModelDrawer;
 class ModelOutlineDrawer;
 class NormalVectorDrawer;
 class CubeMapDrawer;
+class MirrorDrawer;
 
 class PortfolioApp : public BaseApp
 {
@@ -83,7 +85,11 @@ private:
 private:
 	std::shared_ptr<PickableModel>					spSelectedModel;
 	std::shared_ptr<PickableModel>					spTempSelectedModel;
-	std::vector<std::shared_ptr<PickableModel>>		vSpModels;
+	
+private:
+	std::vector<std::shared_ptr<PickableModel>>		vSpPickableModels;
+	std::vector<std::shared_ptr<ObjectModel>>		vSpObjectModels;
+	std::vector<std::shared_ptr<MirrorModel>>		vSpMirrorModels;
 
 private:
 	std::shared_ptr<LightManager>					spLightManager;
@@ -96,6 +102,7 @@ private:
 	std::unique_ptr<ModelOutlineDrawer>				upModelOutlineDrawer;
 	std::unique_ptr<NormalVectorDrawer>				upNormalVectorDrawer;
 	std::unique_ptr<CubeMapDrawer>					upCubeMapDrawer;
+	std::unique_ptr<MirrorDrawer>					upMirrorDrawer;
 
 public:
 	virtual LRESULT WINAPI AppProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) override;

@@ -21,8 +21,6 @@ BaseModelDrawer::BaseModelDrawer(ComPtr<ID3D11Device>& cpDeviceIn, ComPtr<ID3D11
 	ID3D11Helper::CreateHS(cpDevice.Get(), L"BaseModelHS.hlsl", cpBaseHullShader.GetAddressOf());
 	ID3D11Helper::CreateDS(cpDevice.Get(), L"BaseModelDS.hlsl", cpBaseDomainShader.GetAddressOf());
 	ID3D11Helper::CreatePS(cpDevice.Get(), L"BaseModelPS.hlsl", cpBasePixelShader.GetAddressOf());
-	ID3D11Helper::CreateSampler(D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP, NULL, cpDevice.Get(), cpBaseWrapSampler.GetAddressOf());
-	ID3D11Helper::CreateSampler(D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_CLAMP, NULL, cpDevice.Get(), cpBaseClampSampler.GetAddressOf());
 }
 
 BaseModelDrawer::~BaseModelDrawer()
@@ -52,15 +50,15 @@ void BaseModelDrawer::SetHSShader()
 void BaseModelDrawer::SetDSShader()
 {
 	cpDeviceContext->DSSetShader(cpBaseDomainShader.Get(), 0, 0);
-	cpDeviceContext->DSSetSamplers(DSSamplerType::DS_WRAP_SAMPLER, 1, cpBaseWrapSampler.GetAddressOf());
-	cpDeviceContext->DSSetSamplers(DSSamplerType::DS_CLAMP_SAMPLER, 1, cpBaseClampSampler.GetAddressOf());
+	cpDeviceContext->DSSetSamplers(DSSamplerType::DS_WRAP_SAMPLER, 1, cpDrawerWrapSampler.GetAddressOf());
+	cpDeviceContext->DSSetSamplers(DSSamplerType::DS_CLAMP_SAMPLER, 1, cpDrawerClampSampler.GetAddressOf());
 }
 
 void BaseModelDrawer::SetPSShader()
 {
 	cpDeviceContext->PSSetShader(cpBasePixelShader.Get(), 0, 0);
-	cpDeviceContext->PSSetSamplers(PSSamplerType::PS_WRAP_SAMPLER, 1, cpBaseWrapSampler.GetAddressOf());
-	cpDeviceContext->PSSetSamplers(PSSamplerType::PS_CLAMP_SAMPLER, 1, cpBaseClampSampler.GetAddressOf());
+	cpDeviceContext->PSSetSamplers(PSSamplerType::PS_WRAP_SAMPLER, 1, cpDrawerWrapSampler.GetAddressOf());
+	cpDeviceContext->PSSetSamplers(PSSamplerType::PS_CLAMP_SAMPLER, 1, cpDrawerClampSampler.GetAddressOf());
 }
 
 void BaseModelDrawer::SetOMState()

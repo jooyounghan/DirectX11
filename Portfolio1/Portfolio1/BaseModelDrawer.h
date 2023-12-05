@@ -9,7 +9,7 @@ public:
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn);
 	virtual ~BaseModelDrawer();
 
-protected:
+public:
 	virtual void SetIAInputLayer() override;
 	virtual void SetVSShader() override;
 	virtual void SetHSShader() override;
@@ -17,11 +17,11 @@ protected:
 	virtual void SetGSShader() override;
 	virtual void SetPSShader() override;
 
-protected:
+public:
 	virtual void SetOMState() override;
 	virtual void ResetOMState() override;
 
-protected:
+public:
 	virtual void ResetDrawer() override;
 
 protected:
@@ -31,9 +31,6 @@ protected:
 protected:
 	Microsoft::WRL::ComPtr<ID3D11PixelShader>	cpBasePixelShader;
 
-protected:
-	Microsoft::WRL::ComPtr<ID3D11SamplerState>	cpBaseWrapSampler;
-	Microsoft::WRL::ComPtr<ID3D11SamplerState>	cpBaseClampSampler;
 
 protected:
 	Microsoft::WRL::ComPtr<ID3D11HullShader>	cpBaseHullShader;

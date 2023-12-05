@@ -16,21 +16,7 @@ NonLightDrawer::~NonLightDrawer()
 
 void NonLightDrawer::Draw(CameraInterface* pCamera, ModelInterface* pModel)
 {
-	SetIAInputLayer();
-	SetVSShader();
-	SetGSShader();
-	SetHSShader();
-	SetDSShader();
-	SetPSShader();
-	SetOMState();
-
-	pCamera->SetRSState();
-	pCamera->SetVSConstantBuffers();
-	pCamera->SetGSConstantBuffers();
-	pCamera->SetHSConstantBuffers();
-	pCamera->SetDSConstantBuffers();
-	pCamera->SetPSConstantBuffers();
-	pCamera->OMSetRenderTargets();
+	PresetConfig(pCamera);
 
 	pModel->SetIAProperties();
 	pModel->SetVSConstantBuffers();
@@ -49,6 +35,35 @@ void NonLightDrawer::Draw(CameraInterface* pCamera, ModelInterface* pModel)
 	pModel->ResetConstantBuffers();
 	pModel->ResetShaderResources();
 
+	ResetConfig(pCamera);
+}
+
+void NonLightDrawer::PresetConfig(
+	CameraInterface* pCamera
+)
+{
+	SetIAInputLayer();
+	SetVSShader();
+	SetGSShader();
+	SetHSShader();
+	SetDSShader();
+	SetPSShader();
+	SetOMState();
+
+	pCamera->SetRSState();
+	pCamera->SetVSConstantBuffers();
+	pCamera->SetGSConstantBuffers();
+	pCamera->SetHSConstantBuffers();
+	pCamera->SetDSConstantBuffers();
+	pCamera->SetPSConstantBuffers();
+	pCamera->OMSetRenderTargets();
+}
+
+
+void NonLightDrawer::ResetConfig(
+	CameraInterface* pCamera
+)
+{
 	pCamera->ResetCamera();
 
 	ResetOMState();

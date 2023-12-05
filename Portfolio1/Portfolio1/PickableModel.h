@@ -40,7 +40,7 @@ public:
 	Microsoft::WRL::ComPtr<ID3D11Buffer>				cpTransformationDataBuffer;
 
 public:
-	void ScaleUp(const float& x, const float& y, const float& z);
+	virtual void ScaleUp(const float& x, const float& y, const float& z);
 
 protected:
 	static void MakePlaneVertexIndexSet(

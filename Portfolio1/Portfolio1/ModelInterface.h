@@ -53,26 +53,17 @@ protected:
 		ModelInterface* pModelInterface,
 		DirectX::XMVECTOR& xmvDirection,
 		DirectX::XMVECTOR& xmvUp,
-		const float& fCenterX,
-		const float& fCenterY,
-		const float& fCenterZ,
 		const float& fWidth,
 		const float& fHeight
 	);
 
 	static void MakeSquareVertexIndexSet(
 		ModelInterface* pModelInterface,
-		const float& fCenterX,
-		const float& fCenterY,
-		const float& fCenterZ,
 		const float& fLen,
 		const bool& bReverse = false
 	);
 	static void MakeSphereVertexIndexSet(
 		ModelInterface* pModelInterface,
-		const float& fCenterX,
-		const float& fCenterY,
-		const float& fCenterZ,
 		const float& fRadius,
 		const unsigned short& usLevel
 	);

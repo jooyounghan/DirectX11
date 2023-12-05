@@ -7,29 +7,28 @@ class CubeMapModel;
 
 class CubeMapDrawer : public NonLightDrawer
 {
+	friend class MirrorDrawer;
+
 public:
 	CubeMapDrawer(
 		Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn,
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn);
 	virtual ~CubeMapDrawer();
 
-public:
-	void Draw(CameraInterface* pCamera, CubeMapModel* pCubeMap);
+protected:
+	virtual void SetIAInputLayer() override;
+	virtual void SetVSShader() override;
+	virtual void SetHSShader() override;
+	virtual void SetDSShader() override;
+	virtual void SetGSShader() override;
+	virtual void SetPSShader() override;
 
 protected:
-	void SetIAInputLayer();
-	void SetVSShader();
-	void SetHSShader();
-	void SetDSShader();
-	void SetGSShader();
-	void SetPSShader();
+	virtual void SetOMState() override;
+	virtual void ResetOMState() override;
 
 protected:
-	void SetOMState();
-	void ResetOMState();
-
-protected:
-	void ResetDrawer();
+	virtual void ResetDrawer() override;
 
 protected:
 	Microsoft::WRL::ComPtr<ID3D11InputLayout>	cpCubeMapInputLayout;
@@ -37,5 +36,4 @@ protected:
 
 protected:
 	Microsoft::WRL::ComPtr<ID3D11PixelShader>	cpCubeMapPixelShader;
-	Microsoft::WRL::ComPtr<ID3D11SamplerState>	cpCubeMapSampler;
 };

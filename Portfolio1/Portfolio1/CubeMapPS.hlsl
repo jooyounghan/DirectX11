@@ -8,7 +8,8 @@ cbuffer TextureFlagBuffer : register(b4)
     uint3   uiDummy[1];
 };
 
-SamplerState Sampler : register(s0);
+SamplerState WrapSampler : register(s0);
+SamplerState ClampSampler : register(s1);
 
 TextureCube EnvSpecularCubeMap : register(t6);
 TextureCube EnvIrradianceCubeMap : register(t7);
@@ -18,8 +19,8 @@ float4 main(CubeMapPixelInput input) : SV_Target
     float3 result = float3(0.f, 0.f, 0.f);
     int divider = 0;
 
-    float3 SpecularEnv = EnvSpecularCubeMap.Sample(Sampler, input.f4WorldPos.xyz).xyz;
-    float3 IrradianceEnv = EnvIrradianceCubeMap.Sample(Sampler, input.f4WorldPos.xyz).xyz;
+    float3 SpecularEnv = EnvSpecularCubeMap.Sample(ClampSampler, input.f4WorldPos.xyz).xyz;
+    float3 IrradianceEnv = EnvIrradianceCubeMap.Sample(ClampSampler, input.f4WorldPos.xyz).xyz;
 
     if (bIsSpecularOn && bIsIrradianceOn)
     {

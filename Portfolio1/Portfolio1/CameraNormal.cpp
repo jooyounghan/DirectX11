@@ -32,7 +32,7 @@ CameraNormal::~CameraNormal()
 
 void CameraNormal::SetCameraProperty()
 {
-	sCameraInfo.SetCameraInfo(0.f, 0.f, -10.f, 70.f, uiWidth / (float)uiHeight, 0.01f, 500.f);
+	sCameraInfo.SetCameraInfo(0.f, 0.f, -10.f, 70.f, uiWidth / (float)uiHeight, 0.01f, 1000.f);
 	ID3D11Helper::SetViewPort(0.f, 0.f, float(uiWidth), float(uiHeight), 0.f, 1.f, cpDeviceContext.Get(), &sScreenViewport);
 }
 
@@ -139,7 +139,7 @@ ModelIDData CameraNormal::GetPointedModelID()
 void CameraNormal::CreateModelIDResource()
 {
 
-	ID3D11Helper::CreateTexture2D(cpDevice.Get(), uiWidth, uiHeight, uiNumLevelQuality, 1, D3D11_BIND_RENDER_TARGET, NULL, NULL, D3D11_USAGE_DEFAULT, eBackBufferFormat, cpModelIDTexture.GetAddressOf());
+	ID3D11Helper::CreateTexture2D(cpDevice.Get(), uiWidth, uiHeight, 1, uiNumLevelQuality, D3D11_BIND_RENDER_TARGET, NULL, NULL, D3D11_USAGE_DEFAULT, eBackBufferFormat, cpModelIDTexture.GetAddressOf());
 	ID3D11Helper::CreateRenderTargetView(cpDevice.Get(), cpModelIDTexture.Get(), cpModelIDRTV.GetAddressOf());
 	ID3D11Helper::CreateTexture2D(cpDevice.Get(), uiWidth, uiHeight, 1, 0, D3D11_BIND_SHADER_RESOURCE, NULL, NULL, D3D11_USAGE_DEFAULT, eBackBufferFormat, cpModelIDMSToSS.GetAddressOf());
 	ID3D11Helper::CreateTexture2D(cpDevice.Get(), 1, 1, 1, 0, NULL, D3D11_CPU_ACCESS_READ, NULL, D3D11_USAGE_STAGING, eBackBufferFormat, cpModelIDStagingTexture.GetAddressOf());
@@ -154,7 +154,7 @@ void CameraNormal::SetPostProcess()
 
 void CameraNormal::CreateResource()
 {
-	ID3D11Helper::CreateTexture2D(cpDevice.Get(), uiWidth, uiHeight, uiNumLevelQuality, 1, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, NULL, NULL, D3D11_USAGE_DEFAULT, eCameraFormat, cpCameraOutputTexture.GetAddressOf());
+	ID3D11Helper::CreateTexture2D(cpDevice.Get(), uiWidth, uiHeight, 1, uiNumLevelQuality, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, NULL, NULL, D3D11_USAGE_DEFAULT, eCameraFormat, cpCameraOutputTexture.GetAddressOf());
 	ID3D11Helper::CreateRenderTargetView(cpDevice.Get(), cpCameraOutputTexture.Get(), cpCameraOutputRTV.GetAddressOf());
 	ID3D11Helper::CreateShaderResoureView(cpDevice.Get(), cpCameraOutputTexture.Get(), cpCameraOutputSRV.GetAddressOf());
 }

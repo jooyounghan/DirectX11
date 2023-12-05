@@ -27,4 +27,13 @@ protected:
 
 protected:
 	virtual void ResetDrawer() = 0;
+
+protected:
+	void PresetConfig(
+		CameraInterface* pCamera
+	);
+
+	void ResetConfig(
+		CameraInterface* pCamera
+	);
 };

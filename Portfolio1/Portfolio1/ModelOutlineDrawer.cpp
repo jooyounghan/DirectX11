@@ -17,7 +17,6 @@ ModelOutlineDrawer::ModelOutlineDrawer(Microsoft::WRL::ComPtr<ID3D11Device>& cpD
 
 	ID3D11Helper::CreateVSInputLayOut(cpDevice.Get(), L"BaseModelVS.hlsl", vInputElemDesc, cpBaseVertexShader.GetAddressOf(), cpBaseInputLayout.GetAddressOf());
 	ID3D11Helper::CreatePS(cpDevice.Get(), L"OutlinerPS.hlsl", cpBasePixelShader.GetAddressOf());
-	ID3D11Helper::CreateSampler(D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP, NULL, cpDevice.Get(), cpBaseSampler.GetAddressOf());
 
 }
 
@@ -50,6 +49,7 @@ void ModelOutlineDrawer::SetVSShader()
 void ModelOutlineDrawer::SetGSShader()
 {
 }
+
 
 void ModelOutlineDrawer::SetHSShader()
 {
