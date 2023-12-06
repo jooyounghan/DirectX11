@@ -1,82 +1,60 @@
 #pragma once
-#include "PickableModel.h"
+#include "PickableModelInterface.h"
+#include "CameraInterface.h"
 
-class MirrorModel : public PickableModel
+class  MirrorModel : public PickableModelInterface, public CameraInterface
 {
 public:
 	MirrorModel(
-		Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn,
-		Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn,
+		ID3D11Device* pDeviceIn,
+		ID3D11DeviceContext* pDeviceContextIn,
 		const float& fMirrorWidthIn,
 		const float& fMirrorHeightIn,
+		DXGI_FORMAT eMirrorFormat,
 		const float& fCenterXIn,
 		const float& fCenterYIn,
 		const float& fCenterZIn,
-		const std::shared_ptr<class CameraInterface>& spCameraIn
+		const std::shared_ptr<CameraInterface>& cpCameraIn
 	);
 	virtual ~MirrorModel();
 
+
+#pragma region Virtual
+// Virtual Function ==============================================
 public:
 	virtual void Update(const float& fDelta) override;
 
 public:
-	void WipeOut(const DirectX::XMVECTOR& xmvClearColor = DirectX::XMVectorSet(0.f, 0.f, 0.f, 1.f));
+	virtual void	SetIAProperties();
 
 public:
-	virtual void	SetIAProperties();
-	virtual void	SetVSConstantBuffers();
-	virtual void	SetHSConstantBuffers();
-	virtual void	SetDSConstantBuffers();
-	virtual void	SetGSConstantBuffers();
-	virtual void	SetPSConstantBuffers();
+	virtual void	SetConstantBuffers();
 	virtual void	ResetConstantBuffers();
 
 public:
-	virtual void	SetVSShaderResources();
-	virtual void	SetHSShaderResources();
-	virtual void	SetDSShaderResources();
-	virtual void	SetGSShaderResources();
-	virtual void	SetPSShaderResources();
+	virtual void	SetShaderResources();
 	virtual void	ResetShaderResources();
 
 public:
-	void			SetMirrorConstantBuffer();
-	void			ResetMirrorConstantBuffer();
+	virtual void OMSetRenderTargets();
+	virtual void ResetCamera();
+// ==============================================================
+#pragma endregion
 
-public:
-	void			SetOMMirrorRenderTarget();
-	void			ResetOMMirrorRenderTarget();
+protected:
+	UINT uiMirrorTextureWidth;
+	UINT uiMirrorTextureHeight;
 
 protected:
 	float fMirrorWidth;
 	float fMirrorHeight;
-
-protected:
-	struct
-	{
-		DirectX::XMVECTOR fCenterPos;
-		DirectX::XMMATRIX xmmMirrorViewProj;
-		DirectX::XMMATRIX xmmMirrorViewProjInv;
-	} sMirrorInfo;
-	Microsoft::WRL::ComPtr<ID3D11Buffer> cpMirrorInfoBuffer;
-
-protected:
-	DirectX::XMVECTOR xmvDefaultDirection;
-	DirectX::XMVECTOR xmvDefaultUp;
-
-protected:
-	const std::shared_ptr<class CameraInterface>& spCamera;
-
-protected:
-	Microsoft::WRL::ComPtr<ID3D11Texture2D> cpMirrorTexture;
-	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> cpMirrorRTV;
+	float fMirrorAspectRatio;
 
 protected:
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> cpMirrorResolvedTexture;
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> cpMirrorResolvedSRV;
 
-protected:
-	Microsoft::WRL::ComPtr<ID3D11Texture2D>			cpMirrorDepthStencilTexture2D;
-	Microsoft::WRL::ComPtr<ID3D11DepthStencilView>	cpMirrorepthStencilView;
+private:
+	const std::shared_ptr<CameraInterface>& cpCamera;
 };
 

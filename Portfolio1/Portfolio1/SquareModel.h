@@ -1,12 +1,12 @@
 #pragma once
-#include "ObjectModel.h"
+#include "PBRModel.h"
 
-class SquareModel : public ObjectModel
+class SquareModel : public PBRModel
 {
 public:
 	SquareModel(
-		Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn,
-		Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn,
+		ID3D11Device* pDeviceIn,
+		ID3D11DeviceContext* pDeviceContextIn,
 		const float& fCenterX,
 		const float& fCenterY,
 		const float& fCenterZ,

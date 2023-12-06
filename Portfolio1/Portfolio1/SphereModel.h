@@ -1,12 +1,12 @@
 #pragma once
-#include "ObjectModel.h"
+#include "PBRModel.h"
 
-class SphereModel : public ObjectModel
+class SphereModel : public PBRModel
 {
 public:
 	SphereModel(
-		Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn,
-		Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn,
+		ID3D11Device* cpDeviceIn,
+		ID3D11DeviceContext* cpDeviceContextIn,
 		const float& fCenterX,
 		const float& fCenterY,
 		const float& fCenterZ,

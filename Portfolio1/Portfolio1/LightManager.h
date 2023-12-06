@@ -68,10 +68,7 @@ public:
 	void Update();
 
 public:
-	void SetVSConstantBuffers();
-	void SetHSConstantBuffers();
-	void SetDSConstantBuffers();
-	void SetPSConstantBuffers();
+	void SetConstantBuffers();
 	void ResetConstantBuffers();
 };
 

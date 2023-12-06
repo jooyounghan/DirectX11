@@ -5,11 +5,6 @@
 using namespace std;
 using namespace DirectX;
 
-void ID3D11Helper::Init(IN ID3D11Device* pDevice, IN ID3D11DeviceContext* pDeviceContext)
-{
-	DepthStencilState::Init(pDevice);
-}
-
 void ID3D11Helper::CreateDeviceAndContext(
 	IN const UINT& iWidth,
 	IN const UINT& iHeight,
@@ -78,7 +73,7 @@ void ID3D11Helper::CreateDeviceAndContext(
 	AutoZeroMemory(sSwapChainDesc);
 	sSwapChainDesc.BufferDesc.Width = iWidth;
 	sSwapChainDesc.BufferDesc.Height = iHeight;
-	sSwapChainDesc.BufferDesc.RefreshRate.Numerator = 60;
+	sSwapChainDesc.BufferDesc.RefreshRate.Numerator = 240;
 	sSwapChainDesc.BufferDesc.RefreshRate.Denominator = 1;
 	sSwapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 
@@ -174,13 +169,15 @@ void ID3D11Helper::CreateVSInputLayOut(IN ID3D11Device* pDevice, IN LPCWSTR pFil
 	}
 }
 
-void ID3D11Helper::GetBackBuffer(IN IDXGISwapChain* pSwapChain, OUT ID3D11Texture2D** ppTexture2D)
+bool ID3D11Helper::GetBackBuffer(IN IDXGISwapChain* pSwapChain, OUT ID3D11Texture2D** ppTexture2D)
 {
 	HRESULT hResult = pSwapChain->GetBuffer(0, IID_PPV_ARGS(ppTexture2D));
 	if (FAILED(hResult))
 	{
 		Console("Back Buffer를 불러오는데 실패하였습니다.");
+		return false;
 	}
+	return true;
 }
 
 void ID3D11Helper::CreatePS(IN ID3D11Device* pDevice, IN LPCWSTR pFileName, OUT ID3D11PixelShader** ppPixelShader)

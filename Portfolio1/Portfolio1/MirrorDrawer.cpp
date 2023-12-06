@@ -1,35 +1,38 @@
 #include "MirrorDrawer.h"
 #include "ID3D11Helper.h"
 
-#include "ObjectDrawer.h"
+#include "PBRModelDrawer.h"
 #include "CubeMapDrawer.h"
-#include "CubeMapModel.h"
 
 #include "CameraInterface.h"
 #include "LightManager.h"
-#include "ObjectModel.h"
+#include "PBRModel.h"
+#include "CubeMapModel.h"
 #include "MirrorModel.h"
-#include "ShaderTypeEnum.h"
+
+
+#include "SamplerState.h"
 #include "DepthStencilState.h"
+#include "ShaderTypeEnum.h"
 
 #include <vector>
 
 using namespace std;
 
 MirrorDrawer::MirrorDrawer(
-	Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn, 
-	Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn
+	ID3D11Device* pDeviceIn, 
+	ID3D11DeviceContext* pDeviceContextIn
 )
-	: DrawerInterface(cpDeviceIn, cpDeviceContextIn)
+	: DrawerInterface(pDeviceIn, pDeviceContextIn)
 {
 	vector<D3D11_INPUT_ELEMENT_DESC> vInputElemDesc{
-	{"POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-	{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 16, D3D11_INPUT_PER_VERTEX_DATA, 0},
-	{"NORMAL", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0}
+		{"POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 16, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"NORMAL", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0}
 	};
 
-	ID3D11Helper::CreateVSInputLayOut(cpDevice.Get(), L"BaseModelVS.hlsl", vInputElemDesc, cpMirrorVertexShader.GetAddressOf(), cpMirrorInputLayout.GetAddressOf());
-	ID3D11Helper::CreatePS(cpDevice.Get(), L"MirrorModelPS.hlsl", cpMirrorPixelShader.GetAddressOf());
+	ID3D11Helper::CreateVSInputLayOut(pDevice, L"BaseModelVS.hlsl", vInputElemDesc, cpMirrorVertexShader.GetAddressOf(), cpMirrorInputLayout.GetAddressOf());
+	ID3D11Helper::CreatePS(pDevice, L"MirrorModelPS.hlsl", cpMirrorPixelShader.GetAddressOf());
 }
 
 MirrorDrawer::~MirrorDrawer()
@@ -37,191 +40,146 @@ MirrorDrawer::~MirrorDrawer()
 }
 
 void MirrorDrawer::Draw(
-	class ObjectDrawer* pModelDrawer,
-	class CubeMapDrawer* pCubeMapDrawer,
 	CameraInterface* pCamera,
 	LightManager* pLightManager,
-	const std::vector<std::shared_ptr<ObjectModel>>& vSpModels,
+	PBRModelDrawer* pPBRModelDrawer,
+	const std::vector<std::shared_ptr<PBRModel>>& vSpModels,
+	CubeMapDrawer* pCubeMapDrawer,
 	CubeMapModel* pEnvironmentCubeMap,
 	const std::vector<std::shared_ptr<MirrorModel>>& vMirrorModels
 )
 {
-	// Mirror 평면의 Normal 방향에 대한 ViewProj를 통하여 물체를 그린다.
+	// Mirror의 ViewProj를 통하여 반사된 물체를 그린다.
 	// 거울의 Render Target에 물체를 그린다.
-	pModelDrawer->PresetConfig(pCamera, pLightManager, pEnvironmentCubeMap);
+	pPBRModelDrawer->SetIAInputLayer();
+	pPBRModelDrawer->SetShader();
+	pPBRModelDrawer->SetOMState();
+
+	pLightManager->SetConstantBuffers();
+
+	pEnvironmentCubeMap->SetConstantBuffers();
+	pEnvironmentCubeMap->SetShaderResources();
+	
 	for (auto& pMirrorModel : vMirrorModels)
 	{
+		pMirrorModel->SetConstantBuffers();
+		pMirrorModel->SetShaderResources();
+		pMirrorModel->OMSetRenderTargets();
+
 		for (auto& pObjectModel : vSpModels)
 		{
 			pObjectModel->SetIAProperties();
-			pObjectModel->SetVSConstantBuffers();
-			pObjectModel->SetVSShaderResources();
-			pObjectModel->SetGSConstantBuffers();
-			pObjectModel->SetGSShaderResources();
-			pObjectModel->SetHSConstantBuffers();
-			pObjectModel->SetHSShaderResources();
-			pObjectModel->SetDSConstantBuffers();
-			pObjectModel->SetDSShaderResources();
-			pObjectModel->SetPSConstantBuffers();
-			pObjectModel->SetPSShaderResources();
-
-			pMirrorModel->SetMirrorConstantBuffer();
-			pMirrorModel->SetOMMirrorRenderTarget();
+			pObjectModel->SetConstantBuffers();
+			pObjectModel->SetShaderResources();
 
 			pObjectModel->Render();
 
 			pObjectModel->ResetConstantBuffers();
 			pObjectModel->ResetShaderResources();
 		}
-	}
-	pModelDrawer->ResetConfig(pCamera, pLightManager, pEnvironmentCubeMap);
 
-	pCubeMapDrawer->PresetConfig(pCamera);
+		pMirrorModel->ResetConstantBuffers();
+		pMirrorModel->ResetShaderResources();
+		pMirrorModel->ResetCamera();
+	}
+	
+	pEnvironmentCubeMap->ResetConstantBuffers();
+	pEnvironmentCubeMap->ResetShaderResources();
+
+	pLightManager->ResetConstantBuffers();
+
+	pPBRModelDrawer->ResetDrawer();
+
+
+	// Mirror의 ViewProj를 통하여 반사된 큐브맵를 그린다.
+	// 거울의 Render Target에 물체를 그린다.
+
+	pCubeMapDrawer->SetIAInputLayer();
+	pCubeMapDrawer->SetShader();
+	pCubeMapDrawer->SetOMState();
+
 	for (auto& pMirrorModel : vMirrorModels)
 	{
-		pEnvironmentCubeMap->SetIAProperties();
-		pEnvironmentCubeMap->SetVSConstantBuffers();
-		pEnvironmentCubeMap->SetVSShaderResources();
-		pEnvironmentCubeMap->SetGSConstantBuffers();
-		pEnvironmentCubeMap->SetGSShaderResources();
-		pEnvironmentCubeMap->SetHSConstantBuffers();
-		pEnvironmentCubeMap->SetHSShaderResources();
-		pEnvironmentCubeMap->SetDSConstantBuffers();
-		pEnvironmentCubeMap->SetDSShaderResources();
-		pEnvironmentCubeMap->SetPSConstantBuffers();
-		pEnvironmentCubeMap->SetPSShaderResources();
+		pMirrorModel->SetConstantBuffers();
+		pMirrorModel->SetShaderResources();
+		pMirrorModel->OMSetRenderTargets();
 
-		pMirrorModel->SetMirrorConstantBuffer();
-		pMirrorModel->SetOMMirrorRenderTarget();
+		pEnvironmentCubeMap->SetIAProperties();
+		pEnvironmentCubeMap->SetConstantBuffers();
+		pEnvironmentCubeMap->SetShaderResources();
 
 		pEnvironmentCubeMap->Render();
 
-		pMirrorModel->ResetOMMirrorRenderTarget();
-		pMirrorModel->ResetMirrorConstantBuffer();
-
 		pEnvironmentCubeMap->ResetConstantBuffers();
 		pEnvironmentCubeMap->ResetShaderResources();
+
+		pMirrorModel->ResetConstantBuffers();
+		pMirrorModel->ResetShaderResources();
+		pMirrorModel->ResetCamera();
 	}
-	pCubeMapDrawer->ResetConfig(pCamera);
+	pCubeMapDrawer->ResetDrawer();
 
-	// 반사된 거울을 렌더링 한다.
-
+	// 거울을 렌더링 한다.
+	SetIAInputLayer();
+	SetShader();
+	SetShader();
+	SetOMState();
 	for (auto& referenceMirror : vMirrorModels)
 	{
 
 		for (auto& renderedMirror : vMirrorModels)
 		{
-			PresetConfig(pCamera);
-				renderedMirror->SetIAProperties();
-				renderedMirror->SetVSConstantBuffers();
-				renderedMirror->SetVSShaderResources();
-				renderedMirror->SetGSConstantBuffers();
-				renderedMirror->SetGSShaderResources();
-				renderedMirror->SetHSConstantBuffers();
-				renderedMirror->SetHSShaderResources();
-				renderedMirror->SetDSConstantBuffers();
-				renderedMirror->SetDSShaderResources();
-				renderedMirror->SetPSConstantBuffers();
-				renderedMirror->SetPSShaderResources();
+			renderedMirror->SetIAProperties();
+			renderedMirror->SetConstantBuffers();
+			renderedMirror->SetShaderResources();
+			renderedMirror->OMSetRenderTargets();
 
-				if (referenceMirror != renderedMirror)
-				{
-					referenceMirror->SetMirrorConstantBuffer();
-					referenceMirror->SetOMMirrorRenderTarget();
+			if (referenceMirror == renderedMirror)
+			{
+				pCamera->SetConstantBuffers();
+				pCamera->OMSetRenderTargets();
+			}
+			renderedMirror->Render();
 
-					renderedMirror->Render();
-
-					referenceMirror->ResetOMMirrorRenderTarget();
-					referenceMirror->ResetMirrorConstantBuffer();
-
-				}
-				else
-				{
-					renderedMirror->Render();
-				}
-
-				renderedMirror->ResetConstantBuffers();
-				renderedMirror->ResetShaderResources();
-				ResetConfig(pCamera);
+			pCamera->ResetCamera();
+			renderedMirror->ResetConstantBuffers();
+			renderedMirror->ResetShaderResources();
+			renderedMirror->ResetCamera();
 		}
 	}
-
+	ResetDrawer();
 }
 
 void MirrorDrawer::SetIAInputLayer()
 {
-	cpDeviceContext->IASetInputLayout(cpMirrorInputLayout.Get());
-	cpDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	pDeviceContext->IASetInputLayout(cpMirrorInputLayout.Get());
+	pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
-void MirrorDrawer::SetVSShader()
+void MirrorDrawer::SetShader()
 {
-	cpDeviceContext->VSSetShader(cpMirrorVertexShader.Get(), NULL, NULL);
-}
+	pDeviceContext->VSSetShader(cpMirrorVertexShader.Get(), NULL, NULL);
+	pDeviceContext->PSSetShader(cpMirrorPixelShader.Get(), NULL, NULL);
 
-void MirrorDrawer::SetHSShader()
-{
-}
-
-void MirrorDrawer::SetDSShader()
-{
-}
-
-void MirrorDrawer::SetGSShader()
-{
-}
-
-void MirrorDrawer::SetPSShader()
-{
-	cpDeviceContext->PSSetShader(cpMirrorPixelShader.Get(), NULL, NULL);
-	cpDeviceContext->PSSetSamplers(PSSamplerType::PS_WRAP_SAMPLER, 1, cpDrawerWrapSampler.GetAddressOf());
-	cpDeviceContext->PSSetSamplers(PSSamplerType::PS_CLAMP_SAMPLER, 1, cpDrawerClampSampler.GetAddressOf());
+	SamplerState& samplerState = SamplerState::GetInstance(pDevice);
+	pDeviceContext->PSSetSamplers(SamplerType::WRAP_SAMPLER, 1, samplerState.GetAddressOfWrapSampler());
+	pDeviceContext->PSSetSamplers(SamplerType::CLAMP_SAMPLER, 1, samplerState.GetAddressOfClampSampler());
 }
 
 void MirrorDrawer::SetOMState()
 {
-	cpDeviceContext->OMSetDepthStencilState(DepthStencilState::pGetDSS(DepthStencilState::DefaultOption), 0);
+	DepthStencilState& depthStencilState = DepthStencilState::GetInstance(pDevice);
+	pDeviceContext->OMSetDepthStencilState(depthStencilState.pGetDSS(DepthStencilState::DefaultOption), 0);
 }
 
-void MirrorDrawer::ResetOMState()
-{
-	cpDeviceContext->OMSetDepthStencilState(DepthStencilState::pGetDSS(DepthStencilState::DefaultOption), 0);
-}
 
 void MirrorDrawer::ResetDrawer()
 {
-	cpDeviceContext->PSSetShader(nullptr, 0, 0);
-	cpDeviceContext->VSSetShader(nullptr, 0, 0);
+	pDeviceContext->PSSetShader(nullptr, 0, 0);
+	pDeviceContext->VSSetShader(nullptr, 0, 0);
 
 	ID3D11SamplerState* pResetSampler = nullptr;
-	cpDeviceContext->PSSetSamplers(PSSamplerType::PS_WRAP_SAMPLER, 1, &pResetSampler);
-	cpDeviceContext->PSSetSamplers(PSSamplerType::PS_CLAMP_SAMPLER, 1, &pResetSampler);
-}
-
-void MirrorDrawer::PresetConfig(CameraInterface* pCamera)
-{
-	SetIAInputLayer();
-	SetVSShader();
-	SetGSShader();
-	SetHSShader();
-	SetDSShader();
-	SetPSShader();
-	SetOMState();
-
-	pCamera->SetRSState();
-	pCamera->SetVSConstantBuffers();
-	pCamera->SetGSConstantBuffers();
-	pCamera->SetHSConstantBuffers();
-	pCamera->SetDSConstantBuffers();
-	pCamera->SetPSConstantBuffers();
-	pCamera->OMSetRenderTargets();
-}
-
-void MirrorDrawer::ResetConfig(CameraInterface* pCamera)
-{
-	pCamera->ResetCamera();
-
-	ResetOMState();
-	ResetDrawer();
+	pDeviceContext->PSSetSamplers(SamplerType::WRAP_SAMPLER, 1, &pResetSampler);
+	pDeviceContext->PSSetSamplers(SamplerType::CLAMP_SAMPLER, 1, &pResetSampler);
 }
 

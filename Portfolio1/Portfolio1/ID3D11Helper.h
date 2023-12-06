@@ -13,9 +13,6 @@ extern void Console(const char*);
 class ID3D11Helper
 {
 public:
-	static void Init(IN ID3D11Device* pDevice, IN ID3D11DeviceContext* pDeviceContext);
-
-public:
 	static void CreateDeviceAndContext(
 		IN const UINT& iWidth,
 		IN const UINT& iHeight,
@@ -71,7 +68,7 @@ public:
 		OUT ID3D11Resource* pResource
 	);
 
-	static void GetBackBuffer(
+	static bool GetBackBuffer(
 		IN IDXGISwapChain* pSwapChain,
 		OUT ID3D11Texture2D** ppTexture2D
 	);

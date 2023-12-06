@@ -1,25 +1,23 @@
 #pragma once
-#include "NonLightDrawer.h"
+#include "LightlessDrawer.h"
 
-class NormalVectorDrawer : public NonLightDrawer
+class NormalVectorDrawer : public LightlessDrawer
 {
 public:
 	NormalVectorDrawer(
-		Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn,
-		Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn);
+		ID3D11Device* pDeviceIn,
+		ID3D11DeviceContext* pDeviceContextIn
+	);
 	virtual ~NormalVectorDrawer();
 
 protected:
 	virtual void SetIAInputLayer() override;
-	virtual void SetVSShader() override;
-	virtual void SetHSShader() override;
-	virtual void SetDSShader() override;
-	virtual void SetGSShader() override;
-	virtual void SetPSShader() override;
+
+protected:
+	virtual void SetShader() override;
 
 protected:
 	virtual void SetOMState() override;
-	virtual void ResetOMState() override;
 
 protected:
 	virtual void ResetDrawer() override;
@@ -37,6 +35,5 @@ protected:
 
 protected:
 	Microsoft::WRL::ComPtr<ID3D11PixelShader>		cpNVPixelShader;
-	Microsoft::WRL::ComPtr<ID3D11SamplerState>		cpNVSampler;
 };
 

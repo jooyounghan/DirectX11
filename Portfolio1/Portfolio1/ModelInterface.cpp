@@ -1,5 +1,4 @@
 #include "ModelInterface.h"
-#include "TransformProperties.h"
 #include "ID3D11Helper.h"
 #include <atomic>
 #include <algorithm>
@@ -8,10 +7,10 @@ using namespace std;
 using namespace DirectX;
 
 ModelInterface::ModelInterface(
-	ComPtr<ID3D11Device>& cpDeviceIn,
-	ComPtr<ID3D11DeviceContext>& cpDeviceContextIn
+	ID3D11Device* pDeviceIn,
+	ID3D11DeviceContext* pDeviceContextIn
 )
-	: cpDevice(cpDeviceIn), cpDeviceContext(cpDeviceContextIn)
+	: pDevice(pDeviceIn), pDeviceContext(pDeviceContextIn)
 {
 }
 
@@ -22,8 +21,6 @@ ModelInterface::~ModelInterface()
 
 void ModelInterface::MakePlaneVertexIndexSet(
 	ModelInterface* pModelInterface,
-	XMVECTOR& xmvDirection,
-	XMVECTOR& xmvUp,
 	const float& fWidth,
 	const float& fHeight
 )
@@ -31,24 +28,21 @@ void ModelInterface::MakePlaneVertexIndexSet(
 	if (pModelInterface != nullptr)
 	{
 		vector<uint32_t> vIndex{
-			0, 2, 1,
-			0, 3, 2,
+			0, 1, 2,
+			0, 2, 3,
 		};
 
 		pModelInterface->ui32IndexCount = UINT(vIndex.size());
 
 		vector<Vertex> vVertex{
-			{{-(fWidth / 2.f), (fHeight / 2.f), 0.f}, {0.f, 0.f}, {0.f, 0.f, -1.f, 0.f}},
-			{{-(fWidth / 2.f), -(fHeight / 2.f), 0.f}, {0.f, 1.f}, {0.f, 0.f, -1.f, 0.f}},
-			{{(fWidth / 2.f), -(fHeight / 2.f), 0.f}, {1.f, 1.f}, {0.f, 0.f, -1.f, 0.f}},
-			{{(fWidth / 2.f), (fHeight / 2.f), 0.f}, {1.f, 0.f}, {0.f, 0.f, -1.f, 0.f}}
+			{{-(fWidth / 2.f), (fHeight / 2.f), 0.f}, {0.f, 0.f}, {0.f, 0.f, 1.f, 0.f}},
+			{{-(fWidth / 2.f), -(fHeight / 2.f), 0.f}, {0.f, 1.f}, {0.f, 0.f, 1.f, 0.f}},
+			{{(fWidth / 2.f), -(fHeight / 2.f), 0.f}, {1.f, 1.f}, {0.f, 0.f, 1.f, 0.f}},
+			{{(fWidth / 2.f), (fHeight / 2.f), 0.f}, {1.f, 0.f}, {0.f, 0.f, 1.f, 0.f}}
 		};
 
-		xmvDirection = XMVECTOR{ 0.f, 0.f, -1.f, 0.f };
-		xmvUp = XMVECTOR{ 0.f, 1.f, 0.f, 0.f };
-
-		ID3D11Helper::CreateBuffer(pModelInterface->cpDevice.Get(), vIndex, D3D11_USAGE_IMMUTABLE, D3D11_BIND_INDEX_BUFFER, 0, 0, pModelInterface->cpIndexBuffer.GetAddressOf());
-		ID3D11Helper::CreateBuffer(pModelInterface->cpDevice.Get(), vVertex, D3D11_USAGE_IMMUTABLE, D3D11_BIND_VERTEX_BUFFER, 0, 0, pModelInterface->cpVertexBuffer.GetAddressOf());
+		ID3D11Helper::CreateBuffer(pModelInterface->pDevice, vIndex, D3D11_USAGE_IMMUTABLE, D3D11_BIND_INDEX_BUFFER, 0, 0, pModelInterface->cpIndexBuffer.GetAddressOf());
+		ID3D11Helper::CreateBuffer(pModelInterface->pDevice, vVertex, D3D11_USAGE_IMMUTABLE, D3D11_BIND_VERTEX_BUFFER, 0, 0, pModelInterface->cpVertexBuffer.GetAddressOf());
 	}
 }
 
@@ -137,8 +131,8 @@ void ModelInterface::MakeSquareVertexIndexSet(
 			reverse(vIndex.begin(), vIndex.end());
 		}
 
-		ID3D11Helper::CreateBuffer(pModelInterface->cpDevice.Get(), vIndex, D3D11_USAGE_IMMUTABLE, D3D11_BIND_INDEX_BUFFER, 0, 0, pModelInterface->cpIndexBuffer.GetAddressOf());
-		ID3D11Helper::CreateBuffer(pModelInterface->cpDevice.Get(), vVertex, D3D11_USAGE_IMMUTABLE, D3D11_BIND_VERTEX_BUFFER, 0, 0, pModelInterface->cpVertexBuffer.GetAddressOf());
+		ID3D11Helper::CreateBuffer(pModelInterface->pDevice, vIndex, D3D11_USAGE_IMMUTABLE, D3D11_BIND_INDEX_BUFFER, 0, 0, pModelInterface->cpIndexBuffer.GetAddressOf());
+		ID3D11Helper::CreateBuffer(pModelInterface->pDevice, vVertex, D3D11_USAGE_IMMUTABLE, D3D11_BIND_VERTEX_BUFFER, 0, 0, pModelInterface->cpVertexBuffer.GetAddressOf());
 	}
 }
 
@@ -212,7 +206,7 @@ void ModelInterface::MakeSphereVertexIndexSet(
 
 		pModelInterface->ui32IndexCount = UINT(vIndex.size());
 
-		ID3D11Helper::CreateBuffer(pModelInterface->cpDevice.Get(), vIndex, D3D11_USAGE_IMMUTABLE, D3D11_BIND_INDEX_BUFFER, 0, 0, pModelInterface->cpIndexBuffer.GetAddressOf());
-		ID3D11Helper::CreateBuffer(pModelInterface->cpDevice.Get(), vVertex, D3D11_USAGE_IMMUTABLE, D3D11_BIND_VERTEX_BUFFER, 0, 0, pModelInterface->cpVertexBuffer.GetAddressOf());
+		ID3D11Helper::CreateBuffer(pModelInterface->pDevice, vIndex, D3D11_USAGE_IMMUTABLE, D3D11_BIND_INDEX_BUFFER, 0, 0, pModelInterface->cpIndexBuffer.GetAddressOf());
+		ID3D11Helper::CreateBuffer(pModelInterface->pDevice, vVertex, D3D11_USAGE_IMMUTABLE, D3D11_BIND_VERTEX_BUFFER, 0, 0, pModelInterface->cpVertexBuffer.GetAddressOf());
 	}
 }

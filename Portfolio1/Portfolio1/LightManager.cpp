@@ -64,19 +64,7 @@ void LightManager::Update()
 	cpDeviceContext->Unmap(cpLightsConstantBuffer.Get(), 0);
 }
 
-void LightManager::SetVSConstantBuffers()
-{
-}
-
-void LightManager::SetHSConstantBuffers()
-{
-}
-
-void LightManager::SetDSConstantBuffers()
-{
-}
-
-void LightManager::SetPSConstantBuffers()
+void LightManager::SetConstantBuffers()
 {
 	cpDeviceContext->PSSetConstantBuffers(PS_CBUFF_LIGHT, 1, cpLightsConstantBuffer.GetAddressOf());
 }

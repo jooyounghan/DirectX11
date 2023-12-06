@@ -31,8 +31,8 @@ typedef bool IsChecked;
 class CameraInterface;
 
 class ModelInterface;
-class PickableModel;
-class ObjectModel;
+class PickableModelInterface;
+class PBRModel;
 class CubeMapModel;
 class MirrorModel;
 
@@ -40,7 +40,7 @@ class ManageGuiInterface;
 
 class LightManager;
 
-class BaseModelDrawer;
+class PBRModelDrawer;
 class ModelOutlineDrawer;
 class NormalVectorDrawer;
 class CubeMapDrawer;
@@ -79,17 +79,17 @@ public:
 	void CheckMouseHoveredModel();
 
 private:
-	std::shared_ptr<CameraInterface>				spMainCameras;
+	std::shared_ptr<CameraInterface>				spMainCamera;
 	std::vector<std::shared_ptr<CameraInterface>>	vSpCameras;
 
 private:
-	std::shared_ptr<PickableModel>					spSelectedModel;
-	std::shared_ptr<PickableModel>					spTempSelectedModel;
+	std::shared_ptr<PickableModelInterface>	spSelectedModel;
+	std::shared_ptr<PickableModelInterface>	spTempSelectedModel;
 	
 private:
-	std::vector<std::shared_ptr<PickableModel>>		vSpPickableModels;
-	std::vector<std::shared_ptr<ObjectModel>>		vSpObjectModels;
-	std::vector<std::shared_ptr<MirrorModel>>		vSpMirrorModels;
+	std::vector<std::shared_ptr<PickableModelInterface>>	vSpPickableModels;
+	std::vector<std::shared_ptr<PBRModel>>					vSpPBRModels;
+	std::vector<std::shared_ptr<MirrorModel>>				vSpMirrorModels;
 
 private:
 	std::shared_ptr<LightManager>					spLightManager;
@@ -98,7 +98,7 @@ private:
 	std::shared_ptr<CubeMapModel>					spCubeMap;
 
 private:
-	std::unique_ptr<BaseModelDrawer>				upModelDrawer;
+	std::unique_ptr<PBRModelDrawer>				upModelDrawer;
 	std::unique_ptr<ModelOutlineDrawer>				upModelOutlineDrawer;
 	std::unique_ptr<NormalVectorDrawer>				upNormalVectorDrawer;
 	std::unique_ptr<CubeMapDrawer>					upCubeMapDrawer;

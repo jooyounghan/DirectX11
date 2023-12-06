@@ -5,16 +5,16 @@
 #include "ShaderTypeEnum.h"
 
 CubeMapModel::CubeMapModel(
-	Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn,
-	Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn
+	ID3D11Device* pDeviceIn,
+	ID3D11DeviceContext* pDeviceContextIn
 )
-	: ModelInterface(cpDeviceIn, cpDeviceContextIn)
+	: ModelInterface(pDeviceIn, pDeviceContextIn)
 {
 	ModelInterface::MakeSquareVertexIndexSet(this, 500.f, true);
 
 	AutoZeroMemory(sPSTextureFlags);
 	ID3D11Helper::CreateBuffer(
-		cpDevice.Get(),
+		pDeviceIn,
 		sPSTextureFlags,
 		D3D11_USAGE_DYNAMIC,
 		D3D11_BIND_CONSTANT_BUFFER,
@@ -30,108 +30,92 @@ CubeMapModel::~CubeMapModel()
 
 void CubeMapModel::Update(const float& fDelta)
 {
-	sPSTextureFlags.bIsSpecularTextureOn
-		= spEnvSpecularTextureFile != nullptr ? true : false;
+	bool bIsTextureFlagChanged = false;
 
-	sPSTextureFlags.bIsIrradianceTextureOn
-		= spEnvIrradianceTextureFile != nullptr ? true : false;
+	const bool& bIsSpecularOn = spEnvSpecularTextureFile != nullptr ? true : false;
+	const bool& bIsDiffuseOn = spEnvDiffuseTextureFile != nullptr ? true : false;
+	const bool& bIsBrdfOn = spEnvBrdfTextureFile != nullptr ? true : false;
 
-	sPSTextureFlags.bIsBrdfTextureOn
-		= spEnvBrdfTextureFile != nullptr ? true : false;
+	if (sPSTextureFlags.bIsSpecularTextureOn != bIsSpecularOn)
+	{
+		bIsTextureFlagChanged = true;
+		sPSTextureFlags.bIsSpecularTextureOn = bIsSpecularOn;
+	}
+	
+	if (sPSTextureFlags.bIsDiffuseTextureOn != bIsDiffuseOn)
+	{
+		bIsTextureFlagChanged = true;
+		sPSTextureFlags.bIsDiffuseTextureOn = bIsDiffuseOn;
+	}
 
-	ID3D11Helper::UpdateBuffer(
-		cpDeviceContext.Get(),
-		sPSTextureFlags,
-		D3D11_MAP_WRITE_DISCARD,
-		cpTextureFlagBuffer.Get()
-	);
+	if (sPSTextureFlags.bIsBrdfTextureOn != bIsBrdfOn)
+	{
+		bIsTextureFlagChanged = true;
+		sPSTextureFlags.bIsBrdfTextureOn = bIsBrdfOn;
+	}
+
+	if (bIsTextureFlagChanged)
+	{
+		ID3D11Helper::UpdateBuffer(
+			pDeviceContext,
+			sPSTextureFlags,
+			D3D11_MAP_WRITE_DISCARD,
+			cpTextureFlagBuffer.Get()
+		);
+	}
 }
 
 void CubeMapModel::Render()
 {
-	cpDeviceContext->DrawIndexed(ui32IndexCount, 0, 0);
+	pDeviceContext->DrawIndexed(ui32IndexCount, 0, 0);
 }
 
 
 void CubeMapModel::SetIAProperties()
 {
-	cpDeviceContext->IASetIndexBuffer(cpIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+	pDeviceContext->IASetIndexBuffer(cpIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 
 	UINT stride = sizeof(Vertex);
 	UINT offset = 0;
-	cpDeviceContext->IASetVertexBuffers(0, 1, cpVertexBuffer.GetAddressOf(), &stride, &offset);
+	pDeviceContext->IASetVertexBuffers(0, 1, cpVertexBuffer.GetAddressOf(), &stride, &offset);
 }
 
-void CubeMapModel::SetVSConstantBuffers()
+void CubeMapModel::SetConstantBuffers()
 {
-
-}
-
-void CubeMapModel::SetHSConstantBuffers()
-{
-}
-
-void CubeMapModel::SetDSConstantBuffers()
-{
-}
-
-void CubeMapModel::SetGSConstantBuffers()
-{
-}
-
-void CubeMapModel::SetPSConstantBuffers()
-{
-	cpDeviceContext->PSSetConstantBuffers(PS_CBUFF_CUBE_TEXTURE_FLAGS, 1, cpTextureFlagBuffer.GetAddressOf());
+	pDeviceContext->PSSetConstantBuffers(PS_CBUFF_CUBE_TEXTURE_FLAGS, 1, cpTextureFlagBuffer.GetAddressOf());
 }
 
 void CubeMapModel::ResetConstantBuffers()
 {
 	ID3D11Buffer* pResetBuffer = nullptr;
-	cpDeviceContext->VSSetConstantBuffers(VS_CBUFF_CAMERA_INFO, 1, &pResetBuffer);
-	cpDeviceContext->PSSetConstantBuffers(PS_CBUFF_CUBE_TEXTURE_FLAGS, 1, &pResetBuffer);
+	pDeviceContext->PSSetConstantBuffers(PS_CBUFF_CUBE_TEXTURE_FLAGS, 1, &pResetBuffer);
 }
 
-void CubeMapModel::SetVSShaderResources()
-{
-}
-
-void CubeMapModel::SetHSShaderResources()
-{
-}
-
-void CubeMapModel::SetDSShaderResources()
-{
-}
-
-void CubeMapModel::SetGSShaderResources()
-{
-}
-
-void CubeMapModel::SetPSShaderResources()
+void CubeMapModel::SetShaderResources()
 {
 	if (spEnvSpecularTextureFile != nullptr)
 	{
 		ID3D11ShaderResourceView** ppSpecularSRV = spEnvSpecularTextureFile->cpDDSSRV.GetAddressOf();
-		ppSpecularSRV != nullptr ? cpDeviceContext->PSSetShaderResources(PS_SRV_CUBEMAP_SPECULAR, 1, ppSpecularSRV) : void();
+		ppSpecularSRV != nullptr ? pDeviceContext->PSSetShaderResources(PS_SRV_CUBEMAP_SPECULAR, 1, ppSpecularSRV) : void();
 	}
 
-	if (spEnvIrradianceTextureFile != nullptr)
+	if (spEnvDiffuseTextureFile != nullptr)
 	{
-		ID3D11ShaderResourceView** ppIrradianceSRV = spEnvIrradianceTextureFile->cpDDSSRV.GetAddressOf();
-		ppIrradianceSRV != nullptr ? cpDeviceContext->PSSetShaderResources(PS_SRV_CUBEMAP_IRRADIANCE, 1, ppIrradianceSRV) : void();
+		ID3D11ShaderResourceView** ppIrradianceSRV = spEnvDiffuseTextureFile->cpDDSSRV.GetAddressOf();
+		ppIrradianceSRV != nullptr ? pDeviceContext->PSSetShaderResources(PS_SRV_CUBEMAP_IRRADIANCE, 1, ppIrradianceSRV) : void();
 	}
 
 	if (spEnvBrdfTextureFile != nullptr)
 	{
 		ID3D11ShaderResourceView** ppBRDFSRV = spEnvBrdfTextureFile->cpModelTextureSRV.GetAddressOf();
-		ppBRDFSRV != nullptr ? cpDeviceContext->PSSetShaderResources(PS_SRV_CUBEMAP_BRDF, 1, ppBRDFSRV) : void();
+		ppBRDFSRV != nullptr ? pDeviceContext->PSSetShaderResources(PS_SRV_CUBEMAP_BRDF, 1, ppBRDFSRV) : void();
 	}
 }
 
 void CubeMapModel::ResetShaderResources()
 {
 	ID3D11ShaderResourceView* pResetSRV = nullptr;
-	cpDeviceContext->PSSetShaderResources(PS_SRV_CUBEMAP_SPECULAR, 1, &pResetSRV);
-	cpDeviceContext->PSSetShaderResources(PS_SRV_CUBEMAP_IRRADIANCE, 1, &pResetSRV);
-	cpDeviceContext->PSSetShaderResources(PS_SRV_CUBEMAP_BRDF, 1, &pResetSRV);
+	pDeviceContext->PSSetShaderResources(PS_SRV_CUBEMAP_SPECULAR, 1, &pResetSRV);
+	pDeviceContext->PSSetShaderResources(PS_SRV_CUBEMAP_IRRADIANCE, 1, &pResetSRV);
+	pDeviceContext->PSSetShaderResources(PS_SRV_CUBEMAP_BRDF, 1, &pResetSRV);
 }

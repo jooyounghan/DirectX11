@@ -56,11 +56,6 @@ BaseApp::~BaseApp()
 {
 }
 
-void BaseApp::SwapChain()
-{
-	cpSwapChain->Present(1, 0);
-}
-
 LRESULT __stdcall BaseApp::AppProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 	return ::DefWindowProc(hWnd, msg, wParam, lParam);
 }

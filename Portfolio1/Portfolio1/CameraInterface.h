@@ -5,107 +5,148 @@
 #include <wrl/client.h>
 #include <directxmath/DirectXMath.h>
 #include <memory>
-#include "CameraInfo.h"
 
-enum MoveDir;
+enum MoveDir
+{
+	Forward,
+	Left,
+	Backward,
+	Right,
+	NUM_DIR
+};
 
 class CameraInterface
 {
 public:
 	CameraInterface(
-		Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn,
-		Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn,
-		Microsoft::WRL::ComPtr<IDXGISwapChain>& cpSwapChainIn,
+		ID3D11Device* pDeviceIn,
+		ID3D11DeviceContext* pDeviceContextIn,
 		const UINT& uiWidthIn, const UINT& uiHeightIn,
-		const UINT& uiNumLevelQualityIn, const DXGI_FORMAT& eCameraFormatIn = DXGI_FORMAT_R8G8B8A8_UNORM
+		const UINT& uiNumLevelQualityIn, const DXGI_FORMAT& eCameraFormatIn,
+		const float& fPosXIn, const float& fPosYIn, const float& fPosZIn,
+		const float& fFovAngleIn, const float& fNearZIn, const float& fFarZIn
 	);
 	virtual ~CameraInterface();
 	
 public:
+	static const DirectX::XMVECTOR			DefaultDirection;
+	static const DirectX::XMVECTOR			DefaultUp;
+	static const DirectX::XMVECTOR			DefaultRight;
+
+protected:
+	ID3D11Device* pDevice;
+	ID3D11DeviceContext* pDeviceContext;
+	IDXGISwapChain* pSwapChain;
+
+public:
 	UINT			uiWidth;
 	UINT			uiHeight;
 	UINT			uiNumLevelQuality;
-	CameraInfo		sCameraInfo;
+
+public:
+	unsigned int			uiMouseLocation[2];
+	float					fRoll;
+	float					fPitch;
+	float					fYaw;
+	float					fFovRadian;
+	float					fAspectRatio;
+	float					fNearZ;
+	float					fFarZ;
+	float					fMoveSpeed;
+	float					fMouseMovablePitchAngleDegree;
+	float					fMouseMovableYawAngleDegree;
+	bool					bMoveDirection[MoveDir::NUM_DIR];
+	bool					bFirstView;
+
+public:
+	struct
+	{
+		DirectX::XMVECTOR			xmvCameraPosition;
+		DirectX::XMMATRIX			xmmViewProjMat;
+		DirectX::XMMATRIX			xmmInvViewProjMat;
+	} sCameraViewProjData;
+	Microsoft::WRL::ComPtr<ID3D11Buffer>	cpCameraViewProjConstantBuffer;
 
 protected:
-	D3D11_VIEWPORT sScreenViewport;
-	Microsoft::WRL::ComPtr<ID3D11Texture2D>			cpBackBuffer;
-	Microsoft::WRL::ComPtr<ID3D11RenderTargetView>	cpSwapChainRTV;
+	D3D11_VIEWPORT sCameraViewport;
+	Microsoft::WRL::ComPtr<ID3D11Texture2D>				cpBackBuffer;
+	Microsoft::WRL::ComPtr<ID3D11RenderTargetView>		cpBackBufferRTV;
+
+protected:
+	Microsoft::WRL::ComPtr<ID3D11Texture2D>			cpDepthStencilTexture2D;
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilView>	cpDepthStencilView;
 
 protected:
 	DXGI_FORMAT										eCameraFormat;
 	DXGI_FORMAT										eBackBufferFormat;
 
 public:
-	 inline ID3D11Texture2D* GetBackBufferTexture2D() { return cpBackBuffer.Get(); }
-	 inline ID3D11RenderTargetView** GetAddressOfSwapChainRTV() { return cpSwapChainRTV.GetAddressOf(); }
+	void SetAsMainCamera(IDXGISwapChain* pSwapChainIn);
+	void ResetFromMainCamera();
+	void SetRenderResources();
 
 public:
-	virtual void SetCameraProperty() = 0;
+	inline DXGI_FORMAT GetRenderedTextureFormat() { return eCameraFormat; }
+	inline ID3D11Texture2D* GetRenderedTexture() { return cpCameraOutputTexture.Get(); }
 
 public:
-	void StartMove(MoveDir moveDir);
-	void StopMove(MoveDir moveDir);
-	void SetFromMouseXY(const int& iMouseX, const int& iMouseY);
-	void SwitchFirstView();
+	 inline ID3D11Texture2D* GetOutputTexture2D() { return cpBackBuffer.Get(); }
+	 inline ID3D11Texture2D** GetAddressOfOutputTexture2D() { return cpBackBuffer.GetAddressOf(); }
+
+	 inline ID3D11RenderTargetView* GetOutputRTV() { return cpBackBufferRTV.Get(); }
+	 inline ID3D11RenderTargetView** GetAddressOfOutputRTV() { return cpBackBufferRTV.GetAddressOf(); }
 
 public:
-	Microsoft::WRL::ComPtr<ID3D11RasterizerState>	cpRasterizerState;
-
-protected:
-	Microsoft::WRL::ComPtr<ID3D11Device>&			cpDevice;
-	Microsoft::WRL::ComPtr<ID3D11DeviceContext>&	cpDeviceContext;
-	Microsoft::WRL::ComPtr<IDXGISwapChain>&			cpSwapChain;
-
-protected:
-	Microsoft::WRL::ComPtr<ID3D11Texture2D>			cpDepthStencilTexture2D;
-	Microsoft::WRL::ComPtr<ID3D11DepthStencilView>	cpDepthStencilView;
+	std::unique_ptr<class PostProcess> upPostProcess;
 
 public:
-	virtual void Update(const float& fDelta) = 0;
-	virtual void Resize(const float& fAspectRatioIn) = 0;
-
-public:
-	void WipeOut(const DirectX::XMVECTOR& xmvClearColor = DirectX::XMVectorSet(0.f, 0.f, 0.f, 1.f));
-
-public:
-	virtual void SetRSState() = 0;
-	virtual void SetVSConstantBuffers() = 0;
-	virtual void SetHSConstantBuffers() = 0;
-	virtual void SetDSConstantBuffers() = 0;
-	virtual void SetGSConstantBuffers() = 0;
-	virtual void SetPSConstantBuffers() = 0;
-	virtual void OMSetRenderTargets() = 0;
-	virtual void ResetCamera() = 0;
-
-public:
-	std::unique_ptr<class PostProcess> pPostProcess;
+	void DoPostProcess();
 
 protected:
 	Microsoft::WRL::ComPtr<ID3D11Texture2D>				cpCameraOutputTexture;
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView>		cpCameraOutputRTV;
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>	cpCameraOutputSRV;
 
-public:
+protected:
 	Microsoft::WRL::ComPtr<ID3D11Texture2D>				cpModelIDTexture;
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView>		cpModelIDRTV;
-
-public:
 	Microsoft::WRL::ComPtr<ID3D11Texture2D>				cpModelIDMSToSS;
-	Microsoft::WRL::ComPtr<ID3D11Texture2D>				cpModelIDStagingTexture;
+	Microsoft::WRL::ComPtr<ID3D11Texture2D>				cpModelIDStagedTexture;
 
 public:
-	DXGI_FORMAT GetRenderedTextureFormat();
-	inline ID3D11Texture2D* GetRenderedTexture() { return cpCameraOutputTexture.Get(); }
+	unsigned int GetPointedModelIDAsRGBA();
 
 public:
-	virtual void SetPostProcess() = 0;
-	void DoPostProcess();
+	inline void StartMove(MoveDir moveDir) { bMoveDirection[moveDir] = true; }
+	inline void StopMove(MoveDir moveDir) { bMoveDirection[moveDir] = false; }
 
 public:
-	virtual struct ModelIDData GetPointedModelID() = 0;
+	void SetFromMouseXY(const int& iMouseX, const int& iMouseY);
 
-protected:
-	virtual void CreateModelIDResource() = 0;
-	virtual void CreateResource() = 0;
+public:
+	inline void SwitchFirstView() { bFirstView = !bFirstView; }
+
+public:
+	void WipeOut();
+
+#pragma region Virtual
+// Virtual Function ==============================================
+public:
+	virtual void Update(const float& fDelta);
+	virtual void Resize(
+		const UINT& uiWidthIn,
+		const UINT& uiHeightIn,
+		const float& fAspectRatioIn
+	);
+// ==============================================================
+#pragma endregion
+
+#pragma region Interface
+// Interface Function ============================================
+public:
+	virtual void SetConstantBuffers() = 0;
+	virtual void OMSetRenderTargets() = 0;
+	virtual void ResetCamera() = 0;
+// ==============================================================
+#pragma endregion
 };

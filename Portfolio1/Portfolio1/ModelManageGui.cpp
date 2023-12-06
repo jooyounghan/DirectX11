@@ -5,19 +5,18 @@
 #include <directxmath/DirectXMath.h>
 
 #include "ModelManageGui.h"
-#include "ObjectModel.h"
+#include "PBRModel.h"
 #include "FileLoader.h"
 
 #include "ModelTextureFile.h"
-#include "TransformProperties.h"
 
 using namespace ImGui;
 using namespace DirectX;
 using namespace std;
 
 ModelManageGui::ModelManageGui(
-	std::vector<std::shared_ptr<PickableModel>>& vSpModelsIn,
-	std::shared_ptr<PickableModel>& spSelectedModelIn
+	std::vector<std::shared_ptr<PickableModelInterface>>& vSpModelsIn,
+	std::shared_ptr<PickableModelInterface>& spSelectedModelIn
 )
 	: vSpModels(vSpModelsIn),
 	spSelectedModel(spSelectedModelIn),
@@ -46,7 +45,7 @@ void ModelManageGui::RenderGui()
 
 		if (spSelectedModel.get() != pSelectedObjectModel)
 		{
-			pSelectedObjectModel = dynamic_cast<ObjectModel*>(spSelectedModel.get());
+			pSelectedObjectModel = dynamic_cast<PBRModel*>(spSelectedModel.get());
 		}
 
 		if (pSelectedObjectModel != nullptr)
@@ -68,9 +67,9 @@ void ModelManageGui::RenderGui()
 
 void ModelManageGui::SetTransformModelMenu()
 {
-	SliderFloat3("Scale Vector",  spSelectedModel->upTransformationProperties->xmvScale.m128_f32, 0.f, 5.f);
-	SliderFloat3("Rotation Vector", (float*)(&spSelectedModel->upTransformationProperties->sPositionAngle), -2.f * XM_PI, 2.f * XM_PI);
-	SliderFloat3("Translation Vector", spSelectedModel->upTransformationProperties->xmvTranslation.m128_f32, -10.f, 10.f);
+	SliderFloat3("Scale Vector", (float*)&spSelectedModel->sTransformation.sScales, 0.f, 5.f);
+	SliderFloat3("Rotation Vector", (float*)(&spSelectedModel->sTransformation.sAngles), -2.f * XM_PI, 2.f * XM_PI);
+	SliderFloat3("Translation Vector", (float*)(&spSelectedModel->sTransformation.sTranslations), -10.f, 10.f);
 }
 
 void ModelManageGui::SetModelTextures()

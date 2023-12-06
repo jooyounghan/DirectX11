@@ -5,8 +5,8 @@ class BlendFilterInterface : public FilterInterface
 {
 public:
 	BlendFilterInterface(
-		Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn,
-		Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn,
+		ID3D11Device* pDeviceIn,
+		ID3D11DeviceContext* pDeviceContextIn,
 		const D3D11_VIEWPORT& sScreenViewportIn,
 		DXGI_FORMAT eFormat
 	);

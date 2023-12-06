@@ -40,12 +40,6 @@
     <Filter Include="헤더 파일\Light">
       <UniqueIdentifier>{6a94f358-5905-4f1d-a547-9175c299d290}</UniqueIdentifier>
     </Filter>
-    <Filter Include="헤더 파일\Transformation">
-      <UniqueIdentifier>{e8a96e78-9dbe-404e-8b01-95fdae402aa8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\Transformation">
-      <UniqueIdentifier>{4605bcec-90f0-4688-ba48-2bbeb6ad0232}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\Drawer">
       <UniqueIdentifier>{b0cbee6a-71aa-4697-b817-899688bd34f0}</UniqueIdentifier>
     </Filter>
@@ -130,33 +124,6 @@
     <Filter Include="Shader\CubeMap">
       <UniqueIdentifier>{fa0a3d4c-91c5-486e-ad40-97edf521aee5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="헤더 파일\Drawer\ObjectDrawer">
-      <UniqueIdentifier>{4604a28c-c92b-4c06-a3b0-1e5df58fa4ab}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\Drawer\ObjectDrawer\Extended">
-      <UniqueIdentifier>{64efa572-e436-4336-954b-9c617686a800}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\Drawer\CubeMapDrawer">
-      <UniqueIdentifier>{d75b5e54-61c4-4420-9d66-1a50a2ef8a06}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\Drawer\ObjectDrawer">
-      <UniqueIdentifier>{8d29850b-7e46-49ed-8e50-6ba57353cc53}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\Drawer\ObjectDrawer\Extended">
-      <UniqueIdentifier>{8d0453ac-04cf-4785-ac56-128487989328}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\Drawer\NonLightDrawer">
-      <UniqueIdentifier>{d37d8de6-8ee6-422d-8850-d3544ea1f9c6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\Drawer\NonLightDrawer\Extneded">
-      <UniqueIdentifier>{4c0b78fa-52ef-4a8d-8d67-a80ce6aa4ca7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\Drawer\NonLightDrawer">
-      <UniqueIdentifier>{135745c0-bb35-40fd-92f4-8b1c76ddc69f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\Drawer\NonLightDrawer\Extended">
-      <UniqueIdentifier>{8fab31b1-788b-4452-88b1-0410344a70b6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="헤더 파일\Model\Mirror">
       <UniqueIdentifier>{c953dbf6-27cb-4a77-a783-3c313569144e}</UniqueIdentifier>
     </Filter>
@@ -178,14 +145,47 @@
     <Filter Include="Shader\Mirror">
       <UniqueIdentifier>{8bcb6dc4-e3cb-4737-be6a-bd469c0402b0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Global">
+      <UniqueIdentifier>{f2ad7e5a-cfde-4558-ac04-045d6fb2256b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Global">
+      <UniqueIdentifier>{9df1dc00-eb5a-4eed-a42b-2b4309a88d72}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Drawer\PBRDrawer">
+      <UniqueIdentifier>{4604a28c-c92b-4c06-a3b0-1e5df58fa4ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Drawer\MirrorDrawer">
+      <UniqueIdentifier>{adff21c3-b2e2-4e3c-8461-81f342ea1736}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Drawer\PBRDrawer">
+      <UniqueIdentifier>{8d29850b-7e46-49ed-8e50-6ba57353cc53}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Drawer\PBRDrawer\Extended">
+      <UniqueIdentifier>{8d0453ac-04cf-4785-ac56-128487989328}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Drawer\LightlessDrawer">
+      <UniqueIdentifier>{d37d8de6-8ee6-422d-8850-d3544ea1f9c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Drawer\LightlessDrawer\Extneded">
+      <UniqueIdentifier>{4c0b78fa-52ef-4a8d-8d67-a80ce6aa4ca7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Drawer\MirrorDrawer">
+      <UniqueIdentifier>{37a7d8fe-ac9a-4469-b011-4892730f9c49}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Drawer\LightlessDrawer">
+      <UniqueIdentifier>{135745c0-bb35-40fd-92f4-8b1c76ddc69f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Drawer\LightlessDrawer\Extended">
+      <UniqueIdentifier>{8fab31b1-788b-4452-88b1-0410344a70b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Utils\Helper">
+      <UniqueIdentifier>{e69619c1-8bb3-4b18-8645-6f1aba6da8ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Utils\Helper">
+      <UniqueIdentifier>{84b06881-8ed9-4d8c-9252-33385882011c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ID3D11Helper.cpp">
-      <Filter>소스 파일\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="MathematicalHelper.cpp">
-      <Filter>소스 파일\Utils</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>소스 파일\Main</Filter>
     </ClCompile>
@@ -201,17 +201,11 @@
     <ClCompile Include="ModelID.cpp">
       <Filter>소스 파일\Model</Filter>
     </ClCompile>
-    <ClCompile Include="TransformProperties.cpp">
-      <Filter>소스 파일\Transformation</Filter>
-    </ClCompile>
     <ClCompile Include="DrawerInterface.cpp">
       <Filter>소스 파일\Drawer</Filter>
     </ClCompile>
     <ClCompile Include="LightManager.cpp">
       <Filter>소스 파일\Light</Filter>
-    </ClCompile>
-    <ClCompile Include="DepthStencilState.cpp">
-      <Filter>소스 파일\Utils</Filter>
     </ClCompile>
     <ClCompile Include="ModelManageGui.cpp">
       <Filter>소스 파일\GUI</Filter>
@@ -228,7 +222,7 @@
     <ClCompile Include="SettingManageGui.cpp">
       <Filter>소스 파일\GUI</Filter>
     </ClCompile>
-    <ClCompile Include="CameraNormal.cpp">
+    <ClCompile Include="NormalCamera.cpp">
       <Filter>소스 파일\Camera\Specific</Filter>
     </ClCompile>
     <ClCompile Include="CameraInterface.cpp">
@@ -270,19 +264,13 @@
     <ClCompile Include="ImGuiFileDialog.cpp">
       <Filter>소스 파일\GUI\Extended</Filter>
     </ClCompile>
-    <ClCompile Include="CameraInfo.cpp">
-      <Filter>소스 파일\Camera\Specific</Filter>
-    </ClCompile>
-    <ClCompile Include="Filter.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="DDSFile.cpp">
       <Filter>소스 파일\Files\Specific</Filter>
     </ClCompile>
     <ClCompile Include="ModelInterface.cpp">
       <Filter>소스 파일\Model</Filter>
     </ClCompile>
-    <ClCompile Include="ObjectModel.cpp">
+    <ClCompile Include="PBRModel.cpp">
       <Filter>소스 파일\Model\Object</Filter>
     </ClCompile>
     <ClCompile Include="SphereModel.cpp">
@@ -294,41 +282,53 @@
     <ClCompile Include="CubeMapModel.cpp">
       <Filter>소스 파일\Model\CubeMap</Filter>
     </ClCompile>
-    <ClCompile Include="ObjectDrawer.cpp">
-      <Filter>소스 파일\Drawer\ObjectDrawer</Filter>
-    </ClCompile>
-    <ClCompile Include="BaseModelDrawer.cpp">
-      <Filter>소스 파일\Drawer\ObjectDrawer\Extended</Filter>
+    <ClCompile Include="PBRModelDrawer.cpp">
+      <Filter>소스 파일\Drawer\PBRDrawer\Extended</Filter>
     </ClCompile>
     <ClCompile Include="ModelOutlineDrawer.cpp">
-      <Filter>소스 파일\Drawer\NonLightDrawer\Extneded</Filter>
+      <Filter>소스 파일\Drawer\LightlessDrawer\Extneded</Filter>
     </ClCompile>
     <ClCompile Include="NormalVectorDrawer.cpp">
-      <Filter>소스 파일\Drawer\NonLightDrawer\Extneded</Filter>
+      <Filter>소스 파일\Drawer\LightlessDrawer\Extneded</Filter>
     </ClCompile>
-    <ClCompile Include="NonLightDrawer.cpp">
-      <Filter>소스 파일\Drawer\NonLightDrawer</Filter>
+    <ClCompile Include="LightlessDrawer.cpp">
+      <Filter>소스 파일\Drawer\LightlessDrawer</Filter>
     </ClCompile>
     <ClCompile Include="CubeMapDrawer.cpp">
-      <Filter>소스 파일\Drawer\NonLightDrawer\Extneded</Filter>
+      <Filter>소스 파일\Drawer\LightlessDrawer\Extneded</Filter>
     </ClCompile>
     <ClCompile Include="MirrorModel.cpp">
       <Filter>소스 파일\Model\Mirror</Filter>
     </ClCompile>
-    <ClCompile Include="PickableModel.cpp">
+    <ClCompile Include="PickableModelInterface.cpp">
       <Filter>소스 파일\Model</Filter>
     </ClCompile>
+    <ClCompile Include="BloomCamera.cpp">
+      <Filter>소스 파일\Camera\Specific</Filter>
+    </ClCompile>
+    <ClCompile Include="DepthStencilState.cpp">
+      <Filter>소스 파일\Global</Filter>
+    </ClCompile>
+    <ClCompile Include="RasterizationState.cpp">
+      <Filter>소스 파일\Global</Filter>
+    </ClCompile>
+    <ClCompile Include="SamplerState.cpp">
+      <Filter>소스 파일\Global</Filter>
+    </ClCompile>
     <ClCompile Include="MirrorDrawer.cpp">
-      <Filter>소스 파일\Drawer\ObjectDrawer\Extended</Filter>
+      <Filter>소스 파일\Drawer\MirrorDrawer</Filter>
+    </ClCompile>
+    <ClCompile Include="ID3D11Helper.cpp">
+      <Filter>소스 파일\Utils\Helper</Filter>
+    </ClCompile>
+    <ClCompile Include="MathematicalHelper.cpp">
+      <Filter>소스 파일\Utils\Helper</Filter>
+    </ClCompile>
+    <ClCompile Include="StringHelper.cpp">
+      <Filter>소스 파일\Utils\Helper</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ID3D11Helper.h">
-      <Filter>헤더 파일\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="MathematicalHelper.h">
-      <Filter>헤더 파일\Utils</Filter>
-    </ClInclude>
     <ClInclude Include="DefineVar.h">
       <Filter>헤더 파일\Utils</Filter>
     </ClInclude>
@@ -343,15 +343,6 @@
     </ClInclude>
     <ClInclude Include="ModelID.h">
       <Filter>헤더 파일\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="TODO.h">
-      <Filter>소스 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="DepthStencilState.h">
-      <Filter>헤더 파일\Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="TransformProperties.h">
-      <Filter>헤더 파일\Transformation</Filter>
     </ClInclude>
     <ClInclude Include="SphereModel.h">
       <Filter>헤더 파일\Model\Object\Extended</Filter>
@@ -377,20 +368,14 @@
     <ClInclude Include="SettingManageGui.h">
       <Filter>헤더 파일\GUI</Filter>
     </ClInclude>
-    <ClInclude Include="CameraNormal.h">
+    <ClInclude Include="NormalCamera.h">
       <Filter>헤더 파일\Camera\Specific</Filter>
-    </ClInclude>
-    <ClInclude Include="CameraInfo.h">
-      <Filter>헤더 파일\Camera</Filter>
     </ClInclude>
     <ClInclude Include="CameraInterface.h">
       <Filter>헤더 파일\Camera</Filter>
     </ClInclude>
     <ClInclude Include="PostProcess.h">
       <Filter>헤더 파일\PostProcess</Filter>
-    </ClInclude>
-    <ClInclude Include="ModelStruct.h">
-      <Filter>헤더 파일\Model</Filter>
     </ClInclude>
     <ClInclude Include="CameraManageGui.h">
       <Filter>헤더 파일\GUI</Filter>
@@ -431,35 +416,23 @@
     <ClInclude Include="ImGuiFileDialogConfig.h">
       <Filter>헤더 파일\GUI\Extended</Filter>
     </ClInclude>
-    <ClInclude Include="Filter.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="DDSFile.h">
       <Filter>헤더 파일\Files\Specific</Filter>
     </ClInclude>
     <ClInclude Include="ModelInterface.h">
       <Filter>헤더 파일\Model</Filter>
     </ClInclude>
-    <ClInclude Include="ObjectModel.h">
+    <ClInclude Include="PBRModel.h">
       <Filter>헤더 파일\Model\Object</Filter>
     </ClInclude>
-    <ClInclude Include="ObjectDrawer.h">
-      <Filter>헤더 파일\Drawer\ObjectDrawer</Filter>
-    </ClInclude>
-    <ClInclude Include="BaseModelDrawer.h">
-      <Filter>헤더 파일\Drawer\ObjectDrawer\Extended</Filter>
-    </ClInclude>
     <ClInclude Include="ModelOutlineDrawer.h">
-      <Filter>헤더 파일\Drawer\NonLightDrawer\Extended</Filter>
+      <Filter>헤더 파일\Drawer\LightlessDrawer\Extended</Filter>
     </ClInclude>
     <ClInclude Include="NormalVectorDrawer.h">
-      <Filter>헤더 파일\Drawer\NonLightDrawer\Extended</Filter>
+      <Filter>헤더 파일\Drawer\LightlessDrawer\Extended</Filter>
     </ClInclude>
-    <ClInclude Include="CubeMapDrawer.h">
-      <Filter>헤더 파일\Drawer\CubeMapDrawer</Filter>
-    </ClInclude>
-    <ClInclude Include="NonLightDrawer.h">
-      <Filter>헤더 파일\Drawer\NonLightDrawer</Filter>
+    <ClInclude Include="LightlessDrawer.h">
+      <Filter>헤더 파일\Drawer\LightlessDrawer</Filter>
     </ClInclude>
     <ClInclude Include="ShaderTypeEnum.h">
       <Filter>Shader</Filter>
@@ -470,11 +443,41 @@
     <ClInclude Include="MirrorModel.h">
       <Filter>헤더 파일\Model\Mirror</Filter>
     </ClInclude>
-    <ClInclude Include="PickableModel.h">
+    <ClInclude Include="PickableModelInterface.h">
       <Filter>헤더 파일\Model</Filter>
     </ClInclude>
+    <ClInclude Include="BloomCamera.h">
+      <Filter>헤더 파일\Camera\Specific</Filter>
+    </ClInclude>
+    <ClInclude Include="DepthStencilState.h">
+      <Filter>헤더 파일\Global</Filter>
+    </ClInclude>
+    <ClInclude Include="RasterizationState.h">
+      <Filter>헤더 파일\Global</Filter>
+    </ClInclude>
+    <ClInclude Include="SamplerState.h">
+      <Filter>헤더 파일\Global</Filter>
+    </ClInclude>
+    <ClInclude Include="CubeMapDrawer.h">
+      <Filter>헤더 파일\Drawer\LightlessDrawer\Extended</Filter>
+    </ClInclude>
+    <ClInclude Include="PBRModelDrawer.h">
+      <Filter>헤더 파일\Drawer\PBRDrawer</Filter>
+    </ClInclude>
     <ClInclude Include="MirrorDrawer.h">
-      <Filter>헤더 파일\Drawer\ObjectDrawer\Extended</Filter>
+      <Filter>헤더 파일\Drawer\MirrorDrawer</Filter>
+    </ClInclude>
+    <ClInclude Include="ID3D11Helper.h">
+      <Filter>헤더 파일\Utils\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="MathematicalHelper.h">
+      <Filter>헤더 파일\Utils\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="StringHelper.h">
+      <Filter>헤더 파일\Utils\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="ManualDataType.h">
+      <Filter>헤더 파일\Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

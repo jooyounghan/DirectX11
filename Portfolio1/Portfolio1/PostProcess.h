@@ -11,8 +11,8 @@ class PostProcess
 {
 public:
 	PostProcess(
-		Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn,
-		Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn,
+		ID3D11Device* pDeviceIn,
+		ID3D11DeviceContext* pDeviceContextIn,
 		const D3D11_VIEWPORT& sScreenViewportIn,
 		DXGI_FORMAT eCameraFormatIn,
 		DXGI_FORMAT eBackBufferFormatIn
@@ -44,8 +44,8 @@ private:
 	UINT uiDepth;
 
 private:
-	Microsoft::WRL::ComPtr<ID3D11Device>& cpDevice;
-	Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContext;
+	ID3D11Device* pDevice;
+	ID3D11DeviceContext* pDeviceContext;
 	
 private:
 	DXGI_FORMAT eCameraFormat;

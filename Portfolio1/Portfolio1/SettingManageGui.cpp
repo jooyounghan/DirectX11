@@ -9,11 +9,19 @@
 #include "DDSFile.h"
 #include "ModelTextureFile.h"
 
+#include "RasterizationState.h"
+
 using namespace std;
 using namespace ImGui;
 
-SettingManageGui::SettingManageGui(bool& bIsNormalVectorDrawIn, bool& bIsWireFrameDrawIn, shared_ptr<class CubeMapModel> spCubeMapModelIn)
-	: bIsNormalVectorDraw(bIsNormalVectorDrawIn), bIsWireFrameDraw(bIsWireFrameDrawIn), spCubeMapModel(spCubeMapModelIn)
+SettingManageGui::SettingManageGui(
+	ID3D11Device* pDeviceIn, ID3D11DeviceContext* pDeviceContextIn,
+	bool& bIsNormalVectorDrawIn, bool& bIsWireFrameDrawIn, 
+	shared_ptr<class CubeMapModel> spCubeMapModelIn
+)
+	: pDevice(pDeviceIn), pDeviceContext(pDeviceContextIn), 
+	bIsNormalVectorDraw(bIsNormalVectorDrawIn), bIsWireFrameDraw(bIsWireFrameDrawIn), 
+	spCubeMapModel(spCubeMapModelIn)
 {
 }
 
@@ -42,14 +50,28 @@ void SettingManageGui::SetDrawNormalVector()
 
 void SettingManageGui::SetDrawWireFrame()
 {
+	bool lastFlag = bIsWireFrameDraw;
 	ImGui::Checkbox("Draw WireFrame", &bIsWireFrameDraw);
+	if (lastFlag != bIsWireFrameDraw)
+	{
+		lastFlag = bIsWireFrameDraw;
+		RasterizerState& rasterizerState = RasterizerState::GetInstance(pDevice, pDeviceContext);
+		if (bIsWireFrameDraw)
+		{
+			rasterizerState.SetWireFrameRS();
+		}
+		else
+		{
+			rasterizerState.SetSolidRS();
+		}
+	}
 }
 
 void SettingManageGui::SetCubeMapTexture()
 {
 	Separator();
 	SetDDSTexture("Environment Specular", spCubeMapModel->spEnvSpecularTextureFile);
-	SetDDSTexture("Environment Irradiance", spCubeMapModel->spEnvIrradianceTextureFile);
+	SetDDSTexture("Environment Diffuse", spCubeMapModel->spEnvDiffuseTextureFile);
 	SetModelTexture("Environment BRDF", spCubeMapModel->spEnvBrdfTextureFile);
 }
 

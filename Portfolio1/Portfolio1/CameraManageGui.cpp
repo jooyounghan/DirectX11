@@ -37,9 +37,13 @@ void CameraManageGui::SetCameraPostProcess()
 	ImGui::SliderFloat("Blend Strength", &sProperties.fTempBlendStrength, 0.f, 1.f);
 	ImGui::SliderFloat("Exposure", &sProperties.fTempExposure, 0.f, 5.f);
 	ImGui::SliderFloat("Gamma", &sProperties.fTempGamma, 0.f, 5.f);
-	spSelectedCamera->pPostProcess->SetBlendProperties(
-		sProperties.fTempBlendStrength,
-		sProperties.fTempExposure,
-		sProperties.fTempGamma
-	);
+
+	if (spSelectedCamera != nullptr && spSelectedCamera->upPostProcess != nullptr)
+	{
+		spSelectedCamera->upPostProcess->SetBlendProperties(
+			sProperties.fTempBlendStrength,
+			sProperties.fTempExposure,
+			sProperties.fTempGamma
+		);
+	}
 }

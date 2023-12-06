@@ -5,16 +5,7 @@ extern void Console(const char*);
 
 using namespace Microsoft::WRL;
 
-ComPtr<ID3D11DepthStencilState> DepthStencilState::cpDefaultDSS = ComPtr<ID3D11DepthStencilState>();
-ComPtr<ID3D11DepthStencilState> DepthStencilState::cpMaskDSS = ComPtr<ID3D11DepthStencilState>();
-ComPtr<ID3D11DepthStencilState> DepthStencilState::cpDrawEqualDSS = ComPtr<ID3D11DepthStencilState>();
-ComPtr<ID3D11DepthStencilState> DepthStencilState::cpDrawNotEqualDSS = ComPtr<ID3D11DepthStencilState>();
-
-DepthStencilState::DepthStencilState()
-{
-}
-
-void DepthStencilState::Init(IN ID3D11Device* pDevice)
+DepthStencilState::DepthStencilState(ID3D11Device* pDevice)
 {
 	DepthStencilState::CreateDepthStencilState(DepthStencilOption::MaskOption, pDevice, DepthStencilState::cpMaskDSS.GetAddressOf());
 	DepthStencilState::CreateDepthStencilState(DepthStencilOption::DrawEqualOption, pDevice, DepthStencilState::cpDrawEqualDSS.GetAddressOf());
@@ -27,17 +18,16 @@ ID3D11DepthStencilState* DepthStencilState::pGetDSS(IN DepthStencilOption eDSTyp
 	switch (eDSType)
 	{
 	case DepthStencilOption::MaskOption:
-		return DepthStencilState::cpMaskDSS.Get();
+		return cpMaskDSS.Get();
 	case DepthStencilOption::DrawEqualOption:
-		return DepthStencilState::cpDrawEqualDSS.Get();
+		return cpDrawEqualDSS.Get();
 	case DepthStencilOption::DrawNotEqualOption:
-		return DepthStencilState::cpDrawNotEqualDSS.Get();
+		return cpDrawNotEqualDSS.Get();
 	case DepthStencilOption::DefaultOption:
 	default:
-		return DepthStencilState::cpDefaultDSS.Get();
+		return cpDefaultDSS.Get();
 	}
 }
-
 
 void DepthStencilState::CreateDepthStencilState(IN DepthStencilOption eDSType, IN ID3D11Device* pDevice, OUT ID3D11DepthStencilState** ppDepthStencilState)
 {

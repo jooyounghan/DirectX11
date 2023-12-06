@@ -32,7 +32,7 @@ public:
 	virtual void Quit();
 
 public:
-	void SwapChain();
+	inline void SwapChain() { cpSwapChain->Present(1, 0); };
 
 protected:
 	Microsoft::WRL::ComPtr<ID3D11Device> cpDevice;

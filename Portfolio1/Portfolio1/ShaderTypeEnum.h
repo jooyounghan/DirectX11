@@ -17,12 +17,6 @@ enum DSConstBufferType : unsigned int
 	DS_CBUFF_CAMERA_INFO
 };
 
-enum DSSamplerType : unsigned int
-{
-	DS_WRAP_SAMPLER,
-	DS_CLAMP_SAMPLER
-};
-
 enum PSConstBufferType : unsigned int
 {
 	PS_CBUFF_LIGHT,
@@ -52,10 +46,10 @@ enum PSSRVType : unsigned int
 	PS_SRV_MIRROR_SELF
 };
 
-enum PSSamplerType : unsigned int
+enum SamplerType : unsigned int
 {
-	PS_WRAP_SAMPLER,
-	PS_CLAMP_SAMPLER
+	WRAP_SAMPLER,
+	CLAMP_SAMPLER
 };
 
 enum GSConstBufferType : unsigned int

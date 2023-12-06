@@ -6,7 +6,12 @@
 class SettingManageGui : public ManageGuiInterface
 {
 public:
-	SettingManageGui(bool& bIsNormalVectorDrawIn, bool& bIsWireFrameDrawIn, std::shared_ptr<class CubeMapModel> spCubeMapModelIn);
+	SettingManageGui(
+		ID3D11Device* pDeviceIn, ID3D11DeviceContext* pDeviceContextIn,
+		bool& bIsNormalVectorDrawIn, 
+		bool& bIsWireFrameDrawIn, 
+		std::shared_ptr<class CubeMapModel> spCubeMapModelIn
+	);
 	virtual ~SettingManageGui() override;
 
 public:
@@ -26,6 +31,8 @@ private:
 	void SetModelTexture(const std::string& strDescription, std::shared_ptr<class ModelTextureFile>& spModelTextureFile);
 
 private:
+	ID3D11Device* pDevice;
+	ID3D11DeviceContext* pDeviceContext;
 	std::shared_ptr<CubeMapModel> spCubeMapModel;
 
 public:

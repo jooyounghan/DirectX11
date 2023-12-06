@@ -12,31 +12,24 @@ class DrawerInterface
 {
 public:
 	DrawerInterface(
-		Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn,
-		Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn);
+		ID3D11Device* pDeviceIn,
+		ID3D11DeviceContext* pDeviceContextIn);
 	virtual ~DrawerInterface();
 
 protected:
-	Microsoft::WRL::ComPtr<ID3D11Device>& cpDevice;
-	Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContext;
+	ID3D11Device* pDevice;
+	ID3D11DeviceContext* pDeviceContext;
 
 protected:
 	virtual void SetIAInputLayer() = 0;
-	virtual void SetVSShader() = 0;
-	virtual void SetHSShader() = 0;
-	virtual void SetDSShader() = 0;
-	virtual void SetGSShader() = 0;
-	virtual void SetPSShader() = 0;
+
+protected:
+	virtual void SetShader() = 0;
 
 protected:
 	virtual void SetOMState() = 0;
-	virtual void ResetOMState() = 0;
 
 protected:
 	virtual void ResetDrawer() = 0;
-
-protected:
-	Microsoft::WRL::ComPtr<ID3D11SamplerState>	cpDrawerWrapSampler;
-	Microsoft::WRL::ComPtr<ID3D11SamplerState>	cpDrawerClampSampler;
 };
 

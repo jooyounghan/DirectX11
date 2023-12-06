@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 
-class Filter
+class StringHelper
 {
 public:
 	template<typename ...Args>

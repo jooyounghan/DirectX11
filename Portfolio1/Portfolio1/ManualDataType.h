@@ -21,11 +21,3 @@ struct TextureCoord
 	float x;
 	float y;
 };
-
-struct Vertex
-{
-	PositionVector	sPosVec;
-	TextureCoord	sTexCoord;
-	Vector			sNorVec;
-	Vector			sTangVec;
-};

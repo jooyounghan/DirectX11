@@ -5,7 +5,7 @@ using namespace std;
 using namespace Microsoft::WRL;
 
 FilterInfo::FilterInfo(
-	Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn
+	ID3D11Device* pDeviceIn
 )
 {
 	vFilterVertices = vector<FilterVertex>({
@@ -17,11 +17,11 @@ FilterInfo::FilterInfo(
 
 	vIndices = vector<unsigned int>{ 0, 2, 3, 2, 0, 1 };
 
-	ID3D11Helper::CreateBuffer(cpDeviceIn.Get(), vFilterVertices, D3D11_USAGE_IMMUTABLE, D3D11_BIND_VERTEX_BUFFER, NULL, NULL, cpVertexBuffer.GetAddressOf());
-	ID3D11Helper::CreateBuffer(cpDeviceIn.Get(), vIndices, D3D11_USAGE_IMMUTABLE, D3D11_BIND_INDEX_BUFFER, NULL, NULL, cpIndexBuffer.GetAddressOf());
+	ID3D11Helper::CreateBuffer(pDeviceIn, vFilterVertices, D3D11_USAGE_IMMUTABLE, D3D11_BIND_VERTEX_BUFFER, NULL, NULL, cpVertexBuffer.GetAddressOf());
+	ID3D11Helper::CreateBuffer(pDeviceIn, vIndices, D3D11_USAGE_IMMUTABLE, D3D11_BIND_INDEX_BUFFER, NULL, NULL, cpIndexBuffer.GetAddressOf());
 
 	ID3D11Helper::CreateVSInputLayOut(
-		cpDeviceIn.Get(),
+		pDeviceIn,
 		L"FilterVS.hlsl",
 		{
 			{"POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
@@ -31,19 +31,19 @@ FilterInfo::FilterInfo(
 		cpFilterInputLayout.GetAddressOf()
 	);
 
-	ID3D11Helper::CreateSampler(D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_CLAMP, NULL, cpDeviceIn.Get(), cpPSSamplerState.GetAddressOf());
+	ID3D11Helper::CreateSampler(D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_CLAMP, NULL, pDeviceIn, cpPSSamplerState.GetAddressOf());
 }
 
-FilterInfo& FilterInfo::GetIncetance(Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn)
+FilterInfo& FilterInfo::GetIncetance(ID3D11Device* pDeviceIn)
 {
-	static FilterInfo s(cpDeviceIn);
+	static FilterInfo s(pDeviceIn);
 	return s;
 }
 
 FilterInterface::FilterInterface(
-	Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn,
-	Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn,
+	ID3D11Device* pDeviceIn,
+	ID3D11DeviceContext* pDeviceContextIn,
 	const D3D11_VIEWPORT& sScreenViewportIn
 )
-	: cpDevice(cpDeviceIn), cpDeviceContext(cpDeviceContextIn), sScreenViewport(sScreenViewportIn)
+	: pDevice(pDeviceIn), pDeviceContext(pDeviceContextIn), sScreenViewport(sScreenViewportIn)
 {}

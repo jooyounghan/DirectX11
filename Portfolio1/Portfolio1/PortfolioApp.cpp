@@ -7,17 +7,18 @@
 #include "CameraManageGui.h"
 #include "FileManageGui.h"
 
-#include "BaseModelDrawer.h"
+#include "PBRModelDrawer.h"
 #include "ModelOutlineDrawer.h"
 #include "NormalVectorDrawer.h"
 #include "CubeMapDrawer.h"
 #include "MirrorDrawer.h"
 
 #include "CameraInterface.h"
-#include "CameraNormal.h"
+#include "NormalCamera.h"
+#include "BloomCamera.h"
 
 #include "ModelInterface.h"
-#include "ObjectModel.h"
+#include "PBRModel.h"
 #include "SphereModel.h"
 #include "SquareModel.h"
 #include "CubeMapModel.h"
@@ -39,7 +40,7 @@ using namespace DirectX;
 using namespace std;
 
 PortfolioApp::PortfolioApp(const UINT& uiWidthIn, const UINT& uiHeightIn)
-	: BaseApp(uiWidthIn, uiHeightIn), spMainCameras(nullptr), spSelectedModel(nullptr), spTempSelectedModel(nullptr)
+	: BaseApp(uiWidthIn, uiHeightIn), spMainCamera(nullptr), spSelectedModel(nullptr), spTempSelectedModel(nullptr)
 {
 	BaseApp::GlobalBaseApp = this;
 }
@@ -52,31 +53,41 @@ PortfolioApp::~PortfolioApp()
 void PortfolioApp::Init()
 {
 	ID3D11Helper::CreateDeviceAndContext(uiWidth, uiHeight, true, hMainWindow, uiNumLevelQuality, cpSwapChain, cpDevice, cpDeviceContext);
-	ID3D11Helper::Init(cpDevice.Get(), cpDeviceContext.Get());
 
 	InitImGUI();
 	
 	// =================================================================================================
 	// SDR
-	//spMainCameras = make_shared<CameraNormal>(cpDevice, cpDeviceContext, cpSwapChain, uiWidth, uiHeight, uiNumLevelQuality);
+	//spMainCameras = make_shared<NormalCamera>(cpDevice, cpDeviceContext, cpSwapChain, uiWidth, uiHeight, uiNumLevelQuality);
 
 	// HDR
-	spMainCameras = make_shared<CameraNormal>(cpDevice, cpDeviceContext, cpSwapChain, uiWidth, uiHeight, uiNumLevelQuality, DXGI_FORMAT_R16G16B16A16_FLOAT);
+	spMainCamera = make_shared<BloomCamera>(
+		cpDevice.Get(), cpDeviceContext.Get(), 
+		uiWidth, uiHeight, uiNumLevelQuality, DXGI_FORMAT_R16G16B16A16_FLOAT,
+		0.f, 0.f, -10.f, 70.f, 0.01f, 1000.f
+	);
+	spMainCamera->SetAsMainCamera(cpSwapChain.Get());
 	// =================================================================================================
 	
 	
-	shared_ptr<SphereModel> spSphere = make_shared<SphereModel>(cpDevice, cpDeviceContext, 0.f, 0.f, 0.f, 2.f);
+	shared_ptr<SphereModel> spSphere = make_shared<SphereModel>(cpDevice.Get(), cpDeviceContext.Get(), 0.f, 0.f, 0.f, 2.f);
 	vSpPickableModels.push_back(spSphere);
-	vSpObjectModels.push_back(spSphere);
+	vSpPBRModels.push_back(spSphere);
 
-	shared_ptr<MirrorModel> spMirrorLeft = make_shared<MirrorModel>(cpDevice, cpDeviceContext, 5.f, 5.f, -5.f, 0.f, 0.f, spMainCameras);
-	shared_ptr<MirrorModel> spMirrorRight = make_shared<MirrorModel>(cpDevice, cpDeviceContext, 5.f, 5.f, 5.f, 0.f, 0.f, spMainCameras);
+	shared_ptr<MirrorModel> spMirrorLeft = make_shared<MirrorModel>(
+		cpDevice.Get(), cpDeviceContext.Get(), 5.f, 5.f, 
+		DXGI_FORMAT_R16G16B16A16_FLOAT, -5.f, 0.f, 0.f, spMainCamera
+	);
+	shared_ptr<MirrorModel> spMirrorRight = make_shared<MirrorModel>(
+		cpDevice.Get(), cpDeviceContext.Get(), 5.f, 5.f, 
+		DXGI_FORMAT_R16G16B16A16_FLOAT, 5.f, 0.f, 0.f, spMainCamera
+	);
 	vSpPickableModels.push_back(spMirrorLeft);
 	vSpPickableModels.push_back(spMirrorRight);
 	vSpMirrorModels.push_back(spMirrorLeft);
 	vSpMirrorModels.push_back(spMirrorRight);
 
-	spCubeMap = make_shared<CubeMapModel>(cpDevice, cpDeviceContext);
+	spCubeMap = make_shared<CubeMapModel>(cpDevice.Get(), cpDeviceContext.Get());
 
 	spLightManager = make_unique<LightManager>(cpDevice, cpDeviceContext);
 	spLightManager->AddDirectionalLight(
@@ -88,21 +99,21 @@ void PortfolioApp::Init()
 	// GUI Ãß°¡ =====================================================================================
 	vUpManageGuis.push_back(make_unique<ModelManageGui>(vSpPickableModels, spSelectedModel));
 	vUpManageGuis.push_back(make_unique<LightManageGui>(spLightManager));
-	vUpManageGuis.push_back(make_unique<SettingManageGui>(bIsNormalVectorDraw, bIsWireFrameDraw, spCubeMap));
-	vUpManageGuis.push_back(make_unique<CameraManageGui>(spMainCameras));
+	vUpManageGuis.push_back(make_unique<SettingManageGui>(cpDevice.Get(), cpDeviceContext.Get(), bIsNormalVectorDraw, bIsWireFrameDraw, spCubeMap));
+	vUpManageGuis.push_back(make_unique<CameraManageGui>(spMainCamera));
 	vUpManageGuis.push_back(make_unique<FileManageGui>(cpDevice, cpDeviceContext));
 	// ==============================================================================================
-	upModelDrawer = make_unique<BaseModelDrawer>(cpDevice, cpDeviceContext);
-	upModelOutlineDrawer = make_unique<ModelOutlineDrawer>(cpDevice, cpDeviceContext);
-	upNormalVectorDrawer = make_unique<NormalVectorDrawer>(cpDevice, cpDeviceContext);
-	upCubeMapDrawer = make_unique<CubeMapDrawer>(cpDevice, cpDeviceContext);
-	upMirrorDrawer = make_unique<MirrorDrawer>(cpDevice, cpDeviceContext);
+	upModelDrawer = make_unique<PBRModelDrawer>(cpDevice.Get(), cpDeviceContext.Get());
+	upModelOutlineDrawer = make_unique<ModelOutlineDrawer>(cpDevice.Get(), cpDeviceContext.Get());
+	upNormalVectorDrawer = make_unique<NormalVectorDrawer>(cpDevice.Get(), cpDeviceContext.Get());
+	upCubeMapDrawer = make_unique<CubeMapDrawer>(cpDevice.Get(), cpDeviceContext.Get());
+	upMirrorDrawer = make_unique<MirrorDrawer>(cpDevice.Get(), cpDeviceContext.Get());
 	// ==============================================================================================
 }
 
 void PortfolioApp::Update(const float& fDelta)
 {
-	spMainCameras->Update(fDelta);
+	spMainCamera->Update(fDelta);
 	spLightManager->Update();
 
 	for (auto& model : vSpPickableModels)
@@ -114,33 +125,38 @@ void PortfolioApp::Update(const float& fDelta)
 
 void PortfolioApp::Render()
 {
-	spMainCameras->WipeOut(DirectX::XMVectorSet(0.f, 0.f, 0.f, 1.f));
+	spMainCamera->WipeOut();
 
 	for (auto& pMirror : vSpMirrorModels)
 	{
-		pMirror->WipeOut(DirectX::XMVectorSet(0.f, 0.f, 0.f, 1.f));
+		pMirror->WipeOut();
 	}
 
-	upModelDrawer->Draw(spMainCameras.get(), spLightManager.get(), vSpObjectModels, spCubeMap.get());
+	upModelDrawer->Draw(spMainCamera.get(), spLightManager.get(), vSpPBRModels, spCubeMap.get());
 
 	if (bIsNormalVectorDraw)
 	{
 		for (auto& model : vSpPickableModels)
 		{
-			upNormalVectorDrawer->Draw(spMainCameras.get(), model.get());
+			upNormalVectorDrawer->Draw(spMainCamera.get(), model.get());
 		}
 	}
 	
 	if (spSelectedModel)
 	{
-		upModelOutlineDrawer->Draw(spMainCameras.get(), spSelectedModel.get());
+		upModelOutlineDrawer->Draw(spMainCamera.get(), spSelectedModel.get());
 	}
 
-	upCubeMapDrawer->Draw(spMainCameras.get(), spCubeMap.get());
+	upCubeMapDrawer->Draw(spMainCamera.get(), spCubeMap.get());
 
-	upMirrorDrawer->Draw(upModelDrawer.get(), upCubeMapDrawer.get(), spMainCameras.get(), spLightManager.get(), vSpObjectModels, spCubeMap.get(), vSpMirrorModels);
+	upMirrorDrawer->Draw(
+		spMainCamera.get(), spLightManager.get(), 
+		upModelDrawer.get(), vSpPBRModels, 
+		upCubeMapDrawer.get(), spCubeMap.get(), 
+		vSpMirrorModels
+	);
 
-	spMainCameras->DoPostProcess();
+	spMainCamera->DoPostProcess();
 }
 
 void PortfolioApp::Run()
@@ -216,14 +232,21 @@ void PortfolioApp::ResizeSwapChain(const UINT& uiWidthIn, const UINT& uiHeightIn
 		uiHeight = uiHeightIn;
 		fAspectRatio = uiWidth / (float)uiHeight;
 		cpSwapChain->ResizeBuffers(0, uiWidth, uiHeight, DXGI_FORMAT_UNKNOWN, 0);
-		spMainCameras->Resize(fAspectRatio);
+		spMainCamera->Resize(uiWidth, uiHeightIn, fAspectRatio);
 	}
 }
 
 void PortfolioApp::CheckMouseHoveredModel()
 {
-	ModelIDData uiSelectedModelID = spMainCameras->GetPointedModelID();
-	auto findResult = find_if(vSpPickableModels.begin(), vSpPickableModels.end(), [&](shared_ptr<PickableModel> model) { return model->upModelID->sIdData == uiSelectedModelID; });
+	unsigned int uiSelectedModelIDAsRGBA = spMainCamera->GetPointedModelIDAsRGBA();
+	auto findResult = find_if(
+		vSpPickableModels.begin(), 
+		vSpPickableModels.end(), 
+		[&](shared_ptr<PickableModelInterface> model) 
+		{ 
+			return model->upModelID->IsRGBASameWithID(uiSelectedModelIDAsRGBA);
+		}
+	);
 	if (findResult != vSpPickableModels.end())
 	{
 		spTempSelectedModel = *findResult;
@@ -251,7 +274,7 @@ LRESULT __stdcall PortfolioApp::AppProc(HWND hWnd, UINT msg, WPARAM wParam, LPAR
 		ResizeSwapChain((UINT)LOWORD(lParam), (UINT)HIWORD(lParam));
 		return 0;
 	case WM_MOUSEMOVE:
-		spMainCameras->SetFromMouseXY(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		spMainCamera->SetFromMouseXY(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
 		return 0;
 	case WM_LBUTTONUP:
 		if (spTempSelectedModel != nullptr)
@@ -265,35 +288,35 @@ LRESULT __stdcall PortfolioApp::AppProc(HWND hWnd, UINT msg, WPARAM wParam, LPAR
 	case WM_KEYDOWN:
 		switch (wParam) {
 		case KeyCode::W:
-			spMainCameras->StartMove(MoveDir::Forward);
+			spMainCamera->StartMove(MoveDir::Forward);
 			break;
 		case KeyCode::A:
-			spMainCameras->StartMove(MoveDir::Left);
+			spMainCamera->StartMove(MoveDir::Left);
 			break;
 		case KeyCode::S:
-			spMainCameras->StartMove(MoveDir::Backward);
+			spMainCamera->StartMove(MoveDir::Backward);
 			break;
 		case KeyCode::D:
-			spMainCameras->StartMove(MoveDir::Right);
+			spMainCamera->StartMove(MoveDir::Right);
 			break;
 		case KeyCode::F:
-			spMainCameras->SwitchFirstView();
+			spMainCamera->SwitchFirstView();
 			break;
 		}
 		return 0;
 	case WM_KEYUP:
 		switch (wParam) {
 		case KeyCode::W:
-			spMainCameras->StopMove(MoveDir::Forward);
+			spMainCamera->StopMove(MoveDir::Forward);
 			break;
 		case KeyCode::A:
-			spMainCameras->StopMove(MoveDir::Left);
+			spMainCamera->StopMove(MoveDir::Left);
 			break;
 		case KeyCode::S:
-			spMainCameras->StopMove(MoveDir::Backward);
+			spMainCamera->StopMove(MoveDir::Backward);
 			break;
 		case KeyCode::D:
-			spMainCameras->StopMove(MoveDir::Right);
+			spMainCamera->StopMove(MoveDir::Right);
 			break;
 		}
 		return 0;

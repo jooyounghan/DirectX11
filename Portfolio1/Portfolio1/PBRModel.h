@@ -1,21 +1,21 @@
 #pragma once
-#include "ModelInterface.h"
+#include "PickableModelInterface.h"
+#include "ShaderTypeEnum.h"
+#include "ModelTextureFile.h"
 
-class CubeMapModel : public ModelInterface
+class PBRModel : public PickableModelInterface
 {
 public:
-	CubeMapModel(
+	PBRModel(
 		ID3D11Device* pDeviceIn,
 		ID3D11DeviceContext* pDeviceContextIn
 	);
-
-	virtual ~CubeMapModel();
+	virtual ~PBRModel();
 
 #pragma region Virtual
 // Virtual Function ==============================================
 public:
 	virtual void Update(const float& fDelta);
-	virtual void Render() override;
 
 public:
 	virtual void SetIAProperties() override;
@@ -30,18 +30,23 @@ public:
 // ==============================================================
 
 public:
-	std::shared_ptr<class DDSFile>				spEnvSpecularTextureFile;
-	std::shared_ptr<class DDSFile>				spEnvDiffuseTextureFile;
-	std::shared_ptr<class ModelTextureFile>		spEnvBrdfTextureFile;
+	std::shared_ptr<class ModelTextureFile>	pModelTextureSet[TEXTURE_MAP_NUM];
+	std::shared_ptr<class ModelTextureFile>	pHeightTexture;
 
 public:
 	struct
 	{
-		uint32_t bIsSpecularTextureOn;
-		uint32_t bIsDiffuseTextureOn;
-		uint32_t bIsBrdfTextureOn;
-		uint32_t uiDummy[1];
+		uint32_t bIsTextureOn[TEXTURE_MAP_NUM];
+		uint32_t uiDummy[TEXTURE_MAP_NUM % 4];
 	} sPSTextureFlags;
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	cpTextureFlagBuffer;
+
+public:
+	struct
+	{
+		float	fFrenelConstant[3];
+		uint32_t uiDummy;
+	} sPSTextureConstants;
+	Microsoft::WRL::ComPtr<ID3D11Buffer>	cpTextureConstantBuffer;
 };
 

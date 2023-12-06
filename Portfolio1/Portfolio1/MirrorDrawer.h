@@ -4,7 +4,7 @@
 #include <memory>
 #include <vector>
 
-class ObjectModel;
+class PBRModel;
 class CameraInterface;
 class LightManager;
 class CubeMapModel;
@@ -14,17 +14,17 @@ class MirrorDrawer : protected DrawerInterface
 {
 public:
 	MirrorDrawer(
-		Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn,
-		Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn);
+		ID3D11Device* pDeviceIn,
+		ID3D11DeviceContext* pDeviceContextIn);
 	virtual ~MirrorDrawer();
 
 public:
 	void Draw(
-		class ObjectDrawer* pModelDrawer,
-		class CubeMapDrawer* pCubeMapDrawer,
 		CameraInterface* pCamera,
 		LightManager* pLightManager,
-		const std::vector<std::shared_ptr<ObjectModel>>& vSpModels,
+		class PBRModelDrawer* pPBRModelDrawer,
+		const std::vector<std::shared_ptr<PBRModel>>& vSpModels,
+		class CubeMapDrawer* pCubeMapDrawer,
 		CubeMapModel* pEnvironmentCubeMap,
 		const std::vector<std::shared_ptr<MirrorModel>>& vMirrorModels
 	);
@@ -34,24 +34,17 @@ public:
 		const std::vector<std::shared_ptr<MirrorModel>>& vMirrorModel
 	);
 
-public:
+protected:
 	virtual void SetIAInputLayer() override;
-	virtual void SetVSShader() override;
-	virtual void SetHSShader() override;
-	virtual void SetDSShader() override;
-	virtual void SetGSShader() override;
-	virtual void SetPSShader() override;
 
-public:
+protected:
+	virtual void SetShader() override;
+
+protected:
 	virtual void SetOMState() override;
-	virtual void ResetOMState() override;
 
-public:
+protected:
 	virtual void ResetDrawer() override;
-
-public:
-	void PresetConfig(CameraInterface* pCamera);
-	void ResetConfig(CameraInterface* pCamera);
 
 protected:
 	Microsoft::WRL::ComPtr<ID3D11InputLayout>	cpMirrorInputLayout;

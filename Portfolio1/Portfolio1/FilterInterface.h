@@ -3,7 +3,8 @@
 #include <d3dcompiler.h>
 #include <wrl/client.h>
 #include <vector>
-#include "ModelStruct.h"
+
+#include "ManualDataType.h"
 
 struct FilterVertex
 {
@@ -14,13 +15,13 @@ struct FilterVertex
 class FilterInfo
 {
 private:
-	FilterInfo(Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn);
+	FilterInfo(ID3D11Device* pDeviceIn);
 	FilterInfo(const FilterInfo& ref){}
 	FilterInfo& operator=(const FilterInfo& ref) {}
 	~FilterInfo() {}
 
 public:
-	static FilterInfo& GetIncetance(Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn);
+	static FilterInfo& GetIncetance(ID3D11Device* pDeviceIn);
 
 public:
 	std::vector<FilterVertex> vFilterVertices;
@@ -42,15 +43,15 @@ class FilterInterface
 {
 public:
 	FilterInterface(
-		Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn,
-		Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn,
+		ID3D11Device* pDeviceIn,
+		ID3D11DeviceContext* pDeviceContextIn,
 		const D3D11_VIEWPORT& sScreenViewportIn
 	);
 	virtual ~FilterInterface() { };
 
 protected:
-	Microsoft::WRL::ComPtr<ID3D11Device>& cpDevice;
-	Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContext;
+	ID3D11Device* pDevice;
+	ID3D11DeviceContext* pDeviceContext;
 
 protected:
 	D3D11_VIEWPORT sScreenViewport;

@@ -1,23 +1,29 @@
 #include "NormalVectorDrawer.h"
 #include "ID3D11Helper.h"
 #include "DepthStencilState.h"
+#include "SamplerState.h"
+#include "ShaderTypeEnum.h"
 #include <vector>
 
-NormalVectorDrawer::NormalVectorDrawer(Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn, Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn)
-	: NonLightDrawer(cpDeviceIn, cpDeviceContextIn)
+using namespace std;
+
+NormalVectorDrawer::NormalVectorDrawer(
+	ID3D11Device* pDeviceIn, 
+	ID3D11DeviceContext* pDeviceContextIn
+)
+	: LightlessDrawer(pDeviceIn, pDeviceContextIn)
 {
-	std::vector<D3D11_INPUT_ELEMENT_DESC> vInputElemDesc{
-	{"POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-	{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 16, D3D11_INPUT_PER_VERTEX_DATA, 0},
-	{"NORMAL", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0}
+	vector<D3D11_INPUT_ELEMENT_DESC> vInputElemDesc {
+		{"POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 16, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"NORMAL", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0}
 	};
 
-	ID3D11Helper::CreateVSInputLayOut(cpDevice.Get(), L"BaseModelVS.hlsl", vInputElemDesc, cpNVVertexShader.GetAddressOf(), cpNVInputLayout.GetAddressOf());
-	ID3D11Helper::CreateHS(cpDevice.Get(), L"BaseModelHS.hlsl", cpNVHullShader.GetAddressOf());
-	ID3D11Helper::CreateDS(cpDevice.Get(), L"BaseModelDS.hlsl", cpNVDomainShader.GetAddressOf());
-	ID3D11Helper::CreateGS(cpDevice.Get(), L"NormalVectorGS.hlsl", cpNVGeometryShader.GetAddressOf());
-	ID3D11Helper::CreatePS(cpDevice.Get(), L"NormalVectorPS.hlsl", cpNVPixelShader.GetAddressOf());
-	ID3D11Helper::CreateSampler(D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP, NULL, cpDevice.Get(), cpNVSampler.GetAddressOf());
+	ID3D11Helper::CreateVSInputLayOut(pDevice, L"BaseModelVS.hlsl", vInputElemDesc, cpNVVertexShader.GetAddressOf(), cpNVInputLayout.GetAddressOf());
+	ID3D11Helper::CreateHS(pDevice, L"BaseModelHS.hlsl", cpNVHullShader.GetAddressOf());
+	ID3D11Helper::CreateDS(pDevice, L"BaseModelDS.hlsl", cpNVDomainShader.GetAddressOf());
+	ID3D11Helper::CreateGS(pDevice, L"NormalVectorGS.hlsl", cpNVGeometryShader.GetAddressOf());
+	ID3D11Helper::CreatePS(pDevice, L"NormalVectorPS.hlsl", cpNVPixelShader.GetAddressOf());
 }
 
 NormalVectorDrawer::~NormalVectorDrawer()
@@ -26,57 +32,41 @@ NormalVectorDrawer::~NormalVectorDrawer()
 
 void NormalVectorDrawer::SetIAInputLayer()
 {
-	cpDeviceContext->IASetInputLayout(cpNVInputLayout.Get());
-	cpDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
+	pDeviceContext->IASetInputLayout(cpNVInputLayout.Get());
+	pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
 }
 
-void NormalVectorDrawer::SetVSShader()
+void NormalVectorDrawer::SetShader()
 {
-	cpDeviceContext->VSSetShader(cpNVVertexShader.Get(), 0, 0);
-}
+	pDeviceContext->VSSetShader(cpNVVertexShader.Get(), 0, 0);
+	pDeviceContext->HSSetShader(cpNVHullShader.Get(), 0, 0);
+	pDeviceContext->DSSetShader(cpNVDomainShader.Get(), 0, 0);
+	pDeviceContext->GSSetShader(cpNVGeometryShader.Get(), 0, 0);
+	pDeviceContext->PSSetShader(cpNVPixelShader.Get(), 0, 0);
 
-void NormalVectorDrawer::SetHSShader()
-{
-	cpDeviceContext->HSSetShader(cpNVHullShader.Get(), 0, 0);
-}
+	SamplerState& samplerState = SamplerState::GetInstance(pDevice);
 
-void NormalVectorDrawer::SetDSShader()
-{
-	cpDeviceContext->DSSetShader(cpNVDomainShader.Get(), 0, 0);
-	cpDeviceContext->DSSetSamplers(0, 1, cpNVSampler.GetAddressOf());
-}
-
-void NormalVectorDrawer::SetGSShader()
-{
-	cpDeviceContext->GSSetShader(cpNVGeometryShader.Get(), 0, 0);
-	cpDeviceContext->GSSetSamplers(0, 1, cpNVSampler.GetAddressOf());
-}
-
-void NormalVectorDrawer::SetPSShader()
-{
-	cpDeviceContext->PSSetShader(cpNVPixelShader.Get(), 0, 0);
-	cpDeviceContext->PSSetSamplers(0, 1, cpNVSampler.GetAddressOf());
+	pDeviceContext->DSSetSamplers(SamplerType::WRAP_SAMPLER, 1, samplerState.GetAddressOfWrapSampler());
+	pDeviceContext->GSSetSamplers(SamplerType::WRAP_SAMPLER, 1, samplerState.GetAddressOfWrapSampler());
+	pDeviceContext->PSSetSamplers(SamplerType::WRAP_SAMPLER, 1, samplerState.GetAddressOfWrapSampler());
 }
 
 void NormalVectorDrawer::SetOMState()
 {
-	cpDeviceContext->OMSetDepthStencilState(DepthStencilState::pGetDSS(DepthStencilState::DefaultOption), 0);
-}
-
-void NormalVectorDrawer::ResetOMState()
-{
+	DepthStencilState& depthStencilState = DepthStencilState::GetInstance(pDevice);
+	pDeviceContext->OMSetDepthStencilState(depthStencilState.pGetDSS(DepthStencilState::DefaultOption), 0);
 }
 
 void NormalVectorDrawer::ResetDrawer()
 {
-	cpDeviceContext->PSSetShader(nullptr, 0, 0);
-	cpDeviceContext->GSSetShader(nullptr, 0, 0);
-	cpDeviceContext->DSSetShader(nullptr, 0, 0);
-	cpDeviceContext->HSSetShader(nullptr, 0, 0);
-	cpDeviceContext->VSSetShader(nullptr, 0, 0);
+	pDeviceContext->PSSetShader(nullptr, 0, 0);
+	pDeviceContext->GSSetShader(nullptr, 0, 0);
+	pDeviceContext->DSSetShader(nullptr, 0, 0);
+	pDeviceContext->HSSetShader(nullptr, 0, 0);
+	pDeviceContext->VSSetShader(nullptr, 0, 0);
 
 	ID3D11SamplerState* pResetSampler = nullptr;
-	cpDeviceContext->DSSetSamplers(0, 1, &pResetSampler);
-	cpDeviceContext->GSSetSamplers(0, 1, &pResetSampler);
-	cpDeviceContext->PSSetSamplers(0, 1, &pResetSampler);
+	pDeviceContext->DSSetSamplers(SamplerType::WRAP_SAMPLER, 1, &pResetSampler);
+	pDeviceContext->GSSetSamplers(SamplerType::WRAP_SAMPLER, 1, &pResetSampler);
+	pDeviceContext->PSSetSamplers(SamplerType::WRAP_SAMPLER, 1, &pResetSampler);
 }

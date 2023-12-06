@@ -5,43 +5,53 @@
 #include <windows.h>
 #include <wrl/client.h>
 #include <directxmath/DirectXMath.h>
-#include "ModelStruct.h"
+
+#include "ManualDataType.h"
+
+struct Vertex
+{
+	PositionVector	sPosVec;
+	TextureCoord	sTexCoord;
+	Vector			sNorVec;
+	Vector			sTangVec;
+};
 
 class ModelInterface
 {
 public:
 	ModelInterface(
-		Microsoft::WRL::ComPtr<ID3D11Device>& cpDeviceIn,
-		Microsoft::WRL::ComPtr<ID3D11DeviceContext>& cpDeviceContextIn
+		ID3D11Device* pDeviceIn,
+		ID3D11DeviceContext* pDeviceContextIn
 	);
 	virtual ~ModelInterface();
 
+#pragma region Virtual
+// Virtual Function ==============================================
 public:
 	virtual void Update(const float& fDelta) = 0;
-
 public:
 	virtual void Render() = 0;
+// ==============================================================
+#pragma endregion
 
+#pragma region Interface
+// Interface Function ============================================
 public:
 	virtual void SetIAProperties() = 0;
-	virtual void SetVSConstantBuffers() = 0;
-	virtual void SetHSConstantBuffers() = 0;
-	virtual void SetDSConstantBuffers() = 0;
-	virtual void SetGSConstantBuffers() = 0;
-	virtual void SetPSConstantBuffers() = 0;
+
+public:
+	virtual void SetConstantBuffers() = 0;
 	virtual void ResetConstantBuffers() = 0;
 
 public:
-	virtual void SetVSShaderResources() = 0;
-	virtual void SetHSShaderResources() = 0;
-	virtual void SetDSShaderResources() = 0;
-	virtual void SetGSShaderResources() = 0;
-	virtual void SetPSShaderResources() = 0;
+	virtual void SetShaderResources() = 0;
 	virtual void ResetShaderResources() = 0;
+// ==============================================================
+#pragma endregion
 
 protected:
-	Microsoft::WRL::ComPtr<ID3D11Device>&			cpDevice;
-	Microsoft::WRL::ComPtr<ID3D11DeviceContext>&	cpDeviceContext;
+	ID3D11Device*			pDevice;
+	ID3D11DeviceContext*	pDeviceContext;
 
 public:
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	cpVertexBuffer;
@@ -51,8 +61,6 @@ public:
 protected:
 	static void MakePlaneVertexIndexSet(
 		ModelInterface* pModelInterface,
-		DirectX::XMVECTOR& xmvDirection,
-		DirectX::XMVECTOR& xmvUp,
 		const float& fWidth,
 		const float& fHeight
 	);

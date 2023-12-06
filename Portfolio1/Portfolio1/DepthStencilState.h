@@ -6,8 +6,11 @@
 
 class DepthStencilState
 {
-protected:
-	DepthStencilState();
+private:
+	DepthStencilState(ID3D11Device* pDevice);
+	DepthStencilState(const DepthStencilState& ref) {}
+	DepthStencilState& operator=(const DepthStencilState& ref) {}
+	~DepthStencilState() {}
 
 public:
 	enum DepthStencilOption
@@ -19,15 +22,22 @@ public:
 	};
 
 public:
-	static void Init(IN ID3D11Device* pDevice);
-	static ID3D11DepthStencilState* pGetDSS(IN DepthStencilOption eDSType);
+	inline static DepthStencilState& GetInstance(ID3D11Device* pDevice)
+	{
+		static DepthStencilState s = DepthStencilState(pDevice);
+		return s;
+	}
+
+public:
+	ID3D11DepthStencilState* pGetDSS(IN DepthStencilOption eDSType);
 
 protected:
-	static Microsoft::WRL::ComPtr<ID3D11DepthStencilState> cpDefaultDSS;
-	static Microsoft::WRL::ComPtr<ID3D11DepthStencilState> cpMaskDSS;
-	static Microsoft::WRL::ComPtr<ID3D11DepthStencilState> cpDrawEqualDSS;
-	static Microsoft::WRL::ComPtr<ID3D11DepthStencilState> cpDrawNotEqualDSS;
-	static void CreateDepthStencilState(IN DepthStencilOption eDSType, IN ID3D11Device* pDevice, OUT ID3D11DepthStencilState** ppDepthStencilState);
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> cpDefaultDSS;
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> cpMaskDSS;
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> cpDrawEqualDSS;
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> cpDrawNotEqualDSS;
 
+private:
+	static void CreateDepthStencilState(IN DepthStencilOption eDSType, IN ID3D11Device* pDevice, OUT ID3D11DepthStencilState** ppDepthStencilState);
 };
 

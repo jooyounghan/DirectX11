@@ -7,7 +7,7 @@
 #include "UnknownFile.h"
 #include "ModelTextureFile.h"
 #include "DDSFile.h"
-#include "Filter.h"
+#include "StringHelper.h"
 
 #include "ID3D11Helper.h"
 
@@ -66,7 +66,7 @@ void FileManageGui::UpdateLoadedFiles(const wstring& wstrFilePathIn)
             string sExtensionName = entry.path().extension().string();
 
             bool isImage = false;
-            Filter::IsStrSame(&isImage, sExtensionName, ".jpg", ".png", ".exr", ".dds");
+            StringHelper::IsStrSame(&isImage, sExtensionName, ".jpg", ".png", ".exr", ".dds");
             if (isImage)
             {
                 LoadImages(sExtensionName, entry.path().string());
