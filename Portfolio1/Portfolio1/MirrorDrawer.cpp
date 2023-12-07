@@ -119,6 +119,7 @@ void MirrorDrawer::Draw(
 	}
 	pCubeMapDrawer->ResetDrawer();
 
+	// 현재 거울을 그리는 방법에 대한 수정 필요
 	// 거울을 렌더링 한다.
 	SetIAInputLayer();
 	SetShader();
@@ -126,7 +127,6 @@ void MirrorDrawer::Draw(
 	SetOMState();
 	for (auto& referenceMirror : vMirrorModels)
 	{
-
 		for (auto& renderedMirror : vMirrorModels)
 		{
 			renderedMirror->SetIAProperties();

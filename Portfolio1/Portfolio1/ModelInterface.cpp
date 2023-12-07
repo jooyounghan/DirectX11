@@ -35,10 +35,10 @@ void ModelInterface::MakePlaneVertexIndexSet(
 		pModelInterface->ui32IndexCount = UINT(vIndex.size());
 
 		vector<Vertex> vVertex{
-			{{-(fWidth / 2.f), (fHeight / 2.f), 0.f}, {0.f, 0.f}, {0.f, 0.f, 1.f, 0.f}},
-			{{-(fWidth / 2.f), -(fHeight / 2.f), 0.f}, {0.f, 1.f}, {0.f, 0.f, 1.f, 0.f}},
-			{{(fWidth / 2.f), -(fHeight / 2.f), 0.f}, {1.f, 1.f}, {0.f, 0.f, 1.f, 0.f}},
-			{{(fWidth / 2.f), (fHeight / 2.f), 0.f}, {1.f, 0.f}, {0.f, 0.f, 1.f, 0.f}}
+			{{-(fWidth / 2.f), (fHeight / 2.f), 0.f}, {1.f, 0.f}, {0.f, 0.f, 1.f, 0.f}},
+			{{-(fWidth / 2.f), -(fHeight / 2.f), 0.f}, {1.f, 1.f}, {0.f, 0.f, 1.f, 0.f}},
+			{{(fWidth / 2.f), -(fHeight / 2.f), 0.f}, {0.f, 1.f}, {0.f, 0.f, 1.f, 0.f}},
+			{{(fWidth / 2.f), (fHeight / 2.f), 0.f}, {0.f, 0.f}, {0.f, 0.f, 1.f, 0.f}}
 		};
 
 		ID3D11Helper::CreateBuffer(pModelInterface->pDevice, vIndex, D3D11_USAGE_IMMUTABLE, D3D11_BIND_INDEX_BUFFER, 0, 0, pModelInterface->cpIndexBuffer.GetAddressOf());
