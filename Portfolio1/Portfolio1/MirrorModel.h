@@ -18,26 +18,33 @@ public:
 	);
 	virtual ~MirrorModel();
 
-
 #pragma region Virtual
 // Virtual Function ==============================================
 public:
 	virtual void Update(const float& fDelta) override;
 
 public:
-	virtual void	SetIAProperties();
+	virtual void SetIAProperties();
+
+private:
+	virtual void SetConstantBuffers() override final {};
+	virtual void ResetConstantBuffers() override final {};
+	virtual void SetShaderResources() override final {};
+	virtual void ResetShaderResources() override final {};
 
 public:
-	virtual void	SetConstantBuffers();
-	virtual void	ResetConstantBuffers();
+	virtual void SetConstantBuffersAsModel();
+	virtual void SetShaderResourcesAsModel();
+	virtual void ResetConstantBuffersAsModel();
+	virtual void ResetShaderResourcesAsModel();
 
 public:
-	virtual void	SetShaderResources();
-	virtual void	ResetShaderResources();
+	virtual void SetConstantBuffersAsCamera();
+	virtual void ResetConstantBuffersAsCamera();
 
 public:
-	virtual void OMSetRenderTargets();
-	virtual void ResetCamera();
+	virtual void OMSetRenderTargets() override;
+	virtual void ResetCamera() override;
 // ==============================================================
 #pragma endregion
 

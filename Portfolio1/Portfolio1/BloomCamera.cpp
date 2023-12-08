@@ -23,3 +23,10 @@ BloomCamera::BloomCamera(
 BloomCamera::~BloomCamera()
 {
 }
+
+void BloomCamera::Resize(const UINT& uiWidthIn, const UINT& uiHeightIn, const float& fAspectRatioIn)
+{
+	NormalCamera::Resize(uiWidthIn, uiHeightIn, fAspectRatioIn);
+	upPostProcess->AddBloomFilter();
+	upPostProcess->AddBloomFilter();
+}

@@ -13,6 +13,7 @@
 
 #include "SamplerState.h"
 #include "DepthStencilState.h"
+#include "RasterizationState.h"
 #include "ShaderTypeEnum.h"
 
 #include <vector>
@@ -49,6 +50,9 @@ void MirrorDrawer::Draw(
 	const std::vector<std::shared_ptr<MirrorModel>>& vMirrorModels
 )
 {
+	RasterizationState& rasterizationState = RasterizationState::GetInstance(pDevice, pDeviceContext);
+	pDeviceContext->RSSetState(rasterizationState.GetAppliedRS());
+	
 	// Mirror의 ViewProj를 통하여 반사된 물체를 그린다.
 	// 거울의 Render Target에 물체를 그린다.
 	pPBRModelDrawer->SetIAInputLayer();
@@ -62,8 +66,7 @@ void MirrorDrawer::Draw(
 	
 	for (auto& pMirrorModel : vMirrorModels)
 	{
-		pMirrorModel->SetConstantBuffers();
-		pMirrorModel->SetShaderResources();
+		pMirrorModel->SetConstantBuffersAsCamera();
 		pMirrorModel->OMSetRenderTargets();
 
 		for (auto& pObjectModel : vSpModels)
@@ -78,8 +81,7 @@ void MirrorDrawer::Draw(
 			pObjectModel->ResetShaderResources();
 		}
 
-		pMirrorModel->ResetConstantBuffers();
-		pMirrorModel->ResetShaderResources();
+		pMirrorModel->ResetConstantBuffersAsCamera();
 		pMirrorModel->ResetCamera();
 	}
 	
@@ -100,8 +102,7 @@ void MirrorDrawer::Draw(
 
 	for (auto& pMirrorModel : vMirrorModels)
 	{
-		pMirrorModel->SetConstantBuffers();
-		pMirrorModel->SetShaderResources();
+		pMirrorModel->SetConstantBuffersAsCamera();
 		pMirrorModel->OMSetRenderTargets();
 
 		pEnvironmentCubeMap->SetIAProperties();
@@ -113,8 +114,7 @@ void MirrorDrawer::Draw(
 		pEnvironmentCubeMap->ResetConstantBuffers();
 		pEnvironmentCubeMap->ResetShaderResources();
 
-		pMirrorModel->ResetConstantBuffers();
-		pMirrorModel->ResetShaderResources();
+		pMirrorModel->ResetConstantBuffersAsCamera();
 		pMirrorModel->ResetCamera();
 	}
 	pCubeMapDrawer->ResetDrawer();
@@ -125,26 +125,34 @@ void MirrorDrawer::Draw(
 	SetShader();
 	SetShader();
 	SetOMState();
-	for (auto& referenceMirror : vMirrorModels)
+	for (auto& observerMirror : vMirrorModels)
 	{
 		for (auto& renderedMirror : vMirrorModels)
 		{
 			renderedMirror->SetIAProperties();
-			renderedMirror->SetConstantBuffers();
-			renderedMirror->SetShaderResources();
-			renderedMirror->OMSetRenderTargets();
-
-			if (referenceMirror == renderedMirror)
+			renderedMirror->SetConstantBuffersAsModel();
+			renderedMirror->SetShaderResourcesAsModel();
+			if (observerMirror == renderedMirror)
 			{
 				pCamera->SetConstantBuffers();
 				pCamera->OMSetRenderTargets();
-			}
-			renderedMirror->Render();
 
-			pCamera->ResetCamera();
-			renderedMirror->ResetConstantBuffers();
-			renderedMirror->ResetShaderResources();
-			renderedMirror->ResetCamera();
+				renderedMirror->Render();
+
+				pCamera->ResetCamera();
+			}
+			else
+			{
+				observerMirror->SetConstantBuffersAsCamera();
+				observerMirror->OMSetRenderTargets();
+
+				renderedMirror->Render();
+
+				observerMirror->ResetConstantBuffersAsCamera();
+				observerMirror->ResetCamera();
+			}
+			renderedMirror->ResetConstantBuffersAsModel();
+			renderedMirror->ResetShaderResourcesAsModel();
 		}
 	}
 	ResetDrawer();

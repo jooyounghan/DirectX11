@@ -42,6 +42,9 @@ void NormalCamera::Resize(
 )
 {
 	CameraInterface::Resize(uiWidthIn, uiHeightIn, fAspectRatioIn);
+
+	upPostProcess.reset();
+	upPostProcess = make_unique<PostProcess>(pDevice, pDeviceContext, sCameraViewport, eCameraFormat, eBackBufferFormat);
 }
 
 
@@ -57,6 +60,7 @@ void NormalCamera::OMSetRenderTargets()
 {
 	vector<ID3D11RenderTargetView*> vRenderTargetViews{ cpCameraOutputRTV.Get(), cpModelIDRTV.Get() };
 	pDeviceContext->OMSetRenderTargets(UINT(vRenderTargetViews.size()), vRenderTargetViews.data(), cpDepthStencilView.Get());
+	pDeviceContext->RSSetViewports(1, &sCameraViewport);
 }
 
 void NormalCamera::ResetCamera()

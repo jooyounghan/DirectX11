@@ -1,6 +1,7 @@
 #include "BloomFilter.h"
 #include "ID3D11Helper.h"
 #include "ShaderTypeEnum.h"
+#include "RasterizationState.h"
 
 BloomShader::BloomShader(ID3D11Device* pDeviceIn)
 {
@@ -40,6 +41,9 @@ void BloomFilter::StartFilter(ID3D11ShaderResourceView** ppInputSRV)
 	UINT uiOffset = 0;
 	FilterInfo& filterInfo = FilterInfo::GetIncetance(pDevice);
 	BloomShader& BloomShader = BloomShader::GetIncetance(pDevice);
+
+	RasterizationState& rasterizationState = RasterizationState::GetInstance(pDevice, pDeviceContext);
+	pDeviceContext->RSSetState(rasterizationState.GetSolidRS());
 
 	pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	pDeviceContext->IASetInputLayout(filterInfo.cpFilterInputLayout.Get());

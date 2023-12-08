@@ -442,7 +442,6 @@ void ID3D11Helper::SetViewPort(
 	screenViewport.Height = float(fHeight);
 	screenViewport.MinDepth = fMinDepth;
 	screenViewport.MaxDepth = fMaxDepth;
-	pDeviceContext->RSSetViewports(1, pScreenViewPort);
 }
 
 void ID3D11Helper::CreateSampler(IN D3D11_FILTER eFilter, IN D3D11_TEXTURE_ADDRESS_MODE eTextureAddressMode, IN FLOAT pFloat4[4], IN ID3D11Device* pDevice, OUT ID3D11SamplerState** ppSamplerState)

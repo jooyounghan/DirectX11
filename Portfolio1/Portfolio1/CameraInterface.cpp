@@ -6,6 +6,7 @@
 #include "MathematicalHelper.h"
 
 #include <algorithm>
+#include <iostream>
 
 using namespace std;
 using namespace DirectX;
@@ -29,7 +30,7 @@ CameraInterface::CameraInterface(
 	fFovRadian(XMConvertToRadians(fFovDegreeIn)), fAspectRatio(uiWidth / (float)uiHeight), 
 	fNearZ(fNearZIn), fFarZ(fFarZIn), fMoveSpeed(10.f), fMouseMovablePitchAngleDegree(XMConvertToRadians(90.f)), 
 	fMouseMovableYawAngleDegree(XMConvertToRadians(360.f)), bMoveDirection{false, false, false, false}, 
-	bFirstView(false)
+	bFirstView(false), eBackBufferFormat(DXGI_FORMAT_R8G8B8A8_UNORM)
 {
 	AutoZeroMemory(sCameraViewport);
 	AutoZeroMemory(sCameraViewProjData);
@@ -57,7 +58,7 @@ void CameraInterface::SetAsMainCamera(IDXGISwapChain* pSwapChainIn)
 			D3D11_TEXTURE2D_DESC desc;
 			cpBackBuffer->GetDesc(&desc);
 			eBackBufferFormat = desc.Format;
-
+			cout << desc.Width << " / " << desc.Height << endl;
 			ID3D11Helper::CreateRenderTargetView(pDevice, cpBackBuffer.Get(), cpBackBufferRTV.GetAddressOf());
 		}
 	}
@@ -70,6 +71,7 @@ void CameraInterface::SetAsMainCamera(IDXGISwapChain* pSwapChainIn)
 void CameraInterface::ResetFromMainCamera()
 {
 	pSwapChain = nullptr;
+	cpBackBuffer.Reset();
 	cpBackBufferRTV.Reset();
 }
 
@@ -87,7 +89,6 @@ void CameraInterface::SetRenderResources()
 	cpModelIDMSToSS.Reset();
 	cpModelIDStagedTexture.Reset();
 
-	SetAsMainCamera(pSwapChain);
 	ID3D11Helper::SetViewPort(0.f, 0.f, float(uiWidth), float(uiHeight), 0.f, 1.f, pDeviceContext, &sCameraViewport);
 	ID3D11Helper::CreateDepthStencilView(pDevice, uiWidth, uiHeight, uiNumLevelQuality, cpDepthStencilTexture2D.GetAddressOf(), cpDepthStencilView.GetAddressOf());
 	ID3D11Helper::CreateBuffer(
@@ -214,6 +215,7 @@ void CameraInterface::Resize(const UINT& uiWidthIn, const UINT& uiHeightIn, cons
 	uiWidth = uiWidthIn;
 	uiHeight = uiHeightIn;
 	fAspectRatio = fAspectRatioIn;
+	ID3D11Helper::SetViewPort(0.f, 0.f, float(uiWidth), float(uiHeight), 0.f, 1.f, pDeviceContext, &sCameraViewport);
 	SetRenderResources();
 }
 

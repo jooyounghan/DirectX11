@@ -7,6 +7,7 @@
 
 #include "DepthStencilState.h"
 #include "SamplerState.h"
+#include "RasterizationState.h"
 
 #include "ID3D11Helper.h"
 #include "ShaderTypeEnum.h"
@@ -90,6 +91,9 @@ void PBRModelDrawer::Draw(
 	CubeMapModel* pEnvironmentCubeMap
 )
 {
+	RasterizationState& rasterizationState = RasterizationState::GetInstance(pDevice, pDeviceContext);
+	pDeviceContext->RSSetState(rasterizationState.GetAppliedRS());
+
 	SetIAInputLayer();
 	SetShader();
 	SetOMState();

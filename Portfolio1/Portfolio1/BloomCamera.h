@@ -13,5 +13,16 @@ public:
 		const float& fFovDegreeIn, const float& fNearZIn, const float& fFarZIn
 	);
 	virtual ~BloomCamera() override;
+
+#pragma region Virtual
+	// Virtual Function ==============================================
+public:
+	virtual void Resize(
+		const UINT& uiWidthIn,
+		const UINT& uiHeightIn,
+		const float& fAspectRatioIn
+	) override;
+	// ==============================================================
+#pragma endregion
 };
 

@@ -5,7 +5,7 @@
 
 #include <vector>
 #include <deque>
-
+#include <memory>
 
 class PostProcess
 {
@@ -21,9 +21,9 @@ public:
 	~PostProcess();
 
 private:
-	std::vector<class BloomFilter*> vBloomDownFilters;
-	std::deque<class BloomFilter*> vBloomUpFilters;
-	class BlendFilter* pBlendFilter;
+	std::vector<std::unique_ptr<class BloomFilter>> vBloomDownFilters;
+	std::deque< std::unique_ptr<BloomFilter>> vBloomUpFilters;
+	std::unique_ptr<class BlendFilter> upBlendFilter;
 
 public:
 	void AddBloomFilter();

@@ -5,6 +5,8 @@
 #include "BloomFilter.h"
 #include "BlendFilter.h"
 
+using namespace std;
+
 PostProcess::PostProcess(
 	ID3D11Device* pDeviceIn,
 	ID3D11DeviceContext* pDeviceContextIn,
@@ -16,7 +18,7 @@ PostProcess::PostProcess(
 	sScreenViewport(sScreenViewportIn), uiDepth(1), 
 	eCameraFormat(eCameraFormatIn), eBackBufferFormat(eBackBufferFormatIn)
 {
-	pBlendFilter = new BlendFilter(pDevice, pDeviceContext, sScreenViewport, eBackBufferFormat);
+	upBlendFilter = make_unique<BlendFilter>(pDevice, pDeviceContext, sScreenViewport, eBackBufferFormat);
 
 	ID3D11Helper::CreateTexture2D(pDevice, (UINT)sScreenViewport.Width, (UINT)sScreenViewport.Height, 1, 0, D3D11_BIND_SHADER_RESOURCE, NULL, NULL, D3D11_USAGE_DEFAULT, eCameraFormat, cpResolvedTexture.GetAddressOf());
 	ID3D11Helper::CreateShaderResoureView(pDevice, cpResolvedTexture.Get(), cpResolvedSRV.GetAddressOf());
@@ -24,25 +26,6 @@ PostProcess::PostProcess(
 
 PostProcess::~PostProcess()
 {
-	for (auto& pFilter : vBloomDownFilters)
-	{
-		delete pFilter;
-		pFilter = nullptr;
-	}
-	vBloomDownFilters.clear();
-
-	for (auto& pFilter : vBloomUpFilters)
-	{
-		delete pFilter;
-		pFilter = nullptr;
-	}
-	vBloomUpFilters.clear();
-
-	if (pBlendFilter != nullptr)
-	{
-		delete pBlendFilter;
-		pBlendFilter = nullptr;
-	}
 }
 
 void PostProcess::AddBloomFilter()
@@ -56,20 +39,20 @@ void PostProcess::AddBloomFilter()
 	sScreenViewport.Width = (float)uiWidthOrigin / uiDepth;
 	sScreenViewport.Height = (float)uiHeightOrigin / uiDepth;
 
-	vBloomDownFilters.push_back(new BloomFilter(pDevice, pDeviceContext, sScreenViewport, eCameraFormat));
+	vBloomDownFilters.push_back(make_unique<BloomFilter>(pDevice, pDeviceContext, sScreenViewport, eCameraFormat));
 
 	sScreenViewport.Width = (float)uiWidthOrigin / (uiDepthForBloomUp);
 	sScreenViewport.Height = (float)uiHeightOrigin / (uiDepthForBloomUp);
-	vBloomUpFilters.push_front(new BloomFilter(pDevice, pDeviceContext, sScreenViewport, eCameraFormat));
+	vBloomUpFilters.push_front(make_unique<BloomFilter>(pDevice, pDeviceContext, sScreenViewport, eCameraFormat));
 }
 
 void PostProcess::SetBlendProperties(const float& fBlendStrengthIn, const float& fExposureIn, const float& fGammaIn)
 {
-	if (pBlendFilter != nullptr)
+	if (upBlendFilter != nullptr)
 	{
-		pBlendFilter->SetBlendStrength(fBlendStrengthIn);
-		pBlendFilter->SetExposure(fExposureIn);
-		pBlendFilter->SetGamma(fGammaIn);
+		upBlendFilter->SetBlendStrength(fBlendStrengthIn);
+		upBlendFilter->SetExposure(fExposureIn);
+		upBlendFilter->SetGamma(fGammaIn);
 	}
 }
 
@@ -83,7 +66,7 @@ void PostProcess::Update()
 	{
 		pFilter->Update();
 	}
-	pBlendFilter->Update();
+	upBlendFilter->Update();
 }
 
 void PostProcess::Process(
@@ -112,10 +95,10 @@ void PostProcess::Process(
 		pOutputTexture2D = pFilter->GetOutputTexture2D();
 	}
 
-	if (pBlendFilter)
+	if (upBlendFilter)
 	{
-		pBlendFilter->StartFilter(ppOutputSRV, ppOriginOutputSRV);
-		pOutputTexture2D = pBlendFilter->GetOutputTexture2D();
+		upBlendFilter->StartFilter(ppOutputSRV, ppOriginOutputSRV);
+		pOutputTexture2D = upBlendFilter->GetOutputTexture2D();
 	}
 
 	pDeviceContext->ResolveSubresource(pBackBufferTexture, 0, pOutputTexture2D, 0, eBackBufferFormat);

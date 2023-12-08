@@ -226,12 +226,14 @@ void PortfolioApp::QuitImGUI()
 
 void PortfolioApp::ResizeSwapChain(const UINT& uiWidthIn, const UINT& uiHeightIn)
 {
-	if (cpSwapChain)
+	if (cpSwapChain && spMainCamera)
 	{
 		uiWidth = uiWidthIn;
 		uiHeight = uiHeightIn;
 		fAspectRatio = uiWidth / (float)uiHeight;
+		spMainCamera->ResetFromMainCamera();
 		cpSwapChain->ResizeBuffers(0, uiWidth, uiHeight, DXGI_FORMAT_UNKNOWN, 0);
+		spMainCamera->SetAsMainCamera(cpSwapChain.Get());
 		spMainCamera->Resize(uiWidth, uiHeightIn, fAspectRatio);
 	}
 }

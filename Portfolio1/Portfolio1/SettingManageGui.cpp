@@ -55,7 +55,7 @@ void SettingManageGui::SetDrawWireFrame()
 	if (lastFlag != bIsWireFrameDraw)
 	{
 		lastFlag = bIsWireFrameDraw;
-		RasterizerState& rasterizerState = RasterizerState::GetInstance(pDevice, pDeviceContext);
+		RasterizationState& rasterizerState = RasterizationState::GetInstance(pDevice, pDeviceContext);
 		if (bIsWireFrameDraw)
 		{
 			rasterizerState.SetWireFrameRS();

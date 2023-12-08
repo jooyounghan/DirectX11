@@ -1,6 +1,7 @@
 #include "BlendFilter.h"
 #include "ID3D11Helper.h"
 #include "ShaderTypeEnum.h"
+#include "RasterizationState.h"
 
 BlendShader::BlendShader(
 	ID3D11Device* pDeviceIn
@@ -39,6 +40,9 @@ void BlendFilter::StartFilter(ID3D11ShaderResourceView** ppInput1SRV, ID3D11Shad
 	UINT uiOffset = 0;
 	FilterInfo& filterInfo = FilterInfo::GetIncetance(pDevice);
 	BlendShader& blendShader = BlendShader::GetIncetance(pDevice);
+
+	RasterizationState& rasterizationState = RasterizationState::GetInstance(pDevice, pDeviceContext);
+	pDeviceContext->RSSetState(rasterizationState.GetSolidRS());
 
 	pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	pDeviceContext->IASetInputLayout(filterInfo.cpFilterInputLayout.Get());
