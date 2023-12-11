@@ -112,7 +112,7 @@ PixelOutput main(DomainOutput input)
     }
     
        
-    result.pixelColor = float4(fDirectColor + fAmbientColor, 1.f);
+    result.pixelColor = float4(1.f, 0.f, 0.f, 1.f) + float4(fDirectColor + fAmbientColor, 1.f);
     result.modleId = float4(sModelId.uiModelID.x, sModelId.uiModelID.y, sModelId.uiModelID.z, sModelId.uiModelIDStd) / sModelId.uiModelIDStd;
     return result;
 }

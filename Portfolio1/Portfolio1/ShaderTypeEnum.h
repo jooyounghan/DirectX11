@@ -1,5 +1,10 @@
 #pragma once
 
+enum SamplerType : unsigned int
+{
+	WRAP_SAMPLER,
+	CLAMP_SAMPLER
+};
 
 enum VSConstBufferType : unsigned int
 {
@@ -46,12 +51,6 @@ enum PSSRVType : unsigned int
 	PS_SRV_MIRROR_SELF
 };
 
-enum SamplerType : unsigned int
-{
-	WRAP_SAMPLER,
-	CLAMP_SAMPLER
-};
-
 enum GSConstBufferType : unsigned int
 {
 	GS_CBUFF_TEXTUREFLAGS,
@@ -61,4 +60,9 @@ enum GSConstBufferType : unsigned int
 enum GSSRVType : unsigned int
 {
 	GS_SRV_NORMAL
+};
+
+enum HSConstantBufferType : unsigned int
+{
+	HS_CBUFF_CAMERA_INFO
 };

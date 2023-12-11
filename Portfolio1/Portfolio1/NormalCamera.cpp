@@ -53,6 +53,7 @@ void NormalCamera::SetConstantBuffers()
 	pDeviceContext->VSSetConstantBuffers(VS_CBUFF_CAMERA_INFO, 1, cpCameraViewProjConstantBuffer.GetAddressOf());
 	pDeviceContext->DSSetConstantBuffers(DS_CBUFF_CAMERA_INFO, 1, cpCameraViewProjConstantBuffer.GetAddressOf());
 	pDeviceContext->GSSetConstantBuffers(GS_CBUFF_CAMERA_INFO, 1, cpCameraViewProjConstantBuffer.GetAddressOf());
+	pDeviceContext->HSSetConstantBuffers(HS_CBUFF_CAMERA_INFO, 1, cpCameraViewProjConstantBuffer.GetAddressOf());
 	pDeviceContext->PSSetConstantBuffers(PS_CBUFF_CAMERA_INFO, 1, cpCameraViewProjConstantBuffer.GetAddressOf());
 }
 
@@ -69,6 +70,7 @@ void NormalCamera::ResetCamera()
 	pDeviceContext->VSSetConstantBuffers(VS_CBUFF_CAMERA_INFO, 1, &pResetBuffer);
 	pDeviceContext->DSSetConstantBuffers(DS_CBUFF_CAMERA_INFO, 1, &pResetBuffer);
 	pDeviceContext->GSSetConstantBuffers(GS_CBUFF_CAMERA_INFO, 1, &pResetBuffer);
+	pDeviceContext->HSSetConstantBuffers(HS_CBUFF_CAMERA_INFO, 1, &pResetBuffer);
 	pDeviceContext->PSSetConstantBuffers(PS_CBUFF_CAMERA_INFO, 1, &pResetBuffer);
 
 	vector<ID3D11RenderTargetView*> vResetRTV{ nullptr, nullptr };

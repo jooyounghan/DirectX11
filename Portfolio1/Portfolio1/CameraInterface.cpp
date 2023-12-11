@@ -58,7 +58,6 @@ void CameraInterface::SetAsMainCamera(IDXGISwapChain* pSwapChainIn)
 			D3D11_TEXTURE2D_DESC desc;
 			cpBackBuffer->GetDesc(&desc);
 			eBackBufferFormat = desc.Format;
-			cout << desc.Width << " / " << desc.Height << endl;
 			ID3D11Helper::CreateRenderTargetView(pDevice, cpBackBuffer.Get(), cpBackBufferRTV.GetAddressOf());
 		}
 	}
@@ -91,6 +90,7 @@ void CameraInterface::SetRenderResources()
 
 	ID3D11Helper::SetViewPort(0.f, 0.f, float(uiWidth), float(uiHeight), 0.f, 1.f, pDeviceContext, &sCameraViewport);
 	ID3D11Helper::CreateDepthStencilView(pDevice, uiWidth, uiHeight, uiNumLevelQuality, cpDepthStencilTexture2D.GetAddressOf(), cpDepthStencilView.GetAddressOf());
+	
 	ID3D11Helper::CreateBuffer(
 		pDevice,
 		sCameraViewProjData,
@@ -198,7 +198,7 @@ void CameraInterface::Update(const float& fDelta)
 	);
 
 	sCameraViewProjData.xmmViewProjMat = XMMatrixTranspose(viewProjMatrix);
-	sCameraViewProjData.xmmInvViewProjMat = XMMatrixInverse(nullptr, sCameraViewProjData.xmmViewProjMat);
+	sCameraViewProjData.xmmInvViewProjMat = XMMatrixInverse(nullptr, viewProjMatrix);
 
 	ID3D11Helper::UpdateBuffer(
 		pDeviceContext,
@@ -216,6 +216,7 @@ void CameraInterface::Resize(const UINT& uiWidthIn, const UINT& uiHeightIn, cons
 	uiHeight = uiHeightIn;
 	fAspectRatio = fAspectRatioIn;
 	ID3D11Helper::SetViewPort(0.f, 0.f, float(uiWidth), float(uiHeight), 0.f, 1.f, pDeviceContext, &sCameraViewport);
+
 	SetRenderResources();
 }
 

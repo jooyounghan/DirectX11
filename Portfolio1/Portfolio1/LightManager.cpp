@@ -8,7 +8,7 @@ using namespace Microsoft::WRL;
 LightSet LightManager::sTempLightSet;
 
 LightManager::LightManager(ComPtr<ID3D11Device>& cpDeviceIn, ComPtr<ID3D11DeviceContext>& cpDeviceContextIn)
-	: cpDevice(cpDeviceIn), cpDeviceContext(cpDeviceContextIn), usSelectedLightIndex(0)
+	: cpDevice(cpDeviceIn), cpDeviceContext(cpDeviceContextIn), idxSelectedLight(0)
 {
 	vLights.resize(ullMaxLightNum);
 	memset(vLights.data(), 0, vLights.size() * sizeof(LightSet));
@@ -20,13 +20,13 @@ LightManager::~LightManager()
 {
 }
 
-const unsigned short& LightManager::GetSelectedLightIndex() {
-	return usSelectedLightIndex;
+const size_t& LightManager::GetSelectedLightIndex() {
+	return idxSelectedLight;
 }
 
-void LightManager::SetSelectedLightIndex(const unsigned short& index)
+void LightManager::SetSelectedLightIndex(const size_t& index)
 {
-	usSelectedLightIndex = index;
+	idxSelectedLight = index;
 }
 
 const std::vector<LightSet>& LightManager::GetLights()
@@ -37,7 +37,9 @@ const std::vector<LightSet>& LightManager::GetLights()
 void LightManager::AddDirectionalLight(
 	IN const DirectX::XMVECTOR& xmvLocationIn,
 	IN const DirectX::XMVECTOR& xmvLightColorIn,
-	IN const DirectX::XMVECTOR& xmvDirectionIn)
+	IN const DirectX::XMVECTOR& xmvDirectionIn,
+	const float& fLightPowerIn
+)
 {
 	LightSet lightSet;
 	AutoZeroMemory(lightSet);
@@ -45,15 +47,48 @@ void LightManager::AddDirectionalLight(
 	lightSet.xmvLocation = xmvLocationIn;
 	lightSet.xmvLightColor = xmvLightColorIn;
 	lightSet.xmvDirection = xmvDirectionIn;
+	lightSet.fLightPower = fLightPowerIn;
 	vLights.push_back(lightSet);
 }
 
-void LightManager::AddPointLight()
+void LightManager::AddPointLight(
+	IN const DirectX::XMVECTOR& xmvLocationIn,
+	IN const DirectX::XMVECTOR& xmvLightColorIn,
+	IN const float& fFallOffStart,
+	IN const float& fFallOffEnd,
+	const float& fLightPowerIn
+)
 {
+	LightSet lightSet;
+	AutoZeroMemory(lightSet);
+	lightSet.eLightType = LightType::Point;
+	lightSet.xmvLocation = xmvLocationIn;
+	lightSet.xmvLightColor = xmvLightColorIn;
+	lightSet.fFallOffStart = fFallOffStart;
+	lightSet.fFallOffEnd = fFallOffEnd;
+	lightSet.fLightPower = fLightPowerIn;
+	vLights.push_back(lightSet);
 }
 
-void LightManager::AddSpotLight()
+void LightManager::AddSpotLight(
+	IN const DirectX::XMVECTOR& xmvLocationIn,
+	IN const DirectX::XMVECTOR& xmvLightColorIn,
+	IN const float& fFallOffStart,
+	IN const float& fFallOffEnd,
+	IN const float& fLightPowerIn,
+	IN const float& fSpotPower
+)
 {
+	LightSet lightSet;
+	AutoZeroMemory(lightSet);
+	lightSet.eLightType = LightType::Spot;
+	lightSet.xmvLocation = xmvLocationIn;
+	lightSet.xmvLightColor = xmvLightColorIn;
+	lightSet.fFallOffStart = fFallOffStart;
+	lightSet.fFallOffEnd = fFallOffEnd;
+	lightSet.fLightPower = fLightPowerIn;
+	lightSet.fSpotPower = fSpotPower;
+	vLights.push_back(lightSet);
 }
 
 void LightManager::Update()

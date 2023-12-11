@@ -35,12 +35,14 @@ PickableModelInterface::~PickableModelInterface()
 
 void PickableModelInterface::Update(const float& fDelta)
 {
-	sTranformationData.xmmTransformationMatrix = XMMatrixTranspose(MathematicalHelper::MakeAffineTransformation(
+	sTranformationData.xmmTransformationMatrix = MathematicalHelper::MakeAffineTransformation(
 		sTransformation.sScales.fX, sTransformation.sScales.fY, sTransformation.sScales.fZ,
 		sTransformation.sAngles.fPitch, sTransformation.sAngles.fYaw, sTransformation.sAngles.fRoll,
 		sTransformation.sTranslations.fX, sTransformation.sTranslations.fY, sTransformation.sTranslations.fZ
-	));
+	);
 	sTranformationData.xmmInvTranformationMatrix = XMMatrixInverse(nullptr, sTranformationData.xmmTransformationMatrix);
+
+	sTranformationData.xmmTransformationMatrix = XMMatrixTranspose(sTranformationData.xmmTransformationMatrix);
 
 	ID3D11Helper::UpdateBuffer(
 		pDeviceContext,

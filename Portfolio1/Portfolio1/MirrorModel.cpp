@@ -84,7 +84,7 @@ void MirrorModel::Update(const float& fDelta)
 		);
 
 		sCameraViewProjData.xmmViewProjMat = XMMatrixTranspose(viewProjMatrix);
-		sCameraViewProjData.xmmInvViewProjMat = XMMatrixInverse(nullptr, sCameraViewProjData.xmmViewProjMat);
+		sCameraViewProjData.xmmInvViewProjMat = XMMatrixInverse(nullptr, viewProjMatrix);
 	}
 
 	ID3D11Helper::UpdateBuffer(
@@ -139,6 +139,7 @@ void MirrorModel::SetConstantBuffersAsCamera()
 	PickableModelInterface::pDeviceContext->VSSetConstantBuffers(VS_CBUFF_CAMERA_INFO, 1, cpCameraViewProjConstantBuffer.GetAddressOf());
 	PickableModelInterface::pDeviceContext->DSSetConstantBuffers(DS_CBUFF_CAMERA_INFO, 1, cpCameraViewProjConstantBuffer.GetAddressOf());
 	PickableModelInterface::pDeviceContext->GSSetConstantBuffers(GS_CBUFF_CAMERA_INFO, 1, cpCameraViewProjConstantBuffer.GetAddressOf());
+	PickableModelInterface::pDeviceContext->HSSetConstantBuffers(HS_CBUFF_CAMERA_INFO, 1, cpCameraViewProjConstantBuffer.GetAddressOf());
 	PickableModelInterface::pDeviceContext->PSSetConstantBuffers(PS_CBUFF_CAMERA_INFO, 1, cpCameraViewProjConstantBuffer.GetAddressOf());
 }
 
@@ -148,6 +149,7 @@ void MirrorModel::ResetConstantBuffersAsCamera()
 	PickableModelInterface::pDeviceContext->VSSetConstantBuffers(VS_CBUFF_CAMERA_INFO, 1, &pResetBuffer);
 	PickableModelInterface::pDeviceContext->DSSetConstantBuffers(DS_CBUFF_CAMERA_INFO, 1, &pResetBuffer);
 	PickableModelInterface::pDeviceContext->GSSetConstantBuffers(GS_CBUFF_CAMERA_INFO, 1, &pResetBuffer);
+	PickableModelInterface::pDeviceContext->HSSetConstantBuffers(HS_CBUFF_CAMERA_INFO, 1, &pResetBuffer);
 	PickableModelInterface::pDeviceContext->PSSetConstantBuffers(PS_CBUFF_CAMERA_INFO, 1, &pResetBuffer);
 }
 

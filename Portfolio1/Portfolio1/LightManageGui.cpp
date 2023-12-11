@@ -75,12 +75,28 @@ void LightManageGui::SetLightAddMenu()
 			spLightManager->AddDirectionalLight(
 				LightManager::sTempLightSet.xmvLocation,
 				LightManager::sTempLightSet.xmvLightColor,
-				LightManager::sTempLightSet.xmvDirection
+				LightManager::sTempLightSet.xmvDirection,
+				LightManager::sTempLightSet.fLightPower
 			);
 			break;
 		case LightType::Point:
+			spLightManager->AddPointLight(
+				LightManager::sTempLightSet.xmvLocation,
+				LightManager::sTempLightSet.xmvLightColor,
+				LightManager::sTempLightSet.fFallOffStart,
+				LightManager::sTempLightSet.fFallOffEnd,
+				LightManager::sTempLightSet.fLightPower
+			);
 			break;
 		case LightType::Spot:
+			spLightManager->AddSpotLight(
+				LightManager::sTempLightSet.xmvLocation,
+				LightManager::sTempLightSet.xmvLightColor,
+				LightManager::sTempLightSet.fFallOffStart,
+				LightManager::sTempLightSet.fFallOffEnd,
+				LightManager::sTempLightSet.fLightPower,
+				LightManager::sTempLightSet.fSpotPower
+			);
 			break;
 		}
 	}
@@ -101,10 +117,10 @@ void LightManageGui::SetLightSelectorMenu()
 		ImGui::TableHeadersRow();
 
 		const vector<LightSet>& vLights = spLightManager->GetLights();
-		const unsigned short& usSelectedLightIndex = spLightManager->GetSelectedLightIndex();
+		const size_t& idxSelectedLight = spLightManager->GetSelectedLightIndex();
 		for (size_t idx = 0; idx < vLights.size(); ++idx)
 		{
-			bool IsSelected = ((usSelectedLightIndex - 1) == idx);
+			bool IsSelected = ((idxSelectedLight - 1) == idx);
 			ImGui::TableNextRow();
 			ImGui::PushID(&vLights[idx]);
 			ImGui::TableSetColumnIndex(0);
@@ -144,13 +160,13 @@ void LightManageGui::SetLightSelectorMenu()
 void LightManageGui::SetLightSettingMenu()
 {
 	const vector<LightSet>& vLights = spLightManager->GetLights();
-	unsigned short usSelectedLighIndex = spLightManager->GetSelectedLightIndex();
-	bool bLightNotSelected = ((vLights.size() == 0) || (usSelectedLighIndex == 0));
+	size_t idxSelectedLigh = spLightManager->GetSelectedLightIndex();
+	bool bLightNotSelected = ((vLights.size() == 0) || (idxSelectedLigh == 0));
 	if (!bLightNotSelected)
 	{
-		usSelectedLighIndex = usSelectedLighIndex - 1;
-		LightType eLightType = vLights[usSelectedLighIndex].eLightType;
-		LightSet* pLightSet = const_cast<LightSet*>(&vLights[usSelectedLighIndex]);
+		idxSelectedLigh = idxSelectedLigh - 1;
+		LightType eLightType = vLights[idxSelectedLigh].eLightType;
+		LightSet* pLightSet = const_cast<LightSet*>(&vLights[idxSelectedLigh]);
 		if (eLightType == LightType::Directional)	SetDirectionalLightMenu(pLightSet);
 		else if (eLightType == LightType::Point)	SetPointLightMenu(pLightSet);
 		else if (eLightType == LightType::Spot)		SetSpotLightMenu(pLightSet);
@@ -168,7 +184,7 @@ void LightManageGui::SetDirectionalLightMenu(LightSet* pLightSet)
 	ImGui::SliderFloat3("Light Location", pLightSet->xmvLocation.m128_f32, -10.f, 10.f);
 	ImGui::SliderFloat3("Light Color", pLightSet->xmvLightColor.m128_f32, 0, 1.f);
 	ImGui::SliderFloat3("Light Direction", pLightSet->xmvDirection.m128_f32, -1.f, 1.f);
-	ImGui::SliderFloat("Light Power", &pLightSet->fLightStrength, 0.f, 10.f);
+	ImGui::SliderFloat("Light Power", &pLightSet->fLightPower, 0.f, 10.f);
 	ImGui::PopID();
 }
 
@@ -177,8 +193,8 @@ void LightManageGui::SetPointLightMenu(LightSet* pLightSet)
 	ImGui::PushID(pLightSet);
 	ImGui::SliderFloat3("Light Location", pLightSet->xmvLocation.m128_f32, -100.f, 100.f);
 	ImGui::SliderFloat3("Light Color", pLightSet->xmvLightColor.m128_f32, 0, 1.f);
-	ImGui::SliderFloat("Light Power", &pLightSet->fLightStrength, 0.f, 10.f);
 	ImGui::SliderFloat2("Fall Off Start/End", &pLightSet->fFallOffStart, 0.f, 100.f);
+	ImGui::SliderFloat("Light Power", &pLightSet->fLightPower, 0.f, 10.f);
 	ImGui::PopID();
 }
 
@@ -188,7 +204,7 @@ void LightManageGui::SetSpotLightMenu(LightSet* pLightSet)
 	ImGui::SliderFloat3("Light Location", pLightSet->xmvLocation.m128_f32, -10.f, 10.f);
 	ImGui::SliderFloat3("Light Color", pLightSet->xmvLightColor.m128_f32, 0, 1.f);
 	ImGui::SliderFloat3("Light Direction", pLightSet->xmvDirection.m128_f32, -1.f, 1.f);
-	ImGui::SliderFloat("Light Power", &pLightSet->fLightStrength, 0.f, 10.f);
+	ImGui::SliderFloat("Light Power", &pLightSet->fLightPower, 0.f, 10.f);
 	ImGui::SliderFloat("Spot Power", &pLightSet->fSpotPower, 0.f, 10.f);
 	ImGui::PopID();
 }

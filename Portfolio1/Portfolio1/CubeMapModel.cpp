@@ -70,7 +70,6 @@ void CubeMapModel::Render()
 	pDeviceContext->DrawIndexed(ui32IndexCount, 0, 0);
 }
 
-
 void CubeMapModel::SetIAProperties()
 {
 	pDeviceContext->IASetIndexBuffer(cpIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);

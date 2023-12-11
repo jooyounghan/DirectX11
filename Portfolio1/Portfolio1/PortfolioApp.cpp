@@ -34,6 +34,7 @@
 #include <imgui_impl_dx11.h>
 #include <imgui_impl_win32.h>
 #include <imgui_internal.h>
+#include <iostream>
 
 using namespace DirectX;
 
@@ -90,11 +91,6 @@ void PortfolioApp::Init()
 	spCubeMap = make_shared<CubeMapModel>(cpDevice.Get(), cpDeviceContext.Get());
 
 	spLightManager = make_unique<LightManager>(cpDevice, cpDeviceContext);
-	spLightManager->AddDirectionalLight(
-		XMVectorSet(0.f, 0.f, -100.f, 1.f),
-		XMVectorSet(1.f, 0.1f, 0.1f, 1.f),
-		XMVectorSet(0.f, 0.f, 1.f, 0.f)
-	);
 
 	// GUI Ãß°¡ =====================================================================================
 	vUpManageGuis.push_back(make_unique<ModelManageGui>(vSpPickableModels, spSelectedModel));
