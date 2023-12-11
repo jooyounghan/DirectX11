@@ -57,7 +57,6 @@ public:
 public:
 	const std::vector<LightSet>& GetLights();
 	void AddDirectionalLight(
-		IN const DirectX::XMVECTOR& xmvLocationIn,
 		IN const DirectX::XMVECTOR& xmvLightColorIn,
 		IN const DirectX::XMVECTOR& xmvDirectionIn,
 		const float& fLightPowerIn

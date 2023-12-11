@@ -35,7 +35,6 @@ const std::vector<LightSet>& LightManager::GetLights()
 }
 
 void LightManager::AddDirectionalLight(
-	IN const DirectX::XMVECTOR& xmvLocationIn,
 	IN const DirectX::XMVECTOR& xmvLightColorIn,
 	IN const DirectX::XMVECTOR& xmvDirectionIn,
 	const float& fLightPowerIn
@@ -44,7 +43,6 @@ void LightManager::AddDirectionalLight(
 	LightSet lightSet;
 	AutoZeroMemory(lightSet);
 	lightSet.eLightType = LightType::Directional;
-	lightSet.xmvLocation = xmvLocationIn;
 	lightSet.xmvLightColor = xmvLightColorIn;
 	lightSet.xmvDirection = xmvDirectionIn;
 	lightSet.fLightPower = fLightPowerIn;

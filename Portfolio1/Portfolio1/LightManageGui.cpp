@@ -73,7 +73,6 @@ void LightManageGui::SetLightAddMenu()
 		{
 		case LightType::Directional:
 			spLightManager->AddDirectionalLight(
-				LightManager::sTempLightSet.xmvLocation,
 				LightManager::sTempLightSet.xmvLightColor,
 				LightManager::sTempLightSet.xmvDirection,
 				LightManager::sTempLightSet.fLightPower
@@ -181,10 +180,9 @@ void LightManageGui::SetLightSettingMenu()
 void LightManageGui::SetDirectionalLightMenu(LightSet* pLightSet)
 {
 	ImGui::PushID(pLightSet);
-	ImGui::SliderFloat3("Light Location", pLightSet->xmvLocation.m128_f32, -10.f, 10.f);
 	ImGui::SliderFloat3("Light Color", pLightSet->xmvLightColor.m128_f32, 0, 1.f);
 	ImGui::SliderFloat3("Light Direction", pLightSet->xmvDirection.m128_f32, -1.f, 1.f);
-	ImGui::SliderFloat("Light Power", &pLightSet->fLightPower, 0.f, 10.f);
+	ImGui::SliderFloat("Light Power", &pLightSet->fLightPower, 1.f, 10.f);
 	ImGui::PopID();
 }
 
@@ -194,17 +192,17 @@ void LightManageGui::SetPointLightMenu(LightSet* pLightSet)
 	ImGui::SliderFloat3("Light Location", pLightSet->xmvLocation.m128_f32, -100.f, 100.f);
 	ImGui::SliderFloat3("Light Color", pLightSet->xmvLightColor.m128_f32, 0, 1.f);
 	ImGui::SliderFloat2("Fall Off Start/End", &pLightSet->fFallOffStart, 0.f, 100.f);
-	ImGui::SliderFloat("Light Power", &pLightSet->fLightPower, 0.f, 10.f);
+	ImGui::SliderFloat("Light Power", &pLightSet->fLightPower, 1.f, 10.f);
 	ImGui::PopID();
 }
 
 void LightManageGui::SetSpotLightMenu(LightSet* pLightSet)
 {
 	ImGui::PushID(pLightSet);
-	ImGui::SliderFloat3("Light Location", pLightSet->xmvLocation.m128_f32, -10.f, 10.f);
+	ImGui::SliderFloat3("Light Location", pLightSet->xmvLocation.m128_f32, -100.f, 100.f);
 	ImGui::SliderFloat3("Light Color", pLightSet->xmvLightColor.m128_f32, 0, 1.f);
-	ImGui::SliderFloat3("Light Direction", pLightSet->xmvDirection.m128_f32, -1.f, 1.f);
-	ImGui::SliderFloat("Light Power", &pLightSet->fLightPower, 0.f, 10.f);
-	ImGui::SliderFloat("Spot Power", &pLightSet->fSpotPower, 0.f, 10.f);
+	ImGui::SliderFloat2("Fall Off Start/End", &pLightSet->fFallOffStart, 0.f, 100.f);
+	ImGui::SliderFloat("Light Power", &pLightSet->fLightPower, 1.f, 10.f);
+	ImGui::SliderFloat("Spot Power", &pLightSet->fSpotPower, 1.f, 10.f);
 	ImGui::PopID();
 }

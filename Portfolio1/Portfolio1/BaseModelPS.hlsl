@@ -95,12 +95,27 @@ PixelOutput main(DomainOutput input)
     // Direct Lighting °è»ê
     [unroll]
     for (int i = 0; i < MAX_LIGHT_NUM; ++i)
-    {
-        float3 toLight = normalize(sLightSets[i].f4Location.xyz - input.f4ModelPos.xyz);
+    {        
+        float3 toLight = toLight = normalize(-sLightSets[i].f4Direction);
+        float fLightPower = sLightSets[i].fLightStrength;
+        float toLightDistance;
+        
+        if (sLightSets[i].LightType != DIRECT_LIGHT)
+        {
+            toLight = normalize(sLightSets[i].f4Location.xyz - input.f4ModelPos.xyz);
+            toLightDistance = length(sLightSets[i].f4Location.xyz - input.f4ModelPos.xyz);
+            fLightPower = fLightPower * (1 - saturate((toLightDistance - sLightSets[i].fFallOffStart) / (sLightSets[i].fFallOffEnd - sLightSets[i].fFallOffStart)));
+        }
+     
         float3 halfwayVec = normalize(toEyes + toLight);
     
         float NDotH = max(0.f, dot(normalVec, halfwayVec));
         float NDotL = max(0.f, dot(normalVec, toLight));
+        
+        if (sLightSets[i].LightType == SPOT_LIGHT)
+        {
+            NDotL = pow(NDotL, sLightSets[i].fSpotPower);
+        }
         
         float G = GetGMasking(NDotL, NDotE, roughness);
         float D = GetNDF(NDotH, roughness);
@@ -108,11 +123,11 @@ PixelOutput main(DomainOutput input)
         float3 diffuseBrdf = (float3(1, 1, 1) - F) * diffuseColor;
         float3 specularBrdf = (F * D * G) / (max(1e-6, 4.0 * NDotL * NDotE));
         
-        fDirectColor += (diffuseBrdf + specularBrdf) * sLightSets[i].fLightStrength * NDotL * sLightSets[i].f4Color.xyz;
+        fDirectColor += (diffuseBrdf + specularBrdf) * fLightPower * NDotL * sLightSets[i].f4Color.xyz;
     }
     
        
-    result.pixelColor = float4(1.f, 0.f, 0.f, 1.f) + float4(fDirectColor + fAmbientColor, 1.f);
+    result.pixelColor = float4(fDirectColor + fAmbientColor, 1.f);
     result.modleId = float4(sModelId.uiModelID.x, sModelId.uiModelID.y, sModelId.uiModelID.z, sModelId.uiModelIDStd) / sModelId.uiModelIDStd;
     return result;
 }

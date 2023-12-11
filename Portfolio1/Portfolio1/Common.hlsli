@@ -1,5 +1,9 @@
 #define MAX_LIGHT_NUM 10
 
+#define DIRECT_LIGHT    0
+#define POINT_LIGHT     1
+#define SPOT_LIGHT      2
+
 struct VertexInput
 {
     float4 f4WorldPos : POSITION;
