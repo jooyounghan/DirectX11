@@ -22,7 +22,9 @@ ModelInterface::~ModelInterface()
 void ModelInterface::MakePlaneVertexIndexSet(
 	ModelInterface* pModelInterface,
 	const float& fWidth,
-	const float& fHeight
+	const float& fHeight,
+	const float& fWrapWidth,
+	const float& fWrapHeight
 )
 {
 	if (pModelInterface != nullptr)
@@ -35,9 +37,9 @@ void ModelInterface::MakePlaneVertexIndexSet(
 		pModelInterface->ui32IndexCount = UINT(vIndex.size());
 
 		vector<Vertex> vVertex{
-			{{-(fWidth / 2.f), (fHeight / 2.f), 0.f}, {1.f, 0.f}, {0.f, 0.f, 1.f, 0.f}},
-			{{-(fWidth / 2.f), -(fHeight / 2.f), 0.f}, {1.f, 1.f}, {0.f, 0.f, 1.f, 0.f}},
-			{{(fWidth / 2.f), -(fHeight / 2.f), 0.f}, {0.f, 1.f}, {0.f, 0.f, 1.f, 0.f}},
+			{{-(fWidth / 2.f), (fHeight / 2.f), 0.f}, {fWidth / fWrapWidth, 0.f}, {0.f, 0.f, 1.f, 0.f}},
+			{{-(fWidth / 2.f), -(fHeight / 2.f), 0.f}, {fWidth / fWrapWidth, fHeight / fWrapHeight}, {0.f, 0.f, 1.f, 0.f}},
+			{{(fWidth / 2.f), -(fHeight / 2.f), 0.f}, {0.f, fHeight / fWrapHeight}, {0.f, 0.f, 1.f, 0.f}},
 			{{(fWidth / 2.f), (fHeight / 2.f), 0.f}, {0.f, 0.f}, {0.f, 0.f, 1.f, 0.f}}
 		};
 

@@ -33,7 +33,8 @@ MirrorModel::MirrorModel(
 	uiMirrorTextureWidth = UINT(1000.f * fMirrorAspectRatio);
 	uiMirrorTextureHeight = 1000;
 
-	PickableModelInterface::MakePlaneVertexIndexSet(this, fCenterXIn, fCenterYIn, fCenterZIn, fMirrorWidth, fMirrorHeight);
+	PickableModelInterface::MakePlaneVertexIndexSet(this, fCenterXIn, fCenterYIn, fCenterZIn, fMirrorWidth, fMirrorHeight, fMirrorWidth, fMirrorHeight);
+	sTransformation.sAngles.fYaw = XM_PI;
 
 	ID3D11Helper::CreateTexture2D(
 		PickableModelInterface::pDevice, uiMirrorTextureWidth, uiMirrorTextureHeight, 
@@ -110,25 +111,25 @@ void MirrorModel::SetIAProperties()
 	PickableModelInterface::pDeviceContext->IASetVertexBuffers(0, 1, cpVertexBuffer.GetAddressOf(), &stride, &offset);
 }
 
-void MirrorModel::SetConstantBuffersAsModel()
+void MirrorModel::SetConstantBuffers()
 {
 	PickableModelInterface::pDeviceContext->VSSetConstantBuffers(VS_CBUFF_MODELMAT, 1, cpTransformationBuffer.GetAddressOf());
 	PickableModelInterface::pDeviceContext->PSSetConstantBuffers(PS_CBUFF_MODELID, 1, upModelID->GetAddressOfTextureIDBuffer());
 }
 
-void MirrorModel::SetShaderResourcesAsModel()
+void MirrorModel::SetShaderResources()
 {
 	PickableModelInterface::pDeviceContext->PSSetShaderResources(PS_SRV_MIRROR_SELF, 1, cpMirrorResolvedSRV.GetAddressOf());
 }
 
-void MirrorModel::ResetConstantBuffersAsModel()
+void MirrorModel::ResetConstantBuffers()
 {
 	ID3D11Buffer* pResetBuffer = nullptr;
 	PickableModelInterface::pDeviceContext->VSSetConstantBuffers(VS_CBUFF_MODELMAT, 1, &pResetBuffer);
 	PickableModelInterface::pDeviceContext->PSSetConstantBuffers(PS_CBUFF_MODELID, 1, &pResetBuffer);
 }
 
-void MirrorModel::ResetShaderResourcesAsModel()
+void MirrorModel::ResetShaderResources()
 {
 	ID3D11ShaderResourceView* pResetSRV = nullptr;
 	PickableModelInterface::pDeviceContext->PSGetShaderResources(PS_SRV_MIRROR_SELF, 1, &pResetSRV);

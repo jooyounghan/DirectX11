@@ -60,7 +60,9 @@ protected:
 		const float& fCenterY,
 		const float& fCenterZ,
 		const float& fWidth,
-		const float& fHeight
+		const float& fHeight,
+		const float& fWrapWidth,
+		const float& fWrapHeight
 	);
 
 	static void MakeSquareVertexIndexSet(

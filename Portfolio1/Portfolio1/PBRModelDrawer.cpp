@@ -31,6 +31,7 @@ PBRModelDrawer::PBRModelDrawer(
 	ID3D11Helper::CreateHS(pDeviceIn, L"BaseModelHS.hlsl", cpBaseHullShader.GetAddressOf());
 	ID3D11Helper::CreateDS(pDeviceIn, L"BaseModelDS.hlsl", cpBaseDomainShader.GetAddressOf());
 	ID3D11Helper::CreatePS(pDeviceIn, L"BaseModelPS.hlsl", cpBasePixelShader.GetAddressOf());
+	ID3D11Helper::CreatePS(pDevice, L"OutlinerPS.hlsl", cpOutlinerPixelShader.GetAddressOf());
 }
 
 PBRModelDrawer::~PBRModelDrawer()
@@ -62,7 +63,7 @@ void PBRModelDrawer::SetShader()
 void PBRModelDrawer::SetOMState()
 {
 	DepthStencilState& depthStencilState = DepthStencilState::GetInstance(pDevice);
-	pDeviceContext->OMSetDepthStencilState(depthStencilState.pGetDSS(DepthStencilState::MaskOption), 1);
+	pDeviceContext->OMSetDepthStencilState(depthStencilState.pGetDSS(DepthStencilState::DefaultOption), 0);
 }
 
 void PBRModelDrawer::ResetDrawer()
@@ -88,6 +89,7 @@ void PBRModelDrawer::Draw(
 	CameraInterface* pCamera,
 	LightManager* pLightManager,
 	const std::vector<std::shared_ptr<PBRModel>> vSpModels,
+	const shared_ptr<PickableModelInterface> spSelectedModels,
 	CubeMapModel* pEnvironmentCubeMap
 )
 {
@@ -108,15 +110,41 @@ void PBRModelDrawer::Draw(
 
 	for (auto& pObjectModel : vSpModels)
 	{
-		pObjectModel->SetIAProperties();
-		pObjectModel->SetConstantBuffers();
-		pObjectModel->SetShaderResources();
+		if (pObjectModel != spSelectedModels)
+		{
+			pObjectModel->SetIAProperties();
+			pObjectModel->SetConstantBuffers();
+			pObjectModel->SetShaderResources();
 
-		pObjectModel->Render();
+			pObjectModel->Render();
 
-		pObjectModel->ResetConstantBuffers();
-		pObjectModel->ResetShaderResources();
+			pObjectModel->ResetConstantBuffers();
+			pObjectModel->ResetShaderResources();
+		}
 	}
+
+	if (spSelectedModels)
+	{
+		DepthStencilState& depthStencilState = DepthStencilState::GetInstance(pDevice);
+		pDeviceContext->OMSetDepthStencilState(depthStencilState.pGetDSS(DepthStencilState::MaskOption), 1);
+
+		spSelectedModels->SetIAProperties();
+		spSelectedModels->SetConstantBuffers();
+		spSelectedModels->SetShaderResources();
+
+		spSelectedModels->Render();
+
+		pDeviceContext->OMSetDepthStencilState(depthStencilState.pGetDSS(DepthStencilState::DrawNotEqualOption), 1);
+		pDeviceContext->PSSetShader(cpOutlinerPixelShader.Get(), 0, 0);
+
+		spSelectedModels->ScaleUp(0.1f, 0.1f, 0.1f);
+		spSelectedModels->Render();
+		spSelectedModels->ScaleUp(-0.1f, -0.1f, -0.1f);
+
+		spSelectedModels->ResetConstantBuffers();
+		spSelectedModels->ResetShaderResources();
+	}
+
 
 	pEnvironmentCubeMap->ResetConstantBuffers();
 	pEnvironmentCubeMap->ResetShaderResources();

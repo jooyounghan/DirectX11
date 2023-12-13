@@ -7,6 +7,7 @@
 class CameraInterface;
 class LightManager;
 class PBRModel;
+class PickableModelInterface;
 class CubeMapModel;
 
 class PBRModelDrawer : public DrawerInterface
@@ -24,6 +25,7 @@ public:
 		CameraInterface* pCamera,
 		LightManager* pLightManager,
 		const std::vector<std::shared_ptr<PBRModel>> vSpModels,
+		const std::shared_ptr<PickableModelInterface> spSelectedModels,
 		CubeMapModel* pEnvironmentCubeMap
 	);
 
@@ -46,8 +48,10 @@ protected:
 protected:
 	Microsoft::WRL::ComPtr<ID3D11PixelShader>	cpBasePixelShader;
 
-
 protected:
 	Microsoft::WRL::ComPtr<ID3D11HullShader>	cpBaseHullShader;
 	Microsoft::WRL::ComPtr<ID3D11DomainShader>	cpBaseDomainShader;
+
+protected:
+	Microsoft::WRL::ComPtr<ID3D11PixelShader>	cpOutlinerPixelShader;
 };

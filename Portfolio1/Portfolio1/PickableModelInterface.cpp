@@ -71,7 +71,9 @@ void PickableModelInterface::MakePlaneVertexIndexSet(
 	const float& fCenterY,
 	const float& fCenterZ,
 	const float& fWidth,
-	const float& fHeight
+	const float& fHeight,
+	const float& fWrapWidth,
+	const float& fWrapHeight
 )
 {
 	if (pPickableModel != nullptr)
@@ -80,7 +82,7 @@ void PickableModelInterface::MakePlaneVertexIndexSet(
 		pPickableModel->sTransformation.sTranslations.fY = fCenterY;
 		pPickableModel->sTransformation.sTranslations.fZ = fCenterZ;
 
-		ModelInterface::MakePlaneVertexIndexSet(pPickableModel, fWidth, fHeight);
+		ModelInterface::MakePlaneVertexIndexSet(pPickableModel, fWidth, fHeight, fWrapWidth, fWrapHeight);
 	}
 }
 

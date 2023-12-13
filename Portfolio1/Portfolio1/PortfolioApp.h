@@ -99,10 +99,9 @@ private:
 
 private:
 	std::unique_ptr<PBRModelDrawer>				upModelDrawer;
-	std::unique_ptr<ModelOutlineDrawer>				upModelOutlineDrawer;
-	std::unique_ptr<NormalVectorDrawer>				upNormalVectorDrawer;
-	std::unique_ptr<CubeMapDrawer>					upCubeMapDrawer;
-	std::unique_ptr<MirrorDrawer>					upMirrorDrawer;
+	std::unique_ptr<NormalVectorDrawer>			upNormalVectorDrawer;
+	std::unique_ptr<CubeMapDrawer>				upCubeMapDrawer;
+	std::unique_ptr<MirrorDrawer>				upMirrorDrawer;
 
 public:
 	virtual LRESULT WINAPI AppProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) override;

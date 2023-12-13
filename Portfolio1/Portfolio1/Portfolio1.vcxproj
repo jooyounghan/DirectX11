@@ -148,6 +148,7 @@
     <ClCompile Include="DDSFile.cpp" />
     <ClCompile Include="FileInterface.cpp" />
     <ClCompile Include="FileLoader.cpp" />
+    <ClCompile Include="PlaneModel.cpp" />
     <ClCompile Include="StringHelper.cpp" />
     <ClCompile Include="FilterInterface.cpp" />
     <ClCompile Include="ImGuiFileDialog.cpp" />
@@ -176,7 +177,6 @@
     <ClCompile Include="DrawerInterface.cpp" />
     <ClCompile Include="ModelID.cpp" />
     <ClCompile Include="ModelManageGui.cpp" />
-    <ClCompile Include="ModelOutlineDrawer.cpp" />
     <ClCompile Include="PortfolioApp.cpp" />
     <ClCompile Include="SquareModel.cpp" />
     <ClCompile Include="TempVariable.cpp" />
@@ -199,6 +199,7 @@
     <ClInclude Include="FileInterface.h" />
     <ClInclude Include="FileLoader.h" />
     <ClInclude Include="FileManageGui.h" />
+    <ClInclude Include="PlaneModel.h" />
     <ClInclude Include="StringHelper.h" />
     <ClInclude Include="FilterInterface.h" />
     <ClInclude Include="ImGuiFileDialog.h" />
@@ -228,7 +229,6 @@
     <ClInclude Include="DrawerInterface.h" />
     <ClInclude Include="ModelID.h" />
     <ClInclude Include="ModelManageGui.h" />
-    <ClInclude Include="ModelOutlineDrawer.h" />
     <ClInclude Include="PortfolioApp.h" />
     <ClInclude Include="SquareModel.h" />
     <ClInclude Include="TempVariable.h" />

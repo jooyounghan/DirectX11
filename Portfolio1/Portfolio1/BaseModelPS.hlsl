@@ -56,13 +56,13 @@ PixelOutput main(DomainOutput input)
     float3 fDirectColor = { 0.f, 0.f, 0.f };
     float3 fAmbientColor = { 0.f, 0.f, 0.f };
     
-    float roughness = RoughnessTexture.Sample(ClampSampler, input.f2TexCoord).x;
-    float metallic = MetalnessTexture.Sample(ClampSampler, input.f2TexCoord).x;
+    float roughness = RoughnessTexture.Sample(WrapSampler, input.f2TexCoord).x;
+    float metallic = MetalnessTexture.Sample(WrapSampler, input.f2TexCoord).x;
     float4 normalSampled;
         
     if (bIsNormalTexture)
     {
-        normalSampled = GetSampledNormalFromTBN(ClampSampler, NormalTexture, input.f2TexCoord, input.f4ModelNormal, input.f4ModelTangent, input.f4ModelBiTangent);
+        normalSampled = GetSampledNormalFromTBN(WrapSampler, NormalTexture, input.f2TexCoord, input.f4ModelNormal, input.f4ModelTangent, input.f4ModelBiTangent);
     }
     else
     {
@@ -70,8 +70,8 @@ PixelOutput main(DomainOutput input)
     }
     
     
-    float3 surfaceColor = ColorTexture.Sample(ClampSampler, input.f2TexCoord).xyz;
-    float3 ao = AOTexture.Sample(ClampSampler, input.f2TexCoord).xyz;
+    float3 surfaceColor = ColorTexture.Sample(WrapSampler, input.f2TexCoord).xyz;
+    float3 ao = AOTexture.Sample(WrapSampler, input.f2TexCoord).xyz;
 
     float3 normalVec = normalize(normalSampled.xyz);
     float3 toEyes = normalize(f4CameraPos.xyz - input.f4ModelPos.xyz);

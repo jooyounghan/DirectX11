@@ -285,9 +285,6 @@
     <ClCompile Include="PBRModelDrawer.cpp">
       <Filter>소스 파일\Drawer\PBRDrawer\Extended</Filter>
     </ClCompile>
-    <ClCompile Include="ModelOutlineDrawer.cpp">
-      <Filter>소스 파일\Drawer\LightlessDrawer\Extneded</Filter>
-    </ClCompile>
     <ClCompile Include="NormalVectorDrawer.cpp">
       <Filter>소스 파일\Drawer\LightlessDrawer\Extneded</Filter>
     </ClCompile>
@@ -326,6 +323,9 @@
     </ClCompile>
     <ClCompile Include="StringHelper.cpp">
       <Filter>소스 파일\Utils\Helper</Filter>
+    </ClCompile>
+    <ClCompile Include="PlaneModel.cpp">
+      <Filter>소스 파일\Model\Object\Extended</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -425,9 +425,6 @@
     <ClInclude Include="PBRModel.h">
       <Filter>헤더 파일\Model\Object</Filter>
     </ClInclude>
-    <ClInclude Include="ModelOutlineDrawer.h">
-      <Filter>헤더 파일\Drawer\LightlessDrawer\Extended</Filter>
-    </ClInclude>
     <ClInclude Include="NormalVectorDrawer.h">
       <Filter>헤더 파일\Drawer\LightlessDrawer\Extended</Filter>
     </ClInclude>
@@ -478,6 +475,9 @@
     </ClInclude>
     <ClInclude Include="ManualDataType.h">
       <Filter>헤더 파일\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="PlaneModel.h">
+      <Filter>헤더 파일\Model\Object\Extended</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

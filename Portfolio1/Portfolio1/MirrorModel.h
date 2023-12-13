@@ -27,16 +27,16 @@ public:
 	virtual void SetIAProperties();
 
 private:
-	virtual void SetConstantBuffers() override final {};
-	virtual void ResetConstantBuffers() override final {};
-	virtual void SetShaderResources() override final {};
-	virtual void ResetShaderResources() override final {};
+	//virtual void SetConstantBuffers() override final {};
+	//virtual void ResetConstantBuffers() override final {};
+	//virtual void SetShaderResources() override final {};
+	//virtual void ResetShaderResources() override final {};
 
 public:
-	virtual void SetConstantBuffersAsModel();
-	virtual void SetShaderResourcesAsModel();
-	virtual void ResetConstantBuffersAsModel();
-	virtual void ResetShaderResourcesAsModel();
+	virtual void SetConstantBuffers();
+	virtual void SetShaderResources();
+	virtual void ResetConstantBuffers();
+	virtual void ResetShaderResources();
 
 public:
 	virtual void SetConstantBuffersAsCamera();

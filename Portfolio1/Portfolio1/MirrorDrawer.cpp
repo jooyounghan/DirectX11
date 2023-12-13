@@ -130,8 +130,8 @@ void MirrorDrawer::Draw(
 		for (auto& renderedMirror : vMirrorModels)
 		{
 			renderedMirror->SetIAProperties();
-			renderedMirror->SetConstantBuffersAsModel();
-			renderedMirror->SetShaderResourcesAsModel();
+			renderedMirror->SetConstantBuffers();
+			renderedMirror->SetShaderResources();
 			if (observerMirror == renderedMirror)
 			{
 				pCamera->SetConstantBuffers();
@@ -151,8 +151,8 @@ void MirrorDrawer::Draw(
 				observerMirror->ResetConstantBuffersAsCamera();
 				observerMirror->ResetCamera();
 			}
-			renderedMirror->ResetConstantBuffersAsModel();
-			renderedMirror->ResetShaderResourcesAsModel();
+			renderedMirror->ResetConstantBuffers();
+			renderedMirror->ResetShaderResources();
 		}
 	}
 	ResetDrawer();

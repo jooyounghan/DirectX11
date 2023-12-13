@@ -8,7 +8,6 @@
 #include "FileManageGui.h"
 
 #include "PBRModelDrawer.h"
-#include "ModelOutlineDrawer.h"
 #include "NormalVectorDrawer.h"
 #include "CubeMapDrawer.h"
 #include "MirrorDrawer.h"
@@ -21,6 +20,7 @@
 #include "PBRModel.h"
 #include "SphereModel.h"
 #include "SquareModel.h"
+#include "PlaneModel.h"
 #include "CubeMapModel.h"
 #include "MirrorModel.h"
 
@@ -65,7 +65,7 @@ void PortfolioApp::Init()
 	spMainCamera = make_shared<BloomCamera>(
 		cpDevice.Get(), cpDeviceContext.Get(), 
 		uiWidth, uiHeight, uiNumLevelQuality, DXGI_FORMAT_R16G16B16A16_FLOAT,
-		0.f, 0.f, -10.f, 70.f, 0.01f, 1000.f
+		0.f, 5.f, -10.f, 70.f, 0.01f, 1000.f
 	);
 	spMainCamera->SetAsMainCamera(cpSwapChain.Get());
 	// =================================================================================================
@@ -74,6 +74,10 @@ void PortfolioApp::Init()
 	shared_ptr<SphereModel> spSphere = make_shared<SphereModel>(cpDevice.Get(), cpDeviceContext.Get(), 0.f, 0.f, 0.f, 2.f);
 	vSpPickableModels.push_back(spSphere);
 	vSpPBRModels.push_back(spSphere);
+
+	shared_ptr<PlaneModel> spPlane = make_shared<PlaneModel>(cpDevice.Get(), cpDeviceContext.Get(), 0.f, 0.f, 0.f, 100.f, 100.f, 10.f, 10.f);
+	vSpPickableModels.push_back(spPlane);
+	vSpPBRModels.push_back(spPlane);
 
 	shared_ptr<MirrorModel> spMirrorLeft = make_shared<MirrorModel>(
 		cpDevice.Get(), cpDeviceContext.Get(), 5.f, 5.f, 
@@ -100,7 +104,6 @@ void PortfolioApp::Init()
 	vUpManageGuis.push_back(make_unique<FileManageGui>(cpDevice, cpDeviceContext));
 	// ==============================================================================================
 	upModelDrawer = make_unique<PBRModelDrawer>(cpDevice.Get(), cpDeviceContext.Get());
-	upModelOutlineDrawer = make_unique<ModelOutlineDrawer>(cpDevice.Get(), cpDeviceContext.Get());
 	upNormalVectorDrawer = make_unique<NormalVectorDrawer>(cpDevice.Get(), cpDeviceContext.Get());
 	upCubeMapDrawer = make_unique<CubeMapDrawer>(cpDevice.Get(), cpDeviceContext.Get());
 	upMirrorDrawer = make_unique<MirrorDrawer>(cpDevice.Get(), cpDeviceContext.Get());
@@ -128,7 +131,7 @@ void PortfolioApp::Render()
 		pMirror->WipeOut();
 	}
 
-	upModelDrawer->Draw(spMainCamera.get(), spLightManager.get(), vSpPBRModels, spCubeMap.get());
+	upModelDrawer->Draw(spMainCamera.get(), spLightManager.get(), vSpPBRModels, spSelectedModel, spCubeMap.get());
 
 	if (bIsNormalVectorDraw)
 	{
@@ -136,11 +139,6 @@ void PortfolioApp::Render()
 		{
 			upNormalVectorDrawer->Draw(spMainCamera.get(), model.get());
 		}
-	}
-	
-	if (spSelectedModel)
-	{
-		upModelOutlineDrawer->Draw(spMainCamera.get(), spSelectedModel.get());
 	}
 
 	upCubeMapDrawer->Draw(spMainCamera.get(), spCubeMap.get());
@@ -275,13 +273,20 @@ LRESULT __stdcall PortfolioApp::AppProc(HWND hWnd, UINT msg, WPARAM wParam, LPAR
 		spMainCamera->SetFromMouseXY(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
 		return 0;
 	case WM_LBUTTONUP:
-		if (spTempSelectedModel != nullptr)
-		{
-			spSelectedModel = spTempSelectedModel;
-		}
 		return 0;
 	case WM_LBUTTONDOWN:
 		CheckMouseHoveredModel();
+		if (!ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))
+		{
+			if (spSelectedModel != spTempSelectedModel)
+			{
+				spSelectedModel = spTempSelectedModel;
+			}
+			else
+			{
+				spSelectedModel = nullptr;
+			}
+		}
 		return 0;
 	case WM_KEYDOWN:
 		switch (wParam) {

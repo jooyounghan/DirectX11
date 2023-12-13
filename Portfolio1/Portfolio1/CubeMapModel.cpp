@@ -32,9 +32,9 @@ void CubeMapModel::Update(const float& fDelta)
 {
 	bool bIsTextureFlagChanged = false;
 
-	const bool& bIsSpecularOn = spEnvSpecularTextureFile != nullptr ? true : false;
-	const bool& bIsDiffuseOn = spEnvDiffuseTextureFile != nullptr ? true : false;
-	const bool& bIsBrdfOn = spEnvBrdfTextureFile != nullptr ? true : false;
+	const uint32_t& bIsSpecularOn = spEnvSpecularTextureFile != nullptr ? TRUE : FALSE;
+	const uint32_t& bIsDiffuseOn = spEnvDiffuseTextureFile != nullptr ? TRUE : FALSE;
+	const uint32_t& bIsBrdfOn = spEnvBrdfTextureFile != nullptr ? TRUE : FALSE;
 
 	if (sPSTextureFlags.bIsSpecularTextureOn != bIsSpecularOn)
 	{
