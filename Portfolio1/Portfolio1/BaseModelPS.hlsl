@@ -15,17 +15,17 @@ TextureCube EnvDiffuseTexture   : register(t7);
 Texture2D   EnvBrdfTexture      : register(t8);
 
 
-cbuffer LightSetsBuffer : register(b0)
-{
-    LightSet sLightSets[MAX_LIGHT_NUM];
-};
+//cbuffer LightSetsBuffer : register(b0)
+//{
+//    LightSet sLightSets[MAX_LIGHT_NUM];
+//};
 
-cbuffer ModelIDBuffer : register(b1)
+cbuffer ModelIDBuffer : register(b2)
 {
     ModelID sModelId;
 };
 
-cbuffer TextureFlagBuffer : register(b2)
+cbuffer TextureFlagBuffer : register(b3)
 {
     bool    bIsAOTexture;
     bool    bIsColorTexture;
@@ -36,13 +36,13 @@ cbuffer TextureFlagBuffer : register(b2)
     uint2   uiDummy;
 };
 
-cbuffer TextureConstantBuffer : register(b3)
+cbuffer TextureConstantBuffer : register(b4)
 {
     float3  fFrenelConstant;
     uint    uiDummy2;
 };
 
-cbuffer CameraInfo : register(b6)
+cbuffer CameraInfo : register(b7)
 {
     float4 f4CameraPos;
     matrix mViewProj;

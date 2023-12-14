@@ -26,12 +26,6 @@ public:
 public:
 	virtual void SetIAProperties();
 
-private:
-	//virtual void SetConstantBuffers() override final {};
-	//virtual void ResetConstantBuffers() override final {};
-	//virtual void SetShaderResources() override final {};
-	//virtual void ResetShaderResources() override final {};
-
 public:
 	virtual void SetConstantBuffers();
 	virtual void SetShaderResources();

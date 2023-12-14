@@ -1,6 +1,6 @@
 #include "CubeMapType.hlsli"
 
-cbuffer TextureFlagBuffer : register(b4)
+cbuffer TextureFlagBuffer : register(b5)
 {
     bool    bIsSpecularOn;
     bool    bIsIrradianceOn;

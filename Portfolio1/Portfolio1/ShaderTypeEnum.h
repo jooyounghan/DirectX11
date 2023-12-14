@@ -24,7 +24,8 @@ enum DSConstBufferType : unsigned int
 
 enum PSConstBufferType : unsigned int
 {
-	PS_CBUFF_LIGHT,
+	PS_CBUFF_LIGHTBASE,
+	PS_CBUFF_LIGHTADDITIONAL,
 	PS_CBUFF_MODELID,
 	PS_CBUFF_MODEL_TEXTURE_FLAGS,
 	PS_CBUFF_MODEL_CONST,

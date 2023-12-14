@@ -184,6 +184,12 @@
     <Filter Include="소스 파일\Utils\Helper">
       <UniqueIdentifier>{84b06881-8ed9-4d8c-9252-33385882011c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="헤더 파일\Light\Extended">
+      <UniqueIdentifier>{f22091fe-d685-4b6d-a431-72114ac7b07f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Light\Extended">
+      <UniqueIdentifier>{607ea119-005c-43bd-b089-8c4ad8f76b1d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -326,6 +332,15 @@
     </ClCompile>
     <ClCompile Include="PlaneModel.cpp">
       <Filter>소스 파일\Model\Object\Extended</Filter>
+    </ClCompile>
+    <ClCompile Include="LightInterface.cpp">
+      <Filter>소스 파일\Light</Filter>
+    </ClCompile>
+    <ClCompile Include="PointLight.cpp">
+      <Filter>소스 파일\Light\Extended</Filter>
+    </ClCompile>
+    <ClCompile Include="SpotLight.cpp">
+      <Filter>소스 파일\Light\Extended</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -478,6 +493,15 @@
     </ClInclude>
     <ClInclude Include="PlaneModel.h">
       <Filter>헤더 파일\Model\Object\Extended</Filter>
+    </ClInclude>
+    <ClInclude Include="LightInterface.h">
+      <Filter>헤더 파일\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="PointLight.h">
+      <Filter>헤더 파일\Light\Extended</Filter>
+    </ClInclude>
+    <ClInclude Include="SpotLight.h">
+      <Filter>헤더 파일\Light\Extended</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

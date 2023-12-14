@@ -99,11 +99,11 @@ void LightManager::Update()
 
 void LightManager::SetConstantBuffers()
 {
-	cpDeviceContext->PSSetConstantBuffers(PS_CBUFF_LIGHT, 1, cpLightsConstantBuffer.GetAddressOf());
+	cpDeviceContext->PSSetConstantBuffers(PS_CBUFF_LIGHTBASE, 1, cpLightsConstantBuffer.GetAddressOf());
 }
 
 void LightManager::ResetConstantBuffers()
 {
 	ID3D11Buffer* pResetBuffer = nullptr;
-	cpDeviceContext->PSSetConstantBuffers(PS_CBUFF_LIGHT, 1, &pResetBuffer);
+	cpDeviceContext->PSSetConstantBuffers(PS_CBUFF_LIGHTBASE, 1, &pResetBuffer);
 }

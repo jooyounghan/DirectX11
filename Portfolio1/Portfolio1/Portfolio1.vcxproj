@@ -142,6 +142,7 @@
     <ClCompile Include="BloomFilter.cpp" />
     <ClCompile Include="CameraInterface.cpp" />
     <ClCompile Include="CameraManageGui.cpp" />
+    <ClCompile Include="LightInterface.cpp" />
     <ClCompile Include="NormalCamera.cpp" />
     <ClCompile Include="CubeMapDrawer.cpp" />
     <ClCompile Include="CubeMapModel.cpp" />
@@ -149,6 +150,8 @@
     <ClCompile Include="FileInterface.cpp" />
     <ClCompile Include="FileLoader.cpp" />
     <ClCompile Include="PlaneModel.cpp" />
+    <ClCompile Include="PointLight.cpp" />
+    <ClCompile Include="SpotLight.cpp" />
     <ClCompile Include="StringHelper.cpp" />
     <ClCompile Include="FilterInterface.cpp" />
     <ClCompile Include="ImGuiFileDialog.cpp" />
@@ -191,6 +194,7 @@
     <ClInclude Include="BloomFilter.h" />
     <ClInclude Include="CameraInterface.h" />
     <ClInclude Include="CameraManageGui.h" />
+    <ClInclude Include="LightInterface.h" />
     <ClInclude Include="ManualDataType.h" />
     <ClInclude Include="NormalCamera.h" />
     <ClInclude Include="CubeMapDrawer.h" />
@@ -200,6 +204,8 @@
     <ClInclude Include="FileLoader.h" />
     <ClInclude Include="FileManageGui.h" />
     <ClInclude Include="PlaneModel.h" />
+    <ClInclude Include="PointLight.h" />
+    <ClInclude Include="SpotLight.h" />
     <ClInclude Include="StringHelper.h" />
     <ClInclude Include="FilterInterface.h" />
     <ClInclude Include="ImGuiFileDialog.h" />
