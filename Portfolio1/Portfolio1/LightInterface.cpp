@@ -13,19 +13,6 @@ LightInterface::LightInterface(ID3D11Device* pDeviceIn, ID3D11DeviceContext* pDe
 		D3D11_CPU_ACCESS_WRITE, NULL,
 		cpBaseLightDataBuffer.GetAddressOf()
 	);
-
-	ID3D11Helper::CreateTexture2D(
-		pDevice, 1000, 1000, 0, 1, 
-		D3D11_BIND_DEPTH_STENCIL, 
-		NULL, NULL, D3D11_USAGE_DEFAULT, 
-		DXGI_FORMAT_D32_FLOAT, 
-		cpShadowMapTexture2D.GetAddressOf()
-	);
-
-	ID3D11Helper::CreateShaderResoureView(
-		pDevice, cpShadowMapTexture2D.Get(), 
-		cpShadowMapSRV.GetAddressOf()
-	);
 }
 
 LightInterface::~LightInterface()

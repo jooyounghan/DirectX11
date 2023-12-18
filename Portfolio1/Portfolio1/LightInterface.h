@@ -27,16 +27,16 @@ protected:
 public:
 	struct
 	{
-		uint32_t	uiLightType;
-		float		fLightColor[3];
-		float		fLightPower;
-		float		fDummy[3];
+		uint32_t			uiLightType;
+		DirectX::XMVECTOR	xmvLocation;
+		DirectX::XMVECTOR	xmvDirect;
+		float				fLightColor[3];
+		float				fFallOffStart;
+		float				fFallOffEnd;
+		float				fLightPower;
+		float				fSpotPower;
 	} sBaseLightData;
 	Microsoft::WRL::ComPtr<ID3D11Buffer> cpBaseLightDataBuffer;
-
-public:
-	Microsoft::WRL::ComPtr<ID3D11Texture2D>				cpShadowMapTexture2D;
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>	cpShadowMapSRV;
 
 public:
 	virtual void Update();

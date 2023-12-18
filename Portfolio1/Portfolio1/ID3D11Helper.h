@@ -120,8 +120,7 @@ public:
 
 	static void CreateDepthStencilView(
 		IN ID3D11Device* pDevice,
-		IN const D3D11_TEXTURE2D_DESC& sTexture2DDesc,
-		IN OUT ID3D11Texture2D** ppDepthStencilTexture2D,
+		IN	ID3D11Texture2D* pDepthStencilTexture2D,
 		OUT ID3D11DepthStencilView** ppDepthStencilView
 	);
 

@@ -3,7 +3,7 @@ SamplerState Sampler : register(s0);
 Texture2D InputSRV1 : register(t9);
 Texture2D InputSRV2 : register(t10);
 
-cbuffer BlendConstantData : register(b6)
+cbuffer BlendConstantData : register(b7)
 {
     float fBlendStrength;
     float fExposure;

@@ -385,6 +385,19 @@ void ID3D11Helper::CreateDepthStencilView(IN ID3D11Device* pDevice, IN const UIN
 	}
 }
 
+void ID3D11Helper::CreateDepthStencilView(IN ID3D11Device* pDevice, IN ID3D11Texture2D* pDepthStencilTexture2D, OUT ID3D11DepthStencilView** ppDepthStencilView)
+{
+	HRESULT hResult = pDevice->CreateDepthStencilView(pDepthStencilTexture2D, NULL, ppDepthStencilView);
+
+	if (FAILED(hResult))
+	{
+		Console("Depth Stencil Shader Resource View를 생성하는데 실패하였습니다.");
+		return;
+	}
+}
+
+
+
 void ID3D11Helper::CreateRasterizerState(IN ID3D11Device* pDevice, IN D3D11_FILL_MODE eFillMode, IN D3D11_CULL_MODE eCullMode, IN BOOL bMultiSampling, OUT ID3D11RasterizerState** ppRasterizerState)
 {
 	D3D11_RASTERIZER_DESC sRasterizerDesc;

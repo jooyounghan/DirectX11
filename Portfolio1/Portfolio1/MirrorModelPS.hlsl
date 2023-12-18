@@ -6,12 +6,12 @@ SamplerState ClampSampler : register(s1);
 
 Texture2D MirrorSelf : register(t11);
 
-cbuffer ModelIDBuffer : register(b2)
+cbuffer ModelIDBuffer : register(b3)
 {
     ModelID sModelId;
 };
 
-cbuffer CameraInfo : register(b7)
+cbuffer CameraInfo : register(b8)
 {
     float4 f4CameraPos;
     matrix mViewProj;
