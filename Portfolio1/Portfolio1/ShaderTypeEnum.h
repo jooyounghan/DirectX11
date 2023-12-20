@@ -9,7 +9,10 @@ enum SamplerType : unsigned int
 enum VSConstBufferType : unsigned int
 {
 	VS_CBUFF_MODELMAT,
-	VS_CBUFF_CAMERA_INFO
+	VS_CBUFF_CAMERA_INFO,
+	VS_CBUFF_LIGHTBASE,
+	VS_CBUFF_POINT_LIGHT_VIEWPROJ,
+	VS_CBUFF_SPOT_LIGH_VIEW_PROJ,
 };
 
 enum DSSRVType : unsigned int
@@ -25,8 +28,6 @@ enum DSConstBufferType : unsigned int
 enum PSConstBufferType : unsigned int
 {
 	PS_CBUFF_LIGHTBASE,
-	PS_CBUFF_POINT_LIGHT_VIEWPROJ,
-	PS_CBUFF_SPOT_LIGH_VIEW_PROJ,
 	PS_CBUFF_MODELID,
 	PS_CBUFF_MODEL_TEXTURE_FLAGS,
 	PS_CBUFF_MODEL_CONST,

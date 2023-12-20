@@ -190,6 +190,9 @@
     <Filter Include="소스 파일\Light\Extended">
       <UniqueIdentifier>{607ea119-005c-43bd-b089-8c4ad8f76b1d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shader\Shadow">
+      <UniqueIdentifier>{5988c536-7602-45eb-9448-50c8919271ca}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -543,6 +546,12 @@
     </FxCompile>
     <FxCompile Include="MirrorModelPS.hlsl">
       <Filter>Shader\Mirror</Filter>
+    </FxCompile>
+    <FxCompile Include="ShadowMapPS.hlsl">
+      <Filter>Shader\Shadow</Filter>
+    </FxCompile>
+    <FxCompile Include="ShadowMapVS.hlsl">
+      <Filter>Shader\Shadow</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

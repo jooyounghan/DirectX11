@@ -36,9 +36,11 @@ void SpotLight::Update()
 {
 	LightInterface::Update();
 
-	XMMatrix tempAffineTransform = MathematicalHelper::MakeAffineTransformation(1.f, 1.f, 1.f, sBaseLightData.)
+	const XMVECTOR& xmvDirect = sBaseLightData.xmvDirect;
+	XMVECTOR xmvUpDirect = XMVectorSet(0.f, 0.f, 1.f, 0.f);
+	xmvUpDirect = xmvUpDirect - XMVector3Dot(xmvDirect, xmvUpDirect) / XMVector3Dot(xmvDirect, xmvDirect) * xmvDirect;
 
-	XMMATRIX tempViewProj = MathematicalHelper::MakeViewProjMatrix(sBaseLightData.xmvLocation, xmvDirectDefault, xmvUpDefault, 90.f, 1.f, 0.01f, 1000.f);
+	XMMATRIX tempViewProj = MathematicalHelper::MakeViewProjMatrix(sBaseLightData.xmvLocation, sBaseLightData.xmvDirect, xmvUpDirect, 90.f, 1.f, 0.01f, 1000.f);
 	sSpotLightViewProjData.xmmViewProj = XMMatrixTranspose(tempViewProj);
 	sSpotLightViewProjData.xmmViewProjInv = XMMatrixInverse(nullptr, tempViewProj);
 	ID3D11Helper::UpdateBuffer(pDeviceContext, sSpotLightViewProjData, D3D11_MAP_WRITE_DISCARD, cpSpotLightViewProjDataBuffer.Get());
@@ -46,16 +48,24 @@ void SpotLight::Update()
 
 void SpotLight::SetConstantBuffers()
 {
+	pDeviceContext->PSSetConstantBuffers(PSConstBufferType::PS_CBUFF_LIGHTBASE, 1, cpBaseLightDataBuffer.GetAddressOf());
+	pDeviceContext->PSSetConstantBuffers(PSConstBufferType::PS_CBUFF_SPOT_LIGH_VIEW_PROJ, 1, cpSpotLightViewProjDataBuffer.GetAddressOf());
 }
 
 void SpotLight::ResetConstantBuffers()
 {
+	ID3D11Buffer* pResetBuffer = nullptr;
+	pDeviceContext->PSSetConstantBuffers(PSConstBufferType::PS_CBUFF_LIGHTBASE, 1, &pResetBuffer);
+	pDeviceContext->PSSetConstantBuffers(PSConstBufferType::PS_CBUFF_SPOT_LIGH_VIEW_PROJ, 1, &pResetBuffer);
 }
 
 void SpotLight::SetShaderResources()
 {
+	pDeviceContext->PSGetShaderResources(PSSRVType::PS_SRV_X_DEPTH, 1, cpShadowMapSRV.GetAddressOf());
 }
 
 void SpotLight::ResetShaderResources()
 {
+	ID3D11ShaderResourceView* pResetSRV = nullptr;
+	pDeviceContext->PSGetShaderResources(PSSRVType::PS_SRV_X_DEPTH, 1, &pResetSRV);
 }

@@ -15,11 +15,6 @@ TextureCube EnvDiffuseTexture   : register(t7);
 Texture2D   EnvBrdfTexture      : register(t8);
 
 
-//cbuffer LightSetsBuffer : register(b0)
-//{
-//    LightSet sLightSets[MAX_LIGHT_NUM];
-//};
-
 cbuffer ModelIDBuffer : register(b3)
 {
     ModelID sModelId;

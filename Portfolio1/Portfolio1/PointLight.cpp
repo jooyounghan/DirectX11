@@ -61,11 +61,9 @@ void PointLight::Update()
 {
 	LightInterface::Update();
 
-	XMMATRIX tempViewProj;
-
 	for (size_t idx = 0; idx < PointViewProjNum; ++idx)
 	{
-		tempViewProj = MathematicalHelper::MakeViewProjMatrix(sBaseLightData.xmvLocation, xmvDirectDefault[idx], xmvUpDefault[idx], 90.f, 1.f, 0.01f, 1000.f);
+		const XMMATRIX& tempViewProj = MathematicalHelper::MakeViewProjMatrix(sBaseLightData.xmvLocation, xmvDirectDefault[idx], xmvUpDefault[idx], 90.f, 1.f, 0.01f, 1000.f);
 		sPointLightViewProjData.xmmViewProj[idx] = XMMatrixTranspose(tempViewProj);
 		sPointLightViewProjData.xmmViewProjInv[idx] = XMMatrixInverse(nullptr, tempViewProj);
 	}
