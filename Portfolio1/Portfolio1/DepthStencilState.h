@@ -19,6 +19,7 @@ public:
 		DrawEqualOption,
 		DrawNotEqualOption,
 		DefaultOption,
+		DepthOnlyOption
 	};
 
 public:
@@ -36,6 +37,7 @@ protected:
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> cpMaskDSS;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> cpDrawEqualDSS;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> cpDrawNotEqualDSS;
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> cpDepthOnlyDSS;
 
 private:
 	static void CreateDepthStencilState(IN DepthStencilOption eDSType, IN ID3D11Device* pDevice, OUT ID3D11DepthStencilState** ppDepthStencilState);

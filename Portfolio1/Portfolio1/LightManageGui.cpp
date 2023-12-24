@@ -7,17 +7,20 @@
 
 #include "LightManageGui.h"
 #include "LightManager.h"
+#include "LightInterface.h"
 #include "DefineVar.h"
 
 using namespace ImGui;
 using namespace std;
 
-LightManageGui::LightManageGui(std::shared_ptr<LightManager>& spLightManagerIn)
-	: spLightManager(spLightManagerIn),
-	bLightTypeCheckFlag{ false, false, false },
-	pItems{ "Directional", "Point", "Spot" },
+LightManageGui::LightManageGui(LightManager* pLightManagerIn)
+	: pLightManager(pLightManagerIn),
+	bLightTypeCheckFlag{ false, false },
+	pItems{ "Point", "Spot" },
 	iSelectedIdx(0)
 {
+	pTempLightSet = new LightSet();
+	AutoZeroMemory(*pTempLightSet);
 }
 
 LightManageGui::~LightManageGui()
@@ -53,17 +56,22 @@ void LightManageGui::SetLightAddMenu()
 		{
 			const bool is_selected = (iSelectedIdx == n);
 			if (ImGui::Selectable(pItems[n], is_selected))
-				iSelectedIdx = n;
+			{
+				iSelectedIdx = n + 1;
+			}
+			else;
 
 			if (is_selected)
+			{
 				ImGui::SetItemDefaultFocus();
+			}
+			else;
 		}
 		ImGui::EndCombo();
 	}
 
-	if (iSelectedIdx == LightType::Directional)	SetDirectionalLightMenu(&LightManager::sTempLightSet);
-	else if (iSelectedIdx == LightType::Point)	SetPointLightMenu(&LightManager::sTempLightSet);
-	else if (iSelectedIdx == LightType::Spot)	SetSpotLightMenu(&LightManager::sTempLightSet);
+	if (iSelectedIdx == ELightType::PointLightType)	SetPointLightMenu();
+	else if (iSelectedIdx == ELightType::SpotLightType)	SetSpotLightMenu();
 	else;
 
 	const float& fWindowSize = ImGui::GetWindowWidth();
@@ -71,38 +79,33 @@ void LightManageGui::SetLightAddMenu()
 	{
 		switch (iSelectedIdx)
 		{
-		case LightType::Directional:
-			spLightManager->AddDirectionalLight(
-				LightManager::sTempLightSet.xmvLightColor,
-				LightManager::sTempLightSet.xmvDirection,
-				LightManager::sTempLightSet.fLightPower
+		case ELightType::PointLightType:
+			pLightManager->AddPointLight(
+				pTempLightSet->xmvLocation,
+				pTempLightSet->fLightColor,
+				pTempLightSet->fFallOffStart,
+				pTempLightSet->fFallOffEnd,
+				pTempLightSet->fLightPower
 			);
 			break;
-		case LightType::Point:
-			spLightManager->AddPointLight(
-				LightManager::sTempLightSet.xmvLocation,
-				LightManager::sTempLightSet.xmvLightColor,
-				LightManager::sTempLightSet.fFallOffStart,
-				LightManager::sTempLightSet.fFallOffEnd,
-				LightManager::sTempLightSet.fLightPower
-			);
-			break;
-		case LightType::Spot:
-			spLightManager->AddSpotLight(
-				LightManager::sTempLightSet.xmvLocation,
-				LightManager::sTempLightSet.xmvLightColor,
-				LightManager::sTempLightSet.fFallOffStart,
-				LightManager::sTempLightSet.fFallOffEnd,
-				LightManager::sTempLightSet.fLightPower,
-				LightManager::sTempLightSet.fSpotPower
+		case ELightType::SpotLightType:
+			pLightManager->AddSpotLight(
+				pTempLightSet->xmvLocation,
+				pTempLightSet->xmvDirect,
+				pTempLightSet->fLightColor,
+				pTempLightSet->fFallOffStart,
+				pTempLightSet->fFallOffEnd,
+				pTempLightSet->fLightPower,
+				pTempLightSet->fSpotPower
 			);
 			break;
 		}
 	}
 	ImGui::SameLine();
+
 	if (ImGui::Button("Reset", ImVec2(fWindowSize / 2.f, 0.f)))
 	{
-		AutoZeroMemory(LightManager::sTempLightSet);
+		AutoZeroMemory(*pTempLightSet);
 	}
 }
 
@@ -115,8 +118,8 @@ void LightManageGui::SetLightSelectorMenu()
 		ImGui::TableSetupColumn("Light Type");
 		ImGui::TableHeadersRow();
 
-		const vector<LightSet>& vLights = spLightManager->GetLights();
-		const size_t& idxSelectedLight = spLightManager->GetSelectedLightIndex();
+		const vector<LightInterface*>& vLights = pLightManager->GetLights();
+		const size_t& idxSelectedLight = pLightManager->GetSelectedLightIndex();
 		for (size_t idx = 0; idx < vLights.size(); ++idx)
 		{
 			bool IsSelected = ((idxSelectedLight - 1) == idx);
@@ -127,25 +130,21 @@ void LightManageGui::SetLightSelectorMenu()
 
 			if (IsSelected)
 			{
-				spLightManager->SetSelectedLightIndex(idx + 1);
+				pLightManager->SetSelectedLightIndex(idx + 1);
 			}
 
 			ImGui::TableSetColumnIndex(1);
 			ImGui::Text("%d", idx + 1);
 			ImGui::TableSetColumnIndex(2);
 			string strLightType;
-			switch (vLights[idx].eLightType)
+			switch (vLights[idx]->sBaseLightData.uiLightType)
 			{
-			case LightType::Directional:
-				strLightType = "Directional";
-				break;
-			case LightType::Point:
+			case ELightType::PointLightType:
 				strLightType = "Point";
 				break;
-			case LightType::Spot:
+			case ELightType::SpotLightType:
 				strLightType = "Spot";
 				break;
-			case LightType::NotALight:
 			default:
 				break;
 			}
@@ -158,17 +157,17 @@ void LightManageGui::SetLightSelectorMenu()
 
 void LightManageGui::SetLightSettingMenu()
 {
-	const vector<LightSet>& vLights = spLightManager->GetLights();
-	size_t idxSelectedLigh = spLightManager->GetSelectedLightIndex();
+	const vector<LightInterface*>& vLights = pLightManager->GetLights();
+	size_t idxSelectedLigh = pLightManager->GetSelectedLightIndex();
 	bool bLightNotSelected = ((vLights.size() == 0) || (idxSelectedLigh == 0));
 	if (!bLightNotSelected)
 	{
 		idxSelectedLigh = idxSelectedLigh - 1;
-		LightType eLightType = vLights[idxSelectedLigh].eLightType;
-		LightSet* pLightSet = const_cast<LightSet*>(&vLights[idxSelectedLigh]);
-		if (eLightType == LightType::Directional)	SetDirectionalLightMenu(pLightSet);
-		else if (eLightType == LightType::Point)	SetPointLightMenu(pLightSet);
-		else if (eLightType == LightType::Spot)		SetSpotLightMenu(pLightSet);
+		const uint32_t& uiLightType = vLights[idxSelectedLigh]->sBaseLightData.uiLightType;
+		LightInterface* pLight = vLights[idxSelectedLigh];
+
+		if (uiLightType == ELightType::PointLightType)			SetPointLightMenu();
+		else if (uiLightType == ELightType::SpotLightType)		SetSpotLightMenu();
 		else;
 	}
 	else
@@ -177,32 +176,24 @@ void LightManageGui::SetLightSettingMenu()
 	}
 }
 
-void LightManageGui::SetDirectionalLightMenu(LightSet* pLightSet)
+void LightManageGui::SetPointLightMenu()
 {
-	ImGui::PushID(pLightSet);
-	ImGui::SliderFloat3("Light Color", pLightSet->xmvLightColor.m128_f32, 0, 1.f);
-	ImGui::SliderFloat3("Light Direction", pLightSet->xmvDirection.m128_f32, -1.f, 1.f);
-	ImGui::SliderFloat("Light Power", &pLightSet->fLightPower, 1.f, 10.f);
+	ImGui::PushID("Point Light");
+	ImGui::SliderFloat3("Light Location", pTempLightSet->xmvLocation.m128_f32, -100.f, 100.f);
+	ImGui::SliderFloat3("Light Color", pTempLightSet->fLightColor, 0, 1.f);
+	ImGui::SliderFloat2("Fall Off Start/End", &pTempLightSet->fFallOffStart, 0.f, 100.f);
+	ImGui::SliderFloat("Light Power", &pTempLightSet->fLightPower, 1.f, 10.f);
 	ImGui::PopID();
 }
 
-void LightManageGui::SetPointLightMenu(LightSet* pLightSet)
+void LightManageGui::SetSpotLightMenu()
 {
-	ImGui::PushID(pLightSet);
-	ImGui::SliderFloat3("Light Location", pLightSet->xmvLocation.m128_f32, -100.f, 100.f);
-	ImGui::SliderFloat3("Light Color", pLightSet->xmvLightColor.m128_f32, 0, 1.f);
-	ImGui::SliderFloat2("Fall Off Start/End", &pLightSet->fFallOffStart, 0.f, 100.f);
-	ImGui::SliderFloat("Light Power", &pLightSet->fLightPower, 1.f, 10.f);
-	ImGui::PopID();
-}
-
-void LightManageGui::SetSpotLightMenu(LightSet* pLightSet)
-{
-	ImGui::PushID(pLightSet);
-	ImGui::SliderFloat3("Light Location", pLightSet->xmvLocation.m128_f32, -100.f, 100.f);
-	ImGui::SliderFloat3("Light Color", pLightSet->xmvLightColor.m128_f32, 0, 1.f);
-	ImGui::SliderFloat2("Fall Off Start/End", &pLightSet->fFallOffStart, 0.f, 100.f);
-	ImGui::SliderFloat("Light Power", &pLightSet->fLightPower, 1.f, 10.f);
-	ImGui::SliderFloat("Spot Power", &pLightSet->fSpotPower, 1.f, 10.f);
+	ImGui::PushID("Spot Light");
+	ImGui::SliderFloat3("Light Location", pTempLightSet->xmvLocation.m128_f32, -100.f, 100.f);
+	ImGui::SliderFloat3("Light Direction", pTempLightSet->xmvDirect.m128_f32, -100.f, 100.f);
+	ImGui::SliderFloat3("Light Color", pTempLightSet->fLightColor, 0, 1.f);
+	ImGui::SliderFloat2("Fall Off Start/End", &pTempLightSet->fFallOffStart, 0.f, 100.f);
+	ImGui::SliderFloat("Light Power", &pTempLightSet->fLightPower, 1.f, 10.f);
+	ImGui::SliderFloat("Spot Power", &pTempLightSet->fSpotPower, 1.f, 10.f);
 	ImGui::PopID();
 }

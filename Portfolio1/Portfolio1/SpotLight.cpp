@@ -5,9 +5,25 @@
 
 using namespace DirectX;
 
-SpotLight::SpotLight(ID3D11Device* pDeviceIn, ID3D11DeviceContext* pDeviceContextIn)
-	: LightInterface(pDeviceIn, pDeviceContextIn)
+SpotLight::SpotLight(
+	ID3D11Device* pDeviceIn, 
+	ID3D11DeviceContext* pDeviceContextIn,
+	const DirectX::XMVECTOR& xmvLocationIn,
+	const DirectX::XMVECTOR& xmvDirectionIn,
+	const float* pLightColorIn,
+	const float& fFallOffStartIn,
+	const float& fFallOffEndIn,
+	const float& fLightPowerIn,
+	const float& fSpotPowerIn
+)
+	: LightInterface(pDeviceIn, pDeviceContextIn, xmvLocationIn, pLightColorIn, fLightPowerIn)
 {
+	sBaseLightData.uiLightType = ELightType::SpotLightType;
+	sBaseLightData.xmvDirect = xmvDirectionIn;
+	sBaseLightData.fFallOffStart = fFallOffStartIn;
+	sBaseLightData.fFallOffEnd = fFallOffEndIn;
+	sBaseLightData.fSpotPower = fSpotPowerIn;
+
 	AutoZeroMemory(sSpotLightViewProjData);
 	ID3D11Helper::CreateBuffer(
 		pDevice, sSpotLightViewProjData,
@@ -48,24 +64,24 @@ void SpotLight::Update()
 
 void SpotLight::SetConstantBuffers()
 {
+	pDeviceContext->VSSetConstantBuffers(VSConstBufferType::VS_CBUFF_LIGHT_VIEWPROJ, 1, cpSpotLightViewProjDataBuffer.GetAddressOf());
 	pDeviceContext->PSSetConstantBuffers(PSConstBufferType::PS_CBUFF_LIGHTBASE, 1, cpBaseLightDataBuffer.GetAddressOf());
-	pDeviceContext->PSSetConstantBuffers(PSConstBufferType::PS_CBUFF_SPOT_LIGH_VIEW_PROJ, 1, cpSpotLightViewProjDataBuffer.GetAddressOf());
 }
 
 void SpotLight::ResetConstantBuffers()
 {
 	ID3D11Buffer* pResetBuffer = nullptr;
+	pDeviceContext->VSSetConstantBuffers(VSConstBufferType::VS_CBUFF_LIGHT_VIEWPROJ, 1, &pResetBuffer);
 	pDeviceContext->PSSetConstantBuffers(PSConstBufferType::PS_CBUFF_LIGHTBASE, 1, &pResetBuffer);
-	pDeviceContext->PSSetConstantBuffers(PSConstBufferType::PS_CBUFF_SPOT_LIGH_VIEW_PROJ, 1, &pResetBuffer);
 }
 
 void SpotLight::SetShaderResources()
 {
-	pDeviceContext->PSGetShaderResources(PSSRVType::PS_SRV_X_DEPTH, 1, cpShadowMapSRV.GetAddressOf());
+	pDeviceContext->PSGetShaderResources(PSSRVType::PS_SRV_DEPTH_ONLY, 1, cpShadowMapSRV.GetAddressOf());
 }
 
 void SpotLight::ResetShaderResources()
 {
 	ID3D11ShaderResourceView* pResetSRV = nullptr;
-	pDeviceContext->PSGetShaderResources(PSSRVType::PS_SRV_X_DEPTH, 1, &pResetSRV);
+	pDeviceContext->PSGetShaderResources(PSSRVType::PS_SRV_DEPTH_ONLY, 1, &pResetSRV);
 }

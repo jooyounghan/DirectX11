@@ -11,7 +11,7 @@ cbuffer ModelIDBuffer : register(b3)
     ModelID sModelId;
 };
 
-cbuffer CameraInfo : register(b8)
+cbuffer CameraInfo : register(b6)
 {
     float4 f4CameraPos;
     matrix mViewProj;

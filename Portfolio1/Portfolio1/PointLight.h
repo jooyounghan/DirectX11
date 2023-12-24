@@ -12,10 +12,18 @@ enum PointLightViewProj : size_t
 	PointViewProjNum
 };
 
-class PointLight : public LightInterface
+class PointLight : protected LightInterface
 {
 public:
-	PointLight(ID3D11Device* pDeviceIn, ID3D11DeviceContext* pDeviceContextIn);
+	PointLight(
+		ID3D11Device* pDeviceIn, 
+		ID3D11DeviceContext* pDeviceContextIn,
+		const DirectX::XMVECTOR& xmvLocationIn,
+		const float* pLightColorIn,
+		const float& fFallOffStartIn,
+		const float& fFallOffEndIn,
+		const float& fLightPowerIn
+	);
 	~PointLight();
 
 public:
@@ -25,11 +33,11 @@ public:
 protected:
 	struct
 	{
-		DirectX::XMMATRIX	xmmViewProj[PointViewProjNum];
-		DirectX::XMMATRIX	xmmViewProjInv[PointViewProjNum];
-	} sPointLightViewProjData;
+		DirectX::XMMATRIX	xmmViewProj;
+		DirectX::XMMATRIX	xmmViewProjInv;
+	} sPointLightViewProjData[PointViewProjNum];
 
-	Microsoft::WRL::ComPtr<ID3D11Buffer> cpPointLightViewProjDataBuffer;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> cpPointLightViewProjDataBuffer[PointViewProjNum];
 
 protected:
 	Microsoft::WRL::ComPtr<ID3D11Texture2D>				cpShadowMapTexture[PointViewProjNum];
@@ -39,12 +47,19 @@ protected:
 public:
 	virtual void Update();
 
-public:
-	virtual void SetConstantBuffers();
-	virtual void ResetConstantBuffers();
+private:
+	virtual void SetConstantBuffers() {};
 
 public:
-	virtual void SetShaderResources();
+	void SetConstantBuffers(const size_t& uiViewProjIdx);
+	virtual void ResetConstantBuffers();
+
+
+private:
+	virtual void SetShaderResources() {};
+	
+public:
+	void SetShaderResources(const size_t& uiViewProjIdx);
 	virtual void ResetShaderResources();
 };
 

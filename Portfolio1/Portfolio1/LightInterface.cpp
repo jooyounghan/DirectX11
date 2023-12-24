@@ -2,10 +2,21 @@
 #include "ID3D11Helper.h"
 #include "DefineVar.h"
 
-LightInterface::LightInterface(ID3D11Device* pDeviceIn, ID3D11DeviceContext* pDeviceContextIn)
+LightInterface::LightInterface(
+	ID3D11Device* pDeviceIn, 
+	ID3D11DeviceContext* pDeviceContextIn,
+	const DirectX::XMVECTOR& xmvLocationIn,
+	const float* pLightColorIn,
+	const float& fLightPowerIn
+)
 	: pDevice(pDeviceIn), pDeviceContext(pDeviceContextIn)
 {
 	AutoZeroMemory(sBaseLightData);
+
+	sBaseLightData.xmvLocation = xmvLocationIn;
+	memcpy(sBaseLightData.fLightColor, pLightColorIn, sizeof(float) * 3);
+	sBaseLightData.fLightPower = fLightPowerIn;
+
 	ID3D11Helper::CreateBuffer(
 		pDevice, sBaseLightData, 
 		D3D11_USAGE_DEFAULT, 

@@ -2,10 +2,20 @@
 
 #include "LightInterface.h"
 
-class SpotLight : public LightInterface
+class SpotLight : protected LightInterface
 {
 public:
-	SpotLight(ID3D11Device* pDeviceIn, ID3D11DeviceContext* pDeviceContextIn);
+	SpotLight(
+		ID3D11Device* pDeviceIn, 
+		ID3D11DeviceContext* pDeviceContextIn,
+		const DirectX::XMVECTOR& xmvLocationIn,
+		const DirectX::XMVECTOR& xmvDirectionIn,
+		const float* pLightColorIn,
+		const float& fFallOffStartIn,
+		const float& fFallOffEndIn,
+		const float& fLightPowerIn,
+		const float& fSpotPowerIn
+	);
 	~SpotLight();
 
 protected:

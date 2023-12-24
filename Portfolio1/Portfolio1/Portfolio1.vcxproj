@@ -151,6 +151,7 @@
     <ClCompile Include="FileLoader.cpp" />
     <ClCompile Include="PlaneModel.cpp" />
     <ClCompile Include="PointLight.cpp" />
+    <ClCompile Include="ShadowDrawer.cpp" />
     <ClCompile Include="SpotLight.cpp" />
     <ClCompile Include="StringHelper.cpp" />
     <ClCompile Include="FilterInterface.cpp" />
@@ -182,7 +183,6 @@
     <ClCompile Include="ModelManageGui.cpp" />
     <ClCompile Include="PortfolioApp.cpp" />
     <ClCompile Include="SquareModel.cpp" />
-    <ClCompile Include="TempVariable.cpp" />
     <ClCompile Include="ModelInterface.cpp" />
     <ClCompile Include="UnknownFile.cpp" />
   </ItemGroup>
@@ -205,6 +205,7 @@
     <ClInclude Include="FileManageGui.h" />
     <ClInclude Include="PlaneModel.h" />
     <ClInclude Include="PointLight.h" />
+    <ClInclude Include="ShadowDrawer.h" />
     <ClInclude Include="SpotLight.h" />
     <ClInclude Include="StringHelper.h" />
     <ClInclude Include="FilterInterface.h" />
@@ -237,7 +238,6 @@
     <ClInclude Include="ModelManageGui.h" />
     <ClInclude Include="PortfolioApp.h" />
     <ClInclude Include="SquareModel.h" />
-    <ClInclude Include="TempVariable.h" />
     <ClInclude Include="ModelInterface.h" />
     <ClInclude Include="UnknownFile.h" />
   </ItemGroup>

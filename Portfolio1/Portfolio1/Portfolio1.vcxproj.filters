@@ -193,6 +193,12 @@
     <Filter Include="Shader\Shadow">
       <UniqueIdentifier>{5988c536-7602-45eb-9448-50c8919271ca}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Drawer\ShadowDrawer">
+      <UniqueIdentifier>{03ffc7e8-c2c6-495f-a8b2-a50034e1d579}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Drawer\ShadowDrawer">
+      <UniqueIdentifier>{822ce9b7-2099-453d-8a22-7c85c26051f5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -203,9 +209,6 @@
     </ClCompile>
     <ClCompile Include="BaseApp.cpp">
       <Filter>소스 파일\Main</Filter>
-    </ClCompile>
-    <ClCompile Include="TempVariable.cpp">
-      <Filter>소스 파일\Utils</Filter>
     </ClCompile>
     <ClCompile Include="ModelID.cpp">
       <Filter>소스 파일\Model</Filter>
@@ -345,6 +348,9 @@
     <ClCompile Include="SpotLight.cpp">
       <Filter>소스 파일\Light\Extended</Filter>
     </ClCompile>
+    <ClCompile Include="ShadowDrawer.cpp">
+      <Filter>소스 파일\Drawer\ShadowDrawer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DefineVar.h">
@@ -355,9 +361,6 @@
     </ClInclude>
     <ClInclude Include="BaseApp.h">
       <Filter>헤더 파일\Main</Filter>
-    </ClInclude>
-    <ClInclude Include="TempVariable.h">
-      <Filter>헤더 파일\Utils</Filter>
     </ClInclude>
     <ClInclude Include="ModelID.h">
       <Filter>헤더 파일\Model</Filter>
@@ -505,6 +508,9 @@
     </ClInclude>
     <ClInclude Include="SpotLight.h">
       <Filter>헤더 파일\Light\Extended</Filter>
+    </ClInclude>
+    <ClInclude Include="ShadowDrawer.h">
+      <Filter>헤더 파일\Drawer\ShadowDrawer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

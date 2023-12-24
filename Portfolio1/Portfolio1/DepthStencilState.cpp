@@ -7,10 +7,11 @@ using namespace Microsoft::WRL;
 
 DepthStencilState::DepthStencilState(ID3D11Device* pDevice)
 {
-	DepthStencilState::CreateDepthStencilState(DepthStencilOption::MaskOption, pDevice, DepthStencilState::cpMaskDSS.GetAddressOf());
-	DepthStencilState::CreateDepthStencilState(DepthStencilOption::DrawEqualOption, pDevice, DepthStencilState::cpDrawEqualDSS.GetAddressOf());
-	DepthStencilState::CreateDepthStencilState(DepthStencilOption::DrawNotEqualOption, pDevice, DepthStencilState::cpDrawNotEqualDSS.GetAddressOf());
-	DepthStencilState::CreateDepthStencilState(DepthStencilOption::DefaultOption, pDevice, DepthStencilState::cpDefaultDSS.GetAddressOf());
+	DepthStencilState::CreateDepthStencilState(DepthStencilOption::MaskOption, pDevice, cpMaskDSS.GetAddressOf());
+	DepthStencilState::CreateDepthStencilState(DepthStencilOption::DrawEqualOption, pDevice, cpDrawEqualDSS.GetAddressOf());
+	DepthStencilState::CreateDepthStencilState(DepthStencilOption::DrawNotEqualOption, pDevice, cpDrawNotEqualDSS.GetAddressOf());
+	DepthStencilState::CreateDepthStencilState(DepthStencilOption::DefaultOption, pDevice, cpDefaultDSS.GetAddressOf());
+	DepthStencilState::CreateDepthStencilState(DepthStencilOption::DepthOnlyOption, pDevice, cpDepthOnlyDSS.GetAddressOf());
 }
 
 ID3D11DepthStencilState* DepthStencilState::pGetDSS(IN DepthStencilOption eDSType)
@@ -24,8 +25,11 @@ ID3D11DepthStencilState* DepthStencilState::pGetDSS(IN DepthStencilOption eDSTyp
 	case DepthStencilOption::DrawNotEqualOption:
 		return cpDrawNotEqualDSS.Get();
 	case DepthStencilOption::DefaultOption:
-	default:
 		return cpDefaultDSS.Get();
+	case DepthStencilOption::DepthOnlyOption:
+		return cpDepthOnlyDSS.Get();
+	default:
+		return nullptr;
 	}
 }
 
@@ -40,10 +44,6 @@ void DepthStencilState::CreateDepthStencilState(IN DepthStencilOption eDSType, I
 	sDepthStencilDesc.StencilEnable = TRUE;
 	sDepthStencilDesc.StencilReadMask = D3D11_DEFAULT_STENCIL_READ_MASK;
 	sDepthStencilDesc.StencilWriteMask = D3D11_DEFAULT_STENCIL_WRITE_MASK;
-	sDepthStencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
-	sDepthStencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
-	sDepthStencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-	sDepthStencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
 	sDepthStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 	sDepthStencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
 	sDepthStencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
@@ -72,6 +72,12 @@ void DepthStencilState::CreateDepthStencilState(IN DepthStencilOption eDSType, I
 		sDepthStencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
 		break;
 	case DefaultOption:
+		sDepthStencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+		sDepthStencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+		sDepthStencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+		sDepthStencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	case DepthOnlyOption:
+		sDepthStencilDesc.StencilEnable = FALSE;
 	default:
 		break;
 	}

@@ -8,13 +8,11 @@ class LightManager;
 class LightManageGui : public ManageGuiInterface
 {
 public:
-	LightManageGui(
-		std::shared_ptr<LightManager>&
-		spLightManagerIn);
+	LightManageGui(LightManager* pLightManagerIn);
 	virtual ~LightManageGui() override;
 
 private:
-	std::shared_ptr<LightManager>& spLightManager;
+	LightManager* pLightManager;
 
 public:
 	virtual void RenderGui() override;
@@ -25,15 +23,15 @@ private:
 	void SetLightSettingMenu();
 
 private:
-	void SetDirectionalLightMenu(struct LightSet* pLightSet);
-	void SetPointLightMenu(struct LightSet* pLightSet);
-	void SetSpotLightMenu(struct LightSet* pLightSet);
+	void SetPointLightMenu();
+	void SetSpotLightMenu();
 
 
 private:
-	bool		bLightTypeCheckFlag[3];
-	const char* pItems[3];
-	int			iSelectedIdx;
+	struct LightSet*	pTempLightSet;
+	bool				bLightTypeCheckFlag[2];
+	const char*			pItems[2];
+	int					iSelectedIdx;
 
 };
 

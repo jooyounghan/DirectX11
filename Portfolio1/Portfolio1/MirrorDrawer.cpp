@@ -6,6 +6,7 @@
 
 #include "CameraInterface.h"
 #include "LightManager.h"
+#include "LightInterface.h"
 #include "PBRModel.h"
 #include "CubeMapModel.h"
 #include "MirrorModel.h"
@@ -59,36 +60,40 @@ void MirrorDrawer::Draw(
 	pPBRModelDrawer->SetShader();
 	pPBRModelDrawer->SetOMState();
 
-	pLightManager->SetConstantBuffers();
+	const vector<LightInterface*>& vLights = pLightManager->GetLights();
 
-	pEnvironmentCubeMap->SetConstantBuffers();
-	pEnvironmentCubeMap->SetShaderResources();
-	
-	for (auto& pMirrorModel : vMirrorModels)
+	for (LightInterface* pLight : vLights)
 	{
-		pMirrorModel->SetConstantBuffersAsCamera();
-		pMirrorModel->OMSetRenderTargets();
+		pLight->SetConstantBuffers();
 
-		for (auto& pObjectModel : vSpModels)
+		pEnvironmentCubeMap->SetConstantBuffers();
+		pEnvironmentCubeMap->SetShaderResources();
+
+		for (auto& pMirrorModel : vMirrorModels)
 		{
-			pObjectModel->SetIAProperties();
-			pObjectModel->SetConstantBuffers();
-			pObjectModel->SetShaderResources();
+			pMirrorModel->SetConstantBuffersAsCamera();
+			pMirrorModel->OMSetRenderTargets();
 
-			pObjectModel->Render();
+			for (auto& pObjectModel : vSpModels)
+			{
+				pObjectModel->SetIAProperties();
+				pObjectModel->SetConstantBuffers();
+				pObjectModel->SetShaderResources();
 
-			pObjectModel->ResetConstantBuffers();
-			pObjectModel->ResetShaderResources();
+				pObjectModel->Render();
+
+				pObjectModel->ResetConstantBuffers();
+				pObjectModel->ResetShaderResources();
+			}
+
+			pMirrorModel->ResetConstantBuffersAsCamera();
+			pMirrorModel->ResetCamera();
 		}
+		pLight->ResetConstantBuffers();
 
-		pMirrorModel->ResetConstantBuffersAsCamera();
-		pMirrorModel->ResetCamera();
+		pEnvironmentCubeMap->ResetConstantBuffers();
+		pEnvironmentCubeMap->ResetShaderResources();
 	}
-	
-	pEnvironmentCubeMap->ResetConstantBuffers();
-	pEnvironmentCubeMap->ResetShaderResources();
-
-	pLightManager->ResetConstantBuffers();
 
 	pPBRModelDrawer->ResetDrawer();
 

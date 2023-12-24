@@ -18,21 +18,14 @@ cbuffer LightSetsBuffer : register(b2)
     float fSpotPower;
 };
 
-cbuffer PointViewProj : register(b3)
+cbuffer LightViewProj : register(b3)
 {
-    matrix mPointViewProj[6];
-    matrix mPointViewProjInvTranspose[6];
+    matrix mLightViewProj;
+    matrix mLightViewProjInvTranspose;
 };
 
-cbuffer SpotViewProj: register(b4)
-{
-    matrix mSpotViewProj;
-    matrix mSpotViewProjInvTranspose;
-};
 
-float4 main(float4 f4WorldPos : POSITION) : SV_Position
+float4 main(VertexInput input) : SV_Position
 {
-    return mul(mul(f4WorldPos, mModel), mViewProj);
+    return mul(mul(input.f4WorldPos, mModel), mLightViewProj);
 }
-
-// TODO Point의 경우에는 6개에 대한 아웃풋이 다 나와야하는데 이를 한번에 해줄 수 없음. 각각에 그려야하므로 buffer를 별도로 6개 만드는 수정 필요

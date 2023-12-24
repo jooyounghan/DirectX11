@@ -25,19 +25,32 @@ XMVECTOR PointLight::xmvUpDefault[6] =
 	XMVectorSet(0.f, 1.f, 0.f, 0.f),
 };
 
-PointLight::PointLight(ID3D11Device* pDeviceIn, ID3D11DeviceContext* pDeviceContextIn)
-	: LightInterface(pDeviceIn, pDeviceContextIn)
+PointLight::PointLight(
+	ID3D11Device* pDeviceIn, 
+	ID3D11DeviceContext* pDeviceContextIn,
+	const DirectX::XMVECTOR& xmvLocationIn,
+	const float* pLightColorIn,
+	const float& fFallOffStartIn,
+	const float& fFallOffEndIn,
+	const float& fLightPowerIn
+)
+	: LightInterface(pDeviceIn, pDeviceContextIn, xmvLocationIn, pLightColorIn, fLightPowerIn)
 {
-	sBaseLightData.uiLightType = ELightType::PointLight;
+	sBaseLightData.uiLightType = ELightType::PointLightType;
+	sBaseLightData.fFallOffStart = fFallOffStartIn;
+	sBaseLightData.fFallOffEnd = fFallOffEndIn;
 
-	AutoZeroMemory(sPointLightViewProjData);
-	ID3D11Helper::CreateBuffer(
-		pDevice, sPointLightViewProjData,
-		D3D11_USAGE_DYNAMIC, 
-		D3D11_BIND_CONSTANT_BUFFER, 
-		NULL, NULL, 
-		cpPointLightViewProjDataBuffer.GetAddressOf()
-	);
+	for (size_t idx = 0; idx < PointViewProjNum; ++idx)
+	{
+		AutoZeroMemory(sPointLightViewProjData[idx]);
+		ID3D11Helper::CreateBuffer(
+			pDevice, sPointLightViewProjData,
+			D3D11_USAGE_DYNAMIC,
+			D3D11_BIND_CONSTANT_BUFFER,
+			NULL, NULL,
+			cpPointLightViewProjDataBuffer[idx].GetAddressOf()
+		);
+	}
 
 	for (size_t idx = 0; idx < PointViewProjNum; ++idx)
 	{
@@ -64,39 +77,33 @@ void PointLight::Update()
 	for (size_t idx = 0; idx < PointViewProjNum; ++idx)
 	{
 		const XMMATRIX& tempViewProj = MathematicalHelper::MakeViewProjMatrix(sBaseLightData.xmvLocation, xmvDirectDefault[idx], xmvUpDefault[idx], 90.f, 1.f, 0.01f, 1000.f);
-		sPointLightViewProjData.xmmViewProj[idx] = XMMatrixTranspose(tempViewProj);
-		sPointLightViewProjData.xmmViewProjInv[idx] = XMMatrixInverse(nullptr, tempViewProj);
+		sPointLightViewProjData[idx].xmmViewProj = XMMatrixTranspose(tempViewProj);
+		sPointLightViewProjData[idx].xmmViewProjInv = XMMatrixInverse(nullptr, tempViewProj);
+		ID3D11Helper::UpdateBuffer(pDeviceContext, sPointLightViewProjData, D3D11_MAP_WRITE_DISCARD, cpPointLightViewProjDataBuffer[idx].Get());
 	}
-
-	ID3D11Helper::UpdateBuffer(pDeviceContext, sPointLightViewProjData, D3D11_MAP_WRITE_DISCARD, cpPointLightViewProjDataBuffer.Get());
 }
 
-void PointLight::SetConstantBuffers()
+void PointLight::SetConstantBuffers(const size_t& uiViewProjIdx)
 {
+	pDeviceContext->VSSetConstantBuffers(VSConstBufferType::VS_CBUFF_LIGHT_VIEWPROJ, 1, cpPointLightViewProjDataBuffer[uiViewProjIdx].GetAddressOf());
 	pDeviceContext->PSSetConstantBuffers(PSConstBufferType::PS_CBUFF_LIGHTBASE, 1, cpBaseLightDataBuffer.GetAddressOf());
-	pDeviceContext->PSSetConstantBuffers(PSConstBufferType::PS_CBUFF_POINT_LIGHT_VIEWPROJ, 1, cpPointLightViewProjDataBuffer.GetAddressOf());
 }
 
 void PointLight::ResetConstantBuffers()
 {
 	ID3D11Buffer* pResetBuffer = nullptr;
+	pDeviceContext->VSSetConstantBuffers(VSConstBufferType::VS_CBUFF_LIGHT_VIEWPROJ, 1, &pResetBuffer);
 	pDeviceContext->PSSetConstantBuffers(PSConstBufferType::PS_CBUFF_LIGHTBASE, 1, &pResetBuffer);
-	pDeviceContext->PSSetConstantBuffers(PSConstBufferType::PS_CBUFF_POINT_LIGHT_VIEWPROJ, 1, &pResetBuffer);
 }
 
-void PointLight::SetShaderResources()
+void PointLight::SetShaderResources(const size_t& uiViewProjIdx)
 {
-	for (size_t idx = 0; idx < PointViewProjNum; ++idx)
-	{
-		pDeviceContext->PSGetShaderResources(PSSRVType::PS_SRV_X_DEPTH + idx, 1, cpShadowMapSRV[idx].GetAddressOf());
-	}
+	// TODO 세이더의 경우에는 6개가 동시에 지정되어야하고, RTV 같은 경우에는 하나씩 지정되어야함.
+	pDeviceContext->PSGetShaderResources(PSSRVType::PS_SRV_DEPTH_ONLY, 1, cpShadowMapSRV[uiViewProjIdx].GetAddressOf());
 }
 
 void PointLight::ResetShaderResources()
 {
 	ID3D11ShaderResourceView* pResetSRV = nullptr;
-	for (size_t idx = 0; idx < PointViewProjNum; ++idx)
-	{
-		pDeviceContext->PSGetShaderResources(PSSRVType::PS_SRV_X_DEPTH + idx, 1, &pResetSRV);
-	}
+	pDeviceContext->PSGetShaderResources(PSSRVType::PS_SRV_DEPTH_ONLY, 1, &pResetSRV);
 }

@@ -5,10 +5,22 @@
 #include <wrl/client.h>
 #include <directxmath/DirectXMath.h>
 
+struct LightSet
+{
+	uint32_t			uiLightType;
+	DirectX::XMVECTOR	xmvLocation;
+	DirectX::XMVECTOR	xmvDirect;
+	float				fLightColor[3];
+	float				fFallOffStart;
+	float				fFallOffEnd;
+	float				fLightPower;
+	float				fSpotPower;
+};
+
 enum ELightType : uint32_t
 {
-	PointLight = 1,
-	SpotLight
+	PointLightType = 1,
+	SpotLightType
 };
 
 class LightInterface
@@ -16,7 +28,10 @@ class LightInterface
 public:
 	LightInterface(
 		ID3D11Device* pDeviceIn, 
-		ID3D11DeviceContext* pDeviceContextIn
+		ID3D11DeviceContext* pDeviceContextIn,
+		const DirectX::XMVECTOR& xmvLocationIn,
+		const float* pLightColorIn,
+		const float& fLightPowerIn
 	);
 	~LightInterface();
 
@@ -25,17 +40,7 @@ protected:
 	ID3D11DeviceContext* pDeviceContext;
 
 public:
-	struct
-	{
-		uint32_t			uiLightType;
-		DirectX::XMVECTOR	xmvLocation;
-		DirectX::XMVECTOR	xmvDirect;
-		float				fLightColor[3];
-		float				fFallOffStart;
-		float				fFallOffEnd;
-		float				fLightPower;
-		float				fSpotPower;
-	} sBaseLightData;
+	LightSet sBaseLightData;
 	Microsoft::WRL::ComPtr<ID3D11Buffer> cpBaseLightDataBuffer;
 
 public:
