@@ -7,7 +7,7 @@
 #include "CameraManageGui.h"
 #include "FileManageGui.h"
 
-#include "PBRModelDrawer.h"
+#include "PBRDirectLightingDrawer.h"
 #include "NormalVectorDrawer.h"
 #include "CubeMapDrawer.h"
 #include "MirrorDrawer.h"
@@ -94,16 +94,16 @@ void PortfolioApp::Init()
 
 	spCubeMap = make_shared<CubeMapModel>(cpDevice.Get(), cpDeviceContext.Get());
 
-	spLightManager = make_unique<LightManager>(cpDevice, cpDeviceContext);
+	spLightManager = make_unique<LightManager>(cpDevice.Get(), cpDeviceContext.Get());
 
 	// GUI Ãß°¡ =====================================================================================
 	vUpManageGuis.push_back(make_unique<ModelManageGui>(vSpPickableModels, spSelectedModel));
-	vUpManageGuis.push_back(make_unique<LightManageGui>(spLightManager));
+	vUpManageGuis.push_back(make_unique<LightManageGui>(spLightManager.get()));
 	vUpManageGuis.push_back(make_unique<SettingManageGui>(cpDevice.Get(), cpDeviceContext.Get(), bIsNormalVectorDraw, bIsWireFrameDraw, spCubeMap));
 	vUpManageGuis.push_back(make_unique<CameraManageGui>(spMainCamera));
 	vUpManageGuis.push_back(make_unique<FileManageGui>(cpDevice, cpDeviceContext));
 	// ==============================================================================================
-	upModelDrawer = make_unique<PBRModelDrawer>(cpDevice.Get(), cpDeviceContext.Get());
+	upModelDrawer = make_unique<PBRDirectLightingDrawer>(cpDevice.Get(), cpDeviceContext.Get());
 	upNormalVectorDrawer = make_unique<NormalVectorDrawer>(cpDevice.Get(), cpDeviceContext.Get());
 	upCubeMapDrawer = make_unique<CubeMapDrawer>(cpDevice.Get(), cpDeviceContext.Get());
 	upMirrorDrawer = make_unique<MirrorDrawer>(cpDevice.Get(), cpDeviceContext.Get());
@@ -131,7 +131,7 @@ void PortfolioApp::Render()
 		pMirror->WipeOut();
 	}
 
-	upModelDrawer->Draw(spMainCamera.get(), spLightManager.get(), vSpPBRModels, spSelectedModel, spCubeMap.get());
+	upModelDrawer->Draw(spMainCamera.get(), spLightManager.get(), vSpPBRModels);
 
 	if (bIsNormalVectorDraw)
 	{
@@ -235,6 +235,7 @@ void PortfolioApp::ResizeSwapChain(const UINT& uiWidthIn, const UINT& uiHeightIn
 void PortfolioApp::CheckMouseHoveredModel()
 {
 	unsigned int uiSelectedModelIDAsRGBA = spMainCamera->GetPointedModelIDAsRGBA();
+	cout << uiSelectedModelIDAsRGBA << endl;
 	auto findResult = find_if(
 		vSpPickableModels.begin(), 
 		vSpPickableModels.end(), 

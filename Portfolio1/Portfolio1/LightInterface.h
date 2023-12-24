@@ -17,7 +17,7 @@ struct LightSet
 	float				fSpotPower;
 };
 
-enum ELightType : uint32_t
+enum ELightType : size_t
 {
 	PointLightType = 1,
 	SpotLightType

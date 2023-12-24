@@ -1,7 +1,7 @@
 #include "MirrorDrawer.h"
 #include "ID3D11Helper.h"
 
-#include "PBRModelDrawer.h"
+#include "PBRDirectLightingDrawer.h"
 #include "CubeMapDrawer.h"
 
 #include "CameraInterface.h"
@@ -44,7 +44,7 @@ MirrorDrawer::~MirrorDrawer()
 void MirrorDrawer::Draw(
 	CameraInterface* pCamera,
 	LightManager* pLightManager,
-	PBRModelDrawer* pPBRModelDrawer,
+	PBRDirectLightingDrawer* pPBRDirectLightingDrawer,
 	const std::vector<std::shared_ptr<PBRModel>>& vSpModels,
 	CubeMapDrawer* pCubeMapDrawer,
 	CubeMapModel* pEnvironmentCubeMap,
@@ -56,9 +56,9 @@ void MirrorDrawer::Draw(
 	
 	// Mirror의 ViewProj를 통하여 반사된 물체를 그린다.
 	// 거울의 Render Target에 물체를 그린다.
-	pPBRModelDrawer->SetIAInputLayer();
-	pPBRModelDrawer->SetShader();
-	pPBRModelDrawer->SetOMState();
+	pPBRDirectLightingDrawer->SetIAInputLayer();
+	pPBRDirectLightingDrawer->SetShader();
+	pPBRDirectLightingDrawer->SetOMState();
 
 	const vector<LightInterface*>& vLights = pLightManager->GetLights();
 
@@ -95,7 +95,7 @@ void MirrorDrawer::Draw(
 		pEnvironmentCubeMap->ResetShaderResources();
 	}
 
-	pPBRModelDrawer->ResetDrawer();
+	pPBRDirectLightingDrawer->ResetDrawer();
 
 
 	// Mirror의 ViewProj를 통하여 반사된 큐브맵를 그린다.

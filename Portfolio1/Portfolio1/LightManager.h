@@ -23,11 +23,14 @@ protected:
 	size_t									idxSelectedLight;
 
 public:
+	void Update();
+
+public:
 	const size_t& GetSelectedLightIndex();
 	void SetSelectedLightIndex(const size_t& index);
 
 public:
-	inline const std::vector<LightInterface*>& GetLights() { return vLights; }
+	inline const std::vector<class LightInterface*>& GetLights() { return vLights; }
 
 	void AddPointLight(
 		IN const DirectX::XMVECTOR& xmvLocationIn,

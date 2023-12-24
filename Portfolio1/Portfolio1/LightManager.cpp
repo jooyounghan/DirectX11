@@ -23,6 +23,14 @@ LightManager::~LightManager()
 	}
 }
 
+void LightManager::Update()
+{
+	for (LightInterface* pLight : vLights)
+	{
+		pLight->Update();
+	}
+}
+
 const size_t& LightManager::GetSelectedLightIndex() {
 	return idxSelectedLight;
 }

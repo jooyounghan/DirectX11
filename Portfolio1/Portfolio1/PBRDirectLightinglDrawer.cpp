@@ -1,13 +1,16 @@
-#include "PBRModelDrawer.h"
+#include "PBRDirectLightingDrawer.h"
 
 #include "CameraInterface.h"
+
 #include "LightManager.h"
+#include "LightInterface.h"
+
 #include "PBRModel.h"
-#include "CubeMapModel.h"
 
 #include "DepthStencilState.h"
 #include "SamplerState.h"
 #include "RasterizationState.h"
+#include "BlendState.h"
 
 #include "ID3D11Helper.h"
 #include "ShaderTypeEnum.h"
@@ -15,7 +18,7 @@
 using namespace std;
 using namespace Microsoft::WRL;
 
-PBRModelDrawer::PBRModelDrawer(
+PBRDirectLightingDrawer::PBRDirectLightingDrawer(
 	ID3D11Device* pDeviceIn, 
 	ID3D11DeviceContext* pDeviceContextIn
 )
@@ -30,26 +33,27 @@ PBRModelDrawer::PBRModelDrawer(
 	ID3D11Helper::CreateVSInputLayOut(pDeviceIn, L"BaseModelVS.hlsl", vInputElemDesc, cpBaseVertexShader.GetAddressOf(), cpBaseInputLayout.GetAddressOf());
 	ID3D11Helper::CreateHS(pDeviceIn, L"BaseModelHS.hlsl", cpBaseHullShader.GetAddressOf());
 	ID3D11Helper::CreateDS(pDeviceIn, L"BaseModelDS.hlsl", cpBaseDomainShader.GetAddressOf());
-	ID3D11Helper::CreatePS(pDeviceIn, L"BaseModelPS.hlsl", cpBasePixelShader.GetAddressOf());
+	ID3D11Helper::CreatePS(pDevice, L"BaseModelDLPS.hlsl", cpBaseDLPS.GetAddressOf());
+
 	ID3D11Helper::CreatePS(pDevice, L"OutlinerPS.hlsl", cpOutlinerPixelShader.GetAddressOf());
 }
 
-PBRModelDrawer::~PBRModelDrawer()
+PBRDirectLightingDrawer::~PBRDirectLightingDrawer()
 {
 }
 
-void PBRModelDrawer::SetIAInputLayer()
+void PBRDirectLightingDrawer::SetIAInputLayer()
 {
 	pDeviceContext->IASetInputLayout(cpBaseInputLayout.Get());
 	pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
 }
 
-void PBRModelDrawer::SetShader()
+void PBRDirectLightingDrawer::SetShader()
 {
 	pDeviceContext->VSSetShader(cpBaseVertexShader.Get(), 0, 0);
 	pDeviceContext->HSSetShader(cpBaseHullShader.Get(), 0, 0);
 	pDeviceContext->DSSetShader(cpBaseDomainShader.Get(), 0, 0);
-	pDeviceContext->PSSetShader(cpBasePixelShader.Get(), 0, 0);
+	pDeviceContext->PSSetShader(cpBaseDLPS.Get(), 0, 0);
 
 	SamplerState& samplerState = SamplerState::GetInstance(pDevice);
 
@@ -60,13 +64,13 @@ void PBRModelDrawer::SetShader()
 	pDeviceContext->PSSetSamplers(SamplerType::CLAMP_SAMPLER, 1, samplerState.GetAddressOfClampSampler());
 }
 
-void PBRModelDrawer::SetOMState()
+void PBRDirectLightingDrawer::SetOMState()
 {
 	DepthStencilState& depthStencilState = DepthStencilState::GetInstance(pDevice);
 	pDeviceContext->OMSetDepthStencilState(depthStencilState.pGetDSS(DepthStencilState::DefaultOption), 0);
 }
 
-void PBRModelDrawer::ResetDrawer()
+void PBRDirectLightingDrawer::ResetDrawer()
 {
 	pDeviceContext->PSSetShader(nullptr, 0, 0);
 	pDeviceContext->DSSetShader(nullptr, 0, 0);
@@ -80,21 +84,28 @@ void PBRModelDrawer::ResetDrawer()
 	pDeviceContext->PSSetSamplers(SamplerType::WRAP_SAMPLER, 1, &pResetSampler);
 	pDeviceContext->PSSetSamplers(SamplerType::CLAMP_SAMPLER, 1, &pResetSampler);
 
+	BlendState& blendState = BlendState::GetInstance(pDevice);
+	ID3D11BlendState* pDefaultBS = blendState.pGetBS(BlendStateOption::DefaultBlendState);
+	pDeviceContext->OMSetBlendState(pDefaultBS, BlendState::DefaultBlendFactor, 0xffffffff);
+
 	DepthStencilState& depthStencilState = DepthStencilState::GetInstance(pDevice);
 	pDeviceContext->OMSetDepthStencilState(depthStencilState.pGetDSS(DepthStencilState::DefaultOption), 0);
 }
 
 
-void PBRModelDrawer::Draw(
+void PBRDirectLightingDrawer::Draw(
 	CameraInterface* pCamera,
 	LightManager* pLightManager,
-	const std::vector<std::shared_ptr<PBRModel>> vSpModels,
-	const shared_ptr<PickableModelInterface> spSelectedModels,
-	CubeMapModel* pEnvironmentCubeMap
+	const std::vector<std::shared_ptr<PBRModel>> vSpModels
 )
 {
+	BlendState& blendState = BlendState::GetInstance(pDevice);
+	ID3D11BlendState* pAddBlendState = blendState.pGetBS(BlendStateOption::AddBlendState);
+
 	RasterizationState& rasterizationState = RasterizationState::GetInstance(pDevice, pDeviceContext);
+
 	pDeviceContext->RSSetState(rasterizationState.GetAppliedRS());
+	pDeviceContext->OMSetBlendState(pAddBlendState, BlendState::DefaultBlendFactor, 0xfffffffff);
 
 	SetIAInputLayer();
 	SetShader();
@@ -103,14 +114,13 @@ void PBRModelDrawer::Draw(
 	pCamera->SetConstantBuffers();
 	pCamera->OMSetRenderTargets();
 
-	pLightManager->SetConstantBuffers();
+	const vector<LightInterface*>& pLights = pLightManager->GetLights();
 
-	pEnvironmentCubeMap->SetConstantBuffers();
-	pEnvironmentCubeMap->SetShaderResources();
-
-	for (auto& pObjectModel : vSpModels)
+	for (LightInterface* pLight : pLights)
 	{
-		if (pObjectModel != spSelectedModels)
+		pLight->SetConstantBuffers();
+
+		for (auto& pObjectModel : vSpModels)
 		{
 			pObjectModel->SetIAProperties();
 			pObjectModel->SetConstantBuffers();
@@ -121,35 +131,9 @@ void PBRModelDrawer::Draw(
 			pObjectModel->ResetConstantBuffers();
 			pObjectModel->ResetShaderResources();
 		}
+
+		pLight->ResetConstantBuffers();
 	}
-
-	if (spSelectedModels)
-	{
-		DepthStencilState& depthStencilState = DepthStencilState::GetInstance(pDevice);
-		pDeviceContext->OMSetDepthStencilState(depthStencilState.pGetDSS(DepthStencilState::MaskOption), 1);
-
-		spSelectedModels->SetIAProperties();
-		spSelectedModels->SetConstantBuffers();
-		spSelectedModels->SetShaderResources();
-
-		spSelectedModels->Render();
-
-		pDeviceContext->OMSetDepthStencilState(depthStencilState.pGetDSS(DepthStencilState::DrawNotEqualOption), 1);
-		pDeviceContext->PSSetShader(cpOutlinerPixelShader.Get(), 0, 0);
-
-		spSelectedModels->ScaleUp(0.1f, 0.1f, 0.1f);
-		spSelectedModels->Render();
-		spSelectedModels->ScaleUp(-0.1f, -0.1f, -0.1f);
-
-		spSelectedModels->ResetConstantBuffers();
-		spSelectedModels->ResetShaderResources();
-	}
-
-
-	pEnvironmentCubeMap->ResetConstantBuffers();
-	pEnvironmentCubeMap->ResetShaderResources();
-
-	pLightManager->ResetConstantBuffers();
 
 	pCamera->ResetCamera();
 	ResetDrawer();

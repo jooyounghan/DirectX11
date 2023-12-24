@@ -5,7 +5,7 @@ SamplerState ClampSampler : register(s1);
 
 Texture2D HeightTexture : register(t0);
 
-cbuffer ViewProjMatrix : register(b0)
+cbuffer CameraInfo : register(b0)
 {
     float4 f4CameraPos;
     matrix mViewProj;

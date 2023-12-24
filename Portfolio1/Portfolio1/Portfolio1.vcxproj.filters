@@ -294,7 +294,7 @@
     <ClCompile Include="CubeMapModel.cpp">
       <Filter>소스 파일\Model\CubeMap</Filter>
     </ClCompile>
-    <ClCompile Include="PBRModelDrawer.cpp">
+    <ClCompile Include="PBRDirectLightinglDrawer.cpp">
       <Filter>소스 파일\Drawer\PBRDrawer\Extended</Filter>
     </ClCompile>
     <ClCompile Include="NormalVectorDrawer.cpp">
@@ -350,6 +350,9 @@
     </ClCompile>
     <ClCompile Include="ShadowDrawer.cpp">
       <Filter>소스 파일\Drawer\ShadowDrawer</Filter>
+    </ClCompile>
+    <ClCompile Include="BlendState.cpp">
+      <Filter>소스 파일\Global</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -479,7 +482,7 @@
     <ClInclude Include="CubeMapDrawer.h">
       <Filter>헤더 파일\Drawer\LightlessDrawer\Extended</Filter>
     </ClInclude>
-    <ClInclude Include="PBRModelDrawer.h">
+    <ClInclude Include="PBRDirectLightingDrawer.h">
       <Filter>헤더 파일\Drawer\PBRDrawer</Filter>
     </ClInclude>
     <ClInclude Include="MirrorDrawer.h">
@@ -512,6 +515,9 @@
     <ClInclude Include="ShadowDrawer.h">
       <Filter>헤더 파일\Drawer\ShadowDrawer</Filter>
     </ClInclude>
+    <ClInclude Include="BlendState.h">
+      <Filter>헤더 파일\Global</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="BaseModelDS.hlsl">
@@ -520,7 +526,7 @@
     <FxCompile Include="BaseModelHS.hlsl">
       <Filter>Shader\BaseModel</Filter>
     </FxCompile>
-    <FxCompile Include="BaseModelPS.hlsl">
+    <FxCompile Include="BaseModelDLPS.hlsl">
       <Filter>Shader\BaseModel</Filter>
     </FxCompile>
     <FxCompile Include="BaseModelVS.hlsl">
@@ -558,6 +564,9 @@
     </FxCompile>
     <FxCompile Include="ShadowMapVS.hlsl">
       <Filter>Shader\Shadow</Filter>
+    </FxCompile>
+    <FxCompile Include="BaseModelALPS.hlsl">
+      <Filter>Shader\BaseModel</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

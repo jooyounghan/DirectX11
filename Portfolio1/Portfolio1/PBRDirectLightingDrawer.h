@@ -8,25 +8,22 @@ class CameraInterface;
 class LightManager;
 class PBRModel;
 class PickableModelInterface;
-class CubeMapModel;
 
-class PBRModelDrawer : public DrawerInterface
+class PBRDirectLightingDrawer : public DrawerInterface
 {
 	friend class MirrorDrawer;
 
 public:
-	PBRModelDrawer(
+	PBRDirectLightingDrawer(
 		ID3D11Device* pDeviceIn,
 		ID3D11DeviceContext* pDeviceContextIn);
-	virtual ~PBRModelDrawer();
+	virtual ~PBRDirectLightingDrawer();
 
 public:
 	void Draw(
 		CameraInterface* pCamera,
 		LightManager* pLightManager,
-		const std::vector<std::shared_ptr<PBRModel>> vSpModels,
-		const std::shared_ptr<PickableModelInterface> spSelectedModels,
-		CubeMapModel* pEnvironmentCubeMap
+		const std::vector<std::shared_ptr<PBRModel>> vSpModels
 	);
 
 protected:
@@ -46,7 +43,7 @@ protected:
 	Microsoft::WRL::ComPtr<ID3D11VertexShader>	cpBaseVertexShader;
 
 protected:
-	Microsoft::WRL::ComPtr<ID3D11PixelShader>	cpBasePixelShader;
+	Microsoft::WRL::ComPtr<ID3D11PixelShader>	cpBaseDLPS;
 
 protected:
 	Microsoft::WRL::ComPtr<ID3D11HullShader>	cpBaseHullShader;

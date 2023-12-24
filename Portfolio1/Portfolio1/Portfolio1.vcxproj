@@ -138,6 +138,7 @@
     <ClCompile Include="BaseApp.cpp" />
     <ClCompile Include="BlendFilter.cpp" />
     <ClCompile Include="BlendFilterInterface.cpp" />
+    <ClCompile Include="BlendState.cpp" />
     <ClCompile Include="BloomCamera.cpp" />
     <ClCompile Include="BloomFilter.cpp" />
     <ClCompile Include="CameraInterface.cpp" />
@@ -173,7 +174,7 @@
     <ClCompile Include="ModelTextureFile.cpp" />
     <ClCompile Include="FileManageGui.cpp" />
     <ClCompile Include="ID3D11Helper.cpp" />
-    <ClCompile Include="PBRModelDrawer.cpp" />
+    <ClCompile Include="PBRDirectLightinglDrawer.cpp" />
     <ClCompile Include="LightManageGui.cpp" />
     <ClCompile Include="LightManager.cpp" />
     <ClCompile Include="main.cpp" />
@@ -190,6 +191,7 @@
     <ClInclude Include="BaseApp.h" />
     <ClInclude Include="BlendFilter.h" />
     <ClInclude Include="BlendFilterInterface.h" />
+    <ClInclude Include="BlendState.h" />
     <ClInclude Include="BloomCamera.h" />
     <ClInclude Include="BloomFilter.h" />
     <ClInclude Include="CameraInterface.h" />
@@ -229,7 +231,7 @@
     <ClInclude Include="DepthStencilState.h" />
     <ClInclude Include="ModelTextureFile.h" />
     <ClInclude Include="ID3D11Helper.h" />
-    <ClInclude Include="PBRModelDrawer.h" />
+    <ClInclude Include="PBRDirectLightingDrawer.h" />
     <ClInclude Include="LightManageGui.h" />
     <ClInclude Include="LightManager.h" />
     <ClInclude Include="MathematicalHelper.h" />
@@ -242,6 +244,12 @@
     <ClInclude Include="UnknownFile.h" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="BaseModelALPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
     <FxCompile Include="BaseModelDS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Domain</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
@@ -262,7 +270,7 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Hull</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
-    <FxCompile Include="BaseModelPS.hlsl">
+    <FxCompile Include="BaseModelDLPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>

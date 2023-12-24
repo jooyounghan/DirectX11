@@ -57,7 +57,7 @@ void LightManageGui::SetLightAddMenu()
 			const bool is_selected = (iSelectedIdx == n);
 			if (ImGui::Selectable(pItems[n], is_selected))
 			{
-				iSelectedIdx = n + 1;
+				iSelectedIdx = n;
 			}
 			else;
 
