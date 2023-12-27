@@ -380,7 +380,7 @@ void ID3D11Helper::CreateDepthStencilView(IN ID3D11Device* pDevice, IN const UIN
 
 	if (FAILED(hResult))
 	{
-		Console("Depth Stencil Shader Resource View를 생성하는데 실패하였습니다.");
+		Console("Depth Stencil View를 생성하는데 실패하였습니다.");
 		return;
 	}
 }
@@ -391,12 +391,40 @@ void ID3D11Helper::CreateDepthStencilView(IN ID3D11Device* pDevice, IN ID3D11Tex
 
 	if (FAILED(hResult))
 	{
-		Console("Depth Stencil Shader Resource View를 생성하는데 실패하였습니다.");
+		Console("Depth Stencil View를 생성하는데 실패하였습니다.");
 		return;
 	}
 }
 
+void ID3D11Helper::CreateDepthOnlyViews(IN ID3D11Device* pDevice, IN ID3D11Texture2D* pDepthStencilTexture2D, OUT ID3D11ShaderResourceView** ppShaderResourceView, OUT ID3D11DepthStencilView** ppDepthStencilView)
+{
+	D3D11_DEPTH_STENCIL_VIEW_DESC sDSVDesc;
+	ZeroMemory(&sDSVDesc, sizeof(sDSVDesc));
+	sDSVDesc.Format = DXGI_FORMAT_D32_FLOAT;
+	sDSVDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 
+	HRESULT hResult = pDevice->CreateDepthStencilView(pDepthStencilTexture2D, &sDSVDesc, ppDepthStencilView);
+
+	if (FAILED(hResult))
+	{
+		Console("Depth Only DSV를 생성하는데 실패하였습니다.");
+		return;
+	}
+
+	D3D11_SHADER_RESOURCE_VIEW_DESC sSRVDesc;
+	ZeroMemory(&sSRVDesc, sizeof(sSRVDesc));
+	sSRVDesc.Format = DXGI_FORMAT_R32_FLOAT;
+	sSRVDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	sSRVDesc.Texture2D.MipLevels = 1;
+
+	hResult = pDevice->CreateShaderResourceView(pDepthStencilTexture2D, &sSRVDesc, ppShaderResourceView);
+
+	if (FAILED(hResult))
+	{
+		Console("Depth Only SRV를 생성하는데 실패하였습니다.");
+		return;
+	}
+}
 
 void ID3D11Helper::CreateRasterizerState(IN ID3D11Device* pDevice, IN D3D11_FILL_MODE eFillMode, IN D3D11_CULL_MODE eCullMode, IN BOOL bMultiSampling, OUT ID3D11RasterizerState** ppRasterizerState)
 {

@@ -19,7 +19,6 @@ public:
 
 public:
 	void Draw(
-		ELightType eLightType,
 		LightInterface* pLightInterface,
 		const std::vector<std::shared_ptr<PickableModelInterface>> spSelectedModels
 	);

@@ -40,7 +40,7 @@ void DepthStencilState::CreateDepthStencilState(IN DepthStencilOption eDSType, I
 
 	sDepthStencilDesc.DepthEnable = TRUE;
 	sDepthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-	sDepthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
+	sDepthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
 	sDepthStencilDesc.StencilEnable = TRUE;
 	sDepthStencilDesc.StencilReadMask = D3D11_DEFAULT_STENCIL_READ_MASK;
 	sDepthStencilDesc.StencilWriteMask = D3D11_DEFAULT_STENCIL_WRITE_MASK;

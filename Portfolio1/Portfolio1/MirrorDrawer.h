@@ -22,7 +22,7 @@ public:
 	void Draw(
 		CameraInterface* pCamera,
 		LightManager* pLightManager,
-		class PBRDirectLightingDrawer* pPBRDirectLightingDrawer,
+		class PBRSpotLightDrawer* pPBRDirectLightingDrawer,
 		const std::vector<std::shared_ptr<PBRModel>>& vSpModels,
 		class CubeMapDrawer* pCubeMapDrawer,
 		CubeMapModel* pEnvironmentCubeMap,

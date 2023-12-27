@@ -28,7 +28,6 @@ ShadowDrawer::~ShadowDrawer()
 }
 
 void ShadowDrawer::Draw(
-	ELightType eLightType,
 	LightInterface* pLightInterface, 
 	const vector<shared_ptr<PickableModelInterface>> spSelectedModels
 )
@@ -37,7 +36,7 @@ void ShadowDrawer::Draw(
 	SetShader();
 	SetOMState();
 
-	if (eLightType == ELightType::PointLightType)
+	if (pLightInterface->sBaseLightData.uiLightType == ELightType::PointLightType)
 	{
 		PointLight* pPointLight = (PointLight*)pLightInterface;
 		for (size_t idx = 0; idx < PointLightViewProj::PointViewProjNum; ++idx)
@@ -50,7 +49,7 @@ void ShadowDrawer::Draw(
 			pPointLight->ResetConstantBuffers();
 		}
 	}
-	else if (eLightType == ELightType::SpotLightType)
+	else if (pLightInterface->sBaseLightData.uiLightType == ELightType::SpotLightType)
 	{
 		SpotLight* pSpotLight = (SpotLight*)pLightInterface;
 		pSpotLight->SetConstantBuffers();

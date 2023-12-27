@@ -294,7 +294,7 @@
     <ClCompile Include="CubeMapModel.cpp">
       <Filter>소스 파일\Model\CubeMap</Filter>
     </ClCompile>
-    <ClCompile Include="PBRDirectLightinglDrawer.cpp">
+    <ClCompile Include="PBRSpotLightlDrawer.cpp">
       <Filter>소스 파일\Drawer\PBRDrawer\Extended</Filter>
     </ClCompile>
     <ClCompile Include="NormalVectorDrawer.cpp">
@@ -353,6 +353,12 @@
     </ClCompile>
     <ClCompile Include="BlendState.cpp">
       <Filter>소스 파일\Global</Filter>
+    </ClCompile>
+    <ClCompile Include="PBRPointLightDrawer.cpp">
+      <Filter>소스 파일\Drawer\PBRDrawer\Extended</Filter>
+    </ClCompile>
+    <ClCompile Include="APBRDirectLightDrawer.cpp">
+      <Filter>소스 파일\Drawer\PBRDrawer\Extended</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -482,7 +488,7 @@
     <ClInclude Include="CubeMapDrawer.h">
       <Filter>헤더 파일\Drawer\LightlessDrawer\Extended</Filter>
     </ClInclude>
-    <ClInclude Include="PBRDirectLightingDrawer.h">
+    <ClInclude Include="PBRSpotLightDrawer.h">
       <Filter>헤더 파일\Drawer\PBRDrawer</Filter>
     </ClInclude>
     <ClInclude Include="MirrorDrawer.h">
@@ -518,6 +524,12 @@
     <ClInclude Include="BlendState.h">
       <Filter>헤더 파일\Global</Filter>
     </ClInclude>
+    <ClInclude Include="PBRPointLightDrawer.h">
+      <Filter>헤더 파일\Drawer\PBRDrawer</Filter>
+    </ClInclude>
+    <ClInclude Include="APBRDirectLightDrawer.h">
+      <Filter>헤더 파일\Drawer\PBRDrawer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="BaseModelDS.hlsl">
@@ -526,7 +538,7 @@
     <FxCompile Include="BaseModelHS.hlsl">
       <Filter>Shader\BaseModel</Filter>
     </FxCompile>
-    <FxCompile Include="BaseModelDLPS.hlsl">
+    <FxCompile Include="BaseModelWithPointLight.hlsl">
       <Filter>Shader\BaseModel</Filter>
     </FxCompile>
     <FxCompile Include="BaseModelVS.hlsl">
@@ -566,6 +578,9 @@
       <Filter>Shader\Shadow</Filter>
     </FxCompile>
     <FxCompile Include="BaseModelALPS.hlsl">
+      <Filter>Shader\BaseModel</Filter>
+    </FxCompile>
+    <FxCompile Include="BaseModelWithSpotLight.hlsl">
       <Filter>Shader\BaseModel</Filter>
     </FxCompile>
   </ItemGroup>

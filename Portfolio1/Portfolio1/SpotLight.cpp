@@ -29,7 +29,7 @@ SpotLight::SpotLight(
 		pDevice, sSpotLightViewProjData,
 		D3D11_USAGE_DYNAMIC,
 		D3D11_BIND_CONSTANT_BUFFER,
-		NULL, NULL,
+		D3D11_CPU_ACCESS_WRITE, NULL,
 		cpSpotLightViewProjDataBuffer.GetAddressOf()
 	);
 
@@ -40,8 +40,7 @@ SpotLight::SpotLight(
 		DXGI_FORMAT_R32_TYPELESS,
 		cpShadowMapTexture.GetAddressOf()
 	);
-	ID3D11Helper::CreateDepthStencilView(pDevice, cpShadowMapTexture.Get(), cpShadowMapDSV.GetAddressOf());
-	ID3D11Helper::CreateShaderResoureView(pDevice, cpShadowMapTexture.Get(), cpShadowMapSRV.GetAddressOf());
+	ID3D11Helper::CreateDepthOnlyViews(pDevice, cpShadowMapTexture.Get(), cpShadowMapSRV.GetAddressOf(), cpShadowMapDSV.GetAddressOf());
 }
 
 SpotLight::~SpotLight()
@@ -77,11 +76,11 @@ void SpotLight::ResetConstantBuffers()
 
 void SpotLight::SetShaderResources()
 {
-	pDeviceContext->PSGetShaderResources(PSSRVType::PS_SRV_DEPTH_ONLY, 1, cpShadowMapSRV.GetAddressOf());
+	pDeviceContext->PSGetShaderResources(PSSRVType::PS_SRV_DEPTH_ONLY_OR_X, 1, cpShadowMapSRV.GetAddressOf());
 }
 
 void SpotLight::ResetShaderResources()
 {
 	ID3D11ShaderResourceView* pResetSRV = nullptr;
-	pDeviceContext->PSGetShaderResources(PSSRVType::PS_SRV_DEPTH_ONLY, 1, &pResetSRV);
+	pDeviceContext->PSGetShaderResources(PSSRVType::PS_SRV_DEPTH_ONLY_OR_X, 1, &pResetSRV);
 }

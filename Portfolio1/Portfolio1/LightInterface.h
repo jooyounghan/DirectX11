@@ -19,7 +19,7 @@ struct LightSet
 
 enum ELightType : size_t
 {
-	PointLightType = 1,
+	PointLightType,
 	SpotLightType
 };
 

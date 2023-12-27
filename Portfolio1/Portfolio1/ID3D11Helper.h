@@ -124,6 +124,13 @@ public:
 		OUT ID3D11DepthStencilView** ppDepthStencilView
 	);
 
+	static void CreateDepthOnlyViews(
+		IN ID3D11Device* pDevice,
+		IN	ID3D11Texture2D* pDepthStencilTexture2D,
+		OUT ID3D11ShaderResourceView** ppShaderResourceView,
+		OUT ID3D11DepthStencilView** ppDepthStencilView
+	);
+
 	static void CreateRasterizerState(
 		IN ID3D11Device* pDevice,
 		IN D3D11_FILL_MODE eFillMode,

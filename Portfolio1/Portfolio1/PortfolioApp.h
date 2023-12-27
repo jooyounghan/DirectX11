@@ -40,7 +40,9 @@ class ManageGuiInterface;
 
 class LightManager;
 
-class PBRDirectLightingDrawer;
+class PBRPointLightDrawer;
+class PBRSpotLightDrawer;
+class ShadowDrawer;
 class ModelOutlineDrawer;
 class NormalVectorDrawer;
 class CubeMapDrawer;
@@ -98,7 +100,9 @@ private:
 	std::shared_ptr<CubeMapModel>					spCubeMap;
 
 private:
-	std::unique_ptr<PBRDirectLightingDrawer>				upModelDrawer;
+	std::unique_ptr<PBRPointLightDrawer>		upPointLightModelDrawer;
+	std::unique_ptr<PBRSpotLightDrawer>			upSpotLightModelDrawer;
+	std::unique_ptr<ShadowDrawer>				upShadowDrawer;
 	std::unique_ptr<NormalVectorDrawer>			upNormalVectorDrawer;
 	std::unique_ptr<CubeMapDrawer>				upCubeMapDrawer;
 	std::unique_ptr<MirrorDrawer>				upMirrorDrawer;

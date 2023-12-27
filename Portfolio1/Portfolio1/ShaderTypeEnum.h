@@ -51,7 +51,12 @@ enum PSSRVType : unsigned int
 	PS_SRV_FILTER1,
 	PS_SRV_FILTER2,
 	PS_SRV_MIRROR_SELF,
-	PS_SRV_DEPTH_ONLY,
+	PS_SRV_DEPTH_ONLY_OR_X,
+	PS_SRV_NEG_X,
+	PS_SRV_Y,
+	PS_SRV_NEG_Y,
+	PS_SRV_Z,
+	PS_SRV_NEG_Z,
 };
 
 enum GSConstBufferType : unsigned int

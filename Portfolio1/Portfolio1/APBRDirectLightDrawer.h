@@ -5,50 +5,41 @@
 #include <vector>
 
 class CameraInterface;
-class LightManager;
+class LightInterface;
 class PBRModel;
 class PickableModelInterface;
 
-class PBRDirectLightingDrawer : public DrawerInterface
+class APBRDirectLightDrawer : public DrawerInterface
 {
 	friend class MirrorDrawer;
 
 public:
-	PBRDirectLightingDrawer(
+	APBRDirectLightDrawer(
 		ID3D11Device* pDeviceIn,
 		ID3D11DeviceContext* pDeviceContextIn);
-	virtual ~PBRDirectLightingDrawer();
+	virtual ~APBRDirectLightDrawer();
+
+protected:
+	virtual void SetIAInputLayer() override;
+	virtual void SetShader() override;
+	virtual void SetOMState() override;
+	virtual void ResetDrawer() override;
 
 public:
 	void Draw(
 		CameraInterface* pCamera,
-		LightManager* pLightManager,
-		const std::vector<std::shared_ptr<PBRModel>> vSpModels
+		LightInterface* pLight,
+		const std::vector<std::shared_ptr<PickableModelInterface>> vSpModels
 	);
-
-protected:
-	virtual void SetIAInputLayer() override;
-
-protected:
-	virtual void SetShader() override;
-
-protected:
-	virtual void SetOMState() override;
-
-protected:
-	virtual void ResetDrawer() override;
 
 protected:
 	Microsoft::WRL::ComPtr<ID3D11InputLayout>	cpBaseInputLayout;
 	Microsoft::WRL::ComPtr<ID3D11VertexShader>	cpBaseVertexShader;
 
 protected:
-	Microsoft::WRL::ComPtr<ID3D11PixelShader>	cpBaseDLPS;
+	Microsoft::WRL::ComPtr<ID3D11PixelShader>	cpBasePixelShader;
 
 protected:
 	Microsoft::WRL::ComPtr<ID3D11HullShader>	cpBaseHullShader;
 	Microsoft::WRL::ComPtr<ID3D11DomainShader>	cpBaseDomainShader;
-
-protected:
-	Microsoft::WRL::ComPtr<ID3D11PixelShader>	cpOutlinerPixelShader;
 };

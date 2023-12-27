@@ -1,7 +1,7 @@
 #include "MirrorDrawer.h"
 #include "ID3D11Helper.h"
 
-#include "PBRDirectLightingDrawer.h"
+#include "PBRSpotLightDrawer.h"
 #include "CubeMapDrawer.h"
 
 #include "CameraInterface.h"
@@ -44,7 +44,7 @@ MirrorDrawer::~MirrorDrawer()
 void MirrorDrawer::Draw(
 	CameraInterface* pCamera,
 	LightManager* pLightManager,
-	PBRDirectLightingDrawer* pPBRDirectLightingDrawer,
+	PBRSpotLightDrawer* pPBRDirectLightingDrawer,
 	const std::vector<std::shared_ptr<PBRModel>>& vSpModels,
 	CubeMapDrawer* pCubeMapDrawer,
 	CubeMapModel* pEnvironmentCubeMap,

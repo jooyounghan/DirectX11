@@ -19,7 +19,7 @@ LightInterface::LightInterface(
 
 	ID3D11Helper::CreateBuffer(
 		pDevice, sBaseLightData, 
-		D3D11_USAGE_DEFAULT, 
+		D3D11_USAGE_DYNAMIC, 
 		D3D11_BIND_CONSTANT_BUFFER, 
 		D3D11_CPU_ACCESS_WRITE, NULL,
 		cpBaseLightDataBuffer.GetAddressOf()

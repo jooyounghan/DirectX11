@@ -150,6 +150,8 @@
     <ClCompile Include="DDSFile.cpp" />
     <ClCompile Include="FileInterface.cpp" />
     <ClCompile Include="FileLoader.cpp" />
+    <ClCompile Include="APBRDirectLightDrawer.cpp" />
+    <ClCompile Include="PBRPointLightDrawer.cpp" />
     <ClCompile Include="PlaneModel.cpp" />
     <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="ShadowDrawer.cpp" />
@@ -174,7 +176,7 @@
     <ClCompile Include="ModelTextureFile.cpp" />
     <ClCompile Include="FileManageGui.cpp" />
     <ClCompile Include="ID3D11Helper.cpp" />
-    <ClCompile Include="PBRDirectLightinglDrawer.cpp" />
+    <ClCompile Include="PBRSpotLightlDrawer.cpp" />
     <ClCompile Include="LightManageGui.cpp" />
     <ClCompile Include="LightManager.cpp" />
     <ClCompile Include="main.cpp" />
@@ -205,6 +207,8 @@
     <ClInclude Include="FileInterface.h" />
     <ClInclude Include="FileLoader.h" />
     <ClInclude Include="FileManageGui.h" />
+    <ClInclude Include="APBRDirectLightDrawer.h" />
+    <ClInclude Include="PBRPointLightDrawer.h" />
     <ClInclude Include="PlaneModel.h" />
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="ShadowDrawer.h" />
@@ -231,7 +235,7 @@
     <ClInclude Include="DepthStencilState.h" />
     <ClInclude Include="ModelTextureFile.h" />
     <ClInclude Include="ID3D11Helper.h" />
-    <ClInclude Include="PBRDirectLightingDrawer.h" />
+    <ClInclude Include="PBRSpotLightDrawer.h" />
     <ClInclude Include="LightManageGui.h" />
     <ClInclude Include="LightManager.h" />
     <ClInclude Include="MathematicalHelper.h" />
@@ -270,7 +274,7 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Hull</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
-    <FxCompile Include="BaseModelDLPS.hlsl">
+    <FxCompile Include="BaseModelWithPointLight.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
@@ -283,6 +287,12 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="BaseModelWithSpotLight.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
     <FxCompile Include="BlendPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>

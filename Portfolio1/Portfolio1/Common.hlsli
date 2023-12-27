@@ -1,7 +1,7 @@
 #define MAX_LIGHT_NUM 10
 
-#define POINT_LIGHT     1
-#define SPOT_LIGHT      2
+#define POINT_LIGHT     0
+#define SPOT_LIGHT      1
 
 struct VertexInput
 {
@@ -69,6 +69,20 @@ struct ModelID
     uint3   uiModelID;
     uint    uiModelIDStd;
 };
+
+float3 GetProjVector(float3 from, float3 to)
+{
+    return (dot(from, to) / dot(to, to)) * to;
+}
+
+float3 GetPositiveProjVector(float3 from, float3 to)
+{
+    float cos = dot(from, to);
+    if (cos > 0.f)
+        return (cos / dot(to, to)) * to;
+    else
+        return float3(0.f, 0.f, 0.f);
+}
 
 float2x2 Get2X2InvMatrix(float2x2 input)
 {

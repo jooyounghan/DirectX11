@@ -7,7 +7,9 @@
 #include "CameraManageGui.h"
 #include "FileManageGui.h"
 
-#include "PBRDirectLightingDrawer.h"
+#include "PBRPointLightDrawer.h"
+#include "PBRSpotLightDrawer.h"
+#include "ShadowDrawer.h"
 #include "NormalVectorDrawer.h"
 #include "CubeMapDrawer.h"
 #include "MirrorDrawer.h"
@@ -27,6 +29,7 @@
 #include "ModelID.h"
 
 #include "LightManager.h"
+#include "LightInterface.h"
 
 #include "DefineVar.h"
 
@@ -71,7 +74,7 @@ void PortfolioApp::Init()
 	// =================================================================================================
 	
 	
-	shared_ptr<SphereModel> spSphere = make_shared<SphereModel>(cpDevice.Get(), cpDeviceContext.Get(), 0.f, 0.f, 0.f, 2.f);
+	shared_ptr<SphereModel> spSphere = make_shared<SphereModel>(cpDevice.Get(), cpDeviceContext.Get(), 0.f, 5.f, 0.f, 2.f);
 	vSpPickableModels.push_back(spSphere);
 	vSpPBRModels.push_back(spSphere);
 
@@ -81,11 +84,11 @@ void PortfolioApp::Init()
 
 	shared_ptr<MirrorModel> spMirrorLeft = make_shared<MirrorModel>(
 		cpDevice.Get(), cpDeviceContext.Get(), 5.f, 5.f, 
-		DXGI_FORMAT_R16G16B16A16_FLOAT, -5.f, 0.f, 0.f, spMainCamera
+		DXGI_FORMAT_R16G16B16A16_FLOAT, -5.f, 5.f, 0.f, spMainCamera
 	);
 	shared_ptr<MirrorModel> spMirrorRight = make_shared<MirrorModel>(
 		cpDevice.Get(), cpDeviceContext.Get(), 5.f, 5.f, 
-		DXGI_FORMAT_R16G16B16A16_FLOAT, 5.f, 0.f, 0.f, spMainCamera
+		DXGI_FORMAT_R16G16B16A16_FLOAT, 5.f, 5.f, 0.f, spMainCamera
 	);
 	vSpPickableModels.push_back(spMirrorLeft);
 	vSpPickableModels.push_back(spMirrorRight);
@@ -103,7 +106,9 @@ void PortfolioApp::Init()
 	vUpManageGuis.push_back(make_unique<CameraManageGui>(spMainCamera));
 	vUpManageGuis.push_back(make_unique<FileManageGui>(cpDevice, cpDeviceContext));
 	// ==============================================================================================
-	upModelDrawer = make_unique<PBRDirectLightingDrawer>(cpDevice.Get(), cpDeviceContext.Get());
+	upPointLightModelDrawer = make_unique<PBRPointLightDrawer>(cpDevice.Get(), cpDeviceContext.Get());
+	upSpotLightModelDrawer = make_unique<PBRSpotLightDrawer>(cpDevice.Get(), cpDeviceContext.Get());
+	upShadowDrawer = make_unique<ShadowDrawer>(cpDevice.Get(), cpDeviceContext.Get());
 	upNormalVectorDrawer = make_unique<NormalVectorDrawer>(cpDevice.Get(), cpDeviceContext.Get());
 	upCubeMapDrawer = make_unique<CubeMapDrawer>(cpDevice.Get(), cpDeviceContext.Get());
 	upMirrorDrawer = make_unique<MirrorDrawer>(cpDevice.Get(), cpDeviceContext.Get());
@@ -131,7 +136,21 @@ void PortfolioApp::Render()
 		pMirror->WipeOut();
 	}
 
-	upModelDrawer->Draw(spMainCamera.get(), spLightManager.get(), vSpPBRModels);
+	const vector<LightInterface*> pLights = spLightManager->GetLights();
+
+	for (auto& pLight : pLights)
+	{
+		upShadowDrawer->Draw(pLight, vSpPickableModels);
+	}
+
+	for (auto& pLight : pLights)
+	{
+		if (pLight->sBaseLightData.uiLightType == PointLightType)
+			upPointLightModelDrawer->Draw(spMainCamera.get(), pLight, vSpPickableModels);
+		else if (pLight->sBaseLightData.uiLightType == SpotLightType)
+			upSpotLightModelDrawer->Draw(spMainCamera.get(), pLight, vSpPickableModels);
+		else;
+	}
 
 	if (bIsNormalVectorDraw)
 	{
@@ -145,7 +164,7 @@ void PortfolioApp::Render()
 
 	upMirrorDrawer->Draw(
 		spMainCamera.get(), spLightManager.get(), 
-		upModelDrawer.get(), vSpPBRModels, 
+		upSpotLightModelDrawer.get(), vSpPBRModels, 
 		upCubeMapDrawer.get(), spCubeMap.get(), 
 		vSpMirrorModels
 	);
@@ -235,7 +254,6 @@ void PortfolioApp::ResizeSwapChain(const UINT& uiWidthIn, const UINT& uiHeightIn
 void PortfolioApp::CheckMouseHoveredModel()
 {
 	unsigned int uiSelectedModelIDAsRGBA = spMainCamera->GetPointedModelIDAsRGBA();
-	cout << uiSelectedModelIDAsRGBA << endl;
 	auto findResult = find_if(
 		vSpPickableModels.begin(), 
 		vSpPickableModels.end(), 

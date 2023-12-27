@@ -47,7 +47,7 @@ PointLight::PointLight(
 			pDevice, sPointLightViewProjData,
 			D3D11_USAGE_DYNAMIC,
 			D3D11_BIND_CONSTANT_BUFFER,
-			NULL, NULL,
+			D3D11_CPU_ACCESS_WRITE, NULL,
 			cpPointLightViewProjDataBuffer[idx].GetAddressOf()
 		);
 	}
@@ -61,8 +61,7 @@ PointLight::PointLight(
 			DXGI_FORMAT_R32_TYPELESS, 
 			cpShadowMapTexture[idx].GetAddressOf()
 		);
-		ID3D11Helper::CreateDepthStencilView(pDevice, cpShadowMapTexture[idx].Get(), cpShadowMapDSV[idx].GetAddressOf());
-		ID3D11Helper::CreateShaderResoureView(pDevice, cpShadowMapTexture[idx].Get(), cpShadowMapSRV[idx].GetAddressOf());
+		ID3D11Helper::CreateDepthOnlyViews(pDevice, cpShadowMapTexture[idx].Get(), cpShadowMapSRV[idx].GetAddressOf(), cpShadowMapDSV[idx].GetAddressOf());
 	}
 }
 
@@ -83,6 +82,11 @@ void PointLight::Update()
 	}
 }
 
+void PointLight::SetConstantBuffers() 
+{
+	pDeviceContext->PSSetConstantBuffers(PSConstBufferType::PS_CBUFF_LIGHTBASE, 1, cpBaseLightDataBuffer.GetAddressOf());
+}
+
 void PointLight::SetConstantBuffers(const size_t& uiViewProjIdx)
 {
 	pDeviceContext->VSSetConstantBuffers(VSConstBufferType::VS_CBUFF_LIGHT_VIEWPROJ, 1, cpPointLightViewProjDataBuffer[uiViewProjIdx].GetAddressOf());
@@ -96,14 +100,21 @@ void PointLight::ResetConstantBuffers()
 	pDeviceContext->PSSetConstantBuffers(PSConstBufferType::PS_CBUFF_LIGHTBASE, 1, &pResetBuffer);
 }
 
+void PointLight::SetShaderResources() 
+{
+	for (size_t idx = 0; idx < PointViewProjNum; ++idx)
+	{
+		SetShaderResources(idx);
+	}
+}
+
 void PointLight::SetShaderResources(const size_t& uiViewProjIdx)
 {
-	// TODO 세이더의 경우에는 6개가 동시에 지정되어야하고, RTV 같은 경우에는 하나씩 지정되어야함.
-	pDeviceContext->PSGetShaderResources(PSSRVType::PS_SRV_DEPTH_ONLY, 1, cpShadowMapSRV[uiViewProjIdx].GetAddressOf());
+	pDeviceContext->PSSetShaderResources(PSSRVType::PS_SRV_DEPTH_ONLY_OR_X + uiViewProjIdx, 1, cpShadowMapSRV[uiViewProjIdx].GetAddressOf());
 }
 
 void PointLight::ResetShaderResources()
 {
 	ID3D11ShaderResourceView* pResetSRV = nullptr;
-	pDeviceContext->PSGetShaderResources(PSSRVType::PS_SRV_DEPTH_ONLY, 1, &pResetSRV);
+	pDeviceContext->PSGetShaderResources(PSSRVType::PS_SRV_DEPTH_ONLY_OR_X, 1, &pResetSRV);
 }

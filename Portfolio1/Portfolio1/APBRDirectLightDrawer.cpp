@@ -1,10 +1,7 @@
-#include "PBRDirectLightingDrawer.h"
+#include "APBRDirectLightDrawer.h"
 
-#include "CameraInterface.h"
-
-#include "LightManager.h"
 #include "LightInterface.h"
-
+#include "CameraInterface.h"
 #include "PBRModel.h"
 
 #include "DepthStencilState.h"
@@ -18,42 +15,38 @@
 using namespace std;
 using namespace Microsoft::WRL;
 
-PBRDirectLightingDrawer::PBRDirectLightingDrawer(
+APBRDirectLightDrawer::APBRDirectLightDrawer(
 	ID3D11Device* pDeviceIn, 
 	ID3D11DeviceContext* pDeviceContextIn
 )
 	: DrawerInterface(pDeviceIn, pDeviceContextIn)
 {
-	vector<D3D11_INPUT_ELEMENT_DESC> vInputElemDesc {
-		{"POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 16, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"NORMAL", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0}
+	vector<D3D11_INPUT_ELEMENT_DESC> vInputElemDesc{
+	{"POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+	{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 16, D3D11_INPUT_PER_VERTEX_DATA, 0},
+	{"NORMAL", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0}
 	};
-
 	ID3D11Helper::CreateVSInputLayOut(pDeviceIn, L"BaseModelVS.hlsl", vInputElemDesc, cpBaseVertexShader.GetAddressOf(), cpBaseInputLayout.GetAddressOf());
 	ID3D11Helper::CreateHS(pDeviceIn, L"BaseModelHS.hlsl", cpBaseHullShader.GetAddressOf());
 	ID3D11Helper::CreateDS(pDeviceIn, L"BaseModelDS.hlsl", cpBaseDomainShader.GetAddressOf());
-	ID3D11Helper::CreatePS(pDevice, L"BaseModelDLPS.hlsl", cpBaseDLPS.GetAddressOf());
-
-	ID3D11Helper::CreatePS(pDevice, L"OutlinerPS.hlsl", cpOutlinerPixelShader.GetAddressOf());
 }
 
-PBRDirectLightingDrawer::~PBRDirectLightingDrawer()
+APBRDirectLightDrawer::~APBRDirectLightDrawer()
 {
 }
 
-void PBRDirectLightingDrawer::SetIAInputLayer()
+void APBRDirectLightDrawer::SetIAInputLayer()
 {
 	pDeviceContext->IASetInputLayout(cpBaseInputLayout.Get());
 	pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
 }
 
-void PBRDirectLightingDrawer::SetShader()
+void APBRDirectLightDrawer::SetShader()
 {
 	pDeviceContext->VSSetShader(cpBaseVertexShader.Get(), 0, 0);
 	pDeviceContext->HSSetShader(cpBaseHullShader.Get(), 0, 0);
 	pDeviceContext->DSSetShader(cpBaseDomainShader.Get(), 0, 0);
-	pDeviceContext->PSSetShader(cpBaseDLPS.Get(), 0, 0);
+	pDeviceContext->PSSetShader(cpBasePixelShader.Get(), 0, 0);
 
 	SamplerState& samplerState = SamplerState::GetInstance(pDevice);
 
@@ -64,13 +57,13 @@ void PBRDirectLightingDrawer::SetShader()
 	pDeviceContext->PSSetSamplers(SamplerType::CLAMP_SAMPLER, 1, samplerState.GetAddressOfClampSampler());
 }
 
-void PBRDirectLightingDrawer::SetOMState()
+void APBRDirectLightDrawer::SetOMState()
 {
 	DepthStencilState& depthStencilState = DepthStencilState::GetInstance(pDevice);
 	pDeviceContext->OMSetDepthStencilState(depthStencilState.pGetDSS(DepthStencilState::DefaultOption), 0);
 }
 
-void PBRDirectLightingDrawer::ResetDrawer()
+void APBRDirectLightDrawer::ResetDrawer()
 {
 	pDeviceContext->PSSetShader(nullptr, 0, 0);
 	pDeviceContext->DSSetShader(nullptr, 0, 0);
@@ -86,17 +79,15 @@ void PBRDirectLightingDrawer::ResetDrawer()
 
 	BlendState& blendState = BlendState::GetInstance(pDevice);
 	ID3D11BlendState* pDefaultBS = blendState.pGetBS(BlendStateOption::DefaultBlendState);
-	pDeviceContext->OMSetBlendState(pDefaultBS, BlendState::DefaultBlendFactor, 0xffffffff);
-
+	pDeviceContext->OMSetBlendState(pDefaultBS, NULL, 0xffffffff);
 	DepthStencilState& depthStencilState = DepthStencilState::GetInstance(pDevice);
 	pDeviceContext->OMSetDepthStencilState(depthStencilState.pGetDSS(DepthStencilState::DefaultOption), 0);
 }
 
-
-void PBRDirectLightingDrawer::Draw(
+void APBRDirectLightDrawer::Draw(
 	CameraInterface* pCamera,
-	LightManager* pLightManager,
-	const std::vector<std::shared_ptr<PBRModel>> vSpModels
+	LightInterface* pLight,
+	const std::vector<std::shared_ptr<PickableModelInterface>> vSpModels
 )
 {
 	BlendState& blendState = BlendState::GetInstance(pDevice);
@@ -105,7 +96,7 @@ void PBRDirectLightingDrawer::Draw(
 	RasterizationState& rasterizationState = RasterizationState::GetInstance(pDevice, pDeviceContext);
 
 	pDeviceContext->RSSetState(rasterizationState.GetAppliedRS());
-	pDeviceContext->OMSetBlendState(pAddBlendState, BlendState::DefaultBlendFactor, 0xfffffffff);
+	pDeviceContext->OMSetBlendState(pAddBlendState, NULL, 0xfffffffff);
 
 	SetIAInputLayer();
 	SetShader();
@@ -114,26 +105,23 @@ void PBRDirectLightingDrawer::Draw(
 	pCamera->SetConstantBuffers();
 	pCamera->OMSetRenderTargets();
 
-	const vector<LightInterface*>& pLights = pLightManager->GetLights();
+	pLight->SetConstantBuffers();
+	pLight->SetShaderResources();
 
-	for (LightInterface* pLight : pLights)
+	for (auto& pObjectModel : vSpModels)
 	{
-		pLight->SetConstantBuffers();
+		pObjectModel->SetIAProperties();
+		pObjectModel->SetConstantBuffers();
+		pObjectModel->SetShaderResources();
 
-		for (auto& pObjectModel : vSpModels)
-		{
-			pObjectModel->SetIAProperties();
-			pObjectModel->SetConstantBuffers();
-			pObjectModel->SetShaderResources();
+		pObjectModel->Render();
 
-			pObjectModel->Render();
-
-			pObjectModel->ResetConstantBuffers();
-			pObjectModel->ResetShaderResources();
-		}
-
-		pLight->ResetConstantBuffers();
+		pObjectModel->ResetConstantBuffers();
+		pObjectModel->ResetShaderResources();
 	}
+
+	pLight->ResetConstantBuffers();
+	pLight->ResetShaderResources();
 
 	pCamera->ResetCamera();
 	ResetDrawer();

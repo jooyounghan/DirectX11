@@ -3,6 +3,7 @@
 #include <memory>
 #include "ManageGuiInterface.h"
 
+struct LightSet;
 class LightManager;
 
 class LightManageGui : public ManageGuiInterface
@@ -23,8 +24,8 @@ private:
 	void SetLightSettingMenu();
 
 private:
-	void SetPointLightMenu();
-	void SetSpotLightMenu();
+	void SetPointLightMenu(LightSet* pLightSet);
+	void SetSpotLightMenu(LightSet* pLightSet);
 
 
 private:
@@ -32,6 +33,5 @@ private:
 	bool				bLightTypeCheckFlag[2];
 	const char*			pItems[2];
 	int					iSelectedIdx;
-
 };
 
