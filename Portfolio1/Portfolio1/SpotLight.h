@@ -21,7 +21,7 @@ public:
 		ID3D11Device* pDeviceIn, 
 		ID3D11DeviceContext* pDeviceContextIn,
 		const DirectX::XMVECTOR& xmvLocationIn,
-		const DirectX::XMVECTOR& xmvDirectionIn,
+		const DirectX::XMVECTOR& xmvAnglesIn,
 		const DirectX::XMVECTOR& xmvLightColorIn,
 		const float& fFallOffStartIn,
 		const float& fFallOffEndIn,
@@ -59,5 +59,8 @@ public:
 public:
 	virtual void SetShaderResources();
 	virtual void ResetShaderResources();
+
+public:
+	void OMSetRenderTarget();
 };
 

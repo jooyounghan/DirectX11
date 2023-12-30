@@ -86,10 +86,10 @@ void PointLight::Update()
 
 	for (size_t idx = 0; idx < PointViewProjNum; ++idx)
 	{
-		const XMMATRIX& tempViewProj = MathematicalHelper::MakeViewProjMatrix(sPointLightSet.xmvLocation, xmvDirectDefault[idx], xmvUpDefault[idx], 90.f, 1.f, 0.01f, 1000.f);
+		const XMMATRIX& tempViewProj = MathematicalHelper::MakeViewProjMatrix(sPointLightSet.xmvLocation, xmvDirectDefault[idx], xmvUpDefault[idx], XMConvertToRadians(90.f), 1.f, 0.01f, 1000.f);
 		sPointLightViewProjData[idx].xmmViewProj = XMMatrixTranspose(tempViewProj);
 		sPointLightViewProjData[idx].xmmViewProjInv = XMMatrixInverse(nullptr, tempViewProj);
-		ID3D11Helper::UpdateBuffer(pDeviceContext, sPointLightViewProjData, D3D11_MAP_WRITE_DISCARD, cpPointLightViewProjDataBuffer[idx].Get());
+		ID3D11Helper::UpdateBuffer(pDeviceContext, sPointLightViewProjData[idx], D3D11_MAP_WRITE_DISCARD, cpPointLightViewProjDataBuffer[idx].Get());
 	}
 }
 
@@ -127,4 +127,10 @@ void PointLight::ResetShaderResources()
 {
 	ID3D11ShaderResourceView* pResetSRV = nullptr;
 	pDeviceContext->PSGetShaderResources(PSSRVType::PS_SRV_DEPTH_ONLY_OR_X, 1, &pResetSRV);
+}
+
+void PointLight::OMSetRenderTarget(const size_t& uiViewProjIdx)
+{
+	ID3D11RenderTargetView* nullRTV = nullptr;
+	pDeviceContext->OMSetRenderTargets(1, &nullRTV, cpShadowMapDSV[uiViewProjIdx].Get());
 }

@@ -1,4 +1,4 @@
-#include "ShadowDrawer.h"
+#include "AShadowDrawer.h"
 #include "PointLight.h"
 #include "SpotLight.h"
 #include "PickableModelInterface.h"
@@ -7,7 +7,7 @@
 
 using namespace std;
 
-ShadowDrawer::ShadowDrawer(
+AShadowDrawer::AShadowDrawer(
 	ID3D11Device* pDeviceIn,
 	ID3D11DeviceContext* pDeviceContextIn
 )
@@ -23,72 +23,38 @@ ShadowDrawer::ShadowDrawer(
 	ID3D11Helper::CreatePS(pDevice, L"ShadowMapPS.hlsl", cpShadowPixelShader.GetAddressOf());
 }
 
-ShadowDrawer::~ShadowDrawer()
+AShadowDrawer::~AShadowDrawer()
 {
 }
 
-void ShadowDrawer::Draw(
-	LightInterface* pLightInterface, 
-	const vector<shared_ptr<PickableModelInterface>> spSelectedModels
-)
-{
-	SetIAInputLayer();
-	SetShader();
-	SetOMState();
 
-	//if (pLightInterface->uiLightType == ELightType::PointLightType)
-	//{
-	//	PointLight* pPointLight = (PointLight*)pLightInterface;
-	//	for (size_t idx = 0; idx < PointLightViewProj::PointViewProjNum; ++idx)
-	//	{
-	//		pPointLight->SetConstantBuffers(PointLightViewProj::XViewProj + idx);
-	//		for (auto& pModels : spSelectedModels)
-	//		{
-	//			pModels->Render();
-	//		}
-	//		pPointLight->ResetConstantBuffers();
-	//	}
-	//}
-	//else if (pLightInterface->uiLightType == ELightType::SpotLightType)
-	//{
-	//	SpotLight* pSpotLight = (SpotLight*)pLightInterface;
-	//	pSpotLight->SetConstantBuffers();
-	//	for (auto& pModels : spSelectedModels)
-	//	{
-	//		pModels->Render();
-	//	}
-	//	pSpotLight->ResetConstantBuffers();
-	//}
-	//else;
-
-	ResetDrawer();
-}
-
-
-void ShadowDrawer::SetIAInputLayer()
+void AShadowDrawer::SetIAInputLayer()
 {
 	pDeviceContext->IASetInputLayout(cpShadowInputLayout.Get());
 	pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
-void ShadowDrawer::SetShader()
+void AShadowDrawer::SetShader()
 {
 	pDeviceContext->VSSetShader(cpShadowVertexShader.Get(), 0, 0);
 	pDeviceContext->PSSetShader(cpShadowPixelShader.Get(), 0, 0);
 }
 
-void ShadowDrawer::SetOMState()
+void AShadowDrawer::SetOMState()
 {
 	DepthStencilState& depthStencilState = DepthStencilState::GetInstance(pDevice);
 	pDeviceContext->OMSetDepthStencilState(depthStencilState.pGetDSS(DepthStencilState::DepthOnlyOption), 0);
 }
 
-void ShadowDrawer::ResetDrawer()
+void AShadowDrawer::ResetDrawer()
 {
 	pDeviceContext->PSSetShader(nullptr, 0, 0);
 	pDeviceContext->VSSetShader(nullptr, 0, 0);
 
 	DepthStencilState& depthStencilState = DepthStencilState::GetInstance(pDevice);
 	pDeviceContext->OMSetDepthStencilState(depthStencilState.pGetDSS(DepthStencilState::DefaultOption), 0);
+
+	ID3D11RenderTargetView* resetRTV = nullptr;
+	pDeviceContext->OMSetRenderTargets(1, &resetRTV, nullptr);
 }
 

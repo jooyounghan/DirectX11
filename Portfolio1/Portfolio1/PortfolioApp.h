@@ -42,7 +42,10 @@ class LightManager;
 
 class PBRPointLightDrawer;
 class PBRSpotLightDrawer;
-class ShadowDrawer;
+
+class PointLightShadowDrawer;
+class SpotLightShadowDrawer;
+
 class ModelOutlineDrawer;
 class NormalVectorDrawer;
 class CubeMapDrawer;
@@ -102,7 +105,8 @@ private:
 private:
 	std::unique_ptr<PBRPointLightDrawer>		upPointLightModelDrawer;
 	std::unique_ptr<PBRSpotLightDrawer>			upSpotLightModelDrawer;
-	std::unique_ptr<ShadowDrawer>				upShadowDrawer;
+	std::unique_ptr<PointLightShadowDrawer>		upPointLightShadowDrawer;
+	std::unique_ptr<SpotLightShadowDrawer>		upSpotLightShadowDrawer;
 	std::unique_ptr<NormalVectorDrawer>			upNormalVectorDrawer;
 	std::unique_ptr<CubeMapDrawer>				upCubeMapDrawer;
 	std::unique_ptr<MirrorDrawer>				upMirrorDrawer;

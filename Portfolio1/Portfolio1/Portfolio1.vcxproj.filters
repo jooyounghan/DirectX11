@@ -348,7 +348,7 @@
     <ClCompile Include="SpotLight.cpp">
       <Filter>소스 파일\Light\Extended</Filter>
     </ClCompile>
-    <ClCompile Include="ShadowDrawer.cpp">
+    <ClCompile Include="AShadowDrawer.cpp">
       <Filter>소스 파일\Drawer\ShadowDrawer</Filter>
     </ClCompile>
     <ClCompile Include="BlendState.cpp">
@@ -359,6 +359,12 @@
     </ClCompile>
     <ClCompile Include="APBRDirectLightDrawer.cpp">
       <Filter>소스 파일\Drawer\PBRDrawer\Extended</Filter>
+    </ClCompile>
+    <ClCompile Include="PointLightShadowDrawer.cpp">
+      <Filter>소스 파일\Drawer\ShadowDrawer</Filter>
+    </ClCompile>
+    <ClCompile Include="SpotLightShadowDrawer.cpp">
+      <Filter>소스 파일\Drawer\ShadowDrawer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -518,7 +524,7 @@
     <ClInclude Include="SpotLight.h">
       <Filter>헤더 파일\Light\Extended</Filter>
     </ClInclude>
-    <ClInclude Include="ShadowDrawer.h">
+    <ClInclude Include="AShadowDrawer.h">
       <Filter>헤더 파일\Drawer\ShadowDrawer</Filter>
     </ClInclude>
     <ClInclude Include="BlendState.h">
@@ -529,6 +535,12 @@
     </ClInclude>
     <ClInclude Include="APBRDirectLightDrawer.h">
       <Filter>헤더 파일\Drawer\PBRDrawer</Filter>
+    </ClInclude>
+    <ClInclude Include="SpotLightShadowDrawer.h">
+      <Filter>헤더 파일\Drawer\ShadowDrawer</Filter>
+    </ClInclude>
+    <ClInclude Include="PointLightShadowDrawer.h">
+      <Filter>헤더 파일\Drawer\ShadowDrawer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

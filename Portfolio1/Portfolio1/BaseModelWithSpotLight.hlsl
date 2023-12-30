@@ -82,7 +82,7 @@ PixelOutput main(DomainOutput input)
     float3 F = GetFrenelSchlick(NDotE, F0);
     float3 diffuseColor = lerp(surfaceColor, float3(0, 0, 0), metallic);
     
-      
+    
     float3 toLight = normalize(GetPositiveProjVector(f4LightPos.xyz - input.f4ModelPos.xyz, -f4LightDir.xyz));
     
     float toLightDistance = length(f4LightPos.xyz - input.f4ModelPos.xyz);

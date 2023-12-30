@@ -154,8 +154,10 @@
     <ClCompile Include="PBRPointLightDrawer.cpp" />
     <ClCompile Include="PlaneModel.cpp" />
     <ClCompile Include="PointLight.cpp" />
-    <ClCompile Include="ShadowDrawer.cpp" />
+    <ClCompile Include="PointLightShadowDrawer.cpp" />
+    <ClCompile Include="AShadowDrawer.cpp" />
     <ClCompile Include="SpotLight.cpp" />
+    <ClCompile Include="SpotLightShadowDrawer.cpp" />
     <ClCompile Include="StringHelper.cpp" />
     <ClCompile Include="FilterInterface.cpp" />
     <ClCompile Include="ImGuiFileDialog.cpp" />
@@ -211,8 +213,10 @@
     <ClInclude Include="PBRPointLightDrawer.h" />
     <ClInclude Include="PlaneModel.h" />
     <ClInclude Include="PointLight.h" />
-    <ClInclude Include="ShadowDrawer.h" />
+    <ClInclude Include="PointLightShadowDrawer.h" />
+    <ClInclude Include="AShadowDrawer.h" />
     <ClInclude Include="SpotLight.h" />
+    <ClInclude Include="SpotLightShadowDrawer.h" />
     <ClInclude Include="StringHelper.h" />
     <ClInclude Include="FilterInterface.h" />
     <ClInclude Include="ImGuiFileDialog.h" />

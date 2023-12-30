@@ -8,20 +8,20 @@ enum ELightType : UINT;
 class LightInterface;
 class PickableModelInterface;
 
-class ShadowDrawer : public DrawerInterface
+class AShadowDrawer : public DrawerInterface
 {
 public:
-	ShadowDrawer(
+	AShadowDrawer(
 		ID3D11Device* pDeviceIn,
 		ID3D11DeviceContext* pDeviceContextIn
 	);
-	virtual ~ShadowDrawer();
+	virtual ~AShadowDrawer();
 
 public:
-	void Draw(
+	virtual void Draw(
 		LightInterface* pLightInterface,
 		const std::vector<std::shared_ptr<PickableModelInterface>> spSelectedModels
-	);
+	) = 0;
 
 protected:
 	virtual void SetIAInputLayer() override;

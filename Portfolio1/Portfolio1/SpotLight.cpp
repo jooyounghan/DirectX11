@@ -9,7 +9,7 @@ SpotLight::SpotLight(
 	ID3D11Device* pDeviceIn, 
 	ID3D11DeviceContext* pDeviceContextIn,
 	const DirectX::XMVECTOR& xmvLocationIn,
-	const DirectX::XMVECTOR& xmvDirectionIn,
+	const DirectX::XMVECTOR& xmvAnglesIn,
 	const DirectX::XMVECTOR& xmvLightColorIn,
 	const float& fFallOffStartIn,
 	const float& fFallOffEndIn,
@@ -20,7 +20,7 @@ SpotLight::SpotLight(
 {
 	AutoZeroMemory(sSpotLightSet);
 	sSpotLightSet.xmvLocation = xmvLocationIn;
-	sSpotLightSet.xmvAngles = xmvDirectionIn;
+	sSpotLightSet.xmvAngles = xmvAnglesIn;
 	sSpotLightSet.xmvLightColor = xmvLightColorIn;
 	sSpotLightSet.fFallOffStart = fFallOffStartIn;
 	sSpotLightSet.fFallOffEnd = fFallOffEndIn;
@@ -60,21 +60,31 @@ SpotLight::~SpotLight()
 
 void SpotLight::Update()
 {
-	ID3D11Helper::UpdateBuffer(pDeviceContext, sSpotLightSet, D3D11_MAP_WRITE_DISCARD, cpBaseLightDataBuffer.Get());
-	
-	const XMVECTOR& xmvDirect = XMVector3Transform(
-		XMVectorSet(0.f, 0.f, -1.f, 0.f),
-		MathematicalHelper::MakeAffineTransformation(
-			1.f, 1.f, 1.f,
-			XMConvertToRadians(sSpotLightSet.xmvAngles.m128_f32[0]),
-			XMConvertToRadians(sSpotLightSet.xmvAngles.m128_f32[1]),
-			XMConvertToRadians(sSpotLightSet.xmvAngles.m128_f32[2]),
-			0.f, 0.f, 0.f
-		));
-	XMVECTOR xmvUpDirect = XMVectorSet(0.f, 1.f, 0.f, 0.f);
-	xmvUpDirect = xmvUpDirect - XMVector3Dot(xmvDirect, xmvUpDirect) / XMVector3Dot(xmvDirect, xmvDirect) * xmvDirect;
 
-	XMMATRIX tempViewProj = MathematicalHelper::MakeViewProjMatrix(sSpotLightSet.xmvLocation, xmvDirect, xmvUpDirect, 90.f, 1.f, 0.01f, 1000.f);
+	const XMMATRIX& xmmAffineMat = MathematicalHelper::MakeAffineTransformation(
+		1.f, 1.f, 1.f,
+		XMConvertToRadians(sSpotLightSet.xmvAngles.m128_f32[0]),
+		XMConvertToRadians(sSpotLightSet.xmvAngles.m128_f32[1]),
+		XMConvertToRadians(sSpotLightSet.xmvAngles.m128_f32[2]),
+		0.f, 0.f, 0.f
+	);
+
+	const XMVECTOR& xmvDirect = XMVector4Transform(
+		XMVectorSet(0.f, 0.f, 1.f, 0.f),
+		xmmAffineMat
+	);
+	XMVECTOR xmvUpDirect = XMVector4Transform(
+		XMVectorSet(0.f, 1.f, 0.f, 0.f),
+		xmmAffineMat
+	);
+
+	// 업데이트할 때에는 계산된 방향 벡터를 각도 항에 넣어주어 Shader에서 추가 계산을 수행하지 않는다.
+	XMVECTOR xmvAngles = sSpotLightSet.xmvAngles;
+	sSpotLightSet.xmvAngles = xmvDirect;
+	ID3D11Helper::UpdateBuffer(pDeviceContext, sSpotLightSet, D3D11_MAP_WRITE_DISCARD, cpBaseLightDataBuffer.Get());
+	sSpotLightSet.xmvAngles = xmvAngles;
+
+	XMMATRIX tempViewProj = MathematicalHelper::MakeViewProjMatrix(sSpotLightSet.xmvLocation, xmvDirect, xmvUpDirect, XMConvertToRadians(90.f), 1.f, 0.01f, 1000.f);
 	sSpotLightViewProjData.xmmViewProj = XMMatrixTranspose(tempViewProj);
 	sSpotLightViewProjData.xmmViewProjInv = XMMatrixInverse(nullptr, tempViewProj);
 	ID3D11Helper::UpdateBuffer(pDeviceContext, sSpotLightViewProjData, D3D11_MAP_WRITE_DISCARD, cpSpotLightViewProjDataBuffer.Get());
@@ -102,4 +112,9 @@ void SpotLight::ResetShaderResources()
 {
 	ID3D11ShaderResourceView* pResetSRV = nullptr;
 	pDeviceContext->PSGetShaderResources(PSSRVType::PS_SRV_DEPTH_ONLY_OR_X, 1, &pResetSRV);
+}
+
+void SpotLight::OMSetRenderTarget()
+{
+	pDeviceContext->OMSetRenderTargets(1, NULL, cpShadowMapDSV.Get());
 }

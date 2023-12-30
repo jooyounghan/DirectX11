@@ -63,18 +63,20 @@ public:
 	virtual void Update();
 
 private:
-	virtual void SetConstantBuffers();;
+	virtual void SetConstantBuffers();
 
 public:
 	void SetConstantBuffers(const size_t& uiViewProjIdx);
 	virtual void ResetConstantBuffers();
 
-
 private:
-	virtual void SetShaderResources();;
+	virtual void SetShaderResources();
 	
 public:
 	void SetShaderResources(const size_t& uiViewProjIdx);
 	virtual void ResetShaderResources();
+
+public:
+	void OMSetRenderTarget(const size_t& uiViewProjIdx);
 };
 

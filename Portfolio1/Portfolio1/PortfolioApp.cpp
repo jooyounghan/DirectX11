@@ -7,9 +7,12 @@
 #include "CameraManageGui.h"
 #include "FileManageGui.h"
 
+
 #include "PBRPointLightDrawer.h"
 #include "PBRSpotLightDrawer.h"
-#include "ShadowDrawer.h"
+#include "PointLightShadowDrawer.h"
+#include "SpotLightShadowDrawer.h"
+
 #include "NormalVectorDrawer.h"
 #include "CubeMapDrawer.h"
 #include "MirrorDrawer.h"
@@ -109,7 +112,8 @@ void PortfolioApp::Init()
 	// ==============================================================================================
 	upPointLightModelDrawer = make_unique<PBRPointLightDrawer>(cpDevice.Get(), cpDeviceContext.Get());
 	upSpotLightModelDrawer = make_unique<PBRSpotLightDrawer>(cpDevice.Get(), cpDeviceContext.Get());
-	upShadowDrawer = make_unique<ShadowDrawer>(cpDevice.Get(), cpDeviceContext.Get());
+	upPointLightShadowDrawer = make_unique<PointLightShadowDrawer>(cpDevice.Get(), cpDeviceContext.Get());
+	upSpotLightShadowDrawer = make_unique<SpotLightShadowDrawer>(cpDevice.Get(), cpDeviceContext.Get());
 	upNormalVectorDrawer = make_unique<NormalVectorDrawer>(cpDevice.Get(), cpDeviceContext.Get());
 	upCubeMapDrawer = make_unique<CubeMapDrawer>(cpDevice.Get(), cpDeviceContext.Get());
 	upMirrorDrawer = make_unique<MirrorDrawer>(cpDevice.Get(), cpDeviceContext.Get());
@@ -142,7 +146,7 @@ void PortfolioApp::Render()
 
 	for (auto& pLight : pPoints)
 	{
-		//upShadowDrawer->Draw(pLight, vSpPickableModels);
+		upPointLightShadowDrawer->Draw(pLight, vSpPickableModels);
 		upPointLightModelDrawer->Draw(spMainCamera.get(), pLight, vSpPickableModels);
 		upMirrorDrawer->Draw(
 			spMainCamera.get(), pLight,
@@ -154,7 +158,7 @@ void PortfolioApp::Render()
 
 	for (auto& pLight : pSpots)
 	{
-		//upShadowDrawer->Draw(pLight, vSpPickableModels);
+		upSpotLightShadowDrawer->Draw(pLight, vSpPickableModels);
 		upSpotLightModelDrawer->Draw(spMainCamera.get(), pLight, vSpPickableModels);
 		upMirrorDrawer->Draw(
 			spMainCamera.get(), pLight,
