@@ -1,11 +1,10 @@
 #include "MirrorDrawer.h"
 #include "ID3D11Helper.h"
 
-#include "PBRSpotLightDrawer.h"
+#include "APBRDirectLightDrawer.h"
 #include "CubeMapDrawer.h"
 
 #include "CameraInterface.h"
-#include "LightManager.h"
 #include "LightInterface.h"
 #include "PBRModel.h"
 #include "CubeMapModel.h"
@@ -43,12 +42,12 @@ MirrorDrawer::~MirrorDrawer()
 
 void MirrorDrawer::Draw(
 	CameraInterface* pCamera,
-	LightManager* pLightManager,
-	PBRSpotLightDrawer* pPBRDirectLightingDrawer,
-	const std::vector<std::shared_ptr<PBRModel>>& vSpModels,
+	LightInterface* pLight,
+	APBRDirectLightDrawer* aPBRDirectLightingDrawer,
+	const vector<shared_ptr<PBRModel>>& vSpModels,
 	CubeMapDrawer* pCubeMapDrawer,
 	CubeMapModel* pEnvironmentCubeMap,
-	const std::vector<std::shared_ptr<MirrorModel>>& vMirrorModels
+	const vector<shared_ptr<MirrorModel>>& vMirrorModels
 )
 {
 	RasterizationState& rasterizationState = RasterizationState::GetInstance(pDevice, pDeviceContext);
@@ -56,46 +55,41 @@ void MirrorDrawer::Draw(
 	
 	// Mirror의 ViewProj를 통하여 반사된 물체를 그린다.
 	// 거울의 Render Target에 물체를 그린다.
-	pPBRDirectLightingDrawer->SetIAInputLayer();
-	pPBRDirectLightingDrawer->SetShader();
-	pPBRDirectLightingDrawer->SetOMState();
+	aPBRDirectLightingDrawer->SetIAInputLayer();
+	aPBRDirectLightingDrawer->SetShader();
+	aPBRDirectLightingDrawer->SetOMState();
 
-	const vector<LightInterface*>& vLights = pLightManager->GetLights();
+	pLight->SetConstantBuffers();
 
-	for (LightInterface* pLight : vLights)
+	pEnvironmentCubeMap->SetConstantBuffers();
+	pEnvironmentCubeMap->SetShaderResources();
+
+	for (auto& pMirrorModel : vMirrorModels)
 	{
-		pLight->SetConstantBuffers();
+		pMirrorModel->SetConstantBuffersAsCamera();
+		pMirrorModel->OMSetRenderTargets();
 
-		pEnvironmentCubeMap->SetConstantBuffers();
-		pEnvironmentCubeMap->SetShaderResources();
-
-		for (auto& pMirrorModel : vMirrorModels)
+		for (auto& pObjectModel : vSpModels)
 		{
-			pMirrorModel->SetConstantBuffersAsCamera();
-			pMirrorModel->OMSetRenderTargets();
+			pObjectModel->SetIAProperties();
+			pObjectModel->SetConstantBuffers();
+			pObjectModel->SetShaderResources();
 
-			for (auto& pObjectModel : vSpModels)
-			{
-				pObjectModel->SetIAProperties();
-				pObjectModel->SetConstantBuffers();
-				pObjectModel->SetShaderResources();
+			pObjectModel->Render();
 
-				pObjectModel->Render();
-
-				pObjectModel->ResetConstantBuffers();
-				pObjectModel->ResetShaderResources();
-			}
-
-			pMirrorModel->ResetConstantBuffersAsCamera();
-			pMirrorModel->ResetCamera();
+			pObjectModel->ResetConstantBuffers();
+			pObjectModel->ResetShaderResources();
 		}
-		pLight->ResetConstantBuffers();
 
-		pEnvironmentCubeMap->ResetConstantBuffers();
-		pEnvironmentCubeMap->ResetShaderResources();
+		pMirrorModel->ResetConstantBuffersAsCamera();
+		pMirrorModel->ResetCamera();
 	}
+	pLight->ResetConstantBuffers();
 
-	pPBRDirectLightingDrawer->ResetDrawer();
+	pEnvironmentCubeMap->ResetConstantBuffers();
+	pEnvironmentCubeMap->ResetShaderResources();
+
+	aPBRDirectLightingDrawer->ResetDrawer();
 
 
 	// Mirror의 ViewProj를 통하여 반사된 큐브맵를 그린다.

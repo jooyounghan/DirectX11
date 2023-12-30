@@ -29,7 +29,8 @@
 #include "ModelID.h"
 
 #include "LightManager.h"
-#include "LightInterface.h"
+#include "PointLight.h"
+#include "SpotLight.h"
 
 #include "DefineVar.h"
 
@@ -136,20 +137,31 @@ void PortfolioApp::Render()
 		pMirror->WipeOut();
 	}
 
-	const vector<LightInterface*> pLights = spLightManager->GetLights();
+	const vector<PointLight*> pPoints = spLightManager->GetPointLights();
+	const vector<SpotLight*> pSpots = spLightManager->GetSpotLights();
 
-	for (auto& pLight : pLights)
+	for (auto& pLight : pPoints)
 	{
-		upShadowDrawer->Draw(pLight, vSpPickableModels);
+		//upShadowDrawer->Draw(pLight, vSpPickableModels);
+		upPointLightModelDrawer->Draw(spMainCamera.get(), pLight, vSpPickableModels);
+		upMirrorDrawer->Draw(
+			spMainCamera.get(), pLight,
+			upPointLightModelDrawer.get(), vSpPBRModels,
+			upCubeMapDrawer.get(), spCubeMap.get(),
+			vSpMirrorModels
+		);
 	}
 
-	for (auto& pLight : pLights)
+	for (auto& pLight : pSpots)
 	{
-		if (pLight->sBaseLightData.uiLightType == PointLightType)
-			upPointLightModelDrawer->Draw(spMainCamera.get(), pLight, vSpPickableModels);
-		else if (pLight->sBaseLightData.uiLightType == SpotLightType)
-			upSpotLightModelDrawer->Draw(spMainCamera.get(), pLight, vSpPickableModels);
-		else;
+		//upShadowDrawer->Draw(pLight, vSpPickableModels);
+		upSpotLightModelDrawer->Draw(spMainCamera.get(), pLight, vSpPickableModels);
+		upMirrorDrawer->Draw(
+			spMainCamera.get(), pLight,
+			upSpotLightModelDrawer.get(), vSpPBRModels,
+			upCubeMapDrawer.get(), spCubeMap.get(),
+			vSpMirrorModels
+		);
 	}
 
 	if (bIsNormalVectorDraw)
@@ -161,13 +173,6 @@ void PortfolioApp::Render()
 	}
 
 	upCubeMapDrawer->Draw(spMainCamera.get(), spCubeMap.get());
-
-	upMirrorDrawer->Draw(
-		spMainCamera.get(), spLightManager.get(), 
-		upSpotLightModelDrawer.get(), vSpPBRModels, 
-		upCubeMapDrawer.get(), spCubeMap.get(), 
-		vSpMirrorModels
-	);
 
 	spMainCamera->DoPostProcess();
 }

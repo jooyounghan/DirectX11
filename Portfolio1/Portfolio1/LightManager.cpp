@@ -1,5 +1,4 @@
 #include "LightManager.h"
-
 #include "PointLight.h"
 #include "SpotLight.h"
 
@@ -10,58 +9,71 @@
 using namespace Microsoft::WRL;
 
 LightManager::LightManager(ID3D11Device* pDeviceIn, ID3D11DeviceContext* pDeviceContextIn)
-	: pDevice(pDeviceIn), pDeviceContext(pDeviceContextIn), idxSelectedLight(0)
+	: pDevice(pDeviceIn), pDeviceContext(pDeviceContextIn), idxSelectedPointLight(0), idxSelectedSpotLight(0)
 {
 }
 
 LightManager::~LightManager()
 {
-	for (size_t idx = 0; idx < vLights.size(); ++idx)
+	for (size_t idx = 0; idx < vPointLights.size(); ++idx)
 	{
-		delete vLights[idx];
-		vLights[idx] = nullptr;
+		delete vPointLights[idx];
+		vPointLights[idx] = nullptr;
+	}
+
+	for (size_t idx = 0; idx < vSpotLights.size(); ++idx)
+	{
+		delete vSpotLights[idx];
+		vSpotLights[idx] = nullptr;
 	}
 }
 
 void LightManager::Update()
 {
-	for (LightInterface* pLight : vLights)
+	for (PointLight* pLight : vPointLights)
+	{
+		pLight->Update();
+	}
+
+	for (SpotLight* pLight : vSpotLights)
 	{
 		pLight->Update();
 	}
 }
 
-const size_t& LightManager::GetSelectedLightIndex() {
-	return idxSelectedLight;
-}
-
-void LightManager::SetSelectedLightIndex(const size_t& index)
-{
-	idxSelectedLight = index;
-}
-
 void LightManager::AddPointLight(
 	IN const DirectX::XMVECTOR& xmvLocationIn,
-	IN const float* pLightColorIn,
+	IN const DirectX::XMVECTOR& xmvLightColorIn,
 	IN const float& fFallOffStartIn,
 	IN const float& fFallOffEndIn,
 	IN const float& fLightPowerIn
 )
 {
-	PointLight* pPointLight = new PointLight(pDevice, pDeviceContext, xmvLocationIn, pLightColorIn, fFallOffStartIn, fFallOffEndIn, fLightPowerIn);
-	vLights.push_back((LightInterface*)pPointLight);
+	PointLight* pPointLight = new PointLight(
+		pDevice, pDeviceContext, 
+		xmvLocationIn, xmvLightColorIn, 
+		fFallOffStartIn, fFallOffEndIn, 
+		fLightPowerIn
+	);
+	vPointLights.push_back(pPointLight);
 }
 
 void LightManager::AddSpotLight(
 	IN const DirectX::XMVECTOR& xmvLocationIn,
 	IN const DirectX::XMVECTOR& xmvDirectionIn,
-	IN const float* pLightColorIn,
+	IN const DirectX::XMVECTOR& xmvLightColorIn,
 	IN const float& fFallOffStartIn,
 	IN const float& fFallOffEndIn,
 	IN const float& fLightPowerIn,
 	IN const float& fSpotPowerIn
 )
 {
-	SpotLight* pSpotLight = new SpotLight(pDevice, pDeviceContext, xmvLocationIn, xmvDirectionIn, pLightColorIn, fFallOffStartIn, fFallOffEndIn, fLightPowerIn, fSpotPowerIn);
-	vLights.push_back((LightInterface*)pSpotLight);
+	SpotLight* pSpotLight = new SpotLight(
+		pDevice, pDeviceContext, 
+		xmvLocationIn, xmvDirectionIn, 
+		xmvLightColorIn, fFallOffStartIn, 
+		fFallOffEndIn, fLightPowerIn, 
+		fSpotPowerIn
+	);
+	vSpotLights.push_back(pSpotLight);
 }

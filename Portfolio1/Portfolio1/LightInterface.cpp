@@ -4,33 +4,12 @@
 
 LightInterface::LightInterface(
 	ID3D11Device* pDeviceIn, 
-	ID3D11DeviceContext* pDeviceContextIn,
-	const DirectX::XMVECTOR& xmvLocationIn,
-	const float* pLightColorIn,
-	const float& fLightPowerIn
+	ID3D11DeviceContext* pDeviceContextIn
 )
 	: pDevice(pDeviceIn), pDeviceContext(pDeviceContextIn)
 {
-	AutoZeroMemory(sBaseLightData);
-
-	sBaseLightData.xmvLocation = xmvLocationIn;
-	memcpy(sBaseLightData.fLightColor, pLightColorIn, sizeof(float) * 3);
-	sBaseLightData.fLightPower = fLightPowerIn;
-
-	ID3D11Helper::CreateBuffer(
-		pDevice, sBaseLightData, 
-		D3D11_USAGE_DYNAMIC, 
-		D3D11_BIND_CONSTANT_BUFFER, 
-		D3D11_CPU_ACCESS_WRITE, NULL,
-		cpBaseLightDataBuffer.GetAddressOf()
-	);
 }
 
 LightInterface::~LightInterface()
 {
-}
-
-void LightInterface::Update()
-{
-	ID3D11Helper::UpdateBuffer(pDeviceContext, sBaseLightData, D3D11_MAP_WRITE_DISCARD, cpBaseLightDataBuffer.Get());
 }

@@ -19,14 +19,12 @@ Texture2D NegativeZShadowMap    : register(t17);
 
 cbuffer BaseLight : register(b0)
 {
-    uint uiLightType;
     float4 f4LightPos;
-    float4 f4LightDir;
-    float3 f3LightColor;
+    float4 f4LightColor;
     float fFallOffStart;
     float fFallOffEnd;
     float fLightPower;
-    float fSpotPower;
+    float fDummy;
 }
 
 cbuffer ModelIDBuffer : register(b1)
@@ -103,7 +101,7 @@ PixelOutput main(DomainOutput input)
     float3 diffuseBrdf = (float3(1, 1, 1) - F) * diffuseColor;
     float3 specularBrdf = (F * D * G) / (max(1e-6, 4.0 * NDotL * NDotE));
         
-    fDirectColor += (diffuseBrdf + specularBrdf) * fLightPowerSaturated * NDotL * f3LightColor;
+    fDirectColor += (diffuseBrdf + specularBrdf) * fLightPowerSaturated * NDotL * f4LightColor.xyz;
        
     result.pixelColor = float4(fDirectColor, 1.f);
     result.modleId = float4(sModelId.uiModelID.x, sModelId.uiModelID.y, sModelId.uiModelID.z, sModelId.uiModelIDStd) / sModelId.uiModelIDStd;

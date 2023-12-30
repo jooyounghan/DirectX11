@@ -6,11 +6,12 @@
 
 class PBRModel;
 class CameraInterface;
-class LightManager;
+class LightInterface;
+class CubeMapDrawer;
 class CubeMapModel;
 class MirrorModel;
 
-class MirrorDrawer : protected DrawerInterface
+class MirrorDrawer : public DrawerInterface
 {
 public:
 	MirrorDrawer(
@@ -21,17 +22,12 @@ public:
 public:
 	void Draw(
 		CameraInterface* pCamera,
-		LightManager* pLightManager,
-		class PBRSpotLightDrawer* pPBRDirectLightingDrawer,
+		LightInterface* pLight,
+		class APBRDirectLightDrawer* aPBRDirectLightingDrawer,
 		const std::vector<std::shared_ptr<PBRModel>>& vSpModels,
-		class CubeMapDrawer* pCubeMapDrawer,
+		CubeMapDrawer* pCubeMapDrawer,
 		CubeMapModel* pEnvironmentCubeMap,
 		const std::vector<std::shared_ptr<MirrorModel>>& vMirrorModels
-	);
-	
-	void RenderMirror(
-		CameraInterface* pCamera,
-		const std::vector<std::shared_ptr<MirrorModel>>& vMirrorModel
 	);
 
 protected:

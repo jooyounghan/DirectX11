@@ -1,6 +1,17 @@
 #pragma once
 #include "LightInterface.h"
 
+struct PointLightSet
+{
+	DirectX::XMVECTOR	xmvLocation;
+	DirectX::XMVECTOR	xmvLightColor;
+	float				fFallOffStart;
+	float				fFallOffEnd;
+	float				fLightPower;
+	float				fDummy;
+};
+
+
 enum PointLightViewProj : size_t
 {
 	XViewProj,
@@ -12,23 +23,27 @@ enum PointLightViewProj : size_t
 	PointViewProjNum
 };
 
-class PointLight : protected LightInterface
+class PointLight : public LightInterface
 {
 public:
 	PointLight(
 		ID3D11Device* pDeviceIn, 
 		ID3D11DeviceContext* pDeviceContextIn,
 		const DirectX::XMVECTOR& xmvLocationIn,
-		const float* pLightColorIn,
+		const DirectX::XMVECTOR& xmvLightColorIn,
 		const float& fFallOffStartIn,
 		const float& fFallOffEndIn,
 		const float& fLightPowerIn
 	);
 	~PointLight();
 
-public:
+protected:
 	static DirectX::XMVECTOR xmvDirectDefault[6];
 	static DirectX::XMVECTOR xmvUpDefault[6];
+
+public:
+	PointLightSet sPointLightSet;
+	inline PointLightSet* GetLightDataPtr() { return &sPointLightSet; }
 
 protected:
 	struct

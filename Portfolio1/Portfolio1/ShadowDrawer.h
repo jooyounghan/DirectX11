@@ -4,7 +4,7 @@
 #include <vector>
 #include <memory>
 
-enum ELightType : size_t;
+enum ELightType : UINT;
 class LightInterface;
 class PickableModelInterface;
 

@@ -1,12 +1,12 @@
 #pragma once
 
-enum SamplerType : unsigned int
+enum SamplerType : UINT
 {
 	WRAP_SAMPLER,
 	CLAMP_SAMPLER
 };
 
-enum VSConstBufferType : unsigned int
+enum VSConstBufferType : UINT
 {
 	VS_CBUFF_MODELMAT,
 	VS_CBUFF_CAMERA_INFO,
@@ -14,17 +14,17 @@ enum VSConstBufferType : unsigned int
 	VS_CBUFF_LIGHT_VIEWPROJ,
 };
 
-enum DSSRVType : unsigned int
+enum DSSRVType : UINT
 {
 	DS_SRV_HEIGHT,
 };
 
-enum DSConstBufferType : unsigned int
+enum DSConstBufferType : UINT
 {
 	DS_CBUFF_CAMERA_INFO
 };
 
-enum PSConstBufferType : unsigned int
+enum PSConstBufferType : UINT
 {
 	PS_CBUFF_LIGHTBASE,
 	PS_CBUFF_MODELID,
@@ -37,7 +37,7 @@ enum PSConstBufferType : unsigned int
 };
 
 
-enum PSSRVType : unsigned int
+enum PSSRVType : UINT
 {
 	PS_SRV_AO,
 	PS_SRV_COLOR,
@@ -59,18 +59,18 @@ enum PSSRVType : unsigned int
 	PS_SRV_NEG_Z,
 };
 
-enum GSConstBufferType : unsigned int
+enum GSConstBufferType : UINT
 {
 	GS_CBUFF_TEXTUREFLAGS,
 	GS_CBUFF_CAMERA_INFO
 };
 
-enum GSSRVType : unsigned int
+enum GSSRVType : UINT
 {
 	GS_SRV_NORMAL
 };
 
-enum HSConstantBufferType : unsigned int
+enum HSConstantBufferType : UINT
 {
 	HS_CBUFF_CAMERA_INFO
 };

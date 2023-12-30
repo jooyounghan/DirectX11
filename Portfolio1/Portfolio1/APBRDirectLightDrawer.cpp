@@ -96,7 +96,7 @@ void APBRDirectLightDrawer::Draw(
 	RasterizationState& rasterizationState = RasterizationState::GetInstance(pDevice, pDeviceContext);
 
 	pDeviceContext->RSSetState(rasterizationState.GetAppliedRS());
-	pDeviceContext->OMSetBlendState(pAddBlendState, NULL, 0xfffffffff);
+	pDeviceContext->OMSetBlendState(pAddBlendState, NULL, UINT(0xfffffffff));
 
 	SetIAInputLayer();
 	SetShader();

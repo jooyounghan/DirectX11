@@ -2,7 +2,19 @@
 
 #include "LightInterface.h"
 
-class SpotLight : protected LightInterface
+struct SpotLightSet
+{
+	DirectX::XMVECTOR	xmvLocation;
+	DirectX::XMVECTOR	xmvAngles;
+	DirectX::XMVECTOR	xmvLightColor;
+	float				fFallOffStart;
+	float				fFallOffEnd;
+	float				fLightPower;
+	float				fSpotPower;
+};
+
+
+class SpotLight : public LightInterface
 {
 public:
 	SpotLight(
@@ -10,13 +22,18 @@ public:
 		ID3D11DeviceContext* pDeviceContextIn,
 		const DirectX::XMVECTOR& xmvLocationIn,
 		const DirectX::XMVECTOR& xmvDirectionIn,
-		const float* pLightColorIn,
+		const DirectX::XMVECTOR& xmvLightColorIn,
 		const float& fFallOffStartIn,
 		const float& fFallOffEndIn,
 		const float& fLightPowerIn,
 		const float& fSpotPowerIn
 	);
 	~SpotLight();
+
+public:
+	SpotLightSet	sSpotLightSet;
+	inline SpotLightSet* GetLightDataPtr() { return &sSpotLightSet; }
+
 
 protected:
 	struct

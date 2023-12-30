@@ -1,10 +1,19 @@
 #pragma once
 
+#include <vector>
 #include <memory>
 #include "ManageGuiInterface.h"
 
-struct LightSet;
+struct PointLightSet;
+struct SpotLightSet;
+
 class LightManager;
+
+enum ELightType : unsigned int
+{
+	PointLightType,
+	SpotLightType
+};
 
 class LightManageGui : public ManageGuiInterface
 {
@@ -20,18 +29,26 @@ public:
 
 private:
 	void SetLightAddMenu();
-	void SetLightSelectorMenu();
+	void SetLightSelectorTab();
 	void SetLightSettingMenu();
 
 private:
-	void SetPointLightMenu(LightSet* pLightSet);
-	void SetSpotLightMenu(LightSet* pLightSet);
-
+	void SetPointLightMenu(PointLightSet* pPointLightSet);
+	void SetSpotLightMenu(SpotLightSet* pSpotLightSet);
 
 private:
-	struct LightSet*	pTempLightSet;
+	struct PointLightSet* pTempPointLightSet;
+	struct SpotLightSet* pTempSpotLightSet;
+
+private:
 	bool				bLightTypeCheckFlag[2];
 	const char*			pItems[2];
-	int					iSelectedIdx;
-};
+	
+private:
+	unsigned int	uiSelLightType;
+	unsigned int	uiSelTabIdx;
 
+private:
+	template<typename Ptr>
+	void SetLightSelector(const char* label, const std::vector<Ptr*>& vLightsIn, const size_t& idxSel, size_t& idxSelected);
+};

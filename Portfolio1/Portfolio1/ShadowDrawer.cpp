@@ -36,30 +36,30 @@ void ShadowDrawer::Draw(
 	SetShader();
 	SetOMState();
 
-	if (pLightInterface->sBaseLightData.uiLightType == ELightType::PointLightType)
-	{
-		PointLight* pPointLight = (PointLight*)pLightInterface;
-		for (size_t idx = 0; idx < PointLightViewProj::PointViewProjNum; ++idx)
-		{
-			pPointLight->SetConstantBuffers(PointLightViewProj::XViewProj + idx);
-			for (auto& pModels : spSelectedModels)
-			{
-				pModels->Render();
-			}
-			pPointLight->ResetConstantBuffers();
-		}
-	}
-	else if (pLightInterface->sBaseLightData.uiLightType == ELightType::SpotLightType)
-	{
-		SpotLight* pSpotLight = (SpotLight*)pLightInterface;
-		pSpotLight->SetConstantBuffers();
-		for (auto& pModels : spSelectedModels)
-		{
-			pModels->Render();
-		}
-		pSpotLight->ResetConstantBuffers();
-	}
-	else;
+	//if (pLightInterface->uiLightType == ELightType::PointLightType)
+	//{
+	//	PointLight* pPointLight = (PointLight*)pLightInterface;
+	//	for (size_t idx = 0; idx < PointLightViewProj::PointViewProjNum; ++idx)
+	//	{
+	//		pPointLight->SetConstantBuffers(PointLightViewProj::XViewProj + idx);
+	//		for (auto& pModels : spSelectedModels)
+	//		{
+	//			pModels->Render();
+	//		}
+	//		pPointLight->ResetConstantBuffers();
+	//	}
+	//}
+	//else if (pLightInterface->uiLightType == ELightType::SpotLightType)
+	//{
+	//	SpotLight* pSpotLight = (SpotLight*)pLightInterface;
+	//	pSpotLight->SetConstantBuffers();
+	//	for (auto& pModels : spSelectedModels)
+	//	{
+	//		pModels->Render();
+	//	}
+	//	pSpotLight->ResetConstantBuffers();
+	//}
+	//else;
 
 	ResetDrawer();
 }

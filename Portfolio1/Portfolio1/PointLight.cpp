@@ -29,16 +29,27 @@ PointLight::PointLight(
 	ID3D11Device* pDeviceIn, 
 	ID3D11DeviceContext* pDeviceContextIn,
 	const DirectX::XMVECTOR& xmvLocationIn,
-	const float* pLightColorIn,
+	const DirectX::XMVECTOR& xmvLightColorIn,
 	const float& fFallOffStartIn,
 	const float& fFallOffEndIn,
 	const float& fLightPowerIn
 )
-	: LightInterface(pDeviceIn, pDeviceContextIn, xmvLocationIn, pLightColorIn, fLightPowerIn)
+	: LightInterface(pDeviceIn, pDeviceContextIn)
 {
-	sBaseLightData.uiLightType = ELightType::PointLightType;
-	sBaseLightData.fFallOffStart = fFallOffStartIn;
-	sBaseLightData.fFallOffEnd = fFallOffEndIn;
+	AutoZeroMemory(sPointLightSet);
+	sPointLightSet.xmvLocation = xmvLocationIn;
+	sPointLightSet.xmvLightColor = xmvLightColorIn;
+	sPointLightSet.fFallOffStart = fFallOffStartIn;
+	sPointLightSet.fFallOffEnd = fFallOffEndIn;
+	sPointLightSet.fLightPower = fLightPowerIn;
+
+	ID3D11Helper::CreateBuffer(
+		pDevice, sPointLightSet,
+		D3D11_USAGE_DYNAMIC,
+		D3D11_BIND_CONSTANT_BUFFER,
+		D3D11_CPU_ACCESS_WRITE, NULL,
+		cpBaseLightDataBuffer.GetAddressOf()
+	);
 
 	for (size_t idx = 0; idx < PointViewProjNum; ++idx)
 	{
@@ -55,7 +66,7 @@ PointLight::PointLight(
 	for (size_t idx = 0; idx < PointViewProjNum; ++idx)
 	{
 		ID3D11Helper::CreateTexture2D(
-			pDevice, 1000.f, 1000.f, 
+			pDevice, 1000, 1000, 
 			1, 0, D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE, 
 			NULL, NULL, D3D11_USAGE_DEFAULT, 
 			DXGI_FORMAT_R32_TYPELESS, 
@@ -71,11 +82,11 @@ PointLight::~PointLight()
 
 void PointLight::Update()
 {
-	LightInterface::Update();
+	ID3D11Helper::UpdateBuffer(pDeviceContext, sPointLightSet, D3D11_MAP_WRITE_DISCARD, cpBaseLightDataBuffer.Get());
 
 	for (size_t idx = 0; idx < PointViewProjNum; ++idx)
 	{
-		const XMMATRIX& tempViewProj = MathematicalHelper::MakeViewProjMatrix(sBaseLightData.xmvLocation, xmvDirectDefault[idx], xmvUpDefault[idx], 90.f, 1.f, 0.01f, 1000.f);
+		const XMMATRIX& tempViewProj = MathematicalHelper::MakeViewProjMatrix(sPointLightSet.xmvLocation, xmvDirectDefault[idx], xmvUpDefault[idx], 90.f, 1.f, 0.01f, 1000.f);
 		sPointLightViewProjData[idx].xmmViewProj = XMMatrixTranspose(tempViewProj);
 		sPointLightViewProjData[idx].xmmViewProjInv = XMMatrixInverse(nullptr, tempViewProj);
 		ID3D11Helper::UpdateBuffer(pDeviceContext, sPointLightViewProjData, D3D11_MAP_WRITE_DISCARD, cpPointLightViewProjDataBuffer[idx].Get());
@@ -90,7 +101,6 @@ void PointLight::SetConstantBuffers()
 void PointLight::SetConstantBuffers(const size_t& uiViewProjIdx)
 {
 	pDeviceContext->VSSetConstantBuffers(VSConstBufferType::VS_CBUFF_LIGHT_VIEWPROJ, 1, cpPointLightViewProjDataBuffer[uiViewProjIdx].GetAddressOf());
-	pDeviceContext->PSSetConstantBuffers(PSConstBufferType::PS_CBUFF_LIGHTBASE, 1, cpBaseLightDataBuffer.GetAddressOf());
 }
 
 void PointLight::ResetConstantBuffers()

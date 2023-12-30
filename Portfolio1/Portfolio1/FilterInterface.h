@@ -25,7 +25,7 @@ public:
 
 public:
 	std::vector<FilterVertex> vFilterVertices;
-	std::vector<unsigned int> vIndices;
+	std::vector<UINT> vIndices;
 
 public:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> cpVertexBuffer;
