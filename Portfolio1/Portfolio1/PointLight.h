@@ -78,5 +78,8 @@ public:
 
 public:
 	void OMSetRenderTarget(const size_t& uiViewProjIdx);
+
+public:
+	void WipeOut(const size_t& uiViewProjIdx);
 };
 

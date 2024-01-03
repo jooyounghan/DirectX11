@@ -34,7 +34,6 @@ public:
 	SpotLightSet	sSpotLightSet;
 	inline SpotLightSet* GetLightDataPtr() { return &sSpotLightSet; }
 
-
 protected:
 	struct
 	{
@@ -62,5 +61,8 @@ public:
 
 public:
 	void OMSetRenderTarget();
+
+public:
+	void WipeOut();
 };
 

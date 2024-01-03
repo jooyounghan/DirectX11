@@ -366,6 +366,9 @@
     <ClCompile Include="SpotLightShadowDrawer.cpp">
       <Filter>소스 파일\Drawer\ShadowDrawer</Filter>
     </ClCompile>
+    <ClCompile Include="ViewPort.cpp">
+      <Filter>소스 파일\Global</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DefineVar.h">
@@ -541,6 +544,9 @@
     </ClInclude>
     <ClInclude Include="PointLightShadowDrawer.h">
       <Filter>헤더 파일\Drawer\ShadowDrawer</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewPort.h">
+      <Filter>헤더 파일\Global</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

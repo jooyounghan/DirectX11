@@ -24,8 +24,10 @@ void PointLightShadowDrawer::Draw(
 	SetOMState();
 
 	PointLight* pPointLight = (PointLight*)pLightInterface;
+	
 	for (size_t idx = 0; idx < PointLightViewProj::PointViewProjNum; ++idx)
 	{
+		pPointLight->WipeOut(PointLightViewProj::XViewProj + idx);
 		pPointLight->SetConstantBuffers(PointLightViewProj::XViewProj + idx);
 		pPointLight->OMSetRenderTarget(PointLightViewProj::XViewProj + idx);
 		for (auto& pModel : spSelectedModels)

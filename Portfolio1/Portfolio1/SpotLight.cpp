@@ -2,6 +2,7 @@
 #include "ID3D11Helper.h"
 #include "MathematicalHelper.h"
 #include "ShaderTypeEnum.h"
+#include "ViewPort.h"
 
 using namespace DirectX;
 
@@ -78,13 +79,22 @@ void SpotLight::Update()
 		xmmAffineMat
 	);
 
+
 	// 업데이트할 때에는 계산된 방향 벡터를 각도 항에 넣어주어 Shader에서 추가 계산을 수행하지 않는다.
 	XMVECTOR xmvAngles = sSpotLightSet.xmvAngles;
 	sSpotLightSet.xmvAngles = xmvDirect;
 	ID3D11Helper::UpdateBuffer(pDeviceContext, sSpotLightSet, D3D11_MAP_WRITE_DISCARD, cpBaseLightDataBuffer.Get());
 	sSpotLightSet.xmvAngles = xmvAngles;
 
-	XMMATRIX tempViewProj = MathematicalHelper::MakeViewProjMatrix(sSpotLightSet.xmvLocation, xmvDirect, xmvUpDirect, XMConvertToRadians(90.f), 1.f, 0.01f, 1000.f);
+	XMMATRIX tempViewProj = MathematicalHelper::MakeViewProjMatrix(
+		sSpotLightSet.xmvLocation, 
+		xmvDirect, xmvUpDirect, 
+		XMConvertToRadians(90.f), 
+		1.f, 
+		0.01f, 
+		1000.f
+	);
+
 	sSpotLightViewProjData.xmmViewProj = XMMatrixTranspose(tempViewProj);
 	sSpotLightViewProjData.xmmViewProjInv = XMMatrixInverse(nullptr, tempViewProj);
 	ID3D11Helper::UpdateBuffer(pDeviceContext, sSpotLightViewProjData, D3D11_MAP_WRITE_DISCARD, cpSpotLightViewProjDataBuffer.Get());
@@ -93,6 +103,7 @@ void SpotLight::Update()
 void SpotLight::SetConstantBuffers()
 {
 	pDeviceContext->VSSetConstantBuffers(VSConstBufferType::VS_CBUFF_LIGHT_VIEWPROJ, 1, cpSpotLightViewProjDataBuffer.GetAddressOf());
+	pDeviceContext->PSSetConstantBuffers(PSConstBufferType::PS_CBUFF_LIGHT_VIEWPROJ, 1, cpSpotLightViewProjDataBuffer.GetAddressOf());
 	pDeviceContext->PSSetConstantBuffers(PSConstBufferType::PS_CBUFF_LIGHTBASE, 1, cpBaseLightDataBuffer.GetAddressOf());
 }
 
@@ -100,21 +111,31 @@ void SpotLight::ResetConstantBuffers()
 {
 	ID3D11Buffer* pResetBuffer = nullptr;
 	pDeviceContext->VSSetConstantBuffers(VSConstBufferType::VS_CBUFF_LIGHT_VIEWPROJ, 1, &pResetBuffer);
+	pDeviceContext->PSSetConstantBuffers(PSConstBufferType::PS_CBUFF_LIGHT_VIEWPROJ, 1, &pResetBuffer);
 	pDeviceContext->PSSetConstantBuffers(PSConstBufferType::PS_CBUFF_LIGHTBASE, 1, &pResetBuffer);
 }
 
 void SpotLight::SetShaderResources()
 {
-	pDeviceContext->PSGetShaderResources(PSSRVType::PS_SRV_DEPTH_ONLY_OR_X, 1, cpShadowMapSRV.GetAddressOf());
+	pDeviceContext->PSSetShaderResources(PSSRVType::PS_SRV_DEPTH_ONLY_OR_X, 1, cpShadowMapSRV.GetAddressOf());
 }
 
 void SpotLight::ResetShaderResources()
 {
 	ID3D11ShaderResourceView* pResetSRV = nullptr;
-	pDeviceContext->PSGetShaderResources(PSSRVType::PS_SRV_DEPTH_ONLY_OR_X, 1, &pResetSRV);
+	pDeviceContext->PSSetShaderResources(PSSRVType::PS_SRV_DEPTH_ONLY_OR_X, 1, &pResetSRV);
 }
 
 void SpotLight::OMSetRenderTarget()
 {
-	pDeviceContext->OMSetRenderTargets(1, NULL, cpShadowMapDSV.Get());
+	ID3D11RenderTargetView* nullRTV = nullptr;
+	pDeviceContext->OMSetRenderTargets(1, &nullRTV, cpShadowMapDSV.Get());
+
+	ViewPort& viewPort = ViewPort::GetInstance(pDeviceContext);
+	viewPort.SetViewPort(0.f, 0.f, 1000.f, 1000.f, 0.f, 1.f);
+}
+
+void SpotLight::WipeOut()
+{
+	pDeviceContext->ClearDepthStencilView(cpShadowMapDSV.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
 }

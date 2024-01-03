@@ -52,6 +52,12 @@ cbuffer CameraInfo : register(b6)
     matrix mViewProjInv;
 };
 
+cbuffer LightViewProj : register(b8)
+{
+    matrix mLightViewProj;
+    matrix mLightViewProjInvTranspose;
+};
+
 PixelOutput main(DomainOutput input)
 {
     PixelOutput result;
@@ -82,10 +88,21 @@ PixelOutput main(DomainOutput input)
     float3 F = GetFrenelSchlick(NDotE, F0);
     float3 diffuseColor = lerp(surfaceColor, float3(0, 0, 0), metallic);
     
-    
+    float4 f4LightScreen = mul(input.f4ModelPos, mLightViewProj);
+    f4LightScreen /= f4LightScreen.w;
+
+    float2 f2LightTex = float2(f4LightScreen.x, -f4LightScreen.y);
+    f2LightTex += 1.f;
+    f2LightTex *= 0.5f;
+
+    float fDepth = XShadowMap.Sample(ClampSampler, f2LightTex).x;
+
     float3 toLight = normalize(GetPositiveProjVector(f4LightPos.xyz - input.f4ModelPos.xyz, -f4LightDir.xyz));
     
     float toLightDistance = length(f4LightPos.xyz - input.f4ModelPos.xyz);
+    
+    float fShadowMapDistance;
+    
     
     float fLightPowerSaturated = fLightPower * (1 - saturate((toLightDistance - fFallOffStart) / (fFallOffEnd - fFallOffStart)));
      
@@ -101,7 +118,15 @@ PixelOutput main(DomainOutput input)
     float3 diffuseBrdf = (float3(1, 1, 1) - F) * diffuseColor;
     float3 specularBrdf = (F * D * G) / (max(1e-6, 4.0 * NDotL * NDotE));
         
-    fDirectColor += (diffuseBrdf + specularBrdf) * fLightPowerSaturated * NDotL * f4LightColor.xyz;
+    if (0.f < fDepth && fDepth < 1.f)
+    {
+        fDirectColor += (diffuseBrdf + specularBrdf) * fLightPowerSaturated * NDotL * f4LightColor.xyz;        
+    }
+    else
+    {
+        fDirectColor += float3(1.f, 0.f, 0.f);
+
+    }
        
     result.pixelColor = float4(fDirectColor, 1.f);
     result.modleId = float4(sModelId.uiModelID.x, sModelId.uiModelID.y, sModelId.uiModelID.z, sModelId.uiModelIDStd) / sModelId.uiModelIDStd;

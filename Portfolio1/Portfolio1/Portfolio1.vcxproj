@@ -190,6 +190,7 @@
     <ClCompile Include="SquareModel.cpp" />
     <ClCompile Include="ModelInterface.cpp" />
     <ClCompile Include="UnknownFile.cpp" />
+    <ClCompile Include="ViewPort.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseApp.h" />
@@ -250,6 +251,7 @@
     <ClInclude Include="SquareModel.h" />
     <ClInclude Include="ModelInterface.h" />
     <ClInclude Include="UnknownFile.h" />
+    <ClInclude Include="ViewPort.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="BaseModelALPS.hlsl">

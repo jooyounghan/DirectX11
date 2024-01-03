@@ -24,11 +24,18 @@ void SpotLightShadowDrawer::Draw(
 	SetOMState();
 
 	SpotLight* pSpotLight = (SpotLight*)pLightInterface;
+	pSpotLight->WipeOut();
 	pSpotLight->SetConstantBuffers();
 	pSpotLight->OMSetRenderTarget();
-	for (auto& pModels : spSelectedModels)
+
+	for (auto& pModel : spSelectedModels)
 	{
-		pModels->Render();
+		pModel->SetIAProperties();
+		pModel->SetConstantBuffers();
+
+		pModel->Render();
+
+		pModel->ResetConstantBuffers();
 	}
 	pSpotLight->ResetConstantBuffers();
 

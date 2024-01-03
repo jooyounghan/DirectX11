@@ -10,7 +10,6 @@ enum BlendStateOption
 	AddBlendState,
 };
 
-
 class BlendState
 {
 private:

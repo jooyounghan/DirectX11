@@ -2,6 +2,7 @@
 #include "ID3D11Helper.h"
 #include "MathematicalHelper.h"
 #include "ShaderTypeEnum.h"
+#include "ViewPort.h"
 
 using namespace DirectX;
 
@@ -67,7 +68,7 @@ PointLight::PointLight(
 	{
 		ID3D11Helper::CreateTexture2D(
 			pDevice, 1000, 1000, 
-			1, 0, D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE, 
+			1, 0, D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE,
 			NULL, NULL, D3D11_USAGE_DEFAULT, 
 			DXGI_FORMAT_R32_TYPELESS, 
 			cpShadowMapTexture[idx].GetAddressOf()
@@ -86,7 +87,12 @@ void PointLight::Update()
 
 	for (size_t idx = 0; idx < PointViewProjNum; ++idx)
 	{
-		const XMMATRIX& tempViewProj = MathematicalHelper::MakeViewProjMatrix(sPointLightSet.xmvLocation, xmvDirectDefault[idx], xmvUpDefault[idx], XMConvertToRadians(90.f), 1.f, 0.01f, 1000.f);
+		const XMMATRIX& tempViewProj = MathematicalHelper::MakeViewProjMatrix(
+			sPointLightSet.xmvLocation,
+			xmvDirectDefault[idx], xmvUpDefault[idx],
+			XMConvertToRadians(70.f), 1.f,
+			0.01f, 1000.f
+		);
 		sPointLightViewProjData[idx].xmmViewProj = XMMatrixTranspose(tempViewProj);
 		sPointLightViewProjData[idx].xmmViewProjInv = XMMatrixInverse(nullptr, tempViewProj);
 		ID3D11Helper::UpdateBuffer(pDeviceContext, sPointLightViewProjData[idx], D3D11_MAP_WRITE_DISCARD, cpPointLightViewProjDataBuffer[idx].Get());
@@ -126,11 +132,22 @@ void PointLight::SetShaderResources(const size_t& uiViewProjIdx)
 void PointLight::ResetShaderResources()
 {
 	ID3D11ShaderResourceView* pResetSRV = nullptr;
-	pDeviceContext->PSGetShaderResources(PSSRVType::PS_SRV_DEPTH_ONLY_OR_X, 1, &pResetSRV);
+	for (size_t idx = 0; idx < PointViewProjNum; ++idx)
+	{
+		pDeviceContext->PSSetShaderResources(PSSRVType::PS_SRV_DEPTH_ONLY_OR_X + idx, 1, &pResetSRV);
+	}
 }
 
 void PointLight::OMSetRenderTarget(const size_t& uiViewProjIdx)
 {
 	ID3D11RenderTargetView* nullRTV = nullptr;
 	pDeviceContext->OMSetRenderTargets(1, &nullRTV, cpShadowMapDSV[uiViewProjIdx].Get());
+
+	ViewPort& viewPort = ViewPort::GetInstance(pDeviceContext);
+	viewPort.SetViewPort(0.f, 0.f, 1000.f, 1000.f, 0.f, 1.f);
+}
+
+void PointLight::WipeOut(const size_t& uiViewProjIdx)
+{
+	pDeviceContext->ClearDepthStencilView(cpShadowMapDSV[uiViewProjIdx].Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
 }
