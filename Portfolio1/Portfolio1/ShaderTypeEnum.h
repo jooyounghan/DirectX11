@@ -3,7 +3,8 @@
 enum SamplerType : UINT
 {
 	WRAP_SAMPLER,
-	CLAMP_SAMPLER
+	CLAMP_SAMPLER,
+	BORDER_SAMPLER
 };
 
 enum VSConstBufferType : UINT

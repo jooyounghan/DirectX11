@@ -55,6 +55,7 @@ void APBRDirectLightDrawer::SetShader()
 
 	pDeviceContext->PSSetSamplers(SamplerType::WRAP_SAMPLER, 1, samplerState.GetAddressOfWrapSampler());
 	pDeviceContext->PSSetSamplers(SamplerType::CLAMP_SAMPLER, 1, samplerState.GetAddressOfClampSampler());
+	pDeviceContext->PSSetSamplers(SamplerType::BORDER_SAMPLER, 1, samplerState.GetAddressOfBorderToOneSampler());
 }
 
 void APBRDirectLightDrawer::SetOMState()
@@ -76,6 +77,7 @@ void APBRDirectLightDrawer::ResetDrawer()
 
 	pDeviceContext->PSSetSamplers(SamplerType::WRAP_SAMPLER, 1, &pResetSampler);
 	pDeviceContext->PSSetSamplers(SamplerType::CLAMP_SAMPLER, 1, &pResetSampler);
+	pDeviceContext->PSSetSamplers(SamplerType::BORDER_SAMPLER, 1, &pResetSampler);
 
 	BlendState& blendState = BlendState::GetInstance(pDevice);
 	ID3D11BlendState* pDefaultBS = blendState.pGetBS(BlendStateOption::DefaultBlendState);

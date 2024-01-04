@@ -16,6 +16,7 @@ private:
 protected:
 	Microsoft::WRL::ComPtr<ID3D11SamplerState>	cpDrawerWrapSampler;
 	Microsoft::WRL::ComPtr<ID3D11SamplerState>	cpDrawerClampSampler;
+	Microsoft::WRL::ComPtr<ID3D11SamplerState>  cpDrawerBorderToOneSampler;
 
 public:
 	inline static SamplerState& GetInstance(ID3D11Device* pDevice)
@@ -27,4 +28,5 @@ public:
 public:
 	inline ID3D11SamplerState** GetAddressOfWrapSampler() { return cpDrawerWrapSampler.GetAddressOf(); }
 	inline ID3D11SamplerState** GetAddressOfClampSampler() { return cpDrawerClampSampler.GetAddressOf(); }
+	inline ID3D11SamplerState** GetAddressOfBorderToOneSampler() { return cpDrawerBorderToOneSampler.GetAddressOf(); }
 };

@@ -39,5 +39,6 @@ void SpotLightShadowDrawer::Draw(
 	}
 	pSpotLight->ResetConstantBuffers();
 
+
 	ResetDrawer();
 }
