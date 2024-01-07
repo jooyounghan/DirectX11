@@ -43,6 +43,11 @@
 #include <imgui_internal.h>
 #include <iostream>
 
+
+
+// TODO : ªË¡¶
+#include "ICommand.h"
+
 using namespace DirectX;
 
 using namespace std;

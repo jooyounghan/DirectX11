@@ -109,6 +109,14 @@ public:
 		OUT ID3D11ShaderResourceView** ppShaderResourceView
 	);
 
+
+	static void CreateUnorderedAccessView(
+		IN ID3D11Device* pDevice,
+		IN ID3D11Resource* pResource,
+		OUT ID3D11UnorderedAccessView** ppUnorderedAccessView
+	);
+
+	// TODO : 하나로 변경
 	static void CreateDepthStencilView(
 		IN ID3D11Device* pDevice, 
 		IN const UINT& uiWidth, 

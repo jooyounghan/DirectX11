@@ -346,6 +346,15 @@ void ID3D11Helper::CreateShaderResoureView(IN ID3D11Device* pDevice, IN ID3D11Re
 	}
 }
 
+void ID3D11Helper::CreateUnorderedAccessView(IN ID3D11Device* pDevice, IN ID3D11Resource* pResource, OUT ID3D11UnorderedAccessView** ppUnorderedAccessView)
+{
+	HRESULT hResult = pDevice->CreateUnorderedAccessView(pResource, NULL, ppUnorderedAccessView);
+	if (FAILED(hResult))
+	{
+		Console("Unordered Access View를 생성하는데 실패하였습니다.");
+	}
+}
+
 void ID3D11Helper::CreateDepthStencilView(IN ID3D11Device* pDevice, IN const UINT& uiWidth, IN const UINT& uiHeight, IN const UINT& uiNumQualityLevels, IN OUT ID3D11Texture2D** ppDepthStencilTexture2D,  OUT ID3D11DepthStencilView** ppDepthStencilView)
 {
 	D3D11_TEXTURE2D_DESC sDepthStencilTextureDesc;
