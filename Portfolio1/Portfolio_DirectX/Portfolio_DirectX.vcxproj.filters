@@ -1,0 +1,282 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="소스 파일">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="헤더 파일">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="리소스 파일">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="소스 파일\Model">
+      <UniqueIdentifier>{e094f8df-6504-4841-b99a-5aba5bb0b026}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Model">
+      <UniqueIdentifier>{dbd10f0d-a2d8-4f97-82d7-ab48dc4582ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Camera">
+      <UniqueIdentifier>{48c4b68d-0122-4b12-bfaf-18d80780f955}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\BaseInterface">
+      <UniqueIdentifier>{1330a1e1-9b6a-4216-a83d-43199ab8b822}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\BaseAbstract">
+      <UniqueIdentifier>{fd7625c0-c836-42dd-bba5-f4d6901afd62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Texture2D">
+      <UniqueIdentifier>{4ab9d611-8253-4e48-b0b5-89d0ad5dcf5a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Utils">
+      <UniqueIdentifier>{087132cc-90b9-4958-8b25-0c8b8edc732d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\BaseAbstract">
+      <UniqueIdentifier>{7c011e25-acc7-43ff-ad5d-118e08c0ff2f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\BaseInteface">
+      <UniqueIdentifier>{b814754a-62a7-4070-b3b8-a064ced7e835}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Camera">
+      <UniqueIdentifier>{c4d9c025-6a27-40e2-b81c-f20b7a1dad58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Texture2D">
+      <UniqueIdentifier>{00f15671-9d2d-4e25-9728-f17ea0eb6b7f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Utils">
+      <UniqueIdentifier>{58f8cb82-e966-481e-9933-ff201815d05f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\File">
+      <UniqueIdentifier>{3ee554cd-e489-4738-b34e-5dcb6057c305}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\File">
+      <UniqueIdentifier>{e7b4b086-cb9c-4ce4-8a99-47929dcd5d35}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\File\Extended">
+      <UniqueIdentifier>{2489e3c0-d145-4bc4-8863-6baba5646df1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Camera\Extended">
+      <UniqueIdentifier>{bb1a46be-3e93-44bf-ab9c-80459a216d38}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Camera\Extended">
+      <UniqueIdentifier>{b0dc9273-53ca-464e-81dd-56e71b637cec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\File\Extended">
+      <UniqueIdentifier>{5fc0424f-d7fb-4a7d-a84a-3079e4fd5ea7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Texture2D\Extended">
+      <UniqueIdentifier>{bd9064d5-8f12-4486-a5f5-80f78241bb97}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Texture2D\Extended">
+      <UniqueIdentifier>{a2cd1a36-b049-4b26-95b2-eb212e32fa7d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="BaseApp.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="PortfolioApp.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="IModel.h">
+      <Filter>헤더 파일\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="IStaticMesh.h">
+      <Filter>헤더 파일\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="APossessable.h">
+      <Filter>헤더 파일\BaseAbstract</Filter>
+    </ClInclude>
+    <ClInclude Include="ASwapChainAccessable.h">
+      <Filter>헤더 파일\BaseAbstract</Filter>
+    </ClInclude>
+    <ClInclude Include="AViewable.h">
+      <Filter>헤더 파일\BaseAbstract</Filter>
+    </ClInclude>
+    <ClInclude Include="IDirectXDevice.h">
+      <Filter>헤더 파일\BaseInteface</Filter>
+    </ClInclude>
+    <ClInclude Include="IMovable.h">
+      <Filter>헤더 파일\BaseInteface</Filter>
+    </ClInclude>
+    <ClInclude Include="IRectangle.h">
+      <Filter>헤더 파일\BaseInteface</Filter>
+    </ClInclude>
+    <ClInclude Include="IScalable.h">
+      <Filter>헤더 파일\BaseInteface</Filter>
+    </ClInclude>
+    <ClInclude Include="ICamera.h">
+      <Filter>헤더 파일\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Console.h">
+      <Filter>헤더 파일\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="DefineVar.h">
+      <Filter>헤더 파일\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="ID3D11Helper.h">
+      <Filter>헤더 파일\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="IncreaseCommand.h">
+      <Filter>헤더 파일\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="MathematicalHelper.h">
+      <Filter>헤더 파일\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="ICommand.h">
+      <Filter>헤더 파일\BaseInteface</Filter>
+    </ClInclude>
+    <ClInclude Include="IPBRStaticMesh.h">
+      <Filter>헤더 파일\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="IFile.h">
+      <Filter>헤더 파일\File</Filter>
+    </ClInclude>
+    <ClInclude Include="FileLoader.h">
+      <Filter>헤더 파일\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="IImageFile.h">
+      <Filter>헤더 파일\File</Filter>
+    </ClInclude>
+    <ClInclude Include="PickableCamera.h">
+      <Filter>헤더 파일\Camera\Extended</Filter>
+    </ClInclude>
+    <ClInclude Include="AFilteredCamera.h">
+      <Filter>헤더 파일\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="DDSImageFile.h">
+      <Filter>헤더 파일\File\Extended</Filter>
+    </ClInclude>
+    <ClInclude Include="EXRImageFile.h">
+      <Filter>헤더 파일\File\Extended</Filter>
+    </ClInclude>
+    <ClInclude Include="NormalImageFile.h">
+      <Filter>헤더 파일\File\Extended</Filter>
+    </ClInclude>
+    <ClInclude Include="PickableIDRenderTarget.h">
+      <Filter>헤더 파일\Texture2D\Extended</Filter>
+    </ClInclude>
+    <ClInclude Include="StageShaderResource.h">
+      <Filter>헤더 파일\Texture2D\Extended</Filter>
+    </ClInclude>
+    <ClInclude Include="IDepthStencil.h">
+      <Filter>헤더 파일\Texture2D</Filter>
+    </ClInclude>
+    <ClInclude Include="IFilter.h">
+      <Filter>헤더 파일\Texture2D</Filter>
+    </ClInclude>
+    <ClInclude Include="IRenderTarget.h">
+      <Filter>헤더 파일\Texture2D</Filter>
+    </ClInclude>
+    <ClInclude Include="IShaderResource.h">
+      <Filter>헤더 파일\Texture2D</Filter>
+    </ClInclude>
+    <ClInclude Include="ITexture2D.h">
+      <Filter>헤더 파일\Texture2D</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="BaseApp.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="PortfolioApp.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="IStaticMesh.cpp">
+      <Filter>소스 파일\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="APossessable.cpp">
+      <Filter>소스 파일\BaseAbstract</Filter>
+    </ClCompile>
+    <ClCompile Include="ASwapChainAccessable.cpp">
+      <Filter>소스 파일\BaseAbstract</Filter>
+    </ClCompile>
+    <ClCompile Include="AViewable.cpp">
+      <Filter>소스 파일\BaseAbstract</Filter>
+    </ClCompile>
+    <ClCompile Include="IDirectXDevice.cpp">
+      <Filter>소스 파일\BaseInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="IMovable.cpp">
+      <Filter>소스 파일\BaseInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="IRectangle.cpp">
+      <Filter>소스 파일\BaseInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="IScalable.cpp">
+      <Filter>소스 파일\BaseInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="ICamera.cpp">
+      <Filter>소스 파일\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Console.cpp">
+      <Filter>소스 파일\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="ID3D11Helper.cpp">
+      <Filter>소스 파일\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="IncreaseCommand.cpp">
+      <Filter>소스 파일\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="MathematicalHelper.cpp">
+      <Filter>소스 파일\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="IPBRStaticMesh.cpp">
+      <Filter>소스 파일\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="IFile.cpp">
+      <Filter>소스 파일\File</Filter>
+    </ClCompile>
+    <ClCompile Include="FileLoader.cpp">
+      <Filter>소스 파일\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="IImageFile.cpp">
+      <Filter>소스 파일\File</Filter>
+    </ClCompile>
+    <ClCompile Include="IModel.cpp">
+      <Filter>소스 파일\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="DDSImageFile.cpp">
+      <Filter>소스 파일\File\Extended</Filter>
+    </ClCompile>
+    <ClCompile Include="EXRImageFile.cpp">
+      <Filter>소스 파일\File\Extended</Filter>
+    </ClCompile>
+    <ClCompile Include="NormalImageFile.cpp">
+      <Filter>소스 파일\File\Extended</Filter>
+    </ClCompile>
+    <ClCompile Include="AFilteredCamera.cpp">
+      <Filter>소스 파일\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="PickableCamera.cpp">
+      <Filter>소스 파일\Camera\Extended</Filter>
+    </ClCompile>
+    <ClCompile Include="IDepthStencil.cpp">
+      <Filter>소스 파일\Texture2D</Filter>
+    </ClCompile>
+    <ClCompile Include="IFilter.cpp">
+      <Filter>소스 파일\Texture2D</Filter>
+    </ClCompile>
+    <ClCompile Include="IRenderTarget.cpp">
+      <Filter>소스 파일\Texture2D</Filter>
+    </ClCompile>
+    <ClCompile Include="IShaderResource.cpp">
+      <Filter>소스 파일\Texture2D</Filter>
+    </ClCompile>
+    <ClCompile Include="ITexture2D.cpp">
+      <Filter>소스 파일\Texture2D</Filter>
+    </ClCompile>
+    <ClCompile Include="StageShaderResource.cpp">
+      <Filter>소스 파일\Texture2D\Extended</Filter>
+    </ClCompile>
+    <ClCompile Include="PickableIDRenderTarget.cpp">
+      <Filter>소스 파일\Texture2D\Extended</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

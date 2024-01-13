@@ -135,8 +135,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="AFilteredCamera.cpp" />
-    <ClCompile Include="APossessable.cpp" />
     <ClCompile Include="BaseApp.cpp" />
     <ClCompile Include="BlendFilter.cpp" />
     <ClCompile Include="BlendFilterInterface.cpp" />
@@ -145,17 +143,6 @@
     <ClCompile Include="BloomFilter.cpp" />
     <ClCompile Include="CameraInterface.cpp" />
     <ClCompile Include="CameraManageGui.cpp" />
-    <ClCompile Include="ICamera.cpp" />
-    <ClCompile Include="IDepthStencil.cpp" />
-    <ClCompile Include="IFilter.cpp" />
-    <ClCompile Include="IMovable.cpp" />
-    <ClCompile Include="IncreaseCommand.cpp" />
-    <ClCompile Include="IRenderTarget.cpp" />
-    <ClCompile Include="IScalable.cpp" />
-    <ClCompile Include="AViewable.cpp" />
-    <ClCompile Include="ASwapChainAccessable.cpp" />
-    <ClCompile Include="IShaderResource.cpp" />
-    <ClCompile Include="ITexture2D.cpp" />
     <ClCompile Include="LightInterface.cpp" />
     <ClCompile Include="NormalCamera.cpp" />
     <ClCompile Include="CubeMapDrawer.cpp" />
@@ -206,8 +193,6 @@
     <ClCompile Include="ViewPort.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AFilteredCamera.h" />
-    <ClInclude Include="APossessable.h" />
     <ClInclude Include="BaseApp.h" />
     <ClInclude Include="BlendFilter.h" />
     <ClInclude Include="BlendFilterInterface.h" />
@@ -216,18 +201,6 @@
     <ClInclude Include="BloomFilter.h" />
     <ClInclude Include="CameraInterface.h" />
     <ClInclude Include="CameraManageGui.h" />
-    <ClInclude Include="ICamera.h" />
-    <ClInclude Include="ICommand.h" />
-    <ClInclude Include="IDepthStencil.h" />
-    <ClInclude Include="IFilter.h" />
-    <ClInclude Include="IMovable.h" />
-    <ClInclude Include="IncreaseCommand.h" />
-    <ClInclude Include="IRenderTarget.h" />
-    <ClInclude Include="IScalable.h" />
-    <ClInclude Include="AViewable.h" />
-    <ClInclude Include="ASwapChainAccessable.h" />
-    <ClInclude Include="IShaderResource.h" />
-    <ClInclude Include="ITexture2D.h" />
     <ClInclude Include="LightInterface.h" />
     <ClInclude Include="ManualDataType.h" />
     <ClInclude Include="NormalCamera.h" />
@@ -400,6 +373,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="BrdfFunction.hlsli" />
+    <None Include="ClassDiagram.cd" />
     <None Include="Common.hlsli" />
     <None Include="CubeMapType.hlsli" />
     <None Include="NormalVectorShaderType.hlsli" />
