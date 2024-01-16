@@ -37,8 +37,7 @@ void ID3D11Helper::CreateDeviceAndContext(
 	sSwapChainDesc.BufferCount = 2;
 	sSwapChainDesc.OutputWindow = hOutputWindow;
 	sSwapChainDesc.Windowed = bWindowed;
-	//sSwapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
-	sSwapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+	sSwapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 	sSwapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG::DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
 	HRESULT hResult = D3D11CreateDeviceAndSwapChain(

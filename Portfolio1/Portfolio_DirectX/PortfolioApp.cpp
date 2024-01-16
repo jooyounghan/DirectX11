@@ -40,8 +40,6 @@ void PortfolioApp::Init()
 		DXGI_FORMAT_R8G8B8A8_UNORM,
 		DXGI_FORMAT_D24_UNORM_S8_UINT
 	);
-	pPickableCamera->SetAsSwapChainBackBuffer();
-
 
 	vector<D3D11_INPUT_ELEMENT_DESC> vInputElemDesc {
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
@@ -54,9 +52,10 @@ void PortfolioApp::Init()
 	DirectXDevice::pDeviceContext->VSSetShader(cpVS.Get(), NULL, NULL);
 	DirectXDevice::pDeviceContext->PSSetShader(cpPS.Get(), NULL, NULL);
 
+	//pPickableCamera->SetAsSwapChainBackBuffer();
+
 	ComPtr<ID3D11Texture2D> backBuffer;
 	DirectXDevice::pSwapChain->GetBuffer(0, IID_PPV_ARGS(backBuffer.GetAddressOf()));
-
 	ID3D11Helper::CreateRenderTargetView(DirectXDevice::pDevice, backBuffer.Get(), backRTV.GetAddressOf());
 
 	UINT uiStride = sizeof(InputLayout);
@@ -66,9 +65,7 @@ void PortfolioApp::Init()
 	DirectXDevice::pDeviceContext->IASetInputLayout(cpIL.Get());
 	DirectXDevice::pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	DirectXDevice::pDeviceContext->RSSetViewports(1, &pPickableCamera->sViewPort);
-	DirectXDevice::pDeviceContext->OMSetRenderTargets(1, backRTV.GetAddressOf(), nullptr);
 	DirectXDevice::pDeviceContext->RSSetState(RasterizationState::GetInstance(DirectXDevice::pDevice, DirectXDevice::pDeviceContext).GetSolidRS());
-
 	DepthStencilState& depthStencilState = DepthStencilState::GetInstance(DirectXDevice::pDevice);
 	DirectXDevice::pDeviceContext->OMSetDepthStencilState(depthStencilState.pGetDSS(DepthStencilState::DefaultOption), 0);
 }
@@ -82,8 +79,8 @@ void PortfolioApp::Update(const float& fDelta)
 void PortfolioApp::Render()
 {
 	float clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
+	DirectXDevice::pDeviceContext->OMSetRenderTargets(1, backRTV.GetAddressOf(), nullptr);
 	DirectXDevice::pDeviceContext->ClearRenderTargetView(backRTV.Get(), clearColor);
-
 	pPickableCamera->ClearRTV();
 	pPickableCamera->ClearDSV();
 	DirectXDevice::pDeviceContext->VSSetConstantBuffers(0, 1, pCubeModel->cpTransformationBuffer.GetAddressOf());
