@@ -5,8 +5,6 @@ class IFilter : public IShaderResource
 {
 public:
 	IFilter(
-		ID3D11Device* pDeviceIn,
-		ID3D11DeviceContext* pDeviceContextIn,
 		UINT uiWidthIn,
 		UINT uiHeightIn,
 		UINT uiArraySizeIn,

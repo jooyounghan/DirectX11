@@ -101,8 +101,8 @@ PixelOutput main(DomainOutput input)
     float3 diffuseBrdf = (float3(1, 1, 1) - F) * diffuseColor;
     float3 specularBrdf = (F * D * G) / (max(1e-6, 4.0 * NDotL * NDotE));
         
-    fDirectColor += (diffuseBrdf + specularBrdf) * fLightPowerSaturated * NDotL * f4LightColor.xyz;
-       
+    //fDirectColor += (diffuseBrdf + specularBrdf) * fLightPowerSaturated * NDotL * f4LightColor.xyz;
+    fDirectColor = float4(1.f, 0.f, 0.f, 1.f);
     result.pixelColor = float4(fDirectColor, 1.f);
     result.modleId = float4(sModelId.uiModelID.x, sModelId.uiModelID.y, sModelId.uiModelID.z, sModelId.uiModelIDStd) / sModelId.uiModelIDStd;
     return result;

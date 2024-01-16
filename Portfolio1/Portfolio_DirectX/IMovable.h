@@ -1,13 +1,18 @@
 #pragma once
-#include "IDirectXDevice.h"
+#include <d3d11.h>
+#include <d3dcompiler.h>
+#include <windows.h>
 #include <wrl/client.h>
+#include <directxmath/DirectXMath.h>
 
-class IMovable : virtual public IDirectXDevice
+class IMovable
 {
 public:
+	IMovable();
 	IMovable(
-		ID3D11Device* pDeviceIn, 
-		ID3D11DeviceContext* pDeviceContextIn
+		const float& fXPos,
+		const float& fYPos,
+		const float& fZPos
 	);
 	virtual ~IMovable();
 
@@ -21,19 +26,5 @@ public:
 
 protected:
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	cpPositionBuffer;
-
-public:
-	struct
-	{
-		float fPitch;
-		float fYaw;
-		float fRoll;
-	} sAngles;
-
-public:
-	virtual void Update(const float& fDelta) = 0;
-
-public:
-	virtual DirectX::XMMATRIX GetTranformMat() = 0;
 };
 

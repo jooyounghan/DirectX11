@@ -4,15 +4,8 @@
 class ASwapChainAccessable : public ITexture2D
 {
 public:
-	ASwapChainAccessable(
-		ID3D11Device*	pDeviceIn,
-		ID3D11DeviceContext* pDeviceContextIn,
-		IDXGISwapChain* pSwapChainIn
-	);
+	ASwapChainAccessable();
 	virtual ~ASwapChainAccessable();
-
-protected:
-	IDXGISwapChain* pSwapChain;
 
 public:
 	bool IsSwapChainAccesssed;

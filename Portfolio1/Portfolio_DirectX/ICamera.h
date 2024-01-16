@@ -9,9 +9,9 @@ class ICamera : public IRenderTarget, public IDepthStencil, public ASwapChainAcc
 {
 public:
 	ICamera(
-		ID3D11Device* pDeviceIn,
-		ID3D11DeviceContext* pDeviceContextIn,
-		IDXGISwapChain* pSwapChainIn,
+		const float& fXPos,
+		const float& fYPos,
+		const float& fZPos,
 		const UINT& uiWidthIn, const UINT& uiHeightIn,
 		const float& fFovRadIn, 
 		const float& fNearZIn,
@@ -25,7 +25,7 @@ public:
 public:
 	virtual void ClearRTV() = 0;
 	virtual void ClearDSV() = 0;
-	virtual void Resize() = 0;
+	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn) = 0;
 	virtual void Update(const float& fDelta) = 0;
 
 public:

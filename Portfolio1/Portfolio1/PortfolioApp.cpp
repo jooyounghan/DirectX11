@@ -77,32 +77,32 @@ void PortfolioApp::Init()
 	spMainCamera = make_shared<BloomCamera>(
 		cpDevice.Get(), cpDeviceContext.Get(), 
 		uiWidth, uiHeight, uiNumLevelQuality, DXGI_FORMAT_R16G16B16A16_FLOAT,
-		0.f, 5.f, -10.f, 70.f, 0.01f, 1000.f
+		0.f, 0.f, -10.f, 70.f, 0.01f, 1000.f
 	);
 	spMainCamera->SetAsMainCamera(cpSwapChain.Get());
 	// =================================================================================================
 	
 	
-	shared_ptr<SphereModel> spSphere = make_shared<SphereModel>(cpDevice.Get(), cpDeviceContext.Get(), 0.f, 5.f, 0.f, 2.f);
+	shared_ptr<SphereModel> spSphere = make_shared<SphereModel>(cpDevice.Get(), cpDeviceContext.Get(), 0.f, 0.f, 0.f, 2.f);
 	vSpPickableModels.push_back(spSphere);
 	vSpPBRModels.push_back(spSphere);
 
-	shared_ptr<PlaneModel> spPlane = make_shared<PlaneModel>(cpDevice.Get(), cpDeviceContext.Get(), 0.f, 0.f, 0.f, 100.f, 100.f, 10.f, 10.f);
-	vSpPickableModels.push_back(spPlane);
-	vSpPBRModels.push_back(spPlane);
+	//shared_ptr<PlaneModel> spPlane = make_shared<PlaneModel>(cpDevice.Get(), cpDeviceContext.Get(), 0.f, 0.f, 0.f, 100.f, 100.f, 10.f, 10.f);
+	//vSpPickableModels.push_back(spPlane);
+	//vSpPBRModels.push_back(spPlane);
 
-	shared_ptr<MirrorModel> spMirrorLeft = make_shared<MirrorModel>(
-		cpDevice.Get(), cpDeviceContext.Get(), 5.f, 5.f, 
-		DXGI_FORMAT_R16G16B16A16_FLOAT, -5.f, 5.f, 0.f, spMainCamera
-	);
-	shared_ptr<MirrorModel> spMirrorRight = make_shared<MirrorModel>(
-		cpDevice.Get(), cpDeviceContext.Get(), 5.f, 5.f, 
-		DXGI_FORMAT_R16G16B16A16_FLOAT, 5.f, 5.f, 0.f, spMainCamera
-	);
-	vSpPickableModels.push_back(spMirrorLeft);
-	vSpPickableModels.push_back(spMirrorRight);
-	vSpMirrorModels.push_back(spMirrorLeft);
-	vSpMirrorModels.push_back(spMirrorRight);
+	//shared_ptr<MirrorModel> spMirrorLeft = make_shared<MirrorModel>(
+	//	cpDevice.Get(), cpDeviceContext.Get(), 5.f, 5.f, 
+	//	DXGI_FORMAT_R16G16B16A16_FLOAT, -5.f, 5.f, 0.f, spMainCamera
+	//);
+	//shared_ptr<MirrorModel> spMirrorRight = make_shared<MirrorModel>(
+	//	cpDevice.Get(), cpDeviceContext.Get(), 5.f, 5.f, 
+	//	DXGI_FORMAT_R16G16B16A16_FLOAT, 5.f, 5.f, 0.f, spMainCamera
+	//);
+	//vSpPickableModels.push_back(spMirrorLeft);
+	//vSpPickableModels.push_back(spMirrorRight);
+	//vSpMirrorModels.push_back(spMirrorLeft);
+	//vSpMirrorModels.push_back(spMirrorRight);
 
 	spCubeMap = make_shared<CubeMapModel>(cpDevice.Get(), cpDeviceContext.Get());
 

@@ -5,8 +5,6 @@ class StageShaderResource : public IShaderResource
 {
 public:
 	StageShaderResource(
-		ID3D11Device* pDeviceIn,
-		ID3D11DeviceContext* pDeviceContextIn,
 		const UINT& uiWidthIn, const UINT& uiHeightIn,
 		const UINT& uiArraySizeIn,
 		const UINT& uiNumQualityLevelsIn,

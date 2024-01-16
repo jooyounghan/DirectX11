@@ -1,12 +1,14 @@
 #pragma once
 #include "IMovable.h"
+#include "IAngleAdjustable.h"
 
-class AViewable : public IMovable
+class AViewable : public IMovable, public IAngleAdjustable
 {
 public:
 	AViewable(
-		ID3D11Device* pDeviceIn, 
-		ID3D11DeviceContext* pDeviceContextIn,
+		const float& fXPos,
+		const float& fYPos,
+		const float& fZPos,
 		const float& fWidthIn,
 		const float& fHeightIn,
 		const float& fFovRadianIn, 
@@ -27,6 +29,8 @@ protected:
 		DirectX::XMMATRIX			xmmViewProjMat;
 		DirectX::XMMATRIX			xmmInvViewProjMat;
 	} sViewProjs;
+
+public:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> cpViewProjBuffer;
 
 protected:
@@ -34,8 +38,5 @@ protected:
 
 public:
 	virtual void Update(const float& fDelta) = 0;
-
-public:
-	virtual DirectX::XMMATRIX GetTranformMat() = 0;
 };
 

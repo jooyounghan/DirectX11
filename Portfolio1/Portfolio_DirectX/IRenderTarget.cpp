@@ -1,9 +1,8 @@
 #include "IRenderTarget.h"
 #include "ID3D11Helper.h"
+#include "DirectXDevice.h"
 
 IRenderTarget::IRenderTarget(
-	ID3D11Device* pDeviceIn,
-	ID3D11DeviceContext* pDeviceContextIn,
 	const UINT& uiWidthIn,
 	const UINT& uiHeightIn,
 	const UINT& uiArraySizeIn,
@@ -15,12 +14,12 @@ IRenderTarget::IRenderTarget(
 	DXGI_FORMAT eFormatIn
 )
 	: IShaderResource(
-		pDeviceIn, pDeviceContextIn, uiWidthIn, uiHeightIn, uiArraySizeIn,
+		uiWidthIn, uiHeightIn, uiArraySizeIn,
 		uiNumQualityLevelsIn, uiBindFlagIn | D3D11_BIND_RENDER_TARGET, uiCPUAccessIn,
 		uiMiscFlagIn, eUsageIn, eFormatIn
 	)
 {
-	ID3D11Helper::CreateRenderTargetView(pDeviceIn, cpTexture2D.Get(), cpRTV.GetAddressOf());
+	ID3D11Helper::CreateRenderTargetView(DirectXDevice::pDevice, cpTexture2D.Get(), cpRTV.GetAddressOf());
 }
 
 IRenderTarget::~IRenderTarget()

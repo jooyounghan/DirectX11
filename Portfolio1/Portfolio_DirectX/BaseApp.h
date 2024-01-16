@@ -5,6 +5,8 @@
 #include <d3d11.h>
 #include <d3dcompiler.h>
 
+#include "DirectXDevice.h"
+
 class BaseApp
 {
 public:
@@ -17,8 +19,6 @@ public:
 protected:
 	UINT	uiWidth;
 	UINT	uiHeight;
-	float	fAspectRatio;
-	UINT	uiNumLevelQuality;
 
 protected:
 	WNDCLASSEX wc;
@@ -32,12 +32,7 @@ public:
 	virtual void Quit();
 
 public:
-	inline void SwapChain() { cpSwapChain->Present(1, 0); };
-
-protected:
-	Microsoft::WRL::ComPtr<ID3D11Device> cpDevice;
-	Microsoft::WRL::ComPtr<ID3D11DeviceContext> cpDeviceContext;
-	Microsoft::WRL::ComPtr<IDXGISwapChain> cpSwapChain;
+	inline void SwapChain() { DirectXDevice::pSwapChain->Present(1, 0); };
 
 public:
 	virtual LRESULT WINAPI AppProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);

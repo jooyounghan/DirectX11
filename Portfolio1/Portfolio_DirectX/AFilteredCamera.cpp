@@ -1,9 +1,10 @@
 #include "AFilteredCamera.h"
+#include "DirectXDevice.h"
 
 AFilteredCamera::AFilteredCamera(
-	ID3D11Device* pDeviceIn,
-	ID3D11DeviceContext* pDeviceContextIn,
-	IDXGISwapChain* pSwapChainIn,
+	const float& fXPos,
+	const float& fYPos,
+	const float& fZPos,
 	const UINT& uiWidthIn, const UINT& uiHeightIn,
 	const float& fFovRadIn,
 	const float& fNearZIn,
@@ -13,7 +14,7 @@ AFilteredCamera::AFilteredCamera(
 	DXGI_FORMAT eDSVFormatIn
 )
 	: ICamera(
-		pDeviceIn, pDeviceContextIn, pSwapChainIn,
+		fXPos, fYPos, fZPos,
 		uiWidthIn, uiHeightIn,
 		fFovRadIn, fNearZIn, fFarZIn,
 		uiNumQualityLevelsIn,
@@ -43,6 +44,6 @@ void AFilteredCamera::Filter()
 			pOutputResource = pFilters[pFilters.size() - 1]->cpTexture2D.Get();
 		}
 
-		pDeviceContext->ResolveSubresource(ASwapChainAccessable::cpTexture2D.Get(), 0, pOutputResource, 0, ASwapChainAccessable::eFormat);
+		DirectXDevice::pDeviceContext->ResolveSubresource(ASwapChainAccessable::cpTexture2D.Get(), 0, pOutputResource, 0, ASwapChainAccessable::eFormat);
 	}
 }

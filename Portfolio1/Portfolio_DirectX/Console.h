@@ -4,8 +4,10 @@
 
 class Console
 {
-public:
+private:
 	static std::mutex mtxConsole;
+
+public:
 	static void Print(const std::string& str);
 };
 

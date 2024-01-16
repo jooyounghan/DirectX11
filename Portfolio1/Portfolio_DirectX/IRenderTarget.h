@@ -5,8 +5,6 @@ class IRenderTarget : public IShaderResource
 {
 public:
 	IRenderTarget(
-		ID3D11Device* pDeviceIn,
-		ID3D11DeviceContext* pDeviceContextIn,
 		const UINT& uiWidthIn,
 		const UINT& uiHeightIn,
 		const UINT& uiArraySizeIn,

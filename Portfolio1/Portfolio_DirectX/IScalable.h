@@ -1,6 +1,4 @@
 #pragma once
-#include <wrl/client.h>
-
 class IScalable
 {
 public:
@@ -8,9 +6,13 @@ public:
 	~IScalable();
 
 public:
-	float	fScale[3];
+	struct
+	{
+		float fScaleX;
+		float fScaleY;
+		float fScaleZ;
+	} sScales;
 
-public:
 	virtual void ScaleUp(const float& fXup, const float& fYUp, const float& fZUp) = 0;
 };
 

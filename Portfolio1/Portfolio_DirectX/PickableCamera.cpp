@@ -1,11 +1,13 @@
 #include "PickableCamera.h"
 #include "ID3D11Helper.h"
 #include "MathematicalHelper.h"
+#include "DirectXDevice.h"
 
 PickableCamera::PickableCamera(
-	ID3D11Device* pDeviceIn,
-	ID3D11DeviceContext* pDeviceContextIn,
-	IDXGISwapChain* pSwapChainIn,
+
+	const float& fXPos,
+	const float& fYPos,
+	const float& fZPos,
 	const UINT& uiWidthIn, const UINT& uiHeightIn,
 	const float& fFovRadIn,
 	const float& fNearZIn,
@@ -15,12 +17,12 @@ PickableCamera::PickableCamera(
 	DXGI_FORMAT eDSVFormatIn
 )
 	: AFilteredCamera(
-		pDeviceIn, pDeviceContextIn, pSwapChainIn,
+		fXPos, fYPos, fZPos,
 		uiWidthIn, uiHeightIn,
 		fFovRadIn, fNearZIn, fFarZIn,
 		uiNumQualityLevelsIn,
 		eRTVFormatIn, eDSVFormatIn
-	), idRTV(pDeviceIn, pDeviceContextIn, uiNumQualityLevelsIn, uiWidthIn, uiHeightIn)
+	), IRectangle(uiWidthIn, uiHeightIn, 1, 0)
 {
 }
 
@@ -30,13 +32,12 @@ PickableCamera::~PickableCamera()
 
 void PickableCamera::ClearRTV()
 {
-	idRTV.ClearRTV();
-	pDeviceContext->ClearRenderTargetView(cpRTV.Get(), IRenderTarget::fClearColor);
+	DirectXDevice::pDeviceContext->ClearRenderTargetView(cpRTV.Get(), IRenderTarget::fClearColor);
 }
 
 void PickableCamera::ClearDSV()
 {
-	pDeviceContext->ClearDepthStencilView(cpDSV.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 0.f, NULL);
+	DirectXDevice::pDeviceContext->ClearDepthStencilView(cpDSV.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 0.f, NULL);
 }
 
 void PickableCamera::Resize(const UINT& uiWidthIn, const UINT& uiHeightIn)
@@ -54,31 +55,29 @@ void PickableCamera::Resize(const UINT& uiWidthIn, const UINT& uiHeightIn)
 	ASwapChainAccessable::cpTexture2D.Reset();
 	if (IsSwapChainAccesssed)
 	{
-		pSwapChain->ResizeBuffers(0, uiWidth, uiHeight, DXGI_FORMAT_UNKNOWN, 0);
+		DirectXDevice::pSwapChain->ResizeBuffers(0, uiWidth, uiHeight, DXGI_FORMAT_UNKNOWN, 0);
 		SetAsSwapChainBackBuffer();
 	}
 
 	ID3D11Helper::CreateTexture2D(
-		pDevice,
+		DirectXDevice::pDevice,
 		uiWidth, uiHeight,
 		uiArraySize, uiNumQualityLevels,
 		D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET,
 		NULL, NULL, D3D11_USAGE_DEFAULT, IRenderTarget::eFormat, IRenderTarget::cpTexture2D.GetAddressOf()
 	);
-	ID3D11Helper::CreateRenderTargetView(pDevice, IRenderTarget::cpTexture2D.Get(), cpRTV.GetAddressOf());
-	ID3D11Helper::CreateShaderResoureView(pDevice, IRenderTarget::cpTexture2D.Get(), cpSRV.GetAddressOf());
+	ID3D11Helper::CreateRenderTargetView(DirectXDevice::pDevice, IRenderTarget::cpTexture2D.Get(), cpRTV.GetAddressOf());
+	ID3D11Helper::CreateShaderResoureView(DirectXDevice::pDevice, IRenderTarget::cpTexture2D.Get(), cpSRV.GetAddressOf());
 
 
 	ID3D11Helper::CreateTexture2D(
-		pDevice,
+		DirectXDevice::pDevice,
 		uiWidth, uiHeight,
 		uiArraySize, uiNumQualityLevels,
 		D3D11_BIND_DEPTH_STENCIL,
 		NULL, NULL, D3D11_USAGE_DEFAULT, IDepthStencil::eFormat, IDepthStencil::cpTexture2D.GetAddressOf()
 	);
-	ID3D11Helper::CreateDepthStencilView(pDevice, IDepthStencil::cpTexture2D.Get(), cpDSV.GetAddressOf());
-
-	idRTV.Resize(uiWidth, uiHeight);
+	ID3D11Helper::CreateDepthStencilView(DirectXDevice::pDevice, IDepthStencil::cpTexture2D.Get(), cpDSV.GetAddressOf());
 }
 
 void PickableCamera::Update(const float& fDelta)

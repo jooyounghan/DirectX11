@@ -6,8 +6,9 @@ class IImageFile : public IFile, public IShaderResource
 {
 public:
 	IImageFile(
-		ID3D11Device* pDeviceIn,
-		ID3D11DeviceContext* pDeviceContextIn,
+		const std::string& strFileNameIn
+	);
+	IImageFile(
 		const UINT& uiWidthIn,
 		const UINT& uiHeightIn,
 		const UINT& uiMiscFlagIn,
@@ -16,5 +17,11 @@ public:
 		const std::string& strFileNameIn
 	);
 	virtual ~IImageFile();
+
+public:
+	virtual FileType GetFileType() = 0;
+
+private:
+	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn) override final {};
 };
 

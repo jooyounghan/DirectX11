@@ -13,6 +13,6 @@ public:
 
 public:
 	virtual void Load(const std::string& path) = 0;
-	virtual void Render() = 0;
+	virtual void Draw() = 0;
 };
 

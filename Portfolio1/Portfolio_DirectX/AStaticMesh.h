@@ -7,8 +7,7 @@
 
 #include <vector>
 #include "IModel.h"
-#include "IMovable.h"
-#include "IScalable.h"
+#include "ATransformerable.h"
 
 struct TextureCoord
 {
@@ -37,30 +36,26 @@ struct InputLayout
 	NormalVector normal;
 };
 
-class IStaticMesh : public IModel, public IMovable, public IScalable
+class AStaticMesh : public IModel, public ATransformerable
 {
 public:
-	IStaticMesh(
-		ID3D11Device* pDeviceIn,
-		ID3D11DeviceContext* pDeviceContextIn
-	);
-	virtual ~IStaticMesh();
+	AStaticMesh();
+	virtual ~AStaticMesh();
 
 protected:
 	std::vector<InputLayout>	inputData;
 	std::vector<uint32_t>		indexData;
 
-protected:
+public:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> inputBuffer;
 	Microsoft::WRL::ComPtr<ID3D11Buffer> indexBuffer;
 
 public:
 	virtual void Load(const std::string& path) = 0;
-	virtual void Render() = 0;
+	virtual void Draw() = 0;
 	virtual void Update(const float& fDelta) = 0;
-	virtual void ScaleUp(const float& fXup, const float& fYUp, const float& fZUp) = 0;
 
 public:
-	virtual DirectX::XMMATRIX GetTranformMat() = 0;
+	virtual void ScaleUp(const float& fXup, const float& fYUp, const float& fZUp) override final;
 };
 

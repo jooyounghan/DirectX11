@@ -3,26 +3,21 @@
 
 #include "DefineVar.h"
 #include "ID3D11Helper.h"
+#include "DirectXDevice.h"
 
 #include <algorithm>
 
 using namespace std;
 
 PickableIDRenderTarget::PickableIDRenderTarget(
-	ID3D11Device* pDeviceIn,
-	ID3D11DeviceContext* pDeviceContextIn,
 	const UINT& uiNumQualityLevelsIn,
 	const UINT& uiWidthIn, const UINT& uiHeightIn
 )
 	: IRenderTarget(
-		pDeviceIn, pDeviceContextIn, uiWidthIn, uiHeightIn, 
+		uiWidthIn, uiHeightIn, 
 		1, uiNumQualityLevelsIn, NULL, NULL, NULL,
 		D3D11_USAGE_DEFAULT, 
 		DXGI_FORMAT_R16_UINT
-	), 
-	IDirectXDevice(
-		pDeviceIn, 
-		pDeviceContextIn
 	),
 	IRectangle(
 		uiWidthIn, uiHeightIn, 1, uiNumQualityLevelsIn
@@ -30,7 +25,7 @@ PickableIDRenderTarget::PickableIDRenderTarget(
 	pMSToSSSRV(nullptr), pStageSRV(nullptr)
 {
 	pStageSRV = new StageShaderResource(
-		pDevice, pDeviceContextIn, 1, 1,
+		1, 1,
 		1, 0, 
 		DXGI_FORMAT_R16_UINT
 	);
@@ -38,7 +33,7 @@ PickableIDRenderTarget::PickableIDRenderTarget(
 	if (uiNumQualityLevelsIn > 0)
 	{
 		pMSToSSSRV = new StageShaderResource(
-			pDevice, pDeviceContextIn, uiWidth, uiHeight,
+			uiWidth, uiHeight,
 			1, uiNumQualityLevels, DXGI_FORMAT_R16_UINT
 		);
 	}
@@ -101,22 +96,22 @@ void PickableIDRenderTarget::Resize(const UINT& uiWidthIn, const UINT& uiHeightI
 	uiHeight = uiHeightIn;
 
 	ID3D11Helper::CreateTexture2D(
-		pDevice, uiWidth, uiHeight,
+		DirectXDevice::pDevice, uiWidth, uiHeight,
 		uiArraySize, uiNumQualityLevels,
 		D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE,
 		NULL, NULL, D3D11_USAGE_DEFAULT, eFormat, cpTexture2D.GetAddressOf()
 	);
-	ID3D11Helper::CreateRenderTargetView(pDevice, cpTexture2D.Get(), cpRTV.GetAddressOf());
-	ID3D11Helper::CreateShaderResoureView(pDevice, cpTexture2D.Get(), cpSRV.GetAddressOf());
+	ID3D11Helper::CreateRenderTargetView(DirectXDevice::pDevice, cpTexture2D.Get(), cpRTV.GetAddressOf());
+	ID3D11Helper::CreateShaderResoureView(DirectXDevice::pDevice, cpTexture2D.Get(), cpSRV.GetAddressOf());
 
 	if (uiNumQualityLevels > 0)
 	{
 		ID3D11Helper::CreateTexture2D(
-			pDevice, uiWidth, uiHeight,
+			DirectXDevice::pDevice, uiWidth, uiHeight,
 			uiArraySize, 0,
 			D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE,
 			NULL, NULL, D3D11_USAGE_DEFAULT, eFormat, pMSToSSSRV->cpTexture2D.GetAddressOf()
 		);
-		ID3D11Helper::CreateShaderResoureView(pDevice, pMSToSSSRV->cpTexture2D.Get(), pMSToSSSRV->cpSRV.GetAddressOf());
+		ID3D11Helper::CreateShaderResoureView(DirectXDevice::pDevice, pMSToSSSRV->cpTexture2D.Get(), pMSToSSSRV->cpSRV.GetAddressOf());
 	}
 }

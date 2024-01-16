@@ -10,8 +10,7 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 BaseApp::BaseApp(const UINT& uiWidthIn, const UINT& uiHeightIn)
 	: uiWidth(uiWidthIn),
-	uiHeight(uiHeightIn),
-	fAspectRatio(uiWidth / (float)uiHeight)
+	uiHeight(uiHeightIn)
 {
 	GlobalBaseApp = this;
 
@@ -26,7 +25,7 @@ BaseApp::BaseApp(const UINT& uiWidthIn, const UINT& uiHeightIn)
 					 NULL,
 					 NULL,
 					 NULL,
-					 L"Portfolio1", // lpszClassName, L-string
+					 L"Portfolio", // lpszClassName, L-string
 					 NULL };
 
 	RegisterClassEx(&wc);
@@ -38,7 +37,7 @@ BaseApp::BaseApp(const UINT& uiWidthIn, const UINT& uiHeightIn)
 	const LONG& lTotalWidth = rWindowRect.right - rWindowRect.left;
 	const LONG& lTotalHeight = rWindowRect.bottom - rWindowRect.top;
 
-	HWND hWindow = CreateWindow(wc.lpszClassName, L"Joo YH / Portfolio1",
+	HWND hWindow = CreateWindow(wc.lpszClassName, L"Joo YH / Portfolio_DirectX11",
 		WS_OVERLAPPEDWINDOW,
 		0,
 		0,

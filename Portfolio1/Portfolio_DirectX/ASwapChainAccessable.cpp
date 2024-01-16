@@ -1,19 +1,9 @@
 #include "ASwapChainAccessable.h"
 #include "ID3D11Helper.h"
+#include "DirectXDevice.h"
 
-ASwapChainAccessable::ASwapChainAccessable(
-	ID3D11Device* pDeviceIn,
-	ID3D11DeviceContext* pDeviceContextIn,
-	IDXGISwapChain* pSwapChainIn
-) : pSwapChain(pSwapChainIn), IsSwapChainAccesssed(false), 
-	ITexture2D(
-		pDeviceIn,
-		pDeviceContextIn,
-		1, 1, 1, 0, 
-		NULL, NULL, NULL,
-		D3D11_USAGE_DEFAULT,
-		DXGI_FORMAT_R8G8B8A8_UNORM
-	)
+ASwapChainAccessable::ASwapChainAccessable() 
+	: IsSwapChainAccesssed(false), ITexture2D()
 {
 
 }
@@ -27,7 +17,7 @@ void ASwapChainAccessable::SetAsSwapChainBackBuffer()
 	ResetFromSwapChain();
 	IsSwapChainAccesssed = true;
 
-	if (ID3D11Helper::GetBackBuffer(pSwapChain, cpTexture2D.GetAddressOf()))
+	if (ID3D11Helper::GetBackBuffer(DirectXDevice::pSwapChain, cpTexture2D.GetAddressOf()))
 	{
 		D3D11_TEXTURE2D_DESC sTexture2DDesc;
 		cpTexture2D->GetDesc(&sTexture2DDesc);

@@ -17,14 +17,14 @@ class ID3D11Helper
 {
 public:
 	static void CreateDeviceAndContext(
-		IN const UINT& iWidth,
-		IN const UINT& iHeight,
-		IN bool bWindowed,
+		IN const UINT& uiWidthIn,
+		IN const UINT& uiHeightIn,
+		IN const DXGI_FORMAT& eFormatIn,
+		IN const bool& bWindowed,
 		IN HWND hOutputWindow,
-		OUT UINT& uiNumLevelQuality,
-		OUT ComPtr<IDXGISwapChain>& cpSwapChain,
 		OUT ComPtr<ID3D11Device>& cpDevice,
-		OUT ComPtr<ID3D11DeviceContext>& cpDeviceContext
+		OUT ComPtr<ID3D11DeviceContext>& cpDeviceContext,
+		OUT ComPtr<IDXGISwapChain>& cpSwapChain
 	);
 
 	static void CreateVSInputLayOut(
@@ -163,7 +163,7 @@ public:
 		IN const UINT&					uiMiscFlag,
 		IN D3D11_USAGE					eUsage,
 		IN DXGI_FORMAT					eFormat,
-		IN const uint8_t* const			pImageRawData,
+		IN uint8_t*				pImageRawData,
 		OUT ID3D11Texture2D**			ppTexture2D
 	);
 
@@ -179,17 +179,6 @@ public:
 		IN D3D11_USAGE eUsage,
 		IN DXGI_FORMAT eFormat,
 		OUT ID3D11Texture2D** ppTexture2D
-	);
-
-	static void CreateTexture2DFromDDS(
-		IN ID3D11Device* pDevice,
-		IN const wchar_t* wFileName,
-		IN UINT uiBindFlag,
-		IN UINT uiCPUAccess,
-		IN UINT uiMiscFlag,
-		IN D3D11_USAGE eUsage,
-		OUT ID3D11Texture2D** ppTexture2D,
-		OUT ID3D11ShaderResourceView** ppSRV
 	);
 };
 

@@ -1,13 +1,14 @@
 #pragma once
-#include "IDirectXDevice.h"
+#include <stdint.h>
+#include <d3d11.h>
+#include <d3dcompiler.h>
 #include "IRectangle.h"
 
-class ITexture2D : virtual public IDirectXDevice, virtual public IRectangle
+class ITexture2D : virtual public IRectangle
 {
 public:
+	ITexture2D();
 	ITexture2D(
-		ID3D11Device* pDeviceIn,
-		ID3D11DeviceContext* pDeviceContextIn,
 		const UINT& uiWidthIn,
 		const UINT& uiHeightIn,
 		const UINT& uiArraySizeIn,
@@ -15,21 +16,19 @@ public:
 		const UINT& uiBindFlagIn,
 		const UINT& uiCPUAccessIn,
 		const UINT& uiMiscFlagIn,
-		D3D11_USAGE eUsageIn,
-		DXGI_FORMAT eFormatIn
+		const D3D11_USAGE& eUsageIn,
+		const DXGI_FORMAT& eFormatIn
 	);
 
 	ITexture2D(
-		ID3D11Device* pDeviceIn,
-		ID3D11DeviceContext* pDeviceContextIn,
 		const UINT& uiWidthIn,
 		const UINT& uiHeightIn,
 		const UINT& uiBindFlagIn,
 		const UINT& uiCPUAccessIn,
 		const UINT& uiMiscFlagIn,
-		D3D11_USAGE eUsageIn,
-		DXGI_FORMAT eFormatIn,
-		const uint8_t* const pImageSourceIn
+		const D3D11_USAGE& eUsageIn,
+		const DXGI_FORMAT& eFormatIn,
+		uint8_t* pImageSourceIn
 	);
 
 	virtual ~ITexture2D();

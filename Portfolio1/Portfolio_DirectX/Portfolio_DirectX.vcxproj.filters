@@ -73,6 +73,9 @@
     <Filter Include="헤더 파일\Texture2D\Extended">
       <UniqueIdentifier>{a2cd1a36-b049-4b26-95b2-eb212e32fa7d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shader">
+      <UniqueIdentifier>{2a2334f3-bf48-4e07-849c-5795f0e8ef8a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseApp.h">
@@ -84,7 +87,7 @@
     <ClInclude Include="IModel.h">
       <Filter>헤더 파일\Model</Filter>
     </ClInclude>
-    <ClInclude Include="IStaticMesh.h">
+    <ClInclude Include="AStaticMesh.h">
       <Filter>헤더 파일\Model</Filter>
     </ClInclude>
     <ClInclude Include="APossessable.h">
@@ -96,16 +99,10 @@
     <ClInclude Include="AViewable.h">
       <Filter>헤더 파일\BaseAbstract</Filter>
     </ClInclude>
-    <ClInclude Include="IDirectXDevice.h">
-      <Filter>헤더 파일\BaseInteface</Filter>
-    </ClInclude>
     <ClInclude Include="IMovable.h">
       <Filter>헤더 파일\BaseInteface</Filter>
     </ClInclude>
     <ClInclude Include="IRectangle.h">
-      <Filter>헤더 파일\BaseInteface</Filter>
-    </ClInclude>
-    <ClInclude Include="IScalable.h">
       <Filter>헤더 파일\BaseInteface</Filter>
     </ClInclude>
     <ClInclude Include="ICamera.h">
@@ -150,9 +147,6 @@
     <ClInclude Include="DDSImageFile.h">
       <Filter>헤더 파일\File\Extended</Filter>
     </ClInclude>
-    <ClInclude Include="EXRImageFile.h">
-      <Filter>헤더 파일\File\Extended</Filter>
-    </ClInclude>
     <ClInclude Include="NormalImageFile.h">
       <Filter>헤더 파일\File\Extended</Filter>
     </ClInclude>
@@ -177,6 +171,33 @@
     <ClInclude Include="ITexture2D.h">
       <Filter>헤더 파일\Texture2D</Filter>
     </ClInclude>
+    <ClInclude Include="DirectXDevice.h">
+      <Filter>헤더 파일\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="ATransformerable.h">
+      <Filter>헤더 파일\BaseAbstract</Filter>
+    </ClInclude>
+    <ClInclude Include="IScalable.h">
+      <Filter>헤더 파일\BaseInteface</Filter>
+    </ClInclude>
+    <ClInclude Include="IAngleAdjustable.h">
+      <Filter>헤더 파일\BaseInteface</Filter>
+    </ClInclude>
+    <ClInclude Include="CubeModel.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="RasterizationState.h">
+      <Filter>헤더 파일\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="SamplerState.h">
+      <Filter>헤더 파일\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="DepthStencilState.h">
+      <Filter>헤더 파일\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="BlendState.h">
+      <Filter>헤더 파일\Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseApp.cpp">
@@ -188,7 +209,7 @@
     <ClCompile Include="PortfolioApp.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="IStaticMesh.cpp">
+    <ClCompile Include="AStaticMesh.cpp">
       <Filter>소스 파일\Model</Filter>
     </ClCompile>
     <ClCompile Include="APossessable.cpp">
@@ -200,16 +221,10 @@
     <ClCompile Include="AViewable.cpp">
       <Filter>소스 파일\BaseAbstract</Filter>
     </ClCompile>
-    <ClCompile Include="IDirectXDevice.cpp">
-      <Filter>소스 파일\BaseInterface</Filter>
-    </ClCompile>
     <ClCompile Include="IMovable.cpp">
       <Filter>소스 파일\BaseInterface</Filter>
     </ClCompile>
     <ClCompile Include="IRectangle.cpp">
-      <Filter>소스 파일\BaseInterface</Filter>
-    </ClCompile>
-    <ClCompile Include="IScalable.cpp">
       <Filter>소스 파일\BaseInterface</Filter>
     </ClCompile>
     <ClCompile Include="ICamera.cpp">
@@ -245,9 +260,6 @@
     <ClCompile Include="DDSImageFile.cpp">
       <Filter>소스 파일\File\Extended</Filter>
     </ClCompile>
-    <ClCompile Include="EXRImageFile.cpp">
-      <Filter>소스 파일\File\Extended</Filter>
-    </ClCompile>
     <ClCompile Include="NormalImageFile.cpp">
       <Filter>소스 파일\File\Extended</Filter>
     </ClCompile>
@@ -278,5 +290,45 @@
     <ClCompile Include="PickableIDRenderTarget.cpp">
       <Filter>소스 파일\Texture2D\Extended</Filter>
     </ClCompile>
+    <ClCompile Include="DirectXDevice.cpp">
+      <Filter>소스 파일\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="ATransformerable.cpp">
+      <Filter>소스 파일\BaseAbstract</Filter>
+    </ClCompile>
+    <ClCompile Include="IAngleAdjustable.cpp">
+      <Filter>소스 파일\BaseInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="IScalable.cpp">
+      <Filter>소스 파일\BaseInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="CubeModel.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="RasterizationState.cpp">
+      <Filter>소스 파일\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="SamplerState.cpp">
+      <Filter>소스 파일\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="DepthStencilState.cpp">
+      <Filter>소스 파일\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="BlendState.cpp">
+      <Filter>소스 파일\Utils</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="VertexShader.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="PixelShader.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Common.hlsli">
+      <Filter>Shader</Filter>
+    </None>
   </ItemGroup>
 </Project>

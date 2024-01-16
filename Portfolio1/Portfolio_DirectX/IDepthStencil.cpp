@@ -1,9 +1,8 @@
 #include "IDepthStencil.h"
 #include "ID3D11Helper.h"
+#include "DirectXDevice.h"
 
 IDepthStencil::IDepthStencil(
-	ID3D11Device* pDeviceIn,
-	ID3D11DeviceContext* pDeviceContextIn,
 	const UINT& uiWidthIn,
 	const UINT& uiHeightIn,
 	const UINT& uiArraySizeIn,
@@ -15,12 +14,12 @@ IDepthStencil::IDepthStencil(
 	DXGI_FORMAT eFormatIn
 )
 	: ITexture2D(
-		pDeviceIn, pDeviceContextIn, uiWidthIn, uiHeightIn, uiArraySizeIn,
+		uiWidthIn, uiHeightIn, uiArraySizeIn,
 		uiNumQualityLevelsIn, uiBindFlagIn, uiCPUAccessIn,
 		uiMiscFlagIn, eUsageIn, eFormatIn
 	)
 {
-	ID3D11Helper::CreateDepthStencilView(pDeviceIn, cpTexture2D.Get(), cpDSV.GetAddressOf());
+	ID3D11Helper::CreateDepthStencilView(DirectXDevice::pDevice, cpTexture2D.Get(), cpDSV.GetAddressOf());
 }
 
 IDepthStencil::~IDepthStencil()

@@ -1,22 +1,25 @@
 #include "ITexture2D.h"
 #include "ID3D11Helper.h"
+#include "DirectXDevice.h"
+
+ITexture2D::ITexture2D()
+	: IRectangle(), eFormat(DXGI_FORMAT_UNKNOWN)
+{
+}
 
 ITexture2D::ITexture2D(
-	ID3D11Device* pDeviceIn,
-	ID3D11DeviceContext* pDeviceContextIn,
 	const UINT& uiWidthIn, const UINT& uiHeightIn,
 	const UINT& uiArraySizeIn, const UINT& uiNumQualityLevelsIn,
 	const UINT& uiBindFlagIn,
 	const UINT& uiCPUAccessIn,
 	const UINT& uiMiscFlagIn,
-	D3D11_USAGE eUsageIn,
-	DXGI_FORMAT eFormatIn
+	const D3D11_USAGE& eUsageIn,
+	const DXGI_FORMAT& eFormatIn
 )
-	: IDirectXDevice(pDeviceIn, pDeviceContextIn), 
-	IRectangle(uiWidthIn, uiHeightIn, uiArraySizeIn, uiNumQualityLevelsIn), eFormat(eFormatIn)
+	: IRectangle(uiWidthIn, uiHeightIn, uiArraySizeIn, uiNumQualityLevelsIn), eFormat(eFormatIn)
 {
 	ID3D11Helper::CreateTexture2D(
-		pDevice,
+		DirectXDevice::pDevice,
 		uiWidth, uiHeight,
 		uiArraySize,
 		uiNumQualityLevels,
@@ -30,20 +33,19 @@ ITexture2D::ITexture2D(
 }
 
 ITexture2D::ITexture2D(
-	ID3D11Device* pDeviceIn, 
-	ID3D11DeviceContext* pDeviceContextIn, 
 	const UINT& uiWidthIn, 
 	const UINT& uiHeightIn,
 	const UINT& uiBindFlagIn, 
 	const UINT& uiCPUAccessIn,
 	const UINT& uiMiscFlagIn, 
-	D3D11_USAGE eUsageIn,
-	DXGI_FORMAT eFormatIn,
-	const uint8_t* const pImageSourceIn
+	const D3D11_USAGE& eUsageIn,
+	const DXGI_FORMAT& eFormatIn,
+	uint8_t* pImageSourceIn
 )
+	: IRectangle(uiWidthIn, uiHeightIn, 1, 0), eFormat(eFormatIn)
 {
 	ID3D11Helper::CreateTexture2D(
-		pDevice,
+		DirectXDevice::pDevice,
 		uiWidth, uiHeight,
 		uiBindFlagIn,
 		uiCPUAccessIn,

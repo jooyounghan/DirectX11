@@ -133,16 +133,19 @@
     <ClInclude Include="ASwapChainAccessable.h" />
     <ClInclude Include="AViewable.h" />
     <ClInclude Include="BaseApp.h" />
+    <ClInclude Include="BlendState.h" />
     <ClInclude Include="Console.h" />
+    <ClInclude Include="CubeModel.h" />
     <ClInclude Include="DDSImageFile.h" />
     <ClInclude Include="DefineVar.h" />
-    <ClInclude Include="EXRImageFile.h" />
+    <ClInclude Include="DepthStencilState.h" />
+    <ClInclude Include="DirectXDevice.h" />
     <ClInclude Include="FileLoader.h" />
+    <ClInclude Include="IAngleAdjustable.h" />
     <ClInclude Include="ICamera.h" />
     <ClInclude Include="ICommand.h" />
     <ClInclude Include="ID3D11Helper.h" />
     <ClInclude Include="IDepthStencil.h" />
-    <ClInclude Include="IDirectXDevice.h" />
     <ClInclude Include="IFile.h" />
     <ClInclude Include="IFilter.h" />
     <ClInclude Include="IImageFile.h" />
@@ -154,13 +157,16 @@
     <ClInclude Include="IRenderTarget.h" />
     <ClInclude Include="IScalable.h" />
     <ClInclude Include="IShaderResource.h" />
-    <ClInclude Include="IStaticMesh.h" />
+    <ClInclude Include="AStaticMesh.h" />
     <ClInclude Include="ITexture2D.h" />
+    <ClInclude Include="ATransformerable.h" />
     <ClInclude Include="MathematicalHelper.h" />
     <ClInclude Include="NormalImageFile.h" />
     <ClInclude Include="PickableCamera.h" />
     <ClInclude Include="PickableIDRenderTarget.h" />
     <ClInclude Include="PortfolioApp.h" />
+    <ClInclude Include="RasterizationState.h" />
+    <ClInclude Include="SamplerState.h" />
     <ClInclude Include="StageShaderResource.h" />
   </ItemGroup>
   <ItemGroup>
@@ -169,14 +175,17 @@
     <ClCompile Include="ASwapChainAccessable.cpp" />
     <ClCompile Include="AViewable.cpp" />
     <ClCompile Include="BaseApp.cpp" />
+    <ClCompile Include="BlendState.cpp" />
     <ClCompile Include="Console.cpp" />
+    <ClCompile Include="CubeModel.cpp" />
     <ClCompile Include="DDSImageFile.cpp" />
-    <ClCompile Include="EXRImageFile.cpp" />
+    <ClCompile Include="DepthStencilState.cpp" />
+    <ClCompile Include="DirectXDevice.cpp" />
     <ClCompile Include="FileLoader.cpp" />
+    <ClCompile Include="IAngleAdjustable.cpp" />
     <ClCompile Include="ICamera.cpp" />
     <ClCompile Include="ID3D11Helper.cpp" />
     <ClCompile Include="IDepthStencil.cpp" />
-    <ClCompile Include="IDirectXDevice.cpp" />
     <ClCompile Include="IFile.cpp" />
     <ClCompile Include="IFilter.cpp" />
     <ClCompile Include="IImageFile.cpp" />
@@ -188,15 +197,37 @@
     <ClCompile Include="IRenderTarget.cpp" />
     <ClCompile Include="IScalable.cpp" />
     <ClCompile Include="IShaderResource.cpp" />
-    <ClCompile Include="IStaticMesh.cpp" />
+    <ClCompile Include="AStaticMesh.cpp" />
     <ClCompile Include="ITexture2D.cpp" />
+    <ClCompile Include="ATransformerable.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MathematicalHelper.cpp" />
     <ClCompile Include="NormalImageFile.cpp" />
     <ClCompile Include="PickableCamera.cpp" />
     <ClCompile Include="PickableIDRenderTarget.cpp" />
     <ClCompile Include="PortfolioApp.cpp" />
+    <ClCompile Include="RasterizationState.cpp" />
+    <ClCompile Include="SamplerState.cpp" />
     <ClCompile Include="StageShaderResource.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="PixelShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="VertexShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Common.hlsli" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
