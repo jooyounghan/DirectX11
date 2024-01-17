@@ -8,16 +8,12 @@ public:
 	IRectangle();
 	IRectangle(
 		const UINT& uiWidthIn,
-		const UINT& uiHeightIn,
-		const UINT& uiArraySizeIn,
-		const UINT& uiNumQualityLevelsIn
+		const UINT& uiHeightIn
 	);
 	~IRectangle();
 
 public:
 	UINT uiWidth;
 	UINT uiHeight;
-	UINT uiArraySize;
-	UINT uiNumQualityLevels;
 };
 

@@ -15,7 +15,7 @@ StageShaderResource::StageShaderResource(
 		D3D11_USAGE_STAGING, eFormatIn
 	),
 	IRectangle(
-		uiWidthIn, uiHeightIn, uiArraySizeIn, uiNumQualityLevelsIn
+		uiWidthIn, uiHeightIn
 	)
 {
 }

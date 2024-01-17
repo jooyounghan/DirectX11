@@ -18,11 +18,16 @@ public:
 	);
 	virtual ~PickableCamera();
 
+protected:
+	Microsoft::WRL::ComPtr<ID3D11Texture2D>				cpPickedIDTexture;
+	Microsoft::WRL::ComPtr<ID3D11UnorderedAccessView>	cpPickedIDUAV;
+
 public:
-	virtual void ClearRTV();
-	virtual void ClearDSV();
-	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn);
-	virtual void Update(const float& fDelta);
+	virtual void ClearRTV() override;
+	virtual void ClearDSV() override;
+	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn) override;
+	virtual void Update(const float& fDelta) override;
+	virtual void Resolve() override;
 
 public:
 	virtual DirectX::XMMATRIX GetTranformMat();

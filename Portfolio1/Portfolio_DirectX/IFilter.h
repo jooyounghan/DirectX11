@@ -25,7 +25,7 @@ protected:
 	const UINT uiThreadGroupCntY;
 	const UINT uiThreadGroupCntZ;
 
-protected:
+public:
 	Microsoft::WRL::ComPtr<ID3D11UnorderedAccessView> cpUAV;
 
 public:

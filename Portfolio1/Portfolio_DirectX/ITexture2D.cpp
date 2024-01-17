@@ -16,7 +16,7 @@ ITexture2D::ITexture2D(
 	const D3D11_USAGE& eUsageIn,
 	const DXGI_FORMAT& eFormatIn
 )
-	: IRectangle(uiWidthIn, uiHeightIn, uiArraySizeIn, uiNumQualityLevelsIn), eFormat(eFormatIn)
+	: IRectangle(uiWidthIn, uiHeightIn), eFormat(eFormatIn), uiArraySize(uiArraySizeIn), uiNumQualityLevels(uiNumQualityLevelsIn)
 {
 	ID3D11Helper::CreateTexture2D(
 		DirectXDevice::pDevice,
@@ -33,16 +33,15 @@ ITexture2D::ITexture2D(
 }
 
 ITexture2D::ITexture2D(
-	const UINT& uiWidthIn, 
-	const UINT& uiHeightIn,
-	const UINT& uiBindFlagIn, 
+	const UINT& uiWidthIn, const UINT& uiHeightIn,
+	const UINT& uiBindFlagIn,
 	const UINT& uiCPUAccessIn,
 	const UINT& uiMiscFlagIn, 
 	const D3D11_USAGE& eUsageIn,
 	const DXGI_FORMAT& eFormatIn,
 	uint8_t* pImageSourceIn
 )
-	: IRectangle(uiWidthIn, uiHeightIn, 1, 0), eFormat(eFormatIn)
+	: IRectangle(uiWidthIn, uiHeightIn), eFormat(eFormatIn), uiArraySize(1), uiNumQualityLevels(0)
 {
 	ID3D11Helper::CreateTexture2D(
 		DirectXDevice::pDevice,

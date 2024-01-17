@@ -26,24 +26,3 @@ AFilteredCamera::AFilteredCamera(
 AFilteredCamera::~AFilteredCamera()
 {
 }
-
-void AFilteredCamera::Filter()
-{
-	if (IsSwapChainAccesssed)
-	{
-		ID3D11ShaderResourceView** ppInputSRV = cpSRV.GetAddressOf();
-		ID3D11Resource* pOutputResource = IRenderTarget::cpTexture2D.Get();
-		if (pFilters.size() > 0)
-		{
-			for (IFilter* pFilter : pFilters)
-			{
-				pFilter->Apply(ppInputSRV);
-				ppInputSRV = pFilter->cpSRV.GetAddressOf();
-			}
-
-			pOutputResource = pFilters[pFilters.size() - 1]->cpTexture2D.Get();
-		}
-
-		DirectXDevice::pDeviceContext->ResolveSubresource(ASwapChainAccessable::cpTexture2D.Get(), 0, pOutputResource, 0, ASwapChainAccessable::eFormat);
-	}
-}

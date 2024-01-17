@@ -35,8 +35,8 @@ void PortfolioApp::Init()
 	pCubeModel = new CubeModel(0.f, 0.f, 0.f, 2.f, false, 8);
 	pPickableCamera = new PickableCamera(
 		0.f, 0.f, -10.f, uiWidth, uiHeight,
-		70.f * 2.f * 3.141592 / 360.f,
-		0.01f, 1000.f, 0,
+		70.f * 2.f * 3.141592f / 360.f,
+		0.01f, 1000.f, 1,
 		DXGI_FORMAT_R8G8B8A8_UNORM,
 		DXGI_FORMAT_D24_UNORM_S8_UINT
 	);
@@ -52,11 +52,7 @@ void PortfolioApp::Init()
 	DirectXDevice::pDeviceContext->VSSetShader(cpVS.Get(), NULL, NULL);
 	DirectXDevice::pDeviceContext->PSSetShader(cpPS.Get(), NULL, NULL);
 
-	//pPickableCamera->SetAsSwapChainBackBuffer();
-
-	ComPtr<ID3D11Texture2D> backBuffer;
-	DirectXDevice::pSwapChain->GetBuffer(0, IID_PPV_ARGS(backBuffer.GetAddressOf()));
-	ID3D11Helper::CreateRenderTargetView(DirectXDevice::pDevice, backBuffer.Get(), backRTV.GetAddressOf());
+	pPickableCamera->SetAsSwapChainBackBuffer();
 
 	UINT uiStride = sizeof(InputLayout);
 	UINT uiOffset = 0;
@@ -79,13 +75,13 @@ void PortfolioApp::Update(const float& fDelta)
 void PortfolioApp::Render()
 {
 	float clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
-	DirectXDevice::pDeviceContext->OMSetRenderTargets(1, backRTV.GetAddressOf(), nullptr);
-	DirectXDevice::pDeviceContext->ClearRenderTargetView(backRTV.Get(), clearColor);
+	DirectXDevice::pDeviceContext->OMSetRenderTargets(1, pPickableCamera->cpRTV.GetAddressOf(), nullptr);
 	pPickableCamera->ClearRTV();
 	pPickableCamera->ClearDSV();
 	DirectXDevice::pDeviceContext->VSSetConstantBuffers(0, 1, pCubeModel->cpTransformationBuffer.GetAddressOf());
 	DirectXDevice::pDeviceContext->VSSetConstantBuffers(1, 1, pPickableCamera->cpViewProjBuffer.GetAddressOf());
 	pCubeModel->Draw();
+	pPickableCamera->Resolve();
 }
 
 void PortfolioApp::Run()

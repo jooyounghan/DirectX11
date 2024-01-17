@@ -10,7 +10,7 @@ public:
 		const float& fCenterZ,
 		const float& fRadius,
 		const bool& bReverse,
-		const size_t& usLevel
+		const uint32_t& usLevel
 	);
 	virtual ~CubeModel();
 

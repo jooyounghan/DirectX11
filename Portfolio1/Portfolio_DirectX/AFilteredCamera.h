@@ -23,13 +23,15 @@ public:
 protected:
 	std::vector<IFilter*> pFilters;
 
-public:
-	void Filter();
+protected:
+	Microsoft::WRL::ComPtr<ID3D11Texture2D>				cpMSToSSTexture;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>	cpMStoSSSRV;
 
 public:
 	virtual void ClearRTV() = 0;
 	virtual void ClearDSV() = 0;
 	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn) = 0;
 	virtual void Update(const float& fDelta) = 0;
+	virtual void Resolve() = 0;
 };
 

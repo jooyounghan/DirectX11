@@ -1,5 +1,5 @@
 #pragma once
-#include "ITexture2D.h"
+#include "IRenderTarget.h"
 
 class ASwapChainAccessable : public ITexture2D
 {
@@ -9,6 +9,10 @@ public:
 
 public:
 	bool IsSwapChainAccesssed;
+
+protected:
+	Microsoft::WRL::ComPtr<ID3D11Texture2D>				cpFormatChangedTexture;
+	Microsoft::WRL::ComPtr<ID3D11UnorderedAccessView>	cpFormatChangedUAV;
 
 public:
 	void SetAsSwapChainBackBuffer();

@@ -76,6 +76,9 @@
     <Filter Include="Shader">
       <UniqueIdentifier>{2a2334f3-bf48-4e07-849c-5795f0e8ef8a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shader\Filter">
+      <UniqueIdentifier>{f199a239-e11c-4e4b-9818-1c66a4e0154a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseApp.h">
@@ -324,6 +327,9 @@
     </FxCompile>
     <FxCompile Include="PixelShader.hlsl">
       <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="FormatChangeCS.hlsl">
+      <Filter>Shader\Filter</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

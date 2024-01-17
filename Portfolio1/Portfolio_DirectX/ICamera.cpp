@@ -15,8 +15,8 @@ ICamera::ICamera(
 	: IRenderTarget(
 		uiWidthIn, uiHeightIn,
 		1, uiNumQualityLevelsIn,
-		D3D11_BIND_RENDER_TARGET, NULL, NULL,
-		D3D11_USAGE_DEFAULT, eRTVFormatIn
+		D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE,
+		NULL, NULL, D3D11_USAGE_DEFAULT, eRTVFormatIn
 	),
 	IDepthStencil(
 		uiWidthIn, uiHeightIn,
@@ -32,9 +32,7 @@ ICamera::ICamera(
 	),
 	IRectangle(
 		uiWidthIn,
-		uiHeightIn,
-		1,
-		uiNumQualityLevelsIn
+		uiHeightIn
 	)
 {
 }

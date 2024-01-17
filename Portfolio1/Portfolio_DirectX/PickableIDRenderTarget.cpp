@@ -20,7 +20,7 @@ PickableIDRenderTarget::PickableIDRenderTarget(
 		DXGI_FORMAT_R16_UINT
 	),
 	IRectangle(
-		uiWidthIn, uiHeightIn, 1, uiNumQualityLevelsIn
+		uiWidthIn, uiHeightIn
 	),
 	pMSToSSSRV(nullptr), pStageSRV(nullptr)
 {

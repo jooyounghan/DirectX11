@@ -33,7 +33,9 @@ public:
 
 	virtual ~ITexture2D();
 
-protected:
+public:
+	UINT uiArraySize;
+	UINT uiNumQualityLevels;
 	DXGI_FORMAT eFormat;
 
 public:

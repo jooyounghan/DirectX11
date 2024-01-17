@@ -32,7 +32,5 @@ public:
 	Microsoft::WRL::ComPtr<ID3D11VertexShader> cpVS;
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> cpPS;
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> cpIL;
-
-	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> backRTV;
 };
 
