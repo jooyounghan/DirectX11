@@ -105,10 +105,10 @@
     <ClInclude Include="IMovable.h">
       <Filter>헤더 파일\BaseInteface</Filter>
     </ClInclude>
-    <ClInclude Include="IRectangle.h">
+    <ClInclude Include="ARectangle.h">
       <Filter>헤더 파일\BaseInteface</Filter>
     </ClInclude>
-    <ClInclude Include="ICamera.h">
+    <ClInclude Include="ACamera.h">
       <Filter>헤더 파일\Camera</Filter>
     </ClInclude>
     <ClInclude Include="Console.h">
@@ -156,19 +156,19 @@
     <ClInclude Include="StageShaderResource.h">
       <Filter>헤더 파일\Texture2D\Extended</Filter>
     </ClInclude>
-    <ClInclude Include="IDepthStencil.h">
+    <ClInclude Include="ADepthStencil.h">
       <Filter>헤더 파일\Texture2D</Filter>
     </ClInclude>
     <ClInclude Include="IFilter.h">
       <Filter>헤더 파일\Texture2D</Filter>
     </ClInclude>
-    <ClInclude Include="IRenderTarget.h">
+    <ClInclude Include="ARenderTarget.h">
       <Filter>헤더 파일\Texture2D</Filter>
     </ClInclude>
-    <ClInclude Include="IShaderResource.h">
+    <ClInclude Include="ShaderResource.h">
       <Filter>헤더 파일\Texture2D</Filter>
     </ClInclude>
-    <ClInclude Include="ITexture2D.h">
+    <ClInclude Include="Texture2D.h">
       <Filter>헤더 파일\Texture2D</Filter>
     </ClInclude>
     <ClInclude Include="DirectXDevice.h">
@@ -198,7 +198,7 @@
     <ClInclude Include="BlendState.h">
       <Filter>헤더 파일\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="APickable.h">
+    <ClInclude Include="IDPickableRenderTarget.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -227,10 +227,10 @@
     <ClCompile Include="IMovable.cpp">
       <Filter>소스 파일\BaseInterface</Filter>
     </ClCompile>
-    <ClCompile Include="IRectangle.cpp">
+    <ClCompile Include="ARectangle.cpp">
       <Filter>소스 파일\BaseInterface</Filter>
     </ClCompile>
-    <ClCompile Include="ICamera.cpp">
+    <ClCompile Include="ACamera.cpp">
       <Filter>소스 파일\Camera</Filter>
     </ClCompile>
     <ClCompile Include="Console.cpp">
@@ -272,19 +272,19 @@
     <ClCompile Include="PickableCamera.cpp">
       <Filter>소스 파일\Camera\Extended</Filter>
     </ClCompile>
-    <ClCompile Include="IDepthStencil.cpp">
+    <ClCompile Include="ADepthStencil.cpp">
       <Filter>소스 파일\Texture2D</Filter>
     </ClCompile>
     <ClCompile Include="IFilter.cpp">
       <Filter>소스 파일\Texture2D</Filter>
     </ClCompile>
-    <ClCompile Include="IRenderTarget.cpp">
+    <ClCompile Include="ARenderTarget.cpp">
       <Filter>소스 파일\Texture2D</Filter>
     </ClCompile>
-    <ClCompile Include="IShaderResource.cpp">
+    <ClCompile Include="ShaderResource.cpp">
       <Filter>소스 파일\Texture2D</Filter>
     </ClCompile>
-    <ClCompile Include="ITexture2D.cpp">
+    <ClCompile Include="Texture2D.cpp">
       <Filter>소스 파일\Texture2D</Filter>
     </ClCompile>
     <ClCompile Include="StageShaderResource.cpp">
@@ -317,7 +317,7 @@
     <ClCompile Include="BlendState.cpp">
       <Filter>소스 파일\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="APickable.cpp">
+    <ClCompile Include="IDPickableRenderTarget.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

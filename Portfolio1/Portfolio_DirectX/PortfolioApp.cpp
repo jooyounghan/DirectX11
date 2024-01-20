@@ -44,9 +44,9 @@ void PortfolioApp::Init()
 	vector<D3D11_INPUT_ELEMENT_DESC> vInputElemDesc {
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
 		{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"BLENDINDICES", 0, DXGI_FORMAT_R32_UINT, 0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0}
+		{"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20, D3D11_INPUT_PER_VERTEX_DATA, 0}
 	};
+
 	ID3D11Helper::CreateVSInputLayOut(DirectXDevice::pDevice, L"VertexShader.hlsl", vInputElemDesc, cpVS.GetAddressOf(), cpIL.GetAddressOf());
 	ID3D11Helper::CreatePS(DirectXDevice::pDevice, L"PixelShader.hlsl", cpPS.GetAddressOf());
 
@@ -57,8 +57,8 @@ void PortfolioApp::Init()
 
 	UINT uiStride = sizeof(InputLayout);
 	UINT uiOffset = 0;
-	DirectXDevice::pDeviceContext->IASetVertexBuffers(0, 1, pCubeModel->inputBuffer.GetAddressOf(), &uiStride, &uiOffset);
-	DirectXDevice::pDeviceContext->IASetIndexBuffer(pCubeModel->indexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+	DirectXDevice::pDeviceContext->IASetVertexBuffers(0, 1, pCubeModel->cpInputBuffer.GetAddressOf(), &uiStride, &uiOffset);
+	DirectXDevice::pDeviceContext->IASetIndexBuffer(pCubeModel->cpIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 	DirectXDevice::pDeviceContext->IASetInputLayout(cpIL.Get());
 	DirectXDevice::pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	DirectXDevice::pDeviceContext->RSSetViewports(1, &pPickableCamera->sViewPort);
@@ -76,17 +76,18 @@ void PortfolioApp::Update(const float& fDelta)
 void PortfolioApp::Render()
 {
 	float clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
-	DirectXDevice::pDeviceContext->OMSetRenderTargets(1, pPickableCamera->cpRTV.GetAddressOf(), nullptr);
+
+	vector<ID3D11RenderTargetView*> vRTVs = { 
+		pPickableCamera->ARenderTarget::cpRTV.Get(), 
+		pPickableCamera->IDPickableRenderTarget::cpRTV.Get() 
+	};
+
+	DirectXDevice::pDeviceContext->OMSetRenderTargets(2, vRTVs.data(), nullptr);
 	pPickableCamera->ClearRTV();
 	pPickableCamera->ClearDSV();
 	DirectXDevice::pDeviceContext->VSSetConstantBuffers(0, 1, pCubeModel->cpTransformationBuffer.GetAddressOf());
 	DirectXDevice::pDeviceContext->VSSetConstantBuffers(1, 1, pPickableCamera->cpViewProjBuffer.GetAddressOf());
-
-	DirectXDevice::pDeviceContext->VSSetConstantBuffers(2, 1, pPickableCamera->cpTexelSize.GetAddressOf());
-	DirectXDevice::pDeviceContext->VSSetConstantBuffers(3, 1, pPickableCamera->cpMousePosNdc.GetAddressOf());
-
-	DirectXDevice::pDeviceContext->VSSetShaderResources(0, 1, pPickableCamera->cpPickedIDSRV.GetAddressOf());
-
+	DirectXDevice::pDeviceContext->PSSetConstantBuffers(0, 1, pCubeModel->cpIdBuffer.GetAddressOf());
 	pCubeModel->Draw();
 	pPickableCamera->Resolve();
 }
@@ -171,8 +172,6 @@ LRESULT __stdcall PortfolioApp::AppProc(HWND hWnd, UINT msg, WPARAM wParam, LPAR
 		return 0;
 	case WM_LBUTTONUP:
 		Console::Print(std::to_string(pPickableCamera->GetPickedID()));
-		return 0;
-	default:
 		return 0;
 	}
 	return ::DefWindowProc(hWnd, msg, wParam, lParam);

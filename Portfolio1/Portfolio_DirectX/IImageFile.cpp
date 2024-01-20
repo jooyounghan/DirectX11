@@ -4,7 +4,7 @@ IImageFile::IImageFile(
 	const std::string& strFileNameIn
 )
 	: IFile(strFileNameIn),
-	IShaderResource()
+	ShaderResource()
 {
 }
 
@@ -16,7 +16,7 @@ IImageFile::IImageFile(
 	const std::string& strFileNameIn
 )
 	: IFile(strFileNameIn), 
-	IShaderResource(
+	ShaderResource(
 		uiWidthIn, uiHeightIn, 1, 0,
 		D3D11_BIND_SHADER_RESOURCE, NULL,
 		uiMiscFlagIn, D3D11_USAGE_IMMUTABLE,

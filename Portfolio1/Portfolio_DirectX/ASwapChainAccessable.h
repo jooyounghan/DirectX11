@@ -1,7 +1,7 @@
 #pragma once
-#include "IRenderTarget.h"
+#include "ARenderTarget.h"
 
-class ASwapChainAccessable : public ITexture2D
+class ASwapChainAccessable : public Texture2D
 {
 public:
 	ASwapChainAccessable();

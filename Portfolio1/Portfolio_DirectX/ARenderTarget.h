@@ -1,10 +1,10 @@
 #pragma once
-#include "IShaderResource.h"
+#include "ShaderResource.h"
 
-class IRenderTarget : public IShaderResource
+class ARenderTarget : public ShaderResource
 {
 public:
-	IRenderTarget(
+	ARenderTarget(
 		const UINT& uiWidthIn,
 		const UINT& uiHeightIn,
 		const UINT& uiArraySizeIn,
@@ -15,7 +15,7 @@ public:
 		D3D11_USAGE eUsageIn,
 		DXGI_FORMAT eFormatIn
 	);
-	virtual ~IRenderTarget();
+	virtual ~ARenderTarget();
 
 public:
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView>		cpRTV;
@@ -25,6 +25,6 @@ protected:
 
 public:
 	virtual void ClearRTV() = 0;
-	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn) = 0;
+	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn);
 };
 

@@ -12,7 +12,7 @@ DDSImageFile::DDSImageFile(
 	const bool& bIsTextureCube
 )
 	: IImageFile(strFileNameIn),
-	IRectangle()
+	ARectangle()
 {
 	HRESULT hResult = CreateDDSTextureFromFileEx(
 		DirectXDevice::pDevice, FileLoader::ConvertUTF8ToUniCode(strFilePathIn).c_str(), (size_t)0,

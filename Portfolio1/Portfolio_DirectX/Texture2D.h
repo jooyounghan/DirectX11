@@ -2,13 +2,13 @@
 #include <stdint.h>
 #include <d3d11.h>
 #include <d3dcompiler.h>
-#include "IRectangle.h"
+#include "ARectangle.h"
 
-class ITexture2D : virtual public IRectangle
+class Texture2D : virtual public ARectangle
 {
 public:
-	ITexture2D();
-	ITexture2D(
+	Texture2D();
+	Texture2D(
 		const UINT& uiWidthIn,
 		const UINT& uiHeightIn,
 		const UINT& uiArraySizeIn,
@@ -20,7 +20,7 @@ public:
 		const DXGI_FORMAT& eFormatIn
 	);
 
-	ITexture2D(
+	Texture2D(
 		const UINT& uiWidthIn,
 		const UINT& uiHeightIn,
 		const UINT& uiBindFlagIn,
@@ -31,17 +31,21 @@ public:
 		uint8_t* pImageSourceIn
 	);
 
-	virtual ~ITexture2D();
+	virtual ~Texture2D();
 
 public:
-	UINT uiArraySize;
-	UINT uiNumQualityLevels;
+	UINT		uiArraySize;
+	UINT		uiNumQualityLevels;
+	UINT		uiBindFlag;
+	UINT		uiCPUAccess;
+	UINT		uiMiscFlag;
+	D3D11_USAGE eUsage;
 	DXGI_FORMAT eFormat;
 
 public:
 	Microsoft::WRL::ComPtr<ID3D11Texture2D>				cpTexture2D;
 
 public:
-	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn) = 0;
+	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn);
 };
 

@@ -1,7 +1,7 @@
 #pragma once
-#include "IShaderResource.h"
+#include "ShaderResource.h"
 
-class IFilter : public IShaderResource
+class IFilter : public ShaderResource
 {
 public:
 	IFilter(

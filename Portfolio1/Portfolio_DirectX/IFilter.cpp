@@ -16,7 +16,7 @@ IFilter::IFilter(
 	UINT uiThreadGroupCntYIn,
 	UINT uiThreadGroupCntZIn
 )
-	: IShaderResource(
+	: ShaderResource(
 		 uiWidthIn, uiHeightIn, uiArraySizeIn,
 		uiNumQualityLevelsIn, uiBindFlagIn | D3D11_BIND_FLAG::D3D11_BIND_UNORDERED_ACCESS, 
 		uiCPUAccessIn, uiMiscFlagIn, eUsageIn, eFormatIn

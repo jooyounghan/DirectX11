@@ -1,9 +1,9 @@
 #pragma once
-#include "ICamera.h"
+#include "ACamera.h"
 #include "IFilter.h"
 #include <vector>
 
-class AFilteredCamera : public ICamera
+class AFilteredCamera : public ACamera
 {
 public:
 	AFilteredCamera(
@@ -30,7 +30,7 @@ protected:
 public:
 	virtual void ClearRTV() = 0;
 	virtual void ClearDSV() = 0;
-	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn) = 0;
+	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn);
 	virtual void UpdateCamera(const float& fDelta) = 0;
 	virtual void Resolve() = 0;
 };

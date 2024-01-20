@@ -1,8 +1,8 @@
 #pragma once
 #include "IFile.h"
-#include "IShaderResource.h"
+#include "ShaderResource.h"
 
-class IImageFile : public IFile, public IShaderResource
+class IImageFile : public IFile, public ShaderResource
 {
 public:
 	IImageFile(

@@ -34,7 +34,6 @@ struct InputLayout
 	Vertex			sVertex;
 	TextureCoord	sTexcoord;
 	NormalVector	sNormal;
-	uint32_t		uiId;
 };
 
 class AStaticMesh : public IModel, public ATransformerable
@@ -48,8 +47,8 @@ protected:
 	std::vector<uint32_t>		indexData;
 
 public:
-	Microsoft::WRL::ComPtr<ID3D11Buffer> inputBuffer;
-	Microsoft::WRL::ComPtr<ID3D11Buffer> indexBuffer;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> cpInputBuffer;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> cpIndexBuffer;
 
 public:
 	virtual void Load(const std::string& path) = 0;

@@ -1,8 +1,8 @@
 #pragma once
 #include "AFilteredCamera.h"
-#include "APickable.h"
+#include "IDPickableRenderTarget.h"
 
-class PickableCamera : public AFilteredCamera, public APickable
+class PickableCamera : public AFilteredCamera, public IDPickableRenderTarget
 {
 public:
 	PickableCamera(
@@ -25,7 +25,7 @@ public:
 	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn) override;
 	virtual void UpdateCamera(const float& fDelta) override;
 	virtual void Resolve() override;
-	virtual void SetMousePos(const int& iMouseX, const int& iMouseY) override;
+	virtual uint32_t GetPickedID() override;
 
 public:
 	virtual DirectX::XMMATRIX GetTranformMat();

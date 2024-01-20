@@ -8,13 +8,13 @@ StageShaderResource::StageShaderResource(
 	const UINT& uiNumQualityLevelsIn,
 	DXGI_FORMAT eFormatIn
 )
-	: IShaderResource(
+	: ShaderResource(
 		uiWidthIn, uiHeightIn,
 		uiArraySizeIn, uiNumQualityLevelsIn,
 		NULL, D3D11_CPU_ACCESS_READ, NULL,
 		D3D11_USAGE_STAGING, eFormatIn
 	),
-	IRectangle(
+	ARectangle(
 		uiWidthIn, uiHeightIn
 	)
 {

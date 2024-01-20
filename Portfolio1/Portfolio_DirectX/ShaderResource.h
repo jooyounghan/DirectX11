@@ -1,11 +1,11 @@
 #pragma once
-#include "ITexture2D.h"
+#include "Texture2D.h"
 
-class IShaderResource : public ITexture2D
+class ShaderResource : public Texture2D
 {
 public:
-	IShaderResource();
-	IShaderResource(
+	ShaderResource();
+	ShaderResource(
 		const UINT& uiWidthIn,
 		const UINT& uiHeightIn,
 		const UINT& uiArraySizeIn,
@@ -16,7 +16,7 @@ public:
 		const D3D11_USAGE& eUsageIn,
 		const DXGI_FORMAT& eFormatIn
 	);
-	IShaderResource(
+	ShaderResource(
 		const UINT& uiWidthIn,
 		const UINT& uiHeightIn,
 		const UINT& uiBindFlagIn,
@@ -26,12 +26,12 @@ public:
 		const DXGI_FORMAT& eFormatIn,
 		uint8_t* pImageSourceIn
 	);
-	virtual ~IShaderResource();
+	virtual ~ShaderResource();
 
 public:
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> cpSRV;
 
 public:
-	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn) = 0;
+	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn);
 };
 

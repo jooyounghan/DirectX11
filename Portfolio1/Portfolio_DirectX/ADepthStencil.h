@@ -1,10 +1,10 @@
 #pragma once
-#include "ITexture2D.h"
+#include "Texture2D.h"
 
-class IDepthStencil : public ITexture2D
+class ADepthStencil : public Texture2D
 {
 public:
-	IDepthStencil(
+	ADepthStencil(
 		const UINT& uiWidthIn,
 		const UINT& uiHeightIn,
 		const UINT& uiArraySizeIn,
@@ -15,13 +15,13 @@ public:
 		D3D11_USAGE eUsageIn,
 		DXGI_FORMAT eFormatIn
 	);
-	virtual ~IDepthStencil();
+	virtual ~ADepthStencil();
 
 public:
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView>		cpDSV;
 
 public:
 	virtual void ClearDSV() = 0;
-	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn) = 0;
+	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn);
 };
 

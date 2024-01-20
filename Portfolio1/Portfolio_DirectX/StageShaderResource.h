@@ -1,7 +1,7 @@
 #pragma once
-#include "IShaderResource.h"
+#include "ShaderResource.h"
 
-class StageShaderResource : public IShaderResource
+class StageShaderResource : public ShaderResource
 {
 public:
 	StageShaderResource(

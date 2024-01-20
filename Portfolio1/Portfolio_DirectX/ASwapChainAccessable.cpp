@@ -3,7 +3,7 @@
 #include "DirectXDevice.h"
 
 ASwapChainAccessable::ASwapChainAccessable() 
-	: IsSwapChainAccesssed(false), ITexture2D()
+	: IsSwapChainAccesssed(false), Texture2D()
 {
 
 }

@@ -12,20 +12,6 @@ cbuffer CameraViewProj : register(b1)
     matrix mViewProjInv;
 };
 
-cbuffer TexelSize : register(b2)
-{
-    float fTexelX;
-    float fTexelY;
-}
-
-cbuffer MousePos : register(b3)
-{
-    float fMouseXNdc;
-    float fMouseYNdc;
-}
-
-StructuredBuffer<uint> ModelIdOutput : register(t0);
-
 VertexOutput main(VertexInput input)
 {
     VertexOutput result;
@@ -40,7 +26,6 @@ VertexOutput main(VertexInput input)
     
     result.f4ProjPos = mul(result.f4ProjPos, mViewProj);
     result.f2TexCoord = input.f2TexCoord;
-    
     
     return result;
 }

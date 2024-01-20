@@ -3,7 +3,6 @@ struct VertexInput
     float3  f4WorldPos      : POSITION;
     float2  f2TexCoord      : TEXCOORD;
     float3  f4WorldNormal   : NORMAL;
-    uint    uiModelID       : BLENDINDICES;
 };
 
 struct VertexOutput
@@ -16,5 +15,6 @@ struct VertexOutput
 
 struct PixelOutput
 {
-    float4 pixelColor   : SV_Target0;
+    float4  pixelColor   : SV_Target0;
+    uint modelID : SV_Target1;
 };

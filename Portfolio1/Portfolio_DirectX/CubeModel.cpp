@@ -28,7 +28,6 @@ CubeModel::CubeModel(
 		for (uint32_t longitudeIdx = 0; longitudeIdx <= usLevel * 2; ++longitudeIdx)
 		{
 			InputLayout sInput;
-			sInput.uiId = uiModelID;
 
 			const float& fLongitudeLow = DirectX::XM_2PI / (usLevel * 2) * longitudeIdx;
 			const float& fLongitudeTextureCord = longitudeIdx / (float)(usLevel * 2);
@@ -72,8 +71,8 @@ CubeModel::CubeModel(
 			indexData.push_back(usLongitudeOffset + 6);
 		}
 	}
-	ID3D11Helper::CreateBuffer(DirectXDevice::pDevice, inputData, D3D11_USAGE_IMMUTABLE, D3D11_BIND_VERTEX_BUFFER, NULL, NULL, inputBuffer.GetAddressOf());
-	ID3D11Helper::CreateBuffer(DirectXDevice::pDevice, indexData, D3D11_USAGE_IMMUTABLE, D3D11_BIND_INDEX_BUFFER, NULL, NULL, indexBuffer.GetAddressOf());
+	ID3D11Helper::CreateBuffer(DirectXDevice::pDevice, inputData, D3D11_USAGE_IMMUTABLE, D3D11_BIND_VERTEX_BUFFER, NULL, NULL, cpInputBuffer.GetAddressOf());
+	ID3D11Helper::CreateBuffer(DirectXDevice::pDevice, indexData, D3D11_USAGE_IMMUTABLE, D3D11_BIND_INDEX_BUFFER, NULL, NULL, cpIndexBuffer.GetAddressOf());
 }
 
 CubeModel::~CubeModel()

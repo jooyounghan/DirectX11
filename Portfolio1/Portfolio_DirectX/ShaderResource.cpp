@@ -1,13 +1,13 @@
-#include "IShaderResource.h"
+#include "ShaderResource.h"
 #include "ID3D11Helper.h"
 #include "DirectXDevice.h"
 
-IShaderResource::IShaderResource()
-	: ITexture2D()
+ShaderResource::ShaderResource()
+	: Texture2D()
 {
 }
 
-IShaderResource::IShaderResource(
+ShaderResource::ShaderResource(
 	const UINT& uiHeightIn,
 	const UINT& uiWidthIn,
 	const UINT& uiArraySizeIn,
@@ -18,7 +18,7 @@ IShaderResource::IShaderResource(
 	const D3D11_USAGE& eUsageIn,
 	const DXGI_FORMAT& eFormatIn
 )
-	: ITexture2D(
+	: Texture2D(
 		uiWidthIn, uiHeightIn,
 		uiArraySizeIn, uiNumQualityLevelsIn,
 		uiBindFlagIn | D3D11_BIND_SHADER_RESOURCE,
@@ -31,7 +31,7 @@ IShaderResource::IShaderResource(
 	ID3D11Helper::CreateShaderResoureView(DirectXDevice::pDevice, cpTexture2D.Get(), cpSRV.GetAddressOf());
 }
 
-IShaderResource::IShaderResource(
+ShaderResource::ShaderResource(
 	const UINT& uiWidthIn,
 	const UINT& uiHeightIn,
 	const UINT& uiBindFlagIn,
@@ -41,7 +41,7 @@ IShaderResource::IShaderResource(
 	const DXGI_FORMAT& eFormatIn,
 	uint8_t* pImageSourceIn
 )
-	: ITexture2D(
+	: Texture2D(
 		uiWidthIn, uiHeightIn,
 		uiBindFlagIn | D3D11_BIND_SHADER_RESOURCE,
 		uiCPUAccessIn,
@@ -54,6 +54,12 @@ IShaderResource::IShaderResource(
 	ID3D11Helper::CreateShaderResoureView(DirectXDevice::pDevice, cpTexture2D.Get(), cpSRV.GetAddressOf());
 }
 
-IShaderResource::~IShaderResource()
+ShaderResource::~ShaderResource()
 {
+}
+
+void ShaderResource::Resize(const UINT& uiWidthIn, const UINT& uiHeightIn)
+{
+	Texture2D::Resize(uiWidthIn, uiHeightIn);
+	ID3D11Helper::CreateShaderResoureView(DirectXDevice::pDevice, cpTexture2D.Get(), cpSRV.GetAddressOf());
 }

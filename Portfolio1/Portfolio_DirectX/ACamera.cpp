@@ -1,8 +1,8 @@
-#include "ICamera.h"
+#include "ACamera.h"
 #include "DirectXDevice.h"
 #include "ID3D11Helper.h"
 
-ICamera::ICamera(
+ACamera::ACamera(
 	const float& fXPos,
 	const float& fYPos,
 	const float& fZPos,
@@ -14,13 +14,13 @@ ICamera::ICamera(
 	DXGI_FORMAT eRTVFormatIn, 
 	DXGI_FORMAT eDSVFormatIn
 )
-	: IRenderTarget(
+	: ARenderTarget(
 		uiWidthIn, uiHeightIn,
 		1, uiNumQualityLevelsIn,
 		D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE,
 		NULL, NULL, D3D11_USAGE_DEFAULT, eRTVFormatIn
 	),
-	IDepthStencil(
+	ADepthStencil(
 		uiWidthIn, uiHeightIn,
 		1, uiNumQualityLevelsIn,
 		D3D11_BIND_DEPTH_STENCIL, NULL, NULL,
@@ -32,20 +32,30 @@ ICamera::ICamera(
 		(float)uiWidthIn, (float)uiHeightIn, fFovRadIn,
 		fNearZIn, fFarZIn
 	),
-	IRectangle(
+	ARectangle(
 		uiWidthIn,
 		uiHeightIn
 	)
 {
-	ID3D11Helper::CreateBuffer(
-		DirectXDevice::pDevice, 
-		sTexelSize, D3D11_USAGE_DYNAMIC,
-		D3D11_BIND_CONSTANT_BUFFER, D3D11_CPU_ACCESS_WRITE, NULL,
-		cpTexelSize.GetAddressOf()
-	);
 }
 
-ICamera::~ICamera()
+ACamera::~ACamera()
 {
 
+}
+
+void ACamera::Resize(const UINT& uiWidthIn, const UINT& uiHeightIn)
+{
+	if (IsSwapChainAccesssed)
+	{
+		SetRectangle(uiWidthIn, uiHeightIn);
+
+		ADepthStencil::Resize(uiWidthIn, uiHeightIn);
+		ARenderTarget::Resize(uiWidthIn, uiHeightIn);
+
+		// 백버퍼 및 Swap Chain 사이즈 변경
+		ASwapChainAccessable::cpTexture2D.Reset();
+		DirectXDevice::pSwapChain->ResizeBuffers(0, uiWidth, uiHeight, DXGI_FORMAT_UNKNOWN, DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH);
+		SetAsSwapChainBackBuffer();
+	}
 }

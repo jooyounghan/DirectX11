@@ -1,4 +1,10 @@
 #pragma once
+#include <d3d11.h>
+#include <d3dcompiler.h>
+#include <windows.h>
+#include <wrl/client.h>
+
+
 #include <string>
 
 class IModel
@@ -9,7 +15,15 @@ public:
 
 public:
 	static uint32_t uiGlobalModelID;
-	uint32_t uiModelID;
+
+public:
+	struct
+	{
+		uint32_t uiModelID;
+		uint32_t uiDummy[3];
+	} sModelData;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> cpIdBuffer;
+
 
 public:
 	virtual void Load(const std::string& path) = 0;
