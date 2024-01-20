@@ -28,28 +28,29 @@ CubeModel::CubeModel(
 		for (uint32_t longitudeIdx = 0; longitudeIdx <= usLevel * 2; ++longitudeIdx)
 		{
 			InputLayout sInput;
+			sInput.uiId = uiModelID;
 
 			const float& fLongitudeLow = DirectX::XM_2PI / (usLevel * 2) * longitudeIdx;
 			const float& fLongitudeTextureCord = longitudeIdx / (float)(usLevel * 2);
 
-			sInput.vertex = { fRadius * cosf(fLongitudeLow) * cosf(fLatitudeLow), fRadius * sinf(fLatitudeLow), fRadius * cosf(fLatitudeLow) * sinf(fLongitudeLow) };
-			sInput.texcoord = { fLongitudeTextureCord, 0.5f + fLatitudeLowTextureCord };
-			sInput.normal = { cosf(fLongitudeLow) * cosf(fLatitudeLow), sinf(fLatitudeLow), cosf(fLatitudeLow) * sinf(fLongitudeLow) };
+			sInput.sVertex = { fRadius * cosf(fLongitudeLow) * cosf(fLatitudeLow), fRadius * sinf(fLatitudeLow), fRadius * cosf(fLatitudeLow) * sinf(fLongitudeLow) };
+			sInput.sTexcoord = { fLongitudeTextureCord, 0.5f + fLatitudeLowTextureCord };
+			sInput.sNormal = { cosf(fLongitudeLow) * cosf(fLatitudeLow), sinf(fLatitudeLow), cosf(fLatitudeLow) * sinf(fLongitudeLow) };
 			inputData.emplace_back(sInput);
 
-			sInput.vertex = { fRadius * cosf(fLongitudeLow) * cosf(fLatitudeHigh), fRadius * sinf(fLatitudeHigh), fRadius * cosf(fLatitudeHigh) * sinf(fLongitudeLow) };
-			sInput.texcoord = { fLongitudeTextureCord, 0.5f + fLatitudeHighTextureCord };
-			sInput.normal = { cosf(fLongitudeLow) * cosf(fLatitudeHigh), sinf(fLatitudeHigh), cosf(fLatitudeHigh) * sinf(fLongitudeLow) };
+			sInput.sVertex = { fRadius * cosf(fLongitudeLow) * cosf(fLatitudeHigh), fRadius * sinf(fLatitudeHigh), fRadius * cosf(fLatitudeHigh) * sinf(fLongitudeLow) };
+			sInput.sTexcoord = { fLongitudeTextureCord, 0.5f + fLatitudeHighTextureCord };
+			sInput.sNormal = { cosf(fLongitudeLow) * cosf(fLatitudeHigh), sinf(fLatitudeHigh), cosf(fLatitudeHigh) * sinf(fLongitudeLow) };
 			inputData.emplace_back(sInput);
 
-			sInput.vertex = { fRadius * cosf(fLongitudeLow) * cosf(-fLatitudeLow), fRadius * sinf(-fLatitudeLow), fRadius * cosf(-fLatitudeLow) * sinf(fLongitudeLow) };
-			sInput.texcoord = { fLongitudeTextureCord, 0.5f - fLatitudeLowTextureCord };
-			sInput.normal = { cosf(fLongitudeLow) * cosf(-fLatitudeLow), sinf(-fLatitudeLow), cosf(-fLatitudeLow) * sinf(fLongitudeLow) };
+			sInput.sVertex = { fRadius * cosf(fLongitudeLow) * cosf(-fLatitudeLow), fRadius * sinf(-fLatitudeLow), fRadius * cosf(-fLatitudeLow) * sinf(fLongitudeLow) };
+			sInput.sTexcoord = { fLongitudeTextureCord, 0.5f - fLatitudeLowTextureCord };
+			sInput.sNormal = { cosf(fLongitudeLow) * cosf(-fLatitudeLow), sinf(-fLatitudeLow), cosf(-fLatitudeLow) * sinf(fLongitudeLow) };
 			inputData.emplace_back(sInput);
 
-			sInput.vertex = { fRadius * cosf(fLongitudeLow) * cosf(-fLatitudeHigh), fRadius * sinf(-fLatitudeHigh), fRadius * cosf(-fLatitudeHigh) * sinf(fLongitudeLow) };
-			sInput.texcoord = { fLongitudeTextureCord, 0.5f - fLatitudeHighTextureCord };
-			sInput.normal = { cosf(fLongitudeLow) * cosf(-fLatitudeHigh), sinf(-fLatitudeHigh), cosf(-fLatitudeHigh) * sinf(fLongitudeLow) };
+			sInput.sVertex = { fRadius * cosf(fLongitudeLow) * cosf(-fLatitudeHigh), fRadius * sinf(-fLatitudeHigh), fRadius * cosf(-fLatitudeHigh) * sinf(fLongitudeLow) };
+			sInput.sTexcoord = { fLongitudeTextureCord, 0.5f - fLatitudeHighTextureCord };
+			sInput.sNormal = { cosf(fLongitudeLow) * cosf(-fLatitudeHigh), sinf(-fLatitudeHigh), cosf(-fLatitudeHigh) * sinf(fLongitudeLow) };
 			inputData.emplace_back(sInput);
 		}
 
@@ -84,7 +85,7 @@ void CubeModel::Draw()
 	DirectXDevice::pDeviceContext->DrawIndexed((UINT)indexData.size(), NULL, NULL);
 }
 
-void CubeModel::Update(const float& fDelta)
+void CubeModel::UpdateModel(const float& fDelta)
 {
 	UpdateTranformMat();
 	ID3D11Helper::UpdateBuffer(DirectXDevice::pDeviceContext, sTransformation, D3D11_MAP_WRITE_DISCARD, cpTransformationBuffer.Get());

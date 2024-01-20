@@ -19,6 +19,6 @@ private:
 
 public:
 	virtual void Draw();
-	virtual void Update(const float& fDelta);
+	virtual void UpdateModel(const float& fDelta);
 };
 

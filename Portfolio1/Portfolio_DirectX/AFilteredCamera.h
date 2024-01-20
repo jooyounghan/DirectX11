@@ -31,7 +31,7 @@ public:
 	virtual void ClearRTV() = 0;
 	virtual void ClearDSV() = 0;
 	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn) = 0;
-	virtual void Update(const float& fDelta) = 0;
+	virtual void UpdateCamera(const float& fDelta) = 0;
 	virtual void Resolve() = 0;
 };
 

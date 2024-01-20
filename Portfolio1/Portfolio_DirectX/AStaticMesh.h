@@ -31,9 +31,10 @@ struct NormalVector
 
 struct InputLayout
 {
-	Vertex vertex;
-	TextureCoord texcoord;
-	NormalVector normal;
+	Vertex			sVertex;
+	TextureCoord	sTexcoord;
+	NormalVector	sNormal;
+	uint32_t		uiId;
 };
 
 class AStaticMesh : public IModel, public ATransformerable
@@ -53,7 +54,7 @@ public:
 public:
 	virtual void Load(const std::string& path) = 0;
 	virtual void Draw() = 0;
-	virtual void Update(const float& fDelta) = 0;
+	virtual void UpdateModel(const float& fDelta) = 0;
 
 public:
 	virtual void ScaleUp(const float& fXup, const float& fYUp, const float& fZUp) override final;

@@ -44,7 +44,8 @@ void PortfolioApp::Init()
 	vector<D3D11_INPUT_ELEMENT_DESC> vInputElemDesc {
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
 		{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20, D3D11_INPUT_PER_VERTEX_DATA, 0}
+		{"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"BLENDINDICES", 0, DXGI_FORMAT_R32_UINT, 0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0}
 	};
 	ID3D11Helper::CreateVSInputLayOut(DirectXDevice::pDevice, L"VertexShader.hlsl", vInputElemDesc, cpVS.GetAddressOf(), cpIL.GetAddressOf());
 	ID3D11Helper::CreatePS(DirectXDevice::pDevice, L"PixelShader.hlsl", cpPS.GetAddressOf());
@@ -68,8 +69,8 @@ void PortfolioApp::Init()
 
 void PortfolioApp::Update(const float& fDelta)
 {
-	pCubeModel->Update(fDelta);
-	pPickableCamera->Update(fDelta);
+	pCubeModel->UpdateModel(fDelta);
+	pPickableCamera->UpdateCamera(fDelta);
 }
 
 void PortfolioApp::Render()
@@ -80,6 +81,12 @@ void PortfolioApp::Render()
 	pPickableCamera->ClearDSV();
 	DirectXDevice::pDeviceContext->VSSetConstantBuffers(0, 1, pCubeModel->cpTransformationBuffer.GetAddressOf());
 	DirectXDevice::pDeviceContext->VSSetConstantBuffers(1, 1, pPickableCamera->cpViewProjBuffer.GetAddressOf());
+
+	DirectXDevice::pDeviceContext->VSSetConstantBuffers(2, 1, pPickableCamera->cpTexelSize.GetAddressOf());
+	DirectXDevice::pDeviceContext->VSSetConstantBuffers(3, 1, pPickableCamera->cpMousePosNdc.GetAddressOf());
+
+	DirectXDevice::pDeviceContext->VSSetShaderResources(0, 1, pPickableCamera->cpPickedIDSRV.GetAddressOf());
+
 	pCubeModel->Draw();
 	pPickableCamera->Resolve();
 }
@@ -155,5 +162,18 @@ LRESULT __stdcall PortfolioApp::AppProc(HWND hWnd, UINT msg, WPARAM wParam, LPAR
 	if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam))
 		return true;
 
+	switch (msg) {
+	case WM_SIZE:
+		pPickableCamera->Resize((UINT)LOWORD(lParam), (UINT)HIWORD(lParam));
+		return 0;
+	case WM_LBUTTONDOWN:
+		pPickableCamera->SetMousePos(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		return 0;
+	case WM_LBUTTONUP:
+		Console::Print(std::to_string(pPickableCamera->GetPickedID()));
+		return 0;
+	default:
+		return 0;
+	}
 	return ::DefWindowProc(hWnd, msg, wParam, lParam);
 }

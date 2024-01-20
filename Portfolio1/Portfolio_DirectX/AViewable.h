@@ -37,6 +37,6 @@ protected:
 	void UpdateViewProj();
 
 public:
-	virtual void Update(const float& fDelta) = 0;
+	virtual void UpdateCamera(const float& fDelta) = 0;
 };
 

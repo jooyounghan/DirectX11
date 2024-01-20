@@ -20,7 +20,7 @@ public:
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	cpTransformationBuffer;
 
 public:
-	virtual void Update(const float& fDelta) = 0;
+	virtual void UpdateModel(const float& fDelta) = 0;
 
 public:
 	void UpdateTranformMat();

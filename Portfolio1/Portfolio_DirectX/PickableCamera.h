@@ -1,7 +1,8 @@
 #pragma once
 #include "AFilteredCamera.h"
+#include "APickable.h"
 
-class PickableCamera : public AFilteredCamera
+class PickableCamera : public AFilteredCamera, public APickable
 {
 public:
 	PickableCamera(
@@ -18,16 +19,13 @@ public:
 	);
 	virtual ~PickableCamera();
 
-protected:
-	Microsoft::WRL::ComPtr<ID3D11Texture2D>				cpPickedIDTexture;
-	Microsoft::WRL::ComPtr<ID3D11UnorderedAccessView>	cpPickedIDUAV;
-
 public:
 	virtual void ClearRTV() override;
 	virtual void ClearDSV() override;
 	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn) override;
-	virtual void Update(const float& fDelta) override;
+	virtual void UpdateCamera(const float& fDelta) override;
 	virtual void Resolve() override;
+	virtual void SetMousePos(const int& iMouseX, const int& iMouseY) override;
 
 public:
 	virtual DirectX::XMMATRIX GetTranformMat();

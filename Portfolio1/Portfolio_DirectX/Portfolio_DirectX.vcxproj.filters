@@ -153,9 +153,6 @@
     <ClInclude Include="NormalImageFile.h">
       <Filter>헤더 파일\File\Extended</Filter>
     </ClInclude>
-    <ClInclude Include="PickableIDRenderTarget.h">
-      <Filter>헤더 파일\Texture2D\Extended</Filter>
-    </ClInclude>
     <ClInclude Include="StageShaderResource.h">
       <Filter>헤더 파일\Texture2D\Extended</Filter>
     </ClInclude>
@@ -200,6 +197,9 @@
     </ClInclude>
     <ClInclude Include="BlendState.h">
       <Filter>헤더 파일\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="APickable.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -290,9 +290,6 @@
     <ClCompile Include="StageShaderResource.cpp">
       <Filter>소스 파일\Texture2D\Extended</Filter>
     </ClCompile>
-    <ClCompile Include="PickableIDRenderTarget.cpp">
-      <Filter>소스 파일\Texture2D\Extended</Filter>
-    </ClCompile>
     <ClCompile Include="DirectXDevice.cpp">
       <Filter>소스 파일\Utils</Filter>
     </ClCompile>
@@ -319,6 +316,9 @@
     </ClCompile>
     <ClCompile Include="BlendState.cpp">
       <Filter>소스 파일\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="APickable.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

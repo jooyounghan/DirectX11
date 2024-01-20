@@ -119,6 +119,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -129,6 +130,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AFilteredCamera.h" />
+    <ClInclude Include="APickable.h" />
     <ClInclude Include="APossessable.h" />
     <ClInclude Include="ASwapChainAccessable.h" />
     <ClInclude Include="AViewable.h" />
@@ -163,7 +165,6 @@
     <ClInclude Include="MathematicalHelper.h" />
     <ClInclude Include="NormalImageFile.h" />
     <ClInclude Include="PickableCamera.h" />
-    <ClInclude Include="PickableIDRenderTarget.h" />
     <ClInclude Include="PortfolioApp.h" />
     <ClInclude Include="RasterizationState.h" />
     <ClInclude Include="SamplerState.h" />
@@ -171,6 +172,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AFilteredCamera.cpp" />
+    <ClCompile Include="APickable.cpp" />
     <ClCompile Include="APossessable.cpp" />
     <ClCompile Include="ASwapChainAccessable.cpp" />
     <ClCompile Include="AViewable.cpp" />
@@ -204,7 +206,6 @@
     <ClCompile Include="MathematicalHelper.cpp" />
     <ClCompile Include="NormalImageFile.cpp" />
     <ClCompile Include="PickableCamera.cpp" />
-    <ClCompile Include="PickableIDRenderTarget.cpp" />
     <ClCompile Include="PortfolioApp.cpp" />
     <ClCompile Include="RasterizationState.cpp" />
     <ClCompile Include="SamplerState.cpp" />

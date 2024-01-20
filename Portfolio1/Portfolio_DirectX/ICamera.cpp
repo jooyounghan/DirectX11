@@ -1,4 +1,6 @@
 #include "ICamera.h"
+#include "DirectXDevice.h"
+#include "ID3D11Helper.h"
 
 ICamera::ICamera(
 	const float& fXPos,
@@ -35,6 +37,12 @@ ICamera::ICamera(
 		uiHeightIn
 	)
 {
+	ID3D11Helper::CreateBuffer(
+		DirectXDevice::pDevice, 
+		sTexelSize, D3D11_USAGE_DYNAMIC,
+		D3D11_BIND_CONSTANT_BUFFER, D3D11_CPU_ACCESS_WRITE, NULL,
+		cpTexelSize.GetAddressOf()
+	);
 }
 
 ICamera::~ICamera()

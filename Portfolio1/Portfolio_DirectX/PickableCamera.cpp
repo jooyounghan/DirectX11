@@ -3,6 +3,10 @@
 #include "MathematicalHelper.h"
 #include "DirectXDevice.h"
 
+#include <algorithm>
+
+using namespace std;
+
 PickableCamera::PickableCamera(
 
 	const float& fXPos,
@@ -59,6 +63,9 @@ void PickableCamera::Resize(const UINT& uiWidthIn, const UINT& uiHeightIn)
 	{
 		uiWidth = uiWidthIn;
 		uiHeight = uiHeightIn;
+
+		sTexelSize.fTexelXSize = 1.f / (float)uiWidth;
+		sTexelSize.fTexelYSize = 1.f / (float)uiHeight;
 
 		// Depth Stencil ÃÊ±âÈ­
 		cpDSV.Reset();
@@ -133,10 +140,12 @@ void PickableCamera::Resize(const UINT& uiWidthIn, const UINT& uiHeightIn)
 				filter->cpUAV.GetAddressOf()
 			);
 		}
+
+		ID3D11Helper::UpdateBuffer(DirectXDevice::pDeviceContext, sTexelSize, D3D11_MAP_WRITE_DISCARD, cpTexelSize.Get());
 	}
 }
 
-void PickableCamera::Update(const float& fDelta)
+void PickableCamera::UpdateCamera(const float& fDelta)
 {
 	UpdateViewProj();
 }
@@ -188,6 +197,19 @@ void PickableCamera::Resolve()
 		cpFormatChangedUAV.Reset();
 		cpFormatChangedTexture.Reset();
 	}
+}
+
+void PickableCamera::SetMousePos(const int& iMouseX, const int& iMouseY)
+{
+	const float fWidth = (float)uiWidth - 1.f;
+	const float fHeight = (float)uiHeight - 1.f;
+	const float fMouseX = std::clamp((float)iMouseX, 0.f, fWidth);
+	const float fMouseY = std::clamp((float)iMouseY, 0.f, fHeight);
+
+	sMousePosNdc.fMouseXNdc = (fMouseX * 2.f / fWidth) - 1.f;
+	sMousePosNdc.fMouseXNdc = (fMouseY * 2.f / fHeight) - 1.f;
+
+	ID3D11Helper::UpdateBuffer(DirectXDevice::pDeviceContext, sMousePosNdc, D3D11_MAP_WRITE_DISCARD, cpMousePosNdc.Get());
 }
 
 DirectX::XMMATRIX PickableCamera::GetTranformMat()
