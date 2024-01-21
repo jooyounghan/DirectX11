@@ -31,5 +31,6 @@ public:
 public:
 	virtual void Apply(ID3D11ShaderResourceView** ppInputSRV) = 0;
 	virtual void SetUAVBarrier() = 0;
+	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn);
 };
 

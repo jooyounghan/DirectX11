@@ -1,0 +1,1 @@
+#define MAX_MS_COUNT    4

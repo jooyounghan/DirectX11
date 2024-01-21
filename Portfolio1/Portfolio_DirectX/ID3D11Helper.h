@@ -102,6 +102,12 @@ public:
 		OUT ID3D11DomainShader** ppDomainShader
 	);
 
+	static void CreateCS(
+		IN ID3D11Device* pDevice,
+		IN LPCWSTR pFileName,
+		OUT ID3D11ComputeShader** ppComputeShader
+	);
+
 	static void CreateRenderTargetView(
 		IN ID3D11Device* pDevice,
 		IN ID3D11Resource* pResource,

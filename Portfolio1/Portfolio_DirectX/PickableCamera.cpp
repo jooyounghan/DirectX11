@@ -2,6 +2,8 @@
 #include "ID3D11Helper.h"
 #include "MathematicalHelper.h"
 #include "DirectXDevice.h"
+#include "Shaders.h"
+#include "SamplerState.h"
 
 using namespace std;
 
@@ -43,8 +45,6 @@ void PickableCamera::ClearRTV()
 		DirectXDevice::pDeviceContext->ClearUnorderedAccessViewFloat(filter->cpUAV.Get(), ARenderTarget::fClearColor);
 	}
 	DirectXDevice::pDeviceContext->ClearUnorderedAccessViewFloat(cpFormatChangedUAV.Get(), ARenderTarget::fClearColor);
-
-	DirectXDevice::pDeviceContext->ClearRenderTargetView(IDPickableRenderTarget::cpRTV.Get(), ARenderTarget::fClearColor);
 }
 
 void PickableCamera::ClearDSV()
@@ -112,6 +112,31 @@ void PickableCamera::Resolve()
 	}
 }
 
+void PickableCamera::Apply(ID3D11ShaderResourceView** ppInputSRV)
+{
+	Shaders& shaders = Shaders::GetInstance();
+	SamplerState& sampler = SamplerState::GetInstance(DirectXDevice::pDevice);
+
+	DirectXDevice::pDeviceContext->CSSetShader(shaders.GetComputeShader(Shaders::ResolveComputeShader), NULL, NULL);
+	DirectXDevice::pDeviceContext->CSSetShaderResources(0, 1, ppInputSRV);
+	DirectXDevice::pDeviceContext->CSSetUnorderedAccessViews(0, 1, IDPickableRenderTarget::cpUAV.GetAddressOf(), nullptr);
+	DirectXDevice::pDeviceContext->CSSetSamplers(0, 1, sampler.GetAddressOfClampSampler());
+	DirectXDevice::pDeviceContext->Dispatch(uiWidth / uiThreadGroupCntX, uiHeight / uiThreadGroupCntY, uiThreadGroupCntZ);
+	SetUAVBarrier();
+}
+
+void PickableCamera::SetUAVBarrier()
+{
+	ID3D11ShaderResourceView* pResetSRV = nullptr;
+	ID3D11UnorderedAccessView* pResetUAV = nullptr;
+	ID3D11SamplerState* pSampler = nullptr;
+
+	DirectXDevice::pDeviceContext->CSSetShader(nullptr, NULL, NULL);
+	DirectXDevice::pDeviceContext->CSSetShaderResources(0, 1, &pResetSRV);
+	DirectXDevice::pDeviceContext->CSSetUnorderedAccessViews(0, 1, &pResetUAV, nullptr);
+	DirectXDevice::pDeviceContext->CSSetSamplers(0, 1, &pSampler);
+}
+
 DirectX::XMMATRIX PickableCamera::GetTranformMat()
 {
 	return MathematicalHelper::MakeAffineTransformation(
@@ -123,6 +148,15 @@ DirectX::XMMATRIX PickableCamera::GetTranformMat()
 
 uint32_t PickableCamera::GetPickedID()
 {
+	uint32_t uiResult = 0;
+	ID3D11Texture2D* pReferenceIDTexture = IDPickableRenderTarget::ARenderTarget::cpTexture2D.Get();
+
+	if (ARenderTarget::uiNumQualityLevels > 0)
+	{
+		Apply(IDPickableRenderTarget::ARenderTarget::cpSRV.GetAddressOf());
+		pReferenceIDTexture = IDPickableRenderTarget::IFilter::cpTexture2D.Get();
+	}
+
 	D3D11_BOX sBox;
 	AutoZeroMemory(sBox);
 	sBox.left = sMousePosNdc.uiMouseXNdc;
@@ -132,25 +166,13 @@ uint32_t PickableCamera::GetPickedID()
 	sBox.front = 0;
 	sBox.back = 1;
 
-	DirectXDevice::pDeviceContext->CopySubresourceRegion(
-		cpPickedIDSelected.Get(), NULL, 0, 0, 0, 
-		IDPickableRenderTarget::cpTexture2D.Get(), 0, &sBox
-	);
-
-	uint32_t uiResult = 0;
-	ID3D11Texture2D* pReferenceIDTexture = cpPickedIDSelected.Get();
-
-	if (ARenderTarget::uiNumQualityLevels > 0)
-	{
-		DirectXDevice::pDeviceContext->ResolveSubresource(cpPickedIDMStoSS.Get(), 0, cpPickedIDSelected.Get(), 0, IDPickableRenderTarget::eFormat);
-		pReferenceIDTexture = cpPickedIDMStoSS.Get();
-	}
+	DirectXDevice::pDeviceContext->CopySubresourceRegion(cpPickedIDResult.Get(), 0, 0, 0, 0, pReferenceIDTexture, 0, &sBox);
 
 	D3D11_MAPPED_SUBRESOURCE sMappedSubResource;
 	AutoZeroMemory(sMappedSubResource);
-	DirectXDevice::pDeviceContext->Map(pReferenceIDTexture, 0, D3D11_MAP_READ, NULL, &sMappedSubResource);
+	DirectXDevice::pDeviceContext->Map(cpPickedIDResult.Get(), 0, D3D11_MAP_READ, NULL, &sMappedSubResource);
 	memcpy(&uiResult, sMappedSubResource.pData, sizeof(uint32_t));
-	DirectXDevice::pDeviceContext->Unmap(pReferenceIDTexture, 0);
+	DirectXDevice::pDeviceContext->Unmap(cpPickedIDResult.Get(), 0);
 
 	return uiResult;
 }

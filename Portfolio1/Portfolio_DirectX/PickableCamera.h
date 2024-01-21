@@ -25,6 +25,12 @@ public:
 	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn) override;
 	virtual void UpdateCamera(const float& fDelta) override;
 	virtual void Resolve() override;
+
+public:
+	virtual void Apply(ID3D11ShaderResourceView** ppInputSRV);
+	virtual void SetUAVBarrier();
+
+public:
 	virtual uint32_t GetPickedID() override;
 
 public:

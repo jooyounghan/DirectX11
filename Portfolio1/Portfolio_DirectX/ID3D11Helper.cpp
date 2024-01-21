@@ -262,6 +262,43 @@ void ID3D11Helper::CreateDS(IN ID3D11Device* pDevice, IN LPCWSTR pFileName, OUT 
 	}
 }
 
+void ID3D11Helper::CreateCS(IN ID3D11Device* pDevice, IN LPCWSTR pFileName, OUT ID3D11ComputeShader** ppComputeShader)
+{
+	ComPtr<ID3DBlob> cpShaderBlob;
+	ComPtr<ID3DBlob> cpErrorBlob;
+
+	HRESULT hResult = D3DCompileFromFile(
+		pFileName,
+		NULL,
+		D3D_COMPILE_STANDARD_FILE_INCLUDE,
+		"main",
+		"cs_5_0",
+		D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
+		NULL,
+		cpShaderBlob.GetAddressOf(),
+		cpErrorBlob.GetAddressOf()
+	);
+
+	if (FAILED(hResult))
+	{
+		Console::Print("Domain Shader를 컴파일하는데 실패하였습니다.");
+		return;
+	}
+
+	hResult = pDevice->CreateComputeShader(
+		cpShaderBlob->GetBufferPointer(),
+		cpShaderBlob->GetBufferSize(),
+		NULL,
+		ppComputeShader
+	);
+
+	if (FAILED(hResult))
+	{
+		Console::Print("Compute Shader 생성하는데 실패하였습니다.");
+		return;
+	}
+}
+
 void ID3D11Helper::CreateRenderTargetView(IN ID3D11Device* pDevice, IN ID3D11Resource* pResource, OUT ID3D11RenderTargetView** ppRenderTargetView)
 {
 	HRESULT hResult = pDevice->CreateRenderTargetView(pResource, NULL, ppRenderTargetView);

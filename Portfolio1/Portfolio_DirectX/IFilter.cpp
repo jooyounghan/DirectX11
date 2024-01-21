@@ -31,3 +31,10 @@ IFilter::IFilter(
 IFilter::~IFilter()
 {
 }
+
+void IFilter::Resize(const UINT& uiWidthIn, const UINT& uiHeightIn)
+{
+	cpUAV.Reset();
+	ShaderResource::Resize(uiWidthIn, uiHeightIn);
+	ID3D11Helper::CreateUnorderedAccessView(DirectXDevice::pDevice, cpTexture2D.Get(), cpUAV.GetAddressOf());
+}

@@ -1,7 +1,8 @@
 #pragma once
+#include "IFilter.h"
 #include "ARenderTarget.h"
 
-class IDPickableRenderTarget : public ARenderTarget
+class IDPickableRenderTarget : public IFilter, public ARenderTarget
 {
 public:
 	IDPickableRenderTarget(
@@ -12,8 +13,8 @@ public:
 	~IDPickableRenderTarget();
 
 public:
-	Microsoft::WRL::ComPtr<ID3D11Texture2D>	cpPickedIDSelected;
-	Microsoft::WRL::ComPtr<ID3D11Texture2D>	cpPickedIDMStoSS;
+
+	Microsoft::WRL::ComPtr<ID3D11Texture2D>	cpPickedIDResult;
 
 protected:
 	struct
@@ -27,6 +28,11 @@ public:
 	virtual void SetMousePos(const int& iMouseX, const int& iMouseY);
 
 public:
-	virtual uint32_t GetPickedID() = 0;
+	virtual uint32_t	GetPickedID() = 0;
+	virtual void		Apply(ID3D11ShaderResourceView** ppInputSRV) = 0;
+	virtual void		SetUAVBarrier() = 0;
+
+public:
+	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn);
 };
 
