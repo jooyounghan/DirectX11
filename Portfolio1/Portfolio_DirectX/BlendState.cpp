@@ -75,6 +75,6 @@ void BlendState::CreateBlendState(IN BlendStateOption eBSType, IN ID3D11Device* 
 	HRESULT hResult = pDevice->CreateBlendState(&sBlendDesc, ppBlendState);
 	if (FAILED(hResult))
 	{
-		Console::Print("Blend State를 생성하는데 실패하였습니다.");
+		Console::AssertPrint("Blend State를 생성하는데 실패하였습니다.");
 	}
 }

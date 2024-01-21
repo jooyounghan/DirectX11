@@ -3,6 +3,17 @@
 #include "DirectXDevice.h"
 
 IFilter::IFilter(
+	UINT uiThreadGroupCntXIn,
+	UINT uiThreadGroupCntYIn,
+	UINT uiThreadGroupCntZIn
+) : ShaderResource(),
+	uiThreadGroupCntX(uiThreadGroupCntXIn),
+	uiThreadGroupCntY(uiThreadGroupCntYIn),
+	uiThreadGroupCntZ(uiThreadGroupCntZIn)
+{
+}
+
+IFilter::IFilter(
 	UINT uiWidthIn, 
 	UINT uiHeightIn, 
 	UINT uiArraySizeIn, 

@@ -1,6 +1,8 @@
 #include "IDPickableRenderTarget.h"
 #include "ID3D11Helper.h"
 #include "DirectXDevice.h"
+#include "Shaders.h"
+
 #include <algorithm>
 
 IDPickableRenderTarget::IDPickableRenderTarget(
@@ -38,6 +40,27 @@ void IDPickableRenderTarget::SetMousePos(const int& iMouseXIn, const int& iMouse
 
 	sMousePosNdc.uiMouseXNdc = (uint32_t)iMouseX;
 	sMousePosNdc.uiMouseYNdc = (uint32_t)iMouseY;
+}
+
+void IDPickableRenderTarget::Apply(ID3D11ShaderResourceView** ppInputSRV)
+{
+	Shaders& shaders = Shaders::GetInstance();
+
+	DirectXDevice::pDeviceContext->CSSetShader(shaders.GetComputeShader(Shaders::ResolveComputeShader), NULL, NULL);
+	DirectXDevice::pDeviceContext->CSSetShaderResources(0, 1, ppInputSRV);
+	DirectXDevice::pDeviceContext->CSSetUnorderedAccessViews(0, 1, IDPickableRenderTarget::cpUAV.GetAddressOf(), nullptr);
+	DirectXDevice::pDeviceContext->Dispatch(uiWidth / uiThreadGroupCntX, uiHeight / uiThreadGroupCntY, uiThreadGroupCntZ);
+	SetUAVBarrier();
+}
+
+void IDPickableRenderTarget::SetUAVBarrier()
+{
+	ID3D11ShaderResourceView* pResetSRV = nullptr;
+	ID3D11UnorderedAccessView* pResetUAV = nullptr;
+
+	DirectXDevice::pDeviceContext->CSSetShader(nullptr, NULL, NULL);
+	DirectXDevice::pDeviceContext->CSSetShaderResources(0, 1, &pResetSRV);
+	DirectXDevice::pDeviceContext->CSSetUnorderedAccessViews(0, 1, &pResetUAV, nullptr);
 }
 
 void IDPickableRenderTarget::Resize(const UINT& uiWidthIn, const UINT& uiHeightIn)

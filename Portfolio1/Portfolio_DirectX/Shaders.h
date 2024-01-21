@@ -27,6 +27,7 @@ public:
 	enum EComputeShader : size_t
 	{
 		ResolveComputeShader,
+		MS16ToSS8ComputeShader,
 		NumComputeShader
 	};
 

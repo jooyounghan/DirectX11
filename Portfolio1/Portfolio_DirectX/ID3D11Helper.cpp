@@ -57,7 +57,7 @@ void ID3D11Helper::CreateDeviceAndContext(
 
 	if (FAILED(hResult))
 	{
-		Console::Print("Device와 Device Context를 생성하는데 실패하였습니다.");
+		Console::AssertPrint("Device와 Device Context를 생성하는데 실패하였습니다.");
 	}
 }
 
@@ -79,7 +79,7 @@ void ID3D11Helper::CreateVSInputLayOut(IN ID3D11Device* pDevice, IN LPCWSTR pFil
 
 	if (FAILED(hResult))
 	{
-		Console::Print("Vertex Shader를 컴파일하는데 실패하였습니다.");
+		Console::AssertPrint("Vertex Shader를 컴파일하는데 실패하였습니다.");
 		return;
 	}
 
@@ -91,14 +91,14 @@ void ID3D11Helper::CreateVSInputLayOut(IN ID3D11Device* pDevice, IN LPCWSTR pFil
 	);
 	if (FAILED(hResult))
 	{
-		Console::Print("Vertex Shader를 생성하는데 실패하였습니다.");
+		Console::AssertPrint("Vertex Shader를 생성하는데 실패하였습니다.");
 		return;
 	}
 
 	hResult = pDevice->CreateInputLayout(vInputElementDescs.data(), (UINT)vInputElementDescs.size(), cpShaderBlob->GetBufferPointer(), cpShaderBlob->GetBufferSize(), ppInputLayout);
 	if (FAILED(hResult))
 	{
-		Console::Print("InputLayout을 생성하는데 실패하였습니다.");
+		Console::AssertPrint("InputLayout을 생성하는데 실패하였습니다.");
 		return;
 	}
 }
@@ -108,7 +108,7 @@ bool ID3D11Helper::GetBackBuffer(IN IDXGISwapChain* pSwapChain, OUT ID3D11Textur
 	HRESULT hResult = pSwapChain->GetBuffer(0, IID_PPV_ARGS(ppTexture2D));
 	if (FAILED(hResult))
 	{
-		Console::Print("Back Buffer를 불러오는데 실패하였습니다.");
+		Console::AssertPrint("Back Buffer를 불러오는데 실패하였습니다.");
 		return false;
 	}
 	return true;
@@ -133,7 +133,7 @@ void ID3D11Helper::CreatePS(IN ID3D11Device* pDevice, IN LPCWSTR pFileName, OUT 
 
 	if (FAILED(hResult))
 	{
-		Console::Print("Pixel Shader를 컴파일하는데 실패하였습니다.");
+		Console::AssertPrint("Pixel Shader를 컴파일하는데 실패하였습니다.");
 		return;
 	}
 
@@ -146,7 +146,7 @@ void ID3D11Helper::CreatePS(IN ID3D11Device* pDevice, IN LPCWSTR pFileName, OUT 
 
 	if (FAILED(hResult))
 	{
-		Console::Print("Pixel Shader 생성하는데 실패하였습니다.");
+		Console::AssertPrint("Pixel Shader 생성하는데 실패하였습니다.");
 		return;
 	}
 }
@@ -170,7 +170,7 @@ void ID3D11Helper::CreateGS(IN ID3D11Device* pDevice, IN LPCWSTR pFileName, OUT 
 
 	if (FAILED(hResult))
 	{
-		Console::Print("Geometry Shader를 컴파일하는데 실패하였습니다.");
+		Console::AssertPrint("Geometry Shader를 컴파일하는데 실패하였습니다.");
 		return;
 	}
 
@@ -183,7 +183,7 @@ void ID3D11Helper::CreateGS(IN ID3D11Device* pDevice, IN LPCWSTR pFileName, OUT 
 
 	if (FAILED(hResult))
 	{
-		Console::Print("Geometry Shader 생성하는데 실패하였습니다.");
+		Console::AssertPrint("Geometry Shader 생성하는데 실패하였습니다.");
 		return;
 	}
 }
@@ -207,7 +207,7 @@ void ID3D11Helper::CreateHS(IN ID3D11Device* pDevice, IN LPCWSTR pFileName, OUT 
 
 	if (FAILED(hResult))
 	{
-		Console::Print("Hull Shader를 컴파일하는데 실패하였습니다.");
+		Console::AssertPrint("Hull Shader를 컴파일하는데 실패하였습니다.");
 		return;
 	}
 
@@ -220,7 +220,7 @@ void ID3D11Helper::CreateHS(IN ID3D11Device* pDevice, IN LPCWSTR pFileName, OUT 
 
 	if (FAILED(hResult))
 	{
-		Console::Print("Hull Shader 생성하는데 실패하였습니다.");
+		Console::AssertPrint("Hull Shader 생성하는데 실패하였습니다.");
 		return;
 	}
 }
@@ -244,7 +244,7 @@ void ID3D11Helper::CreateDS(IN ID3D11Device* pDevice, IN LPCWSTR pFileName, OUT 
 
 	if (FAILED(hResult))
 	{
-		Console::Print("Domain Shader를 컴파일하는데 실패하였습니다.");
+		Console::AssertPrint("Domain Shader를 컴파일하는데 실패하였습니다.");
 		return;
 	}
 
@@ -257,7 +257,7 @@ void ID3D11Helper::CreateDS(IN ID3D11Device* pDevice, IN LPCWSTR pFileName, OUT 
 
 	if (FAILED(hResult))
 	{
-		Console::Print("Domain Shader 생성하는데 실패하였습니다.");
+		Console::AssertPrint("Domain Shader 생성하는데 실패하였습니다.");
 		return;
 	}
 }
@@ -281,7 +281,7 @@ void ID3D11Helper::CreateCS(IN ID3D11Device* pDevice, IN LPCWSTR pFileName, OUT 
 
 	if (FAILED(hResult))
 	{
-		Console::Print("Domain Shader를 컴파일하는데 실패하였습니다.");
+		Console::AssertPrint("Domain Shader를 컴파일하는데 실패하였습니다.");
 		return;
 	}
 
@@ -294,7 +294,7 @@ void ID3D11Helper::CreateCS(IN ID3D11Device* pDevice, IN LPCWSTR pFileName, OUT 
 
 	if (FAILED(hResult))
 	{
-		Console::Print("Compute Shader 생성하는데 실패하였습니다.");
+		Console::AssertPrint("Compute Shader 생성하는데 실패하였습니다.");
 		return;
 	}
 }
@@ -304,7 +304,7 @@ void ID3D11Helper::CreateRenderTargetView(IN ID3D11Device* pDevice, IN ID3D11Res
 	HRESULT hResult = pDevice->CreateRenderTargetView(pResource, NULL, ppRenderTargetView);
 	if (FAILED(hResult))
 	{
-		Console::Print("Render Target View를 생성하는데 실패하였습니다.");
+		Console::AssertPrint("Render Target View를 생성하는데 실패하였습니다.");
 	}
 }
 
@@ -313,7 +313,7 @@ void ID3D11Helper::CreateShaderResoureView(IN ID3D11Device* pDevice, IN ID3D11Re
 	HRESULT hResult = pDevice->CreateShaderResourceView(pResource, NULL, ppShaderResourceView);
 	if (FAILED(hResult))
 	{
-		Console::Print("Shader Resource View를 생성하는데 실패하였습니다.");
+		Console::AssertPrint("Shader Resource View를 생성하는데 실패하였습니다.");
 	}
 }
 
@@ -322,7 +322,7 @@ void ID3D11Helper::CreateUnorderedAccessView(IN ID3D11Device* pDevice, IN ID3D11
 	HRESULT hResult = pDevice->CreateUnorderedAccessView(pResource, NULL, ppUnorderedAccessView);
 	if (FAILED(hResult))
 	{
-		Console::Print("Unordered Access View를 생성하는데 실패하였습니다.");
+		Console::AssertPrint("Unordered Access View를 생성하는데 실패하였습니다.");
 	}
 }
 
@@ -332,7 +332,7 @@ void ID3D11Helper::CreateDepthStencilView(IN ID3D11Device* pDevice, IN ID3D11Tex
 
 	if (FAILED(hResult))
 	{
-		Console::Print("Depth Stencil View를 생성하는데 실패하였습니다.");
+		Console::AssertPrint("Depth Stencil View를 생성하는데 실패하였습니다.");
 		return;
 	}
 }
@@ -350,7 +350,7 @@ void ID3D11Helper::CreateRasterizerState(IN ID3D11Device* pDevice, IN D3D11_FILL
 	HRESULT hResult = pDevice->CreateRasterizerState(&sRasterizerDesc, ppRasterizerState);
 	if (FAILED(hResult))
 	{
-		Console::Print("RasterizerState를 생성하는데 실패하였습니다.");
+		Console::AssertPrint("RasterizerState를 생성하는데 실패하였습니다.");
 	}
 }
 
@@ -371,7 +371,7 @@ void ID3D11Helper::CreateDepthStencilState(IN ID3D11Device* pDevice, IN BOOL bDe
 
 	if (FAILED(hResult))
 	{
-		Console::Print("Depth Stencil State를 생성하는데 실패하였습니다.");
+		Console::AssertPrint("Depth Stencil State를 생성하는데 실패하였습니다.");
 	}
 }
 
@@ -402,7 +402,7 @@ void ID3D11Helper::CreateSampler(IN D3D11_FILTER eFilter, IN D3D11_TEXTURE_ADDRE
 	HRESULT hResult = pDevice->CreateSamplerState(&sSamplerDesc, ppSamplerState);
 	if (FAILED(hResult))
 	{
-		Console::Print("샘플러를 생성하는데 실패하였습니다.");
+		Console::AssertPrint("샘플러를 생성하는데 실패하였습니다.");
 	}
 
 }
@@ -452,7 +452,7 @@ void ID3D11Helper::CreateTexture2D(
 	HRESULT hResult = pDevice->CreateTexture2D(&sTexture2DDesc, &pData, ppTexture2D);
 	if (FAILED(hResult))
 	{
-		Console::Print("Texture2D를 생성하는데 실패하였습니다.");
+		Console::AssertPrint("Texture2D를 생성하는데 실패하였습니다.");
 	}
 }
 
@@ -492,6 +492,6 @@ void ID3D11Helper::CreateTexture2D(
 	HRESULT hResult = pDevice->CreateTexture2D(&sTexture2DDesc,nullptr, ppTexture2D);
 	if (FAILED(hResult))
 	{
-		Console::Print("Texture2D를 생성하는데 실패하였습니다.");
+		Console::AssertPrint("Texture2D를 생성하는데 실패하였습니다.");
 	}
 }

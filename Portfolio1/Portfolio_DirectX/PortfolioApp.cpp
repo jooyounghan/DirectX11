@@ -43,7 +43,8 @@ void PortfolioApp::Init()
 		0.f, 0.f, -10.f, uiWidth, uiHeight,
 		70.f * 2.f * 3.141592f / 360.f,
 		0.01f, 1000.f, 1,
-		DXGI_FORMAT_R8G8B8A8_UNORM,
+		//DXGI_FORMAT_R8G8B8A8_UNORM,
+		DXGI_FORMAT_R16G16B16A16_FLOAT,
 		DXGI_FORMAT_D24_UNORM_S8_UINT
 	);
 
@@ -103,6 +104,8 @@ void PortfolioApp::Render()
 
 	pCubeModel2->Draw();
 
+	RenderImGUI();
+
 	DirectXDevice::pDeviceContext->OMSetRenderTargets(2, vResetRTVs.data(), nullptr);
 	pPickableCamera->Resolve();
 }
@@ -120,9 +123,6 @@ void PortfolioApp::Run()
 			SetImGUIRendering();
 			Update(1.f / ImGui::GetIO().Framerate);
 			Render();
-
-			RenderImGUI();
-
 			SwapChain();
 		}
 	}
@@ -152,6 +152,13 @@ void PortfolioApp::SetImGUIRendering()
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
+
+	ImGui::Begin("Normal Setting");
+	ImGui::Text("Average %.3f ms/frame (%.1f FPS)",
+		1000.0f / ImGui::GetIO().Framerate,
+		ImGui::GetIO().Framerate);
+	ImGui::End();
+
 	ImGui::Render();
 }
 

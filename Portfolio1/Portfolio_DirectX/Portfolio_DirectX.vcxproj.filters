@@ -334,10 +334,10 @@
     <FxCompile Include="PixelShader.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
-    <FxCompile Include="FormatChangeCS.hlsl">
+    <FxCompile Include="MS16ToSS8CS.hlsl">
       <Filter>Shader\Filter</Filter>
     </FxCompile>
-    <FxCompile Include="ResolveCS.hlsl">
+    <FxCompile Include="ModelIDResolveCS.hlsl">
       <Filter>Shader\Filter</Filter>
     </FxCompile>
   </ItemGroup>

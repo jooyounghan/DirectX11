@@ -5,6 +5,11 @@ class IFilter : public ShaderResource
 {
 public:
 	IFilter(
+		UINT uiThreadGroupCntXIn,
+		UINT uiThreadGroupCntYIn,
+		UINT uiThreadGroupCntZIn
+	);
+	IFilter(
 		UINT uiWidthIn,
 		UINT uiHeightIn,
 		UINT uiArraySizeIn,
@@ -31,6 +36,8 @@ public:
 public:
 	virtual void Apply(ID3D11ShaderResourceView** ppInputSRV) = 0;
 	virtual void SetUAVBarrier() = 0;
+
+public:
 	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn);
 };
 

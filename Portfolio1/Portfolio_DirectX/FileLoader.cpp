@@ -59,7 +59,7 @@ uint8_t* FileLoader::LoadFileWithOpenEXR(const wchar_t* pFileName, UINT* x, UINT
     HRESULT hResult = LoadFromEXRFile(pFileName, &metaData, scratch);
     if (FAILED(hResult))
     {
-        Console::Print("EXR 파일을 불러들이는데 실패하였습니다.");
+        Console::AssertPrint("EXR 파일을 불러들이는데 실패하였습니다.");
     }
     else
     {

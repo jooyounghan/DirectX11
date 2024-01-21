@@ -22,15 +22,6 @@ AFilteredCamera::AFilteredCamera(
 		eRTVFormatIn, eDSVFormatIn
 	)
 {
-	if (uiNumQualityLevelsIn > 0)
-	{
-		ID3D11Helper::CreateTexture2D(
-			DirectXDevice::pDevice, uiWidthIn, uiHeightIn,
-			1, 0, D3D11_BIND_SHADER_RESOURCE,
-			NULL, NULL, D3D11_USAGE_DEFAULT, eRTVFormatIn, cpMSToSSTexture.GetAddressOf()
-		);
-		ID3D11Helper::CreateShaderResoureView(DirectXDevice::pDevice, cpMSToSSTexture.Get(), cpMStoSSSRV.GetAddressOf());
-	}
 }
 
 AFilteredCamera::~AFilteredCamera()
@@ -43,20 +34,6 @@ void AFilteredCamera::Resize(const UINT& uiWidthIn, const UINT& uiHeightIn)
 
 	if (IsSwapChainAccesssed)
 	{
-		// MSToSS 초기화 및 재설정
-		if (ARenderTarget::uiNumQualityLevels > 0)
-		{
-			cpMStoSSSRV.Reset();
-			cpMSToSSTexture.Reset();
-
-			ID3D11Helper::CreateTexture2D(
-				DirectXDevice::pDevice, uiWidth, uiHeight,
-				1, 0, D3D11_BIND_SHADER_RESOURCE,
-				NULL, NULL, D3D11_USAGE_STAGING, ARenderTarget::eFormat, cpMSToSSTexture.GetAddressOf()
-			);
-			ID3D11Helper::CreateShaderResoureView(DirectXDevice::pDevice, cpMSToSSTexture.Get(), cpMStoSSSRV.GetAddressOf());
-		}
-
 		for (IFilter* filter : pFilters)
 		{
 			// 필터 초기화
@@ -82,5 +59,44 @@ void AFilteredCamera::Resize(const UINT& uiWidthIn, const UINT& uiHeightIn)
 				filter->cpUAV.GetAddressOf()
 			);
 		}
+	}
+}
+
+void AFilteredCamera::Resolve()
+{
+	if (IsSwapChainAccesssed)
+	{
+		ID3D11ShaderResourceView** ppInputSRV = nullptr;
+		ID3D11Texture2D* pOutputResource = nullptr;
+
+		if (IsDiffWithBackBuffer())
+		{
+			Apply(ARenderTarget::cpSRV.GetAddressOf());
+			ppInputSRV = IFilter::cpSRV.GetAddressOf();
+			pOutputResource = IFilter::cpTexture2D.Get();
+		}
+		else
+		{
+			ppInputSRV = ARenderTarget::cpSRV.GetAddressOf();
+			pOutputResource = ARenderTarget::cpTexture2D.Get();
+
+		}
+
+		if (pFilters.size() > 0)
+		{
+			for (IFilter* pFilter : pFilters)
+			{
+				pFilter->Apply(ppInputSRV);
+				ppInputSRV = pFilter->cpSRV.GetAddressOf();
+			}
+
+			pOutputResource = pFilters[pFilters.size() - 1]->cpTexture2D.Get();
+		}
+
+		DirectXDevice::pDeviceContext->ResolveSubresource(ASwapChainAccessable::cpTexture2D.Get(), 0, pOutputResource, 0, ASwapChainAccessable::eFormat);
+	}
+	else
+	{
+
 	}
 }

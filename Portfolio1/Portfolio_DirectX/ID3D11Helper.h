@@ -217,7 +217,7 @@ void ID3D11Helper::CreateBuffer(
 	HRESULT hResult = pDevice->CreateBuffer(&sBufferDesc, &sSubResourceData, ppBuffer);
 	if (FAILED(hResult))
 	{
-		Console::Print("버퍼를 생성하는데 실패하였습니다.");
+		Console::AssertPrint("버퍼를 생성하는데 실패하였습니다.");
 	}
 }
 
@@ -249,7 +249,7 @@ void ID3D11Helper::CreateBuffer(
 	HRESULT hResult = pDevice->CreateBuffer(&sBufferDesc, &sSubResourceData, ppBuffer);
 	if (FAILED(hResult))
 	{
-		Console::Print("버퍼를 생성하는데 실패하였습니다.");
+		Console::AssertPrint("버퍼를 생성하는데 실패하였습니다.");
 	}
 }
 

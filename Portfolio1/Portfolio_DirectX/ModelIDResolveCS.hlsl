@@ -1,27 +1,25 @@
 #include "CommonFilterArgs.hlsli"
 
-SamplerState ClampSampler : register(s0);
-
 Texture2DMS<uint> InputTexture2D : register(t0);
 
 RWTexture2D<uint> ResolvedTexture : register(u0);
 
 [numthreads(256, 1, 1)]
-void main( uint3 DTId : SV_DispatchThreadID )
+void main(uint3 DTid : SV_DispatchThreadID)
 {
     uint uiWidth;
     uint uiHeight;
     uint uiLevels;
 
     InputTexture2D.GetDimensions(uiWidth, uiHeight, uiLevels);
-    ResolvedTexture[DTId.xy] = 0;
+    ResolvedTexture[DTid.xy] = 0;
     
     uint sampleValues[MAX_MS_COUNT];
     uint sampleHistos[MAX_MS_COUNT];
     uint pointIdx = 0;
     for (uint sampleIdx = 0; sampleIdx < MAX_MS_COUNT; ++sampleIdx)
     {
-        uint loadedValue = InputTexture2D.Load(DTId.xy, sampleIdx);
+        uint loadedValue = InputTexture2D.Load(DTid.xy, sampleIdx);
 
         for (uint idx = 0; idx < MAX_MS_COUNT; ++idx)
         {
@@ -52,5 +50,5 @@ void main( uint3 DTId : SV_DispatchThreadID )
         }
     }
     
-    ResolvedTexture[DTId.xy] = InputTexture2D.Load(DTId.xy, maxIdx);
+    ResolvedTexture[DTid.xy] = InputTexture2D.Load(DTid.xy, maxIdx);
 }

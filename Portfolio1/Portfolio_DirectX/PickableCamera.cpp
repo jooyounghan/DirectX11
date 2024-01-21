@@ -2,8 +2,6 @@
 #include "ID3D11Helper.h"
 #include "MathematicalHelper.h"
 #include "DirectXDevice.h"
-#include "Shaders.h"
-#include "SamplerState.h"
 
 using namespace std;
 
@@ -44,7 +42,6 @@ void PickableCamera::ClearRTV()
 	{
 		DirectXDevice::pDeviceContext->ClearUnorderedAccessViewFloat(filter->cpUAV.Get(), ARenderTarget::fClearColor);
 	}
-	DirectXDevice::pDeviceContext->ClearUnorderedAccessViewFloat(cpFormatChangedUAV.Get(), ARenderTarget::fClearColor);
 }
 
 void PickableCamera::ClearDSV()
@@ -63,80 +60,6 @@ void PickableCamera::UpdateCamera(const float& fDelta)
 	UpdateViewProj();
 }
 
-void PickableCamera::Resolve()
-{
-	if (IsSwapChainAccesssed)
-	{
-		ID3D11ShaderResourceView** ppInputSRV;
-		ID3D11Texture2D* pOutputResource;
-		if (ASwapChainAccessable::uiNumQualityLevels == ARenderTarget::uiNumQualityLevels)
-		{
-			ppInputSRV = ARenderTarget::cpSRV.GetAddressOf();
-			pOutputResource = ARenderTarget::cpTexture2D.Get();
-		}
-		else
-		{
-			DirectXDevice::pDeviceContext->ResolveSubresource(cpMSToSSTexture.Get(), 0, ARenderTarget::cpTexture2D.Get(), 0, ARenderTarget::eFormat);
-			ppInputSRV = cpMStoSSSRV.GetAddressOf();
-			pOutputResource = cpMSToSSTexture.Get();
-		}
-
-		if (pFilters.size() > 0)
-		{
-			for (IFilter* pFilter : pFilters)
-			{
-				pFilter->Apply(ppInputSRV);
-				ppInputSRV = pFilter->cpSRV.GetAddressOf();
-			}
-
-			pOutputResource = pFilters[pFilters.size() - 1]->cpTexture2D.Get();
-		}
-
-		D3D11_TEXTURE2D_DESC sOutputDesc;
-		pOutputResource->GetDesc(&sOutputDesc);
-
-		if (ASwapChainAccessable::eFormat != sOutputDesc.Format)
-		{
-			// cpFormatChangedUAV를 Output으로 포맷 변경
-
-
-
-			pOutputResource = cpFormatChangedTexture.Get();
-		}
-		DirectXDevice::pDeviceContext->ResolveSubresource(ASwapChainAccessable::cpTexture2D.Get(), 0, pOutputResource, 0, ASwapChainAccessable::eFormat);
-	}
-	else
-	{
-		cpFormatChangedUAV.Reset();
-		cpFormatChangedTexture.Reset();
-	}
-}
-
-void PickableCamera::Apply(ID3D11ShaderResourceView** ppInputSRV)
-{
-	Shaders& shaders = Shaders::GetInstance();
-	SamplerState& sampler = SamplerState::GetInstance(DirectXDevice::pDevice);
-
-	DirectXDevice::pDeviceContext->CSSetShader(shaders.GetComputeShader(Shaders::ResolveComputeShader), NULL, NULL);
-	DirectXDevice::pDeviceContext->CSSetShaderResources(0, 1, ppInputSRV);
-	DirectXDevice::pDeviceContext->CSSetUnorderedAccessViews(0, 1, IDPickableRenderTarget::cpUAV.GetAddressOf(), nullptr);
-	DirectXDevice::pDeviceContext->CSSetSamplers(0, 1, sampler.GetAddressOfClampSampler());
-	DirectXDevice::pDeviceContext->Dispatch(uiWidth / uiThreadGroupCntX, uiHeight / uiThreadGroupCntY, uiThreadGroupCntZ);
-	SetUAVBarrier();
-}
-
-void PickableCamera::SetUAVBarrier()
-{
-	ID3D11ShaderResourceView* pResetSRV = nullptr;
-	ID3D11UnorderedAccessView* pResetUAV = nullptr;
-	ID3D11SamplerState* pSampler = nullptr;
-
-	DirectXDevice::pDeviceContext->CSSetShader(nullptr, NULL, NULL);
-	DirectXDevice::pDeviceContext->CSSetShaderResources(0, 1, &pResetSRV);
-	DirectXDevice::pDeviceContext->CSSetUnorderedAccessViews(0, 1, &pResetUAV, nullptr);
-	DirectXDevice::pDeviceContext->CSSetSamplers(0, 1, &pSampler);
-}
-
 DirectX::XMMATRIX PickableCamera::GetTranformMat()
 {
 	return MathematicalHelper::MakeAffineTransformation(
@@ -153,7 +76,7 @@ uint32_t PickableCamera::GetPickedID()
 
 	if (ARenderTarget::uiNumQualityLevels > 0)
 	{
-		Apply(IDPickableRenderTarget::ARenderTarget::cpSRV.GetAddressOf());
+		IDPickableRenderTarget::Apply(IDPickableRenderTarget::ARenderTarget::cpSRV.GetAddressOf());
 		pReferenceIDTexture = IDPickableRenderTarget::IFilter::cpTexture2D.Get();
 	}
 

@@ -22,8 +22,8 @@ void Shaders::Init(ID3D11Device* pDeviceIn)
 	ID3D11Helper::CreatePS(pDeviceIn, L"PixelShader.hlsl", vPixelShaders[0].GetAddressOf());
 
 	// Compute Shader √ ±‚»≠
-	ID3D11Helper::CreateCS(pDeviceIn, L"ResolveCS.hlsl", vComputeShaders[0].GetAddressOf());
-
+	ID3D11Helper::CreateCS(pDeviceIn, L"ModelIDResolveCS.hlsl", vComputeShaders[0].GetAddressOf());
+	ID3D11Helper::CreateCS(pDeviceIn, L"MS16ToSS8CS.hlsl", vComputeShaders[1].GetAddressOf());
 }
 
 ID3D11VertexShader* Shaders::GetVertexShader(IN EVertexShader eVertexShader)

@@ -23,7 +23,7 @@ DDSImageFile::DDSImageFile(
 
 	if (FAILED(hResult))
 	{
-		Console::Print("DDS 파일을 통해 Texture와 SRV를 생성하는데 실패했습니다.");
+		Console::AssertPrint("DDS 파일을 통해 Texture와 SRV를 생성하는데 실패했습니다.");
 		return;
 	}
 	else

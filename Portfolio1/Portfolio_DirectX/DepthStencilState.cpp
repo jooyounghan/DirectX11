@@ -84,6 +84,6 @@ void DepthStencilState::CreateDepthStencilState(IN DepthStencilOption eDSType, I
 
 	if (FAILED(hResult))
 	{
-		Console::Print("Depth Stencil State를 생성하는데 실패하였습니다.");
+		Console::AssertPrint("Depth Stencil State를 생성하는데 실패하였습니다.");
 	}
 }
