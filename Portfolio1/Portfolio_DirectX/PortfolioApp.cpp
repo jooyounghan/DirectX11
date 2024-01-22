@@ -55,7 +55,6 @@ void PortfolioApp::Init()
 
 	DirectXDevice::pDeviceContext->IASetInputLayout(shaders.GetInputLayout(Shaders::BaseVertexShader));
 	DirectXDevice::pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	DirectXDevice::pDeviceContext->RSSetViewports(1, &pPickableCamera->sViewPort);
 	DirectXDevice::pDeviceContext->RSSetState(RasterizationState::GetInstance(DirectXDevice::pDevice, DirectXDevice::pDeviceContext).GetSolidRS());
 	DepthStencilState& depthStencilState = DepthStencilState::GetInstance(DirectXDevice::pDevice);
 	DirectXDevice::pDeviceContext->OMSetDepthStencilState(depthStencilState.pGetDSS(DepthStencilState::DefaultOption), 0);
@@ -76,7 +75,7 @@ void PortfolioApp::Render()
 		pPickableCamera->ARenderTarget::cpRTV.Get(), 
 		pPickableCamera->IDPickableRenderTarget::cpRTV.Get() 
 	};
-	vector<ID3D11RenderTargetView*> vResetRTVs = {
+	vector<ID3D11RenderTargetView*> vReleaseAndGetAddressOfRTVs = {
 		nullptr,
 		nullptr
 	};
@@ -84,6 +83,8 @@ void PortfolioApp::Render()
 	DirectXDevice::pDeviceContext->OMSetRenderTargets(2, vRTVs.data(), nullptr);
 	pPickableCamera->ClearRTV();
 	pPickableCamera->ClearDSV();
+
+	DirectXDevice::pDeviceContext->RSSetViewports(1, &pPickableCamera->sViewPort);
 
 	DirectXDevice::pDeviceContext->VSSetConstantBuffers(1, 1, pPickableCamera->cpViewProjBuffer.GetAddressOf());
 
@@ -106,7 +107,7 @@ void PortfolioApp::Render()
 
 	RenderImGUI();
 
-	DirectXDevice::pDeviceContext->OMSetRenderTargets(2, vResetRTVs.data(), nullptr);
+	DirectXDevice::pDeviceContext->OMSetRenderTargets(2, vReleaseAndGetAddressOfRTVs.data(), nullptr);
 	pPickableCamera->Resolve();
 }
 
@@ -184,10 +185,14 @@ LRESULT __stdcall PortfolioApp::AppProc(HWND hWnd, UINT msg, WPARAM wParam, LPAR
 {
 	if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam))
 		return true;
-
+	bool test;
 	switch (msg) {
+	case WM_EXITSIZEMOVE:
+		pPickableCamera->Resize(uiWidth, uiHeight);
+		return 0;
 	case WM_SIZE:
-		pPickableCamera->Resize((UINT)LOWORD(lParam), (UINT)HIWORD(lParam));
+		uiWidth = (UINT)LOWORD(lParam);
+		uiHeight = (UINT)HIWORD(lParam);
 		return 0;
 	case WM_LBUTTONDOWN:
 		pPickableCamera->SetMousePos(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));

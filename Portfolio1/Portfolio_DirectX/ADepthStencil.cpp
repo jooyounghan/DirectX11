@@ -29,6 +29,7 @@ ADepthStencil::~ADepthStencil()
 void ADepthStencil::Resize(const UINT& uiWidthIn, const UINT& uiHeightIn)
 {
 	cpDSV.Reset();
+	cpDSV = nullptr;
 	Texture2D::Resize(uiWidthIn, uiHeightIn);
 	ID3D11Helper::CreateDepthStencilView(DirectXDevice::pDevice, cpTexture2D.Get(), cpDSV.GetAddressOf());
 }

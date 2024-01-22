@@ -14,7 +14,7 @@ ASwapChainAccessable::~ASwapChainAccessable()
 
 void ASwapChainAccessable::SetAsSwapChainBackBuffer()
 {
-	cpTexture2D.Reset();
+	cpTexture2D.ReleaseAndGetAddressOf();
 	IsSwapChainAccesssed = true;
 
 	if (ID3D11Helper::GetBackBuffer(DirectXDevice::pSwapChain, cpTexture2D.GetAddressOf()))
@@ -33,9 +33,9 @@ void ASwapChainAccessable::SetAsSwapChainBackBuffer()
 	}
 }
 
-void ASwapChainAccessable::ResetFromSwapChain()
+void ASwapChainAccessable::ReleaseAndGetAddressOfFromSwapChain()
 {
-	cpTexture2D.Reset();
+	cpTexture2D.ReleaseAndGetAddressOf();
 	IsSwapChainAccesssed = false;
 	uiWidth = NULL;
 	uiHeight = NULL;

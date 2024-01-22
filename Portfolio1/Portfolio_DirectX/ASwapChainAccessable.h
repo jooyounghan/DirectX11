@@ -12,7 +12,7 @@ public:
 
 public:
 	virtual void SetAsSwapChainBackBuffer();
-	virtual void ResetFromSwapChain();
+	virtual void ReleaseAndGetAddressOfFromSwapChain();
 
 public:
 	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn) = 0;

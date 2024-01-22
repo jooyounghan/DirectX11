@@ -37,9 +37,13 @@ void AFilteredCamera::Resize(const UINT& uiWidthIn, const UINT& uiHeightIn)
 		for (IFilter* filter : pFilters)
 		{
 			// 필터 초기화
-			filter->cpUAV.Reset();
-			filter->cpSRV.Reset();
-			filter->cpTexture2D.Reset();
+			filter->cpUAV.ReleaseAndGetAddressOf();
+			filter->cpSRV.ReleaseAndGetAddressOf();
+			filter->cpTexture2D.ReleaseAndGetAddressOf();
+
+			filter->cpUAV = nullptr;
+			filter->cpSRV = nullptr;
+			filter->cpTexture2D = nullptr;
 
 			// 필터 재설정
 			filter->uiWidth = uiWidthIn;

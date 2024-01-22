@@ -34,7 +34,7 @@ public:
 
 public:
 	virtual void SetAsSwapChainBackBuffer() override;
-	virtual void ResetFromSwapChain() override;
+	virtual void ReleaseAndGetAddressOfFromSwapChain() override;
 
 public:
 	inline bool IsDiffWithBackBuffer() {

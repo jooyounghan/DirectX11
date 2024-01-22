@@ -49,18 +49,22 @@ void IDPickableRenderTarget::Apply(ID3D11ShaderResourceView** ppInputSRV)
 	DirectXDevice::pDeviceContext->CSSetShader(shaders.GetComputeShader(Shaders::ResolveComputeShader), NULL, NULL);
 	DirectXDevice::pDeviceContext->CSSetShaderResources(0, 1, ppInputSRV);
 	DirectXDevice::pDeviceContext->CSSetUnorderedAccessViews(0, 1, IDPickableRenderTarget::cpUAV.GetAddressOf(), nullptr);
-	DirectXDevice::pDeviceContext->Dispatch(uiWidth / uiThreadGroupCntX, uiHeight / uiThreadGroupCntY, uiThreadGroupCntZ);
+	DirectXDevice::pDeviceContext->Dispatch(
+		uiWidth % uiThreadGroupCntX ? uiWidth / uiThreadGroupCntX + 1 : uiWidth / uiThreadGroupCntX,
+		uiHeight % uiThreadGroupCntY ? uiHeight / uiThreadGroupCntY + 1 : uiHeight / uiThreadGroupCntY,
+		uiThreadGroupCntZ
+	);
 	SetUAVBarrier();
 }
 
 void IDPickableRenderTarget::SetUAVBarrier()
 {
-	ID3D11ShaderResourceView* pResetSRV = nullptr;
-	ID3D11UnorderedAccessView* pResetUAV = nullptr;
+	ID3D11ShaderResourceView* pReleaseAndGetAddressOfSRV = nullptr;
+	ID3D11UnorderedAccessView* pReleaseAndGetAddressOfUAV = nullptr;
 
 	DirectXDevice::pDeviceContext->CSSetShader(nullptr, NULL, NULL);
-	DirectXDevice::pDeviceContext->CSSetShaderResources(0, 1, &pResetSRV);
-	DirectXDevice::pDeviceContext->CSSetUnorderedAccessViews(0, 1, &pResetUAV, nullptr);
+	DirectXDevice::pDeviceContext->CSSetShaderResources(0, 1, &pReleaseAndGetAddressOfSRV);
+	DirectXDevice::pDeviceContext->CSSetUnorderedAccessViews(0, 1, &pReleaseAndGetAddressOfUAV, nullptr);
 }
 
 void IDPickableRenderTarget::Resize(const UINT& uiWidthIn, const UINT& uiHeightIn)

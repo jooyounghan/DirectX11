@@ -29,8 +29,8 @@ void StageShaderResource::Resize(const UINT& uiWidthIn, const UINT& uiHeightIn)
 	uiWidth = uiWidthIn;
 	uiHeight = uiHeightIn;
 
-	cpSRV.Reset();
-	cpTexture2D.Reset();
+	cpSRV.ReleaseAndGetAddressOf();
+	cpTexture2D.ReleaseAndGetAddressOf();
 
 	ID3D11Helper::CreateTexture2D(
 		DirectXDevice::pDevice, uiWidth, uiHeight,

@@ -67,7 +67,9 @@ void Texture2D::Resize(const UINT& uiWidthIn, const UINT& uiHeightIn)
 {
 	SetRectangle(uiWidthIn, uiHeightIn);
 
-	cpTexture2D.Reset();
+	cpTexture2D.ReleaseAndGetAddressOf();
+	cpTexture2D = nullptr;
+
 	ID3D11Helper::CreateTexture2D(
 		DirectXDevice::pDevice,
 		uiWidth, uiHeight,
