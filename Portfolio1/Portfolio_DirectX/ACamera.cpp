@@ -55,6 +55,7 @@ void ACamera::Resize(const UINT& uiWidthIn, const UINT& uiHeightIn)
 		ADepthStencil::Resize(uiWidthIn, uiHeightIn);
 		ARenderTarget::Resize(uiWidthIn, uiHeightIn);
 		IFilter::Resize(uiWidthIn, uiHeightIn);
+		AViewable::Resize(uiWidthIn, uiHeightIn);
 
 		// 백버퍼 및 Swap Chain 사이즈 변경
 		ASwapChainAccessable::cpTexture2D.ReleaseAndGetAddressOf();

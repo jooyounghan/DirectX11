@@ -26,5 +26,8 @@ public:
 
 protected:
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	cpPositionBuffer;
+
+public:
+	void UpdatePosition();
 };
 

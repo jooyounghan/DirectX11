@@ -46,18 +46,18 @@ void PickableCamera::ClearRTV()
 
 void PickableCamera::ClearDSV()
 {
-	DirectXDevice::pDeviceContext->ClearDepthStencilView(cpDSV.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 0.f, NULL);
+	DirectXDevice::pDeviceContext->ClearDepthStencilView(
+		cpDSV.Get(), 
+		D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 
+		1.f, 
+		NULL
+	);
 }
 
 void PickableCamera::Resize(const UINT& uiWidthIn, const UINT& uiHeightIn)
 {
 	AFilteredCamera::Resize(uiWidthIn, uiHeightIn);
 	IDPickableRenderTarget::Resize(uiWidthIn, uiHeightIn);
-}
-
-void PickableCamera::UpdateCamera(const float& fDelta)
-{
-	UpdateViewProj();
 }
 
 DirectX::XMMATRIX PickableCamera::GetTranformMat()

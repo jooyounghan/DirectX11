@@ -79,6 +79,18 @@
     <Filter Include="Shader\Filter">
       <UniqueIdentifier>{f199a239-e11c-4e4b-9818-1c66a4e0154a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Light">
+      <UniqueIdentifier>{e273aa0d-df5b-4571-b587-17078ba284e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Light\Extended">
+      <UniqueIdentifier>{1f063672-3a76-41b1-9616-7eb202ff3d2f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Light">
+      <UniqueIdentifier>{00902773-6854-4a13-a845-a63496334ac5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Light\Extended">
+      <UniqueIdentifier>{49126e72-1582-4a46-8683-34b4fa7889a4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseApp.h">
@@ -204,6 +216,15 @@
     <ClInclude Include="Shaders.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="ALight.h">
+      <Filter>헤더 파일\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="SpotLight.h">
+      <Filter>헤더 파일\Light\Extended</Filter>
+    </ClInclude>
+    <ClInclude Include="PointLight.h">
+      <Filter>헤더 파일\Light\Extended</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseApp.cpp">
@@ -325,6 +346,15 @@
     </ClCompile>
     <ClCompile Include="Shaders.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ALight.cpp">
+      <Filter>소스 파일\Light</Filter>
+    </ClCompile>
+    <ClCompile Include="SpotLight.cpp">
+      <Filter>소스 파일\Light\Extended</Filter>
+    </ClCompile>
+    <ClCompile Include="PointLight.cpp">
+      <Filter>소스 파일\Light\Extended</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

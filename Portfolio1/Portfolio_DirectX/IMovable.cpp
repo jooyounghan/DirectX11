@@ -38,3 +38,8 @@ IMovable::IMovable(const float& fXPos, const float& fYPos, const float& fZPos)
 IMovable::~IMovable()
 {
 }
+
+void IMovable::UpdatePosition()
+{
+	ID3D11Helper::UpdateBuffer(DirectXDevice::pDeviceContext, xmvPosition, D3D11_MAP_WRITE_DISCARD, cpPositionBuffer.Get());
+}

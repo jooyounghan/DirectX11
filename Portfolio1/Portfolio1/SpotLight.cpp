@@ -1,4 +1,6 @@
 #include "SpotLight.h"
+#include "SpotLight.h"
+#include "SpotLight.h"
 #include "ID3D11Helper.h"
 #include "MathematicalHelper.h"
 #include "ShaderTypeEnum.h"
@@ -58,6 +60,7 @@ SpotLight::SpotLight(
 SpotLight::~SpotLight()
 {
 }
+
 
 void SpotLight::Update()
 {

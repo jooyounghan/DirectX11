@@ -64,7 +64,7 @@ void PortfolioApp::Update(const float& fDelta)
 {
 	pCubeModel1->UpdateModel(fDelta);
 	pCubeModel2->UpdateModel(fDelta);
-	pPickableCamera->UpdateCamera(fDelta);
+	pPickableCamera->UpdateView(fDelta);
 }
 
 void PortfolioApp::Render()
@@ -80,7 +80,7 @@ void PortfolioApp::Render()
 		nullptr
 	};
 
-	DirectXDevice::pDeviceContext->OMSetRenderTargets(2, vRTVs.data(), nullptr);
+	DirectXDevice::pDeviceContext->OMSetRenderTargets(2, vRTVs.data(), pPickableCamera->cpDSV.Get());
 	pPickableCamera->ClearRTV();
 	pPickableCamera->ClearDSV();
 
@@ -185,7 +185,7 @@ LRESULT __stdcall PortfolioApp::AppProc(HWND hWnd, UINT msg, WPARAM wParam, LPAR
 {
 	if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam))
 		return true;
-	bool test;
+
 	switch (msg) {
 	case WM_EXITSIZEMOVE:
 		pPickableCamera->Resize(uiWidth, uiHeight);

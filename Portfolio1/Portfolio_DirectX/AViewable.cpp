@@ -15,7 +15,8 @@ AViewable::AViewable(
 	const float& fNearZIn,
 	const float& fFarZIn
 )
-	: IMovable(fXPos, fYPos, fZPos), fFovRadian(fFovRadianIn), fNearZ(fNearZIn), fFarZ(fFarZIn)
+	: IMovable(fXPos, fYPos, fZPos), fFovRadian(fFovRadianIn), fNearZ(fNearZIn), fFarZ(fFarZIn),
+	ARectangle((UINT)fWidthIn, (UINT)fHeightIn)
 {
 	AutoZeroMemory(sViewPort);
 	
@@ -39,7 +40,14 @@ AViewable::~AViewable()
 {
 }
 
-void AViewable::UpdateViewProj()
+void AViewable::Resize(const UINT& uiWidthIn, const UINT& uiHeightIn)
+{
+	SetRectangle(uiWidthIn, uiHeightIn);
+	sViewPort.Width = (float)uiWidth;
+	sViewPort.Height= (float)uiHeight;
+}
+
+void AViewable::UpdateView(const float& fDelta)
 {
 	XMMATRIX xmRotationMat = XMMatrixRotationRollPitchYaw(sAngles.fPitch, sAngles.fYaw, sAngles.fRoll);
 
@@ -47,7 +55,7 @@ void AViewable::UpdateViewProj()
 	XMVECTOR xmvUp = XMVector4Transform(xmvDefaultUp, xmRotationMat);
 
 	sViewProjs.xmmViewProjMat = MathematicalHelper::MakeViewProjMatrix(
-		xmvPosition, 
+		xmvPosition,
 		xmvDirection,
 		xmvUp,
 		fFovRadian, sViewPort.Width / sViewPort.Height,

@@ -1,8 +1,9 @@
 #pragma once
 #include "IMovable.h"
 #include "IAngleAdjustable.h"
+#include "ARectangle.h"
 
-class AViewable : public IMovable, public IAngleAdjustable
+class AViewable : public IMovable, public IAngleAdjustable, virtual public ARectangle
 {
 public:
 	AViewable(
@@ -33,10 +34,10 @@ protected:
 public:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> cpViewProjBuffer;
 
-protected:
-	void UpdateViewProj();
+public:
+	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn);
 
 public:
-	virtual void UpdateCamera(const float& fDelta) = 0;
+	virtual void UpdateView(const float& fDelta);
 };
 

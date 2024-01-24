@@ -151,6 +151,7 @@
     <ClInclude Include="IFile.h" />
     <ClInclude Include="IFilter.h" />
     <ClInclude Include="IImageFile.h" />
+    <ClInclude Include="ALight.h" />
     <ClInclude Include="IModel.h" />
     <ClInclude Include="IMovable.h" />
     <ClInclude Include="IncreaseCommand.h" />
@@ -158,9 +159,11 @@
     <ClInclude Include="ARectangle.h" />
     <ClInclude Include="ARenderTarget.h" />
     <ClInclude Include="IScalable.h" />
+    <ClInclude Include="PointLight.h" />
     <ClInclude Include="ShaderResource.h" />
     <ClInclude Include="AStaticMesh.h" />
     <ClInclude Include="Shaders.h" />
+    <ClInclude Include="SpotLight.h" />
     <ClInclude Include="Texture2D.h" />
     <ClInclude Include="ATransformerable.h" />
     <ClInclude Include="MathematicalHelper.h" />
@@ -192,6 +195,7 @@
     <ClCompile Include="IFile.cpp" />
     <ClCompile Include="IFilter.cpp" />
     <ClCompile Include="IImageFile.cpp" />
+    <ClCompile Include="ALight.cpp" />
     <ClCompile Include="IModel.cpp" />
     <ClCompile Include="IMovable.cpp" />
     <ClCompile Include="IncreaseCommand.cpp" />
@@ -199,9 +203,11 @@
     <ClCompile Include="ARectangle.cpp" />
     <ClCompile Include="ARenderTarget.cpp" />
     <ClCompile Include="IScalable.cpp" />
+    <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="ShaderResource.cpp" />
     <ClCompile Include="AStaticMesh.cpp" />
     <ClCompile Include="Shaders.cpp" />
+    <ClCompile Include="SpotLight.cpp" />
     <ClCompile Include="Texture2D.cpp" />
     <ClCompile Include="ATransformerable.cpp" />
     <ClCompile Include="main.cpp" />

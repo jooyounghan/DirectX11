@@ -1,4 +1,7 @@
 #include "PointLight.h"
+#include "PointLight.h"
+#include "PointLight.h"
+#include "PointLight.h"
 #include "ID3D11Helper.h"
 #include "MathematicalHelper.h"
 #include "ShaderTypeEnum.h"
