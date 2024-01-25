@@ -32,6 +32,6 @@ public:
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> cpSRV;
 
 public:
-	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn);
+	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn) = 0;
 };
 

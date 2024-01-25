@@ -25,6 +25,6 @@ protected:
 
 public:
 	virtual void ClearRTV() = 0;
-	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn);
+	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn) = 0;
 };
 

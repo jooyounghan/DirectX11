@@ -1,11 +1,11 @@
-#include "AViewable.h"
+#include "Viewable.h"
 #include "ID3D11Helper.h"
 #include "MathematicalHelper.h"
 #include "DirectXDevice.h"
 
 using namespace DirectX;
 
-AViewable::AViewable(
+Viewable::Viewable(
 	const float& fXPos,
 	const float& fYPos,
 	const float& fZPos,
@@ -16,7 +16,7 @@ AViewable::AViewable(
 	const float& fFarZIn
 )
 	: IMovable(fXPos, fYPos, fZPos), fFovRadian(fFovRadianIn), fNearZ(fNearZIn), fFarZ(fFarZIn),
-	ARectangle((UINT)fWidthIn, (UINT)fHeightIn)
+	IRectangle((UINT)fWidthIn, (UINT)fHeightIn)
 {
 	AutoZeroMemory(sViewPort);
 	
@@ -36,18 +36,19 @@ AViewable::AViewable(
 	);
 }
 
-AViewable::~AViewable()
+Viewable::~Viewable()
 {
 }
 
-void AViewable::Resize(const UINT& uiWidthIn, const UINT& uiHeightIn)
+void Viewable::Resize(const UINT& uiWidthIn, const UINT& uiHeightIn)
 {
-	SetRectangle(uiWidthIn, uiHeightIn);
+	uiWidth = uiWidthIn;
+	uiHeight = uiHeightIn;
 	sViewPort.Width = (float)uiWidth;
 	sViewPort.Height= (float)uiHeight;
 }
 
-void AViewable::UpdateView(const float& fDelta)
+void Viewable::UpdateView(const float& fDelta)
 {
 	XMMATRIX xmRotationMat = XMMatrixRotationRollPitchYaw(sAngles.fPitch, sAngles.fYaw, sAngles.fRoll);
 

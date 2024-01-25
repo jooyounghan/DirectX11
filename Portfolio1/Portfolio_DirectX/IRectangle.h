@@ -2,22 +2,19 @@
 #include <windows.h>
 #include <wrl/client.h>
 
-class ARectangle
+class IRectangle
 {
 public:
-	ARectangle();
-	ARectangle(
+	IRectangle();
+	IRectangle(
 		const UINT& uiWidthIn,
 		const UINT& uiHeightIn
 	);
-	~ARectangle();
+	~IRectangle();
 
 public:
 	UINT uiWidth;
 	UINT uiHeight;
-
-public:
-	void SetRectangle(const UINT& uiWidthIn, const UINT& uiHeightIn);
 
 public:
 	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn) = 0;

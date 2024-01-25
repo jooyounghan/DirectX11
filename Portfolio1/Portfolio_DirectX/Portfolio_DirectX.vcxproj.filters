@@ -111,13 +111,13 @@
     <ClInclude Include="ASwapChainAccessable.h">
       <Filter>헤더 파일\BaseAbstract</Filter>
     </ClInclude>
-    <ClInclude Include="AViewable.h">
+    <ClInclude Include="Viewable.h">
       <Filter>헤더 파일\BaseAbstract</Filter>
     </ClInclude>
     <ClInclude Include="IMovable.h">
       <Filter>헤더 파일\BaseInteface</Filter>
     </ClInclude>
-    <ClInclude Include="ARectangle.h">
+    <ClInclude Include="IRectangle.h">
       <Filter>헤더 파일\BaseInteface</Filter>
     </ClInclude>
     <ClInclude Include="ACamera.h">
@@ -216,7 +216,7 @@
     <ClInclude Include="Shaders.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="ALight.h">
+    <ClInclude Include="ILight.h">
       <Filter>헤더 파일\Light</Filter>
     </ClInclude>
     <ClInclude Include="SpotLight.h">
@@ -224,6 +224,9 @@
     </ClInclude>
     <ClInclude Include="PointLight.h">
       <Filter>헤더 파일\Light\Extended</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewableRenderTarget.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -245,13 +248,13 @@
     <ClCompile Include="ASwapChainAccessable.cpp">
       <Filter>소스 파일\BaseAbstract</Filter>
     </ClCompile>
-    <ClCompile Include="AViewable.cpp">
+    <ClCompile Include="Viewable.cpp">
       <Filter>소스 파일\BaseAbstract</Filter>
     </ClCompile>
     <ClCompile Include="IMovable.cpp">
       <Filter>소스 파일\BaseInterface</Filter>
     </ClCompile>
-    <ClCompile Include="ARectangle.cpp">
+    <ClCompile Include="IRectangle.cpp">
       <Filter>소스 파일\BaseInterface</Filter>
     </ClCompile>
     <ClCompile Include="ACamera.cpp">
@@ -347,7 +350,7 @@
     <ClCompile Include="Shaders.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="ALight.cpp">
+    <ClCompile Include="ILight.cpp">
       <Filter>소스 파일\Light</Filter>
     </ClCompile>
     <ClCompile Include="SpotLight.cpp">
@@ -355,6 +358,9 @@
     </ClCompile>
     <ClCompile Include="PointLight.cpp">
       <Filter>소스 파일\Light\Extended</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewableRenderTarget.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

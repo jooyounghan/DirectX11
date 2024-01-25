@@ -34,26 +34,6 @@ PickableCamera::~PickableCamera()
 {
 }
 
-void PickableCamera::ClearRTV()
-{
-	DirectXDevice::pDeviceContext->ClearRenderTargetView(ARenderTarget::cpRTV.Get(), ARenderTarget::fClearColor);
-
-	for (IFilter* filter : pFilters)
-	{
-		DirectXDevice::pDeviceContext->ClearUnorderedAccessViewFloat(filter->cpUAV.Get(), ARenderTarget::fClearColor);
-	}
-}
-
-void PickableCamera::ClearDSV()
-{
-	DirectXDevice::pDeviceContext->ClearDepthStencilView(
-		cpDSV.Get(), 
-		D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 
-		1.f, 
-		NULL
-	);
-}
-
 void PickableCamera::Resize(const UINT& uiWidthIn, const UINT& uiHeightIn)
 {
 	AFilteredCamera::Resize(uiWidthIn, uiHeightIn);

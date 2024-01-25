@@ -3,7 +3,7 @@
 #include "DirectXDevice.h"
 
 ASwapChainAccessable::ASwapChainAccessable() 
-	: IsSwapChainAccesssed(false), Texture2D()
+	: p_back_buffer(nullptr)
 {
 
 }
@@ -12,34 +12,15 @@ ASwapChainAccessable::~ASwapChainAccessable()
 {
 }
 
-void ASwapChainAccessable::SetAsSwapChainBackBuffer()
+void ASwapChainAccessable::SetAsBackBufferAddress()
 {
-	cpTexture2D.ReleaseAndGetAddressOf();
-	IsSwapChainAccesssed = true;
-
-	if (ID3D11Helper::GetBackBuffer(DirectXDevice::pSwapChain, cpTexture2D.GetAddressOf()))
-	{
-		D3D11_TEXTURE2D_DESC sDesc;
-		cpTexture2D->GetDesc(&sDesc);
-		uiWidth = sDesc.Width;
-		uiHeight = sDesc.Height;
-		uiArraySize = sDesc.ArraySize;
-		uiNumQualityLevels = sDesc.SampleDesc.Quality;
-		eFormat = sDesc.Format;
-	}
-	else
+	if (!ID3D11Helper::GetBackBuffer(DirectXDevice::pSwapChain, &p_back_buffer))
 	{
 		Console::AssertPrint("Swap Chain으로부터 Back Buffer를 가져올 수 없습니다.");
 	}
 }
 
-void ASwapChainAccessable::ReleaseAndGetAddressOfFromSwapChain()
+void ASwapChainAccessable::ResetBackBufferAddress()
 {
-	cpTexture2D.ReleaseAndGetAddressOf();
-	IsSwapChainAccesssed = false;
-	uiWidth = NULL;
-	uiHeight = NULL;
-	uiArraySize = NULL;
-	uiNumQualityLevels = NULL;
-	eFormat = DXGI_FORMAT_UNKNOWN;
+	p_back_buffer = nullptr;
 }

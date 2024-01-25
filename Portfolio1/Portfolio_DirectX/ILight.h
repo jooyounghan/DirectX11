@@ -1,17 +1,15 @@
 #pragma once
-#include "AViewable.h"
+#include "IMovable.h"
 
-class ALight : public AViewable
+class ILight : virtual public IMovable
 {
 public:
-	ALight(
+	ILight(
 		const float& fXPos,
 		const float& fYPos,
-		const float& fZPos,
-		const float& fWidthIn,
-		const float& fHeightIn
+		const float& fZPos
 	);
-	virtual ~ALight();
+	virtual ~ILight();
 
 public:
 	struct
@@ -26,6 +24,6 @@ protected:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> cpLightBaseBuffer;
 
 public:
-	virtual void UpdateLight();
+	virtual void UpdateLight() = 0;
 };
 

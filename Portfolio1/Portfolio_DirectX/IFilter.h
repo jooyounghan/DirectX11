@@ -38,6 +38,6 @@ public:
 	virtual void SetUAVBarrier() = 0;
 
 public:
-	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn);
+	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn) = 0;
 };
 

@@ -133,7 +133,7 @@
     <ClInclude Include="IDPickableRenderTarget.h" />
     <ClInclude Include="APossessable.h" />
     <ClInclude Include="ASwapChainAccessable.h" />
-    <ClInclude Include="AViewable.h" />
+    <ClInclude Include="Viewable.h" />
     <ClInclude Include="BaseApp.h" />
     <ClInclude Include="BlendState.h" />
     <ClInclude Include="Console.h" />
@@ -151,12 +151,12 @@
     <ClInclude Include="IFile.h" />
     <ClInclude Include="IFilter.h" />
     <ClInclude Include="IImageFile.h" />
-    <ClInclude Include="ALight.h" />
+    <ClInclude Include="ILight.h" />
     <ClInclude Include="IModel.h" />
     <ClInclude Include="IMovable.h" />
     <ClInclude Include="IncreaseCommand.h" />
     <ClInclude Include="IPBRStaticMesh.h" />
-    <ClInclude Include="ARectangle.h" />
+    <ClInclude Include="IRectangle.h" />
     <ClInclude Include="ARenderTarget.h" />
     <ClInclude Include="IScalable.h" />
     <ClInclude Include="PointLight.h" />
@@ -173,13 +173,14 @@
     <ClInclude Include="RasterizationState.h" />
     <ClInclude Include="SamplerState.h" />
     <ClInclude Include="StageShaderResource.h" />
+    <ClInclude Include="ViewableRenderTarget.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AFilteredCamera.cpp" />
     <ClCompile Include="IDPickableRenderTarget.cpp" />
     <ClCompile Include="APossessable.cpp" />
     <ClCompile Include="ASwapChainAccessable.cpp" />
-    <ClCompile Include="AViewable.cpp" />
+    <ClCompile Include="Viewable.cpp" />
     <ClCompile Include="BaseApp.cpp" />
     <ClCompile Include="BlendState.cpp" />
     <ClCompile Include="Console.cpp" />
@@ -195,12 +196,12 @@
     <ClCompile Include="IFile.cpp" />
     <ClCompile Include="IFilter.cpp" />
     <ClCompile Include="IImageFile.cpp" />
-    <ClCompile Include="ALight.cpp" />
+    <ClCompile Include="ILight.cpp" />
     <ClCompile Include="IModel.cpp" />
     <ClCompile Include="IMovable.cpp" />
     <ClCompile Include="IncreaseCommand.cpp" />
     <ClCompile Include="IPBRStaticMesh.cpp" />
-    <ClCompile Include="ARectangle.cpp" />
+    <ClCompile Include="IRectangle.cpp" />
     <ClCompile Include="ARenderTarget.cpp" />
     <ClCompile Include="IScalable.cpp" />
     <ClCompile Include="PointLight.cpp" />
@@ -218,6 +219,7 @@
     <ClCompile Include="RasterizationState.cpp" />
     <ClCompile Include="SamplerState.cpp" />
     <ClCompile Include="StageShaderResource.cpp" />
+    <ClCompile Include="ViewableRenderTarget.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="MS16ToSS8CS.hlsl">

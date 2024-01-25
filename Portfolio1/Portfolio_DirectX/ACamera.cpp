@@ -15,26 +15,16 @@ ACamera::ACamera(
 	DXGI_FORMAT eRTVFormatIn, 
 	DXGI_FORMAT eDSVFormatIn
 )
-	: ARenderTarget(
+	: ViewableRenderTarget(
+		fXPos, fYPos, fZPos,
+		fFovRadIn, fNearZIn, fFarZIn,
 		uiWidthIn, uiHeightIn,
-		1, uiNumQualityLevelsIn,
-		D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE,
-		NULL, NULL, D3D11_USAGE_DEFAULT, eRTVFormatIn
-	),
-	ADepthStencil(
-		uiWidthIn, uiHeightIn,
-		1, uiNumQualityLevelsIn,
-		D3D11_BIND_DEPTH_STENCIL, NULL, NULL,
-		D3D11_USAGE_DEFAULT, eDSVFormatIn
+		uiNumQualityLevelsIn,
+		eRTVFormatIn, eDSVFormatIn
 	),
 	IFilter(256, 1, 1),
 	ASwapChainAccessable(),
-	AViewable(
-		fXPos, fYPos, fZPos,
-		(float)uiWidthIn, (float)uiHeightIn, fFovRadIn,
-		fNearZIn, fFarZIn
-	),
-	ARectangle(
+	IRectangle(
 		uiWidthIn,
 		uiHeightIn
 	)
@@ -48,83 +38,82 @@ ACamera::~ACamera()
 
 void ACamera::Resize(const UINT& uiWidthIn, const UINT& uiHeightIn)
 {
-	if (IsSwapChainAccesssed)
+	ViewableRenderTarget::Resize(uiWidthIn, uiHeightIn);
+
+	// 백버퍼 및 Swap Chain 사이즈 변경
+	if (p_back_buffer)
 	{
-		SetRectangle(uiWidthIn, uiHeightIn);
+		ResetBackBufferAddress();
+		DirectXDevice::pSwapChain->ResizeBuffers(
+			0, uiWidth, uiHeight,
+			DXGI_FORMAT_UNKNOWN,
+			DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH
+		);
 
-		ADepthStencil::Resize(uiWidthIn, uiHeightIn);
-		ARenderTarget::Resize(uiWidthIn, uiHeightIn);
-		IFilter::Resize(uiWidthIn, uiHeightIn);
-		AViewable::Resize(uiWidthIn, uiHeightIn);
-
-		// 백버퍼 및 Swap Chain 사이즈 변경
-		ASwapChainAccessable::cpTexture2D.ReleaseAndGetAddressOf();
-		DirectXDevice::pSwapChain->ResizeBuffers(0, uiWidth, uiHeight, DXGI_FORMAT_UNKNOWN, DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH);
-		SetAsSwapChainBackBuffer();
-
-		// 뷰포트 변경
-		sViewPort.Width = (float)uiWidthIn;
-		sViewPort.Height = (float)uiHeightIn;
+		SetAsBackBufferAddress();
 	}
 }
 
-void ACamera::SetAsSwapChainBackBuffer()
+void ACamera::SetAsBackBufferAddress()
 {
-	ASwapChainAccessable::SetAsSwapChainBackBuffer();
+	ASwapChainAccessable::SetAsBackBufferAddress();
 
-	if (IsDiffWithBackBuffer())
-	{
-		IFilter::uiArraySize = 1;
-		IFilter::uiNumQualityLevels = ASwapChainAccessable::uiNumQualityLevels;
-		IFilter::uiBindFlag = D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE;
-		IFilter::uiCPUAccess = NULL;
-		IFilter::uiMiscFlag = NULL;
-		IFilter::eUsage = D3D11_USAGE_DEFAULT;
-		IFilter::eFormat = ASwapChainAccessable::eFormat;
+	if (p_back_buffer != nullptr)
+	{ 
+		D3D11_TEXTURE2D_DESC desc;
+		p_back_buffer->GetDesc(&desc);
+		
+		if (desc.SampleDesc.Quality != ARenderTarget::uiNumQualityLevels ||
+			desc.Format != ARenderTarget::eFormat
+		)
+		{
+			IFilter::uiArraySize = 1;
+			IFilter::uiNumQualityLevels = desc.SampleDesc.Quality;
+			IFilter::uiBindFlag = D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE;
+			IFilter::uiCPUAccess = NULL;
+			IFilter::uiMiscFlag = NULL;
+			IFilter::eUsage = D3D11_USAGE_DEFAULT;
+			IFilter::eFormat = desc.Format;
 
-		ID3D11Helper::CreateTexture2D(
-			DirectXDevice::pDevice, uiWidth, uiHeight,
-			IFilter::uiArraySize, ASwapChainAccessable::uiNumQualityLevels, 
-			IFilter::uiBindFlag, IFilter::uiCPUAccess, 
-			IFilter::uiMiscFlag, IFilter::eUsage, IFilter::eFormat,
-			IFilter::cpTexture2D.GetAddressOf()
-		);
-		ID3D11Helper::CreateUnorderedAccessView(
-			DirectXDevice::pDevice,
-			IFilter::cpTexture2D.Get(),
-			IFilter::cpUAV.GetAddressOf()
-		);
+			CreateTexture2DAndSRV<IFilter>();
+
+			ID3D11Helper::CreateUnorderedAccessView(
+				DirectXDevice::pDevice,
+				IFilter::cpTexture2D.Get(),
+				IFilter::cpUAV.GetAddressOf()
+			);
+		}
 	}
-}
-
-void ACamera::ReleaseAndGetAddressOfFromSwapChain()
-{
-	ASwapChainAccessable::ReleaseAndGetAddressOfFromSwapChain();
-	IFilter::cpTexture2D.ReleaseAndGetAddressOf();
-	IFilter::cpUAV.ReleaseAndGetAddressOf();
 }
 
 void ACamera::Apply(ID3D11ShaderResourceView** ppInputSRV)
 {
-	if (IsDiffWithBackBuffer())
+	if (p_back_buffer != nullptr)
 	{
-		//ARenderTarget의 결과를 IFilter로 녹여준다.
-		Shaders& shaders = Shaders::GetInstance();
+		D3D11_TEXTURE2D_DESC desc;
+		p_back_buffer->GetDesc(&desc);
 
-		ID3D11ComputeShader* pComputeShader = nullptr;
+		if (desc.SampleDesc.Quality != ARenderTarget::uiNumQualityLevels ||
+			desc.Format != ARenderTarget::eFormat
+			)
+		{
+			Shaders& shaders = Shaders::GetInstance();
 
-		// Case에 대한 구분 =============================================
-		pComputeShader = shaders.GetComputeShader(Shaders::MS16ToSS8ComputeShader);
-		// ==============================================================	
+			ID3D11ComputeShader* pComputeShader = nullptr;
 
-		DirectXDevice::pDeviceContext->CSSetShader(pComputeShader, NULL, NULL);
-		DirectXDevice::pDeviceContext->CSSetShaderResources(0, 1, ppInputSRV);
-		DirectXDevice::pDeviceContext->CSSetUnorderedAccessViews(0, 1, IFilter::cpUAV.GetAddressOf(), nullptr);
-		DirectXDevice::pDeviceContext->Dispatch(
-			uiWidth % uiThreadGroupCntX ? uiWidth / uiThreadGroupCntX + 1 : uiWidth / uiThreadGroupCntX,
-			uiHeight % uiThreadGroupCntY ? uiHeight / uiThreadGroupCntY + 1 : uiHeight / uiThreadGroupCntY,
-			uiThreadGroupCntZ);
-		SetUAVBarrier();
+			// Case에 대한 구분 =============================================
+			pComputeShader = shaders.GetComputeShader(Shaders::MS16ToSS8ComputeShader);
+			// ==============================================================	
+
+			DirectXDevice::pDeviceContext->CSSetShader(pComputeShader, NULL, NULL);
+			DirectXDevice::pDeviceContext->CSSetShaderResources(0, 1, ppInputSRV);
+			DirectXDevice::pDeviceContext->CSSetUnorderedAccessViews(0, 1, IFilter::cpUAV.GetAddressOf(), nullptr);
+			DirectXDevice::pDeviceContext->Dispatch(
+				uiWidth % uiThreadGroupCntX ? uiWidth / uiThreadGroupCntX + 1 : uiWidth / uiThreadGroupCntX,
+				uiHeight % uiThreadGroupCntY ? uiHeight / uiThreadGroupCntY + 1 : uiHeight / uiThreadGroupCntY,
+				uiThreadGroupCntZ);
+			SetUAVBarrier();
+		}
 	}
 }
 

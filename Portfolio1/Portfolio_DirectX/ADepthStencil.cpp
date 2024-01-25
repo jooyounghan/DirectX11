@@ -13,10 +13,10 @@ ADepthStencil::ADepthStencil(
 	D3D11_USAGE eUsageIn,
 	DXGI_FORMAT eFormatIn
 )
-	: Texture2D(
+	: ShaderResource(
 		uiWidthIn, uiHeightIn, uiArraySizeIn,
-		uiNumQualityLevelsIn, uiBindFlagIn, uiCPUAccessIn,
-		uiMiscFlagIn, eUsageIn, eFormatIn
+		uiNumQualityLevelsIn, uiBindFlagIn | D3D11_BIND_SHADER_RESOURCE, 
+		uiCPUAccessIn, uiMiscFlagIn, eUsageIn, eFormatIn
 	)
 {
 	ID3D11Helper::CreateDepthStencilView(DirectXDevice::pDevice, cpTexture2D.Get(), cpDSV.GetAddressOf());
@@ -24,12 +24,4 @@ ADepthStencil::ADepthStencil(
 
 ADepthStencil::~ADepthStencil()
 {
-}
-
-void ADepthStencil::Resize(const UINT& uiWidthIn, const UINT& uiHeightIn)
-{
-	cpDSV.Reset();
-	cpDSV = nullptr;
-	Texture2D::Resize(uiWidthIn, uiHeightIn);
-	ID3D11Helper::CreateDepthStencilView(DirectXDevice::pDevice, cpTexture2D.Get(), cpDSV.GetAddressOf());
 }

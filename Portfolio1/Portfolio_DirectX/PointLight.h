@@ -1,5 +1,5 @@
 #pragma once
-#include "ALight.h"
+#include "ILight.h"
 #include "ARenderTarget.h"
 
 #include <vector>

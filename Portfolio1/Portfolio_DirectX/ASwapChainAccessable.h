@@ -1,20 +1,16 @@
 #pragma once
-#include "ARenderTarget.h"
 
-class ASwapChainAccessable : public Texture2D
+class ASwapChainAccessable
 {
 public:
 	ASwapChainAccessable();
-	virtual ~ASwapChainAccessable();
+	~ASwapChainAccessable();
 
 public:
-	bool IsSwapChainAccesssed;
+	ID3D11Texture2D* p_back_buffer;
 
 public:
-	virtual void SetAsSwapChainBackBuffer();
-	virtual void ReleaseAndGetAddressOfFromSwapChain();
-
-public:
-	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn) = 0;
+	virtual void SetAsBackBufferAddress();
+	virtual void ResetBackBufferAddress();
 };
 

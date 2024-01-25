@@ -2,9 +2,9 @@
 #include <stdint.h>
 #include <d3d11.h>
 #include <d3dcompiler.h>
-#include "ARectangle.h"
+#include "IRectangle.h"
 
-class Texture2D : virtual public ARectangle
+class Texture2D : virtual public IRectangle
 {
 public:
 	Texture2D();
@@ -46,6 +46,6 @@ public:
 	Microsoft::WRL::ComPtr<ID3D11Texture2D>				cpTexture2D;
 
 public:
-	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn);
+	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn) = 0;
 };
 

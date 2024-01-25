@@ -1,12 +1,12 @@
 #pragma once
+#include "IRectangle.h"
 #include "IMovable.h"
 #include "IAngleAdjustable.h"
-#include "ARectangle.h"
 
-class AViewable : public IMovable, public IAngleAdjustable, virtual public ARectangle
+class Viewable : virtual public IRectangle, virtual public IMovable, public IAngleAdjustable
 {
 public:
-	AViewable(
+	Viewable(
 		const float& fXPos,
 		const float& fYPos,
 		const float& fZPos,
@@ -16,7 +16,7 @@ public:
 		const float& fNearZIn, 
 		const float& fFarZIn
 	);
-	virtual ~AViewable();
+	virtual ~Viewable();
 
 public:
 	D3D11_VIEWPORT sViewPort;

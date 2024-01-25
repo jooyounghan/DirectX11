@@ -25,9 +25,3 @@ ARenderTarget::ARenderTarget(
 ARenderTarget::~ARenderTarget()
 {
 }
-
-void ARenderTarget::Resize(const UINT& uiWidthIn, const UINT& uiHeightIn)
-{
-	ShaderResource::Resize(uiWidthIn, uiHeightIn);
-	ID3D11Helper::CreateRenderTargetView(DirectXDevice::pDevice, cpTexture2D.Get(), cpRTV.GetAddressOf());
-}

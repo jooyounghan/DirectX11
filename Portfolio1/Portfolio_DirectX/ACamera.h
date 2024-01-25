@@ -1,14 +1,11 @@
 #pragma once
 
-#include "AViewable.h"
-#include "ARenderTarget.h"
-#include "ADepthStencil.h"
+#include "ViewableRenderTarget.h"
 #include "ASwapChainAccessable.h"
 #include "IFilter.h"
 
 class ACamera
-	: public ARenderTarget, public ADepthStencil, 
-	public IFilter, public ASwapChainAccessable, public AViewable
+	: public ViewableRenderTarget, public IFilter, public ASwapChainAccessable
 {
 public:
 	ACamera(
@@ -26,26 +23,14 @@ public:
 	virtual ~ACamera();
 
 public:
-	virtual void ClearRTV() = 0;
-	virtual void ClearDSV() = 0;
-	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn);
 	virtual void Resolve() = 0;
 
 public:
-	virtual void SetAsSwapChainBackBuffer() override;
-	virtual void ReleaseAndGetAddressOfFromSwapChain() override;
+	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn) override;
+	virtual void SetAsBackBufferAddress() override;
 
 public:
-	inline bool IsDiffWithBackBuffer() {
-		return ASwapChainAccessable::uiNumQualityLevels != ARenderTarget::uiNumQualityLevels ||
-		ASwapChainAccessable::eFormat != ARenderTarget::eFormat;
-	}
-
-public:
-	virtual void Apply(ID3D11ShaderResourceView** ppInputSRV);
+	virtual void Apply(ID3D11ShaderResourceView** ppInputSRV) override;
 	virtual void SetUAVBarrier();
-
-public:
-	virtual DirectX::XMMATRIX GetTranformMat() = 0;
 };
 

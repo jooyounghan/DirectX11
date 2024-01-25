@@ -3,7 +3,7 @@
 #include "DirectXDevice.h"
 
 Texture2D::Texture2D()
-	: ARectangle(), eFormat(DXGI_FORMAT_UNKNOWN)
+	: IRectangle(), eFormat(DXGI_FORMAT_UNKNOWN)
 {
 }
 
@@ -16,7 +16,7 @@ Texture2D::Texture2D(
 	const D3D11_USAGE& eUsageIn,
 	const DXGI_FORMAT& eFormatIn
 )
-	: ARectangle(uiWidthIn, uiHeightIn),
+	: IRectangle(uiWidthIn, uiHeightIn),
 	uiArraySize(uiArraySizeIn), uiNumQualityLevels(uiNumQualityLevelsIn),
 	uiBindFlag(uiBindFlagIn), uiCPUAccess(uiCPUAccessIn), uiMiscFlag(uiMiscFlagIn),
 	eUsage(eUsageIn), eFormat(eFormatIn)
@@ -44,7 +44,7 @@ Texture2D::Texture2D(
 	const DXGI_FORMAT& eFormatIn,
 	uint8_t* pImageSourceIn
 )
-	: ARectangle(uiWidthIn, uiHeightIn), eFormat(eFormatIn), uiArraySize(1), uiNumQualityLevels(0)
+	: IRectangle(uiWidthIn, uiHeightIn), eFormat(eFormatIn), uiArraySize(1), uiNumQualityLevels(0)
 {
 	ID3D11Helper::CreateTexture2D(
 		DirectXDevice::pDevice,
@@ -61,25 +61,4 @@ Texture2D::Texture2D(
 
 Texture2D::~Texture2D()
 {
-}
-
-void Texture2D::Resize(const UINT& uiWidthIn, const UINT& uiHeightIn)
-{
-	SetRectangle(uiWidthIn, uiHeightIn);
-
-	cpTexture2D.ReleaseAndGetAddressOf();
-	cpTexture2D = nullptr;
-
-	ID3D11Helper::CreateTexture2D(
-		DirectXDevice::pDevice,
-		uiWidth, uiHeight,
-		uiArraySize, 
-		uiNumQualityLevels,
-		uiBindFlag,
-		uiCPUAccess,
-		uiMiscFlag,
-		eUsage,
-		eFormat,
-		cpTexture2D.GetAddressOf()
-	);
 }

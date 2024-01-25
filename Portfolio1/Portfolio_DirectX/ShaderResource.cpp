@@ -57,11 +57,3 @@ ShaderResource::ShaderResource(
 ShaderResource::~ShaderResource()
 {
 }
-
-void ShaderResource::Resize(const UINT& uiWidthIn, const UINT& uiHeightIn)
-{
-	cpSRV.ReleaseAndGetAddressOf();
-	cpSRV = nullptr;
-	Texture2D::Resize(uiWidthIn, uiHeightIn);
-	ID3D11Helper::CreateShaderResoureView(DirectXDevice::pDevice, cpTexture2D.Get(), cpSRV.GetAddressOf());
-}

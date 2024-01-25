@@ -1,7 +1,7 @@
 #pragma once
-#include "Texture2D.h"
+#include "ShaderResource.h"
 
-class ADepthStencil : public Texture2D
+class ADepthStencil : public ShaderResource
 {
 public:
 	ADepthStencil(
@@ -22,6 +22,6 @@ public:
 
 public:
 	virtual void ClearDSV() = 0;
-	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn);
+	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn) = 0;
 };
 
