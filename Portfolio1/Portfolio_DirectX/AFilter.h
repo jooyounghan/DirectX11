@@ -1,15 +1,15 @@
 #pragma once
 #include "ShaderResource.h"
 
-class IFilter : public ShaderResource
+class AFilter : public ShaderResource
 {
 public:
-	IFilter(
+	AFilter(
 		UINT uiThreadGroupCntXIn,
 		UINT uiThreadGroupCntYIn,
 		UINT uiThreadGroupCntZIn
 	);
-	IFilter(
+	AFilter(
 		UINT uiWidthIn,
 		UINT uiHeightIn,
 		UINT uiArraySizeIn,
@@ -23,7 +23,7 @@ public:
 		UINT uiThreadGroupCntYIn,
 		UINT uiThreadGroupCntZIn
 	);
-	virtual ~IFilter();
+	virtual ~AFilter();
 
 protected:
 	const UINT uiThreadGroupCntX;
@@ -38,6 +38,6 @@ public:
 	virtual void SetUAVBarrier() = 0;
 
 public:
-	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn) = 0;
+	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn);
 };
 

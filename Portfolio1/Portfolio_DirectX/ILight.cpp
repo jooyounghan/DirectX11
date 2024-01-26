@@ -9,11 +9,16 @@ ILight::ILight(
 )
 	: IMovable(fXPos, fYPos, fZPos)
 {
-	AutoZeroMemory(sLightBase);
+	AutoZeroMemory(sBaseLightData);
 
 	ID3D11Helper::CreateBuffer(
-		DirectXDevice::pDevice, sLightBase, D3D11_USAGE_DYNAMIC, D3D11_BIND_CONSTANT_BUFFER,
-		D3D11_CPU_ACCESS_WRITE, NULL, cpLightBaseBuffer.GetAddressOf()
+		DirectXDevice::pDevice,
+		sBaseLightData, 
+		D3D11_USAGE_DYNAMIC, 
+		D3D11_BIND_CONSTANT_BUFFER,
+		D3D11_CPU_ACCESS_WRITE, 
+		NULL, 
+		cpBaseLightBuffer.GetAddressOf()
 	);
 }
 

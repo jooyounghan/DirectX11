@@ -19,9 +19,9 @@ public:
 		float fFallOffEnd;
 		float fLightPower;
 		float fDummy[2];
-	} sLightBase;
+	} sBaseLightData;
 protected:
-	Microsoft::WRL::ComPtr<ID3D11Buffer> cpLightBaseBuffer;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> cpBaseLightBuffer;
 
 public:
 	virtual void UpdateLight() = 0;

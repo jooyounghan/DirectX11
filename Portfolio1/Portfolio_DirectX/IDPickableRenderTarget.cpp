@@ -1,7 +1,7 @@
 #include "IDPickableRenderTarget.h"
+#include "Shaders.h"
 #include "ID3D11Helper.h"
 #include "DirectXDevice.h"
-#include "Shaders.h"
 
 #include <algorithm>
 
@@ -9,17 +9,17 @@ IDPickableRenderTarget::IDPickableRenderTarget(
 	const UINT& uiWidthIn,
 	const UINT& uiHeightIn,
 	const UINT& uiNumQualityLevelsIn
-) : IFilter(
+) : AFilter(
 	uiWidthIn, uiHeightIn,
 	1, 0, D3D11_BIND_UNORDERED_ACCESS,
 	NULL, NULL, D3D11_USAGE_DEFAULT, DXGI_FORMAT_R32_UINT,
 	256, 1, 1),
-	ARenderTarget(
+	RenderTarget(
 	uiWidthIn, uiHeightIn,
 	1, uiNumQualityLevelsIn, D3D11_BIND_RENDER_TARGET,
 	NULL, NULL, D3D11_USAGE_DEFAULT, DXGI_FORMAT_R32_UINT
 	),
-	ARectangle(uiWidthIn, uiHeightIn)
+	IRectangle(uiWidthIn, uiHeightIn)
 {
 	ID3D11Helper::CreateTexture2D(
 		DirectXDevice::pDevice, 1, 1,
@@ -67,8 +67,9 @@ void IDPickableRenderTarget::SetUAVBarrier()
 	DirectXDevice::pDeviceContext->CSSetUnorderedAccessViews(0, 1, &pReleaseAndGetAddressOfUAV, nullptr);
 }
 
+
 void IDPickableRenderTarget::Resize(const UINT& uiWidthIn, const UINT& uiHeightIn)
 {
-	IFilter::Resize(uiWidthIn, uiHeightIn);
-	ARenderTarget::Resize(uiWidthIn, uiHeightIn);
+	AFilter::Resize(uiWidthIn, uiHeightIn);
+	RenderTarget::Resize(uiWidthIn, uiHeightIn);
 }

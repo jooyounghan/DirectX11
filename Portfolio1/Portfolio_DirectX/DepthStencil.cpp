@@ -1,0 +1,46 @@
+#include "DepthStencil.h"
+#include "ID3D11Helper.h"
+#include "DirectXDevice.h"
+
+DepthStencil::DepthStencil(
+	const UINT& uiWidthIn,
+	const UINT& uiHeightIn,
+	const UINT& uiArraySizeIn,
+	const UINT& uiNumQualityLevelsIn,
+	const UINT& uiBindFlagIn,
+	const UINT& uiCPUAccessIn,
+	const UINT& uiMiscFlagIn,
+	D3D11_USAGE eUsageIn,
+	DXGI_FORMAT eFormatIn
+)
+	: Texture2D(
+		uiWidthIn, uiHeightIn, uiArraySizeIn,
+		uiNumQualityLevelsIn, uiBindFlagIn, 
+		uiCPUAccessIn, uiMiscFlagIn, eUsageIn, eFormatIn
+	)
+{
+	ID3D11Helper::CreateDepthStencilView(DirectXDevice::pDevice, cpTexture2D.Get(), cpDSV.GetAddressOf());
+}
+
+DepthStencil::~DepthStencil()
+{
+}
+
+void DepthStencil::ClearDSV()
+{
+	DirectXDevice::pDeviceContext->ClearDepthStencilView(
+		cpDSV.Get(),
+		D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL,
+		1.f,
+		NULL
+	);
+}
+
+void DepthStencil::Resize(const UINT& uiWidthIn, const UINT& uiHeightIn)
+{
+	cpDSV.Reset();
+	Texture2D::Resize(uiWidthIn, uiHeightIn);
+	ID3D11Helper::CreateDepthStencilView(
+		DirectXDevice::pDevice, cpTexture2D.Get(), cpDSV.GetAddressOf()
+	);
+}

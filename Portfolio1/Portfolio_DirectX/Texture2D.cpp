@@ -62,3 +62,23 @@ Texture2D::Texture2D(
 Texture2D::~Texture2D()
 {
 }
+
+void Texture2D::Resize(const UINT& uiWidthIn, const UINT& uiHeightIn)
+{
+	uiWidth = uiWidthIn;
+	uiHeight = uiHeightIn;
+
+	cpTexture2D.Reset();
+	ID3D11Helper::CreateTexture2D(
+		DirectXDevice::pDevice,
+		uiWidth, uiHeight,
+		uiArraySize,
+		uiNumQualityLevels,
+		uiBindFlag,
+		uiCPUAccess,
+		uiMiscFlag,
+		eUsage,
+		eFormat,
+		cpTexture2D.GetAddressOf()
+	);
+}

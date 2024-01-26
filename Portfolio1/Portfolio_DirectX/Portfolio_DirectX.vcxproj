@@ -129,10 +129,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="AFilteredCamera.h" />
+    <ClInclude Include="FilteredCamera.h" />
     <ClInclude Include="IDPickableRenderTarget.h" />
     <ClInclude Include="APossessable.h" />
-    <ClInclude Include="ASwapChainAccessable.h" />
+    <ClInclude Include="SwapChainAccessable.h" />
     <ClInclude Include="Viewable.h" />
     <ClInclude Include="BaseApp.h" />
     <ClInclude Include="BlendState.h" />
@@ -147,9 +147,9 @@
     <ClInclude Include="ACamera.h" />
     <ClInclude Include="ICommand.h" />
     <ClInclude Include="ID3D11Helper.h" />
-    <ClInclude Include="ADepthStencil.h" />
+    <ClInclude Include="DepthStencil.h" />
     <ClInclude Include="IFile.h" />
-    <ClInclude Include="IFilter.h" />
+    <ClInclude Include="AFilter.h" />
     <ClInclude Include="IImageFile.h" />
     <ClInclude Include="ILight.h" />
     <ClInclude Include="IModel.h" />
@@ -157,7 +157,7 @@
     <ClInclude Include="IncreaseCommand.h" />
     <ClInclude Include="IPBRStaticMesh.h" />
     <ClInclude Include="IRectangle.h" />
-    <ClInclude Include="ARenderTarget.h" />
+    <ClInclude Include="RenderTarget.h" />
     <ClInclude Include="IScalable.h" />
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="ShaderResource.h" />
@@ -172,14 +172,14 @@
     <ClInclude Include="PortfolioApp.h" />
     <ClInclude Include="RasterizationState.h" />
     <ClInclude Include="SamplerState.h" />
-    <ClInclude Include="StageShaderResource.h" />
+    <ClInclude Include="ViewableDepthStencil.h" />
     <ClInclude Include="ViewableRenderTarget.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AFilteredCamera.cpp" />
+    <ClCompile Include="FilteredCamera.cpp" />
     <ClCompile Include="IDPickableRenderTarget.cpp" />
     <ClCompile Include="APossessable.cpp" />
-    <ClCompile Include="ASwapChainAccessable.cpp" />
+    <ClCompile Include="SwapChainAccessable.cpp" />
     <ClCompile Include="Viewable.cpp" />
     <ClCompile Include="BaseApp.cpp" />
     <ClCompile Include="BlendState.cpp" />
@@ -192,9 +192,9 @@
     <ClCompile Include="IAngleAdjustable.cpp" />
     <ClCompile Include="ACamera.cpp" />
     <ClCompile Include="ID3D11Helper.cpp" />
-    <ClCompile Include="ADepthStencil.cpp" />
+    <ClCompile Include="DepthStencil.cpp" />
     <ClCompile Include="IFile.cpp" />
-    <ClCompile Include="IFilter.cpp" />
+    <ClCompile Include="AFilter.cpp" />
     <ClCompile Include="IImageFile.cpp" />
     <ClCompile Include="ILight.cpp" />
     <ClCompile Include="IModel.cpp" />
@@ -202,7 +202,7 @@
     <ClCompile Include="IncreaseCommand.cpp" />
     <ClCompile Include="IPBRStaticMesh.cpp" />
     <ClCompile Include="IRectangle.cpp" />
-    <ClCompile Include="ARenderTarget.cpp" />
+    <ClCompile Include="RenderTarget.cpp" />
     <ClCompile Include="IScalable.cpp" />
     <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="ShaderResource.cpp" />
@@ -218,7 +218,7 @@
     <ClCompile Include="PortfolioApp.cpp" />
     <ClCompile Include="RasterizationState.cpp" />
     <ClCompile Include="SamplerState.cpp" />
-    <ClCompile Include="StageShaderResource.cpp" />
+    <ClCompile Include="ViewableDepthStencil.cpp" />
     <ClCompile Include="ViewableRenderTarget.cpp" />
   </ItemGroup>
   <ItemGroup>

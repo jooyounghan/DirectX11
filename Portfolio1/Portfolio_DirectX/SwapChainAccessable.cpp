@@ -1,18 +1,18 @@
-#include "ASwapChainAccessable.h"
+#include "SwapChainAccessable.h"
 #include "ID3D11Helper.h"
 #include "DirectXDevice.h"
 
-ASwapChainAccessable::ASwapChainAccessable() 
+SwapChainAccessable::SwapChainAccessable() 
 	: p_back_buffer(nullptr)
 {
 
 }
 
-ASwapChainAccessable::~ASwapChainAccessable()
+SwapChainAccessable::~SwapChainAccessable()
 {
 }
 
-void ASwapChainAccessable::SetAsBackBufferAddress()
+void SwapChainAccessable::SetAsBackBufferAddress()
 {
 	if (!ID3D11Helper::GetBackBuffer(DirectXDevice::pSwapChain, &p_back_buffer))
 	{
@@ -20,7 +20,7 @@ void ASwapChainAccessable::SetAsBackBufferAddress()
 	}
 }
 
-void ASwapChainAccessable::ResetBackBufferAddress()
+void SwapChainAccessable::ResetBackBufferAddress()
 {
 	p_back_buffer = nullptr;
 }

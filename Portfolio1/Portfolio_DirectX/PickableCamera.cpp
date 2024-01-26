@@ -1,6 +1,6 @@
 #include "PickableCamera.h"
-#include "ID3D11Helper.h"
 #include "MathematicalHelper.h"
+#include "ID3D11Helper.h"
 #include "DirectXDevice.h"
 
 using namespace std;
@@ -18,14 +18,26 @@ PickableCamera::PickableCamera(
 	DXGI_FORMAT eRTVFormatIn,
 	DXGI_FORMAT eDSVFormatIn
 )
-	: AFilteredCamera(
+	: FilteredCamera(
 		fXPos, fYPos, fZPos,
 		uiWidthIn, uiHeightIn,
 		fFovRadIn, fNearZIn, fFarZIn,
 		uiNumQualityLevelsIn,
 		eRTVFormatIn, eDSVFormatIn
-	), IDPickableRenderTarget(uiWidthIn, uiHeightIn, uiNumQualityLevelsIn),
-	ARectangle(uiWidthIn, uiHeightIn)
+	), 
+	IDPickableRenderTarget(
+		uiWidthIn, uiHeightIn, 
+		uiNumQualityLevelsIn
+	),
+	Viewable(fXPos, fYPos, fZPos,
+		(float)uiWidthIn, (float)uiHeightIn, 
+		fFovRadIn, fNearZIn, fFarZIn
+	),
+	IMovable(fXPos, fYPos, fZPos),
+	IRectangle(
+		uiWidthIn,
+		uiHeightIn
+	)
 {
 
 }
@@ -34,30 +46,27 @@ PickableCamera::~PickableCamera()
 {
 }
 
-void PickableCamera::Resize(const UINT& uiWidthIn, const UINT& uiHeightIn)
+void PickableCamera::ClearRTV()
 {
-	AFilteredCamera::Resize(uiWidthIn, uiHeightIn);
-	IDPickableRenderTarget::Resize(uiWidthIn, uiHeightIn);
+	FilteredCamera::ClearRTV();
+	IDPickableRenderTarget::ClearRTV();
 }
 
-DirectX::XMMATRIX PickableCamera::GetTranformMat()
+void PickableCamera::Resize(const UINT& uiWidthIn, const UINT& uiHeightIn)
 {
-	return MathematicalHelper::MakeAffineTransformation(
-		1.f, 1.f, 1.f,
-		sAngles.fPitch, sAngles.fYaw, sAngles.fRoll,
-		xmvPosition.m128_f32[0], xmvPosition.m128_f32[1], xmvPosition.m128_f32[2]
-	);
+	FilteredCamera::Resize(uiWidthIn, uiHeightIn);
+	IDPickableRenderTarget::Resize(uiWidthIn, uiHeightIn);
 }
 
 uint32_t PickableCamera::GetPickedID()
 {
 	uint32_t uiResult = 0;
-	ID3D11Texture2D* pReferenceIDTexture = IDPickableRenderTarget::ARenderTarget::cpTexture2D.Get();
+	ID3D11Texture2D* pReferenceIDTexture = IDPickableRenderTarget::RenderTarget::cpTexture2D.Get();
 
-	if (ARenderTarget::uiNumQualityLevels > 0)
+	if (RenderTarget::uiNumQualityLevels > 0)
 	{
-		IDPickableRenderTarget::Apply(IDPickableRenderTarget::ARenderTarget::cpSRV.GetAddressOf());
-		pReferenceIDTexture = IDPickableRenderTarget::IFilter::cpTexture2D.Get();
+		IDPickableRenderTarget::Apply(IDPickableRenderTarget::RenderTarget::cpSRV.GetAddressOf());
+		pReferenceIDTexture = IDPickableRenderTarget::AFilter::cpTexture2D.Get();
 	}
 
 	D3D11_BOX sBox;

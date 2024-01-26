@@ -1,10 +1,10 @@
 #pragma once
 #include "ShaderResource.h"
 
-class ADepthStencil : public ShaderResource
+class RenderTarget : public ShaderResource
 {
 public:
-	ADepthStencil(
+	RenderTarget(
 		const UINT& uiWidthIn,
 		const UINT& uiHeightIn,
 		const UINT& uiArraySizeIn,
@@ -15,13 +15,16 @@ public:
 		D3D11_USAGE eUsageIn,
 		DXGI_FORMAT eFormatIn
 	);
-	virtual ~ADepthStencil();
+	virtual ~RenderTarget();
 
 public:
-	Microsoft::WRL::ComPtr<ID3D11DepthStencilView>		cpDSV;
+	Microsoft::WRL::ComPtr<ID3D11RenderTargetView>		cpRTV;
+
+protected:
+	static constexpr float fClearColor[4] = { 0.f, 0.f, 0.f, 0.f };
 
 public:
-	virtual void ClearDSV() = 0;
-	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn) = 0;
+	virtual void ClearRTV();
+	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn);
 };
 

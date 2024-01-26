@@ -51,7 +51,7 @@ void PortfolioApp::Init()
 	DirectXDevice::pDeviceContext->VSSetShader(shaders.GetVertexShader(Shaders::BaseVertexShader), NULL, NULL);
 	DirectXDevice::pDeviceContext->PSSetShader(shaders.GetPixelShader(Shaders::BasePixelShader), NULL, NULL);
 
-	pPickableCamera->SetAsSwapChainBackBuffer();
+	pPickableCamera->SetAsBackBufferAddress();
 
 	DirectXDevice::pDeviceContext->IASetInputLayout(shaders.GetInputLayout(Shaders::BaseVertexShader));
 	DirectXDevice::pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -72,7 +72,7 @@ void PortfolioApp::Render()
 	float clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
 
 	vector<ID3D11RenderTargetView*> vRTVs = { 
-		pPickableCamera->ARenderTarget::cpRTV.Get(), 
+		pPickableCamera->RenderTarget::cpRTV.Get(), 
 		pPickableCamera->IDPickableRenderTarget::cpRTV.Get() 
 	};
 	vector<ID3D11RenderTargetView*> vReleaseAndGetAddressOfRTVs = {

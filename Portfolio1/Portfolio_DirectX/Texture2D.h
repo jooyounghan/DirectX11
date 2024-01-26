@@ -46,6 +46,6 @@ public:
 	Microsoft::WRL::ComPtr<ID3D11Texture2D>				cpTexture2D;
 
 public:
-	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn) = 0;
+	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn);
 };
 

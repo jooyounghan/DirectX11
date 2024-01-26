@@ -2,10 +2,10 @@
 #include "ACamera.h"
 #include <vector>
 
-class AFilteredCamera : public ACamera
+class FilteredCamera : public ACamera
 {
 public:
-	AFilteredCamera(
+	FilteredCamera(
 		const float& fXPos,
 		const float& fYPos,
 		const float& fZPos,
@@ -17,15 +17,13 @@ public:
 		DXGI_FORMAT eRTVFormatIn,
 		DXGI_FORMAT eDSVFormatIn
 	);
-	virtual ~AFilteredCamera();
+	virtual ~FilteredCamera();
 
 protected:
-	std::vector<IFilter*> pFilters;
+	std::vector<AFilter*> pFilters;
 
 public:
-	virtual void ClearRTV() = 0;
-	virtual void ClearDSV() = 0;
-	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn);
-	virtual void Resolve();
+	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn) override;
+	virtual void Resolve() override;
 };
 

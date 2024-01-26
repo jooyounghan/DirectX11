@@ -1,9 +1,8 @@
 #pragma once
 #include "ILight.h"
-#include "ARenderTarget.h"
-#include "ADepthStencil.h"
+#include "ViewableDepthStencil.h"
 
-class SpotLight : public ALight, public ARenderTarget, public ADepthStencil
+class SpotLight : public ILight, public ViewableDepthStencil
 {
 public:
 	SpotLight(
@@ -25,10 +24,8 @@ protected:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> cpSpotLightBuffer;
 
 public:
-	virtual void ClearRTV();
-	virtual void ClearDSV();
+	virtual void UpdateLight() override;
 
-public:
-	virtual void UpdateLight();
-	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn);
+private:
+	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn) {};
 };

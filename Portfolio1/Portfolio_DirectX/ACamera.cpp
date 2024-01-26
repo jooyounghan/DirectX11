@@ -1,7 +1,7 @@
 #include "ACamera.h"
-#include "DirectXDevice.h"
-#include "ID3D11Helper.h"
 #include "Shaders.h"
+#include "ID3D11Helper.h"
+#include "DirectXDevice.h"
 
 ACamera::ACamera(
 	const float& fXPos,
@@ -20,14 +20,17 @@ ACamera::ACamera(
 		fFovRadIn, fNearZIn, fFarZIn,
 		uiWidthIn, uiHeightIn,
 		uiNumQualityLevelsIn,
-		eRTVFormatIn, eDSVFormatIn
+		eRTVFormatIn
 	),
-	IFilter(256, 1, 1),
-	ASwapChainAccessable(),
-	IRectangle(
-		uiWidthIn,
-		uiHeightIn
-	)
+	ViewableDepthStencil(
+		fXPos, fYPos, fZPos,
+		fFovRadIn, fNearZIn, fFarZIn,
+		uiWidthIn, uiHeightIn,
+		uiNumQualityLevelsIn,
+		eDSVFormatIn
+	),
+	AFilter(256, 1, 1),
+	SwapChainAccessable()
 {
 }
 
@@ -39,6 +42,8 @@ ACamera::~ACamera()
 void ACamera::Resize(const UINT& uiWidthIn, const UINT& uiHeightIn)
 {
 	ViewableRenderTarget::Resize(uiWidthIn, uiHeightIn);
+	ViewableDepthStencil::Resize(uiWidthIn, uiHeightIn);
+	AFilter::Resize(uiWidthIn, uiHeightIn);
 
 	// 백버퍼 및 Swap Chain 사이즈 변경
 	if (p_back_buffer)
@@ -56,32 +61,28 @@ void ACamera::Resize(const UINT& uiWidthIn, const UINT& uiHeightIn)
 
 void ACamera::SetAsBackBufferAddress()
 {
-	ASwapChainAccessable::SetAsBackBufferAddress();
+	SwapChainAccessable::SetAsBackBufferAddress();
 
 	if (p_back_buffer != nullptr)
 	{ 
 		D3D11_TEXTURE2D_DESC desc;
 		p_back_buffer->GetDesc(&desc);
 		
-		if (desc.SampleDesc.Quality != ARenderTarget::uiNumQualityLevels ||
-			desc.Format != ARenderTarget::eFormat
+		if (desc.SampleDesc.Quality != RenderTarget::uiNumQualityLevels ||
+			desc.Format != RenderTarget::eFormat
 		)
 		{
-			IFilter::uiArraySize = 1;
-			IFilter::uiNumQualityLevels = desc.SampleDesc.Quality;
-			IFilter::uiBindFlag = D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE;
-			IFilter::uiCPUAccess = NULL;
-			IFilter::uiMiscFlag = NULL;
-			IFilter::eUsage = D3D11_USAGE_DEFAULT;
-			IFilter::eFormat = desc.Format;
+			AFilter::uiWidth = desc.Width;
+			AFilter::uiHeight = desc.Height;
+			AFilter::uiArraySize = 1;
+			AFilter::uiNumQualityLevels = desc.SampleDesc.Quality;
+			AFilter::uiBindFlag = D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE;
+			AFilter::uiCPUAccess = NULL;
+			AFilter::uiMiscFlag = NULL;
+			AFilter::eUsage = D3D11_USAGE_DEFAULT;
+			AFilter::eFormat = desc.Format;
 
-			CreateTexture2DAndSRV<IFilter>();
-
-			ID3D11Helper::CreateUnorderedAccessView(
-				DirectXDevice::pDevice,
-				IFilter::cpTexture2D.Get(),
-				IFilter::cpUAV.GetAddressOf()
-			);
+			AFilter::Resize(AFilter::uiWidth, AFilter::uiHeight);
 		}
 	}
 }
@@ -93,8 +94,8 @@ void ACamera::Apply(ID3D11ShaderResourceView** ppInputSRV)
 		D3D11_TEXTURE2D_DESC desc;
 		p_back_buffer->GetDesc(&desc);
 
-		if (desc.SampleDesc.Quality != ARenderTarget::uiNumQualityLevels ||
-			desc.Format != ARenderTarget::eFormat
+		if (desc.SampleDesc.Quality != RenderTarget::uiNumQualityLevels ||
+			desc.Format != RenderTarget::eFormat
 			)
 		{
 			Shaders& shaders = Shaders::GetInstance();
@@ -107,7 +108,7 @@ void ACamera::Apply(ID3D11ShaderResourceView** ppInputSRV)
 
 			DirectXDevice::pDeviceContext->CSSetShader(pComputeShader, NULL, NULL);
 			DirectXDevice::pDeviceContext->CSSetShaderResources(0, 1, ppInputSRV);
-			DirectXDevice::pDeviceContext->CSSetUnorderedAccessViews(0, 1, IFilter::cpUAV.GetAddressOf(), nullptr);
+			DirectXDevice::pDeviceContext->CSSetUnorderedAccessViews(0, 1, AFilter::cpUAV.GetAddressOf(), nullptr);
 			DirectXDevice::pDeviceContext->Dispatch(
 				uiWidth % uiThreadGroupCntX ? uiWidth / uiThreadGroupCntX + 1 : uiWidth / uiThreadGroupCntX,
 				uiHeight % uiThreadGroupCntY ? uiHeight / uiThreadGroupCntY + 1 : uiHeight / uiThreadGroupCntY,

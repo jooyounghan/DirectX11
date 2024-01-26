@@ -1,8 +1,8 @@
 #pragma once
-#include "IFilter.h"
-#include "ARenderTarget.h"
+#include "AFilter.h"
+#include "RenderTarget.h"
 
-class IDPickableRenderTarget : public IFilter, public ARenderTarget
+class IDPickableRenderTarget : public AFilter, public RenderTarget
 {
 public:
 	IDPickableRenderTarget(
@@ -31,10 +31,10 @@ public:
 	virtual uint32_t	GetPickedID() = 0;
 
 public:
-	virtual void		Apply(ID3D11ShaderResourceView** ppInputSRV);
-	virtual void		SetUAVBarrier();
+	virtual void Apply(ID3D11ShaderResourceView** ppInputSRV) override;
+	virtual void SetUAVBarrier() override;
 
 public:
-	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn);
+	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn) override;
 };
 

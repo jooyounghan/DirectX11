@@ -1,8 +1,8 @@
 #pragma once
-#include "AFilteredCamera.h"
+#include "FilteredCamera.h"
 #include "IDPickableRenderTarget.h"
 
-class PickableCamera : public AFilteredCamera, public IDPickableRenderTarget
+class PickableCamera : public FilteredCamera, public IDPickableRenderTarget
 {
 public:
 	PickableCamera(
@@ -21,13 +21,9 @@ public:
 
 public:
 	virtual void ClearRTV() override;
-	virtual void ClearDSV() override;
 	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn) override;
 
 public:
 	virtual uint32_t GetPickedID() override;
-
-public:
-	virtual DirectX::XMMATRIX GetTranformMat();
 };
 

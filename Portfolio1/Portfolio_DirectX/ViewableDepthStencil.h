@@ -1,11 +1,11 @@
 #pragma once
-#include "RenderTarget.h"
+#include "DepthStencil.h"
 #include "Viewable.h"
 
-class ViewableRenderTarget : public RenderTarget, virtual public Viewable
+class ViewableDepthStencil : public DepthStencil, virtual public Viewable
 {
 public:
-	ViewableRenderTarget(
+	ViewableDepthStencil(
 		const float& fXPos,
 		const float& fYPos,
 		const float& fZPos,
@@ -15,12 +15,11 @@ public:
 		const UINT& uiWidthIn,
 		const UINT& uiHeightIn,
 		const UINT& uiNumQualityLevelsIn,
-		DXGI_FORMAT eRTVFormatIn
+		DXGI_FORMAT eDSVFormatIn
 	);
-	~ViewableRenderTarget();
+	~ViewableDepthStencil();
 
 public:
 	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn) override;
 };
-
 

@@ -11,7 +11,7 @@ PointLight::PointLight(
 	const UINT& uiMiscFlagIn,
 	D3D11_USAGE eUsageIn,
 	DXGI_FORMAT eFormatIn
-) : ALight(fXPos, fYPos, fZPos, uiWidthIn, uiHeightIn)
+) : ILight(fXPos, fYPos, fZPos)
 {
 }
 

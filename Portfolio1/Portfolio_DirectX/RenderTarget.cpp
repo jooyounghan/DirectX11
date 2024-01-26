@@ -1,8 +1,8 @@
-#include "ARenderTarget.h"
+#include "RenderTarget.h"
 #include "ID3D11Helper.h"
 #include "DirectXDevice.h"
 
-ARenderTarget::ARenderTarget(
+RenderTarget::RenderTarget(
 	const UINT& uiWidthIn,
 	const UINT& uiHeightIn,
 	const UINT& uiArraySizeIn,
@@ -22,6 +22,22 @@ ARenderTarget::ARenderTarget(
 	ID3D11Helper::CreateRenderTargetView(DirectXDevice::pDevice, cpTexture2D.Get(), cpRTV.GetAddressOf());
 }
 
-ARenderTarget::~ARenderTarget()
+RenderTarget::~RenderTarget()
 {
+}
+
+void RenderTarget::ClearRTV()
+{
+	DirectXDevice::pDeviceContext->ClearRenderTargetView(cpRTV.Get(), RenderTarget::fClearColor);
+}
+
+void RenderTarget::Resize(const UINT& uiWidthIn, const UINT& uiHeightIn)
+{
+	cpRTV.Reset();
+	ShaderResource::Resize(uiWidthIn, uiHeightIn);
+	ID3D11Helper::CreateRenderTargetView(
+		DirectXDevice::pDevice,
+		cpTexture2D.Get(),
+		cpRTV.GetAddressOf()
+	);
 }

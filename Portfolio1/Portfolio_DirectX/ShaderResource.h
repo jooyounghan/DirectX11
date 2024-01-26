@@ -1,6 +1,7 @@
 #pragma once
 #include "Texture2D.h"
 
+
 class ShaderResource : public Texture2D
 {
 public:
@@ -32,6 +33,5 @@ public:
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> cpSRV;
 
 public:
-	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn) = 0;
+	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn);
 };
-

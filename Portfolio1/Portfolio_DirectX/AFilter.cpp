@@ -1,8 +1,8 @@
-#include "IFilter.h"
+#include "AFilter.h"
 #include "ID3D11Helper.h"
 #include "DirectXDevice.h"
 
-IFilter::IFilter(
+AFilter::AFilter(
 	UINT uiThreadGroupCntXIn,
 	UINT uiThreadGroupCntYIn,
 	UINT uiThreadGroupCntZIn
@@ -13,7 +13,7 @@ IFilter::IFilter(
 {
 }
 
-IFilter::IFilter(
+AFilter::AFilter(
 	UINT uiWidthIn, 
 	UINT uiHeightIn, 
 	UINT uiArraySizeIn, 
@@ -39,6 +39,15 @@ IFilter::IFilter(
 	ID3D11Helper::CreateUnorderedAccessView(DirectXDevice::pDevice, cpTexture2D.Get(), cpUAV.GetAddressOf());
 }
 
-IFilter::~IFilter()
+AFilter::~AFilter()
 {
+}
+
+void AFilter::Resize(const UINT& uiWidthIn, const UINT& uiHeightIn)
+{
+	cpUAV.Reset();
+	ShaderResource::Resize(uiWidthIn, uiHeightIn);
+	ID3D11Helper::CreateUnorderedAccessView(
+		DirectXDevice::pDevice, cpTexture2D.Get(), cpUAV.GetAddressOf()
+	);
 }

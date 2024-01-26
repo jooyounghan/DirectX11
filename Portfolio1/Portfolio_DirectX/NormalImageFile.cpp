@@ -13,7 +13,7 @@ NormalImageFile::NormalImageFile(
 		D3D11_RESOURCE_MISC_GENERATE_MIPS, eFormatIn,
 		pImageSource, strFileNameIn
 	),
-	ARectangle(uiWidthIn, uiHeightIn)
+	IRectangle(uiWidthIn, uiHeightIn)
 {
 	DirectXDevice::pDeviceContext->GenerateMips(cpSRV.Get());
 }

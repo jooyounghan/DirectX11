@@ -1,11 +1,15 @@
 #pragma once
 
 #include "ViewableRenderTarget.h"
-#include "ASwapChainAccessable.h"
-#include "IFilter.h"
+#include "ViewableDepthStencil.h"
+#include "SwapChainAccessable.h"
+#include "AFilter.h"
 
 class ACamera
-	: public ViewableRenderTarget, public IFilter, public ASwapChainAccessable
+	: public ViewableRenderTarget,
+	public ViewableDepthStencil, 
+	public AFilter,
+	public SwapChainAccessable
 {
 public:
 	ACamera(
@@ -30,7 +34,7 @@ public:
 	virtual void SetAsBackBufferAddress() override;
 
 public:
-	virtual void Apply(ID3D11ShaderResourceView** ppInputSRV) override;
-	virtual void SetUAVBarrier();
+	virtual void Apply(ID3D11ShaderResourceView** ppInputSRV) override final;
+	virtual void SetUAVBarrier() override final;
 };
 

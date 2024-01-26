@@ -1,13 +1,13 @@
 #pragma once
 
-class ASwapChainAccessable
+class SwapChainAccessable
 {
 public:
-	ASwapChainAccessable();
-	~ASwapChainAccessable();
+	SwapChainAccessable();
+	~SwapChainAccessable();
 
 public:
-	ID3D11Texture2D* p_back_buffer;
+	struct ID3D11Texture2D* p_back_buffer;
 
 public:
 	virtual void SetAsBackBufferAddress();
