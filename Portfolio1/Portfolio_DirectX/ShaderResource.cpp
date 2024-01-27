@@ -3,10 +3,6 @@
 #include "DirectXDevice.h"
 #include "ShaderResource.h"
 
-ShaderResource::ShaderResource()
-	: Texture2D()
-{
-}
 
 ShaderResource::ShaderResource(
 	const UINT& uiHeightIn,
@@ -27,7 +23,8 @@ ShaderResource::ShaderResource(
 		uiMiscFlagIn, 
 		eUsageIn, 
 		eFormatIn
-	)
+	),
+	IRectangle(uiWidthIn, uiHeightIn)
 {
 	ID3D11Helper::CreateShaderResoureView(DirectXDevice::pDevice, cpTexture2D.Get(), cpSRV.GetAddressOf());
 }
@@ -50,7 +47,8 @@ ShaderResource::ShaderResource(
 		eUsageIn,
 		eFormatIn,
 		pImageSourceIn
-	)
+	),
+	IRectangle(uiWidthIn, uiHeightIn)
 {
 	ID3D11Helper::CreateShaderResoureView(DirectXDevice::pDevice, cpTexture2D.Get(), cpSRV.GetAddressOf());
 }

@@ -15,8 +15,9 @@ Viewable::Viewable(
 	const float& fNearZIn,
 	const float& fFarZIn
 )
-	: IMovable(fXPos, fYPos, fZPos), fFovRadian(fFovRadianIn), fNearZ(fNearZIn), fFarZ(fFarZIn),
-	IRectangle((UINT)fWidthIn, (UINT)fHeightIn)
+	: IMovable(fXPos, fYPos, fZPos), 
+	IRectangle((UINT)fWidthIn, (UINT)fHeightIn),
+	fFovRadian(fFovRadianIn), fNearZ(fNearZIn), fFarZ(fFarZIn)
 {
 	AutoZeroMemory(sViewPort);
 	

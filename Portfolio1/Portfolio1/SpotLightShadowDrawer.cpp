@@ -1,7 +1,7 @@
 #include "SpotLightShadowDrawer.h"
 #include "SpotLight.h"
 #include "PickableModelInterface.h"
-
+#include "DebugHelper.h"
 SpotLightShadowDrawer::SpotLightShadowDrawer(
 	ID3D11Device* pDeviceIn,
 	ID3D11DeviceContext* pDeviceContextIn
@@ -23,6 +23,9 @@ void SpotLightShadowDrawer::Draw(
 	SetShader();
 	SetOMState();
 
+	DebugHelper::AddIgoreMessage(pDevice, D3D11_MESSAGE_ID_DEVICE_DRAW_RENDERTARGETVIEW_NOT_SET);
+
+
 	SpotLight* pSpotLight = (SpotLight*)pLightInterface;
 	pSpotLight->WipeOut();
 	pSpotLight->SetConstantBuffers();
@@ -39,6 +42,7 @@ void SpotLightShadowDrawer::Draw(
 	}
 	pSpotLight->ResetConstantBuffers();
 
+	DebugHelper::ResetFilter(pDevice);
 
 	ResetDrawer();
 }

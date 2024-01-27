@@ -5,7 +5,6 @@
 class ShaderResource : public Texture2D
 {
 public:
-	ShaderResource();
 	ShaderResource(
 		const UINT& uiWidthIn,
 		const UINT& uiHeightIn,

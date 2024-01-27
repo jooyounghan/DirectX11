@@ -17,7 +17,7 @@ public:
 		const UINT& uiNumQualityLevelsIn,
 		DXGI_FORMAT eRTVFormatIn
 	);
-	~ViewableRenderTarget();
+	virtual ~ViewableRenderTarget();
 
 public:
 	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn) override;

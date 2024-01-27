@@ -1,6 +1,7 @@
 #include "PointLightShadowDrawer.h"
 #include "PointLight.h"
 #include "PickableModelInterface.h"
+#include "DebugHelper.h"
 
 PointLightShadowDrawer::PointLightShadowDrawer(
 	ID3D11Device* pDeviceIn, 

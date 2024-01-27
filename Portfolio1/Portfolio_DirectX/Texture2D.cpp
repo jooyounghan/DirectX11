@@ -2,11 +2,6 @@
 #include "ID3D11Helper.h"
 #include "DirectXDevice.h"
 
-Texture2D::Texture2D()
-	: IRectangle(), eFormat(DXGI_FORMAT_UNKNOWN)
-{
-}
-
 Texture2D::Texture2D(
 	const UINT& uiWidthIn, const UINT& uiHeightIn,
 	const UINT& uiArraySizeIn, const UINT& uiNumQualityLevelsIn,
@@ -23,14 +18,14 @@ Texture2D::Texture2D(
 {
 	ID3D11Helper::CreateTexture2D(
 		DirectXDevice::pDevice,
-		uiWidth, uiHeight,
-		uiArraySize,
-		uiNumQualityLevels,
-		uiBindFlag,
-		uiCPUAccess,
-		uiMiscFlag,
-		eUsage,
-		eFormat, 
+		uiWidthIn, uiHeightIn,
+		uiArraySizeIn,
+		uiNumQualityLevelsIn,
+		uiBindFlagIn,
+		uiCPUAccessIn,
+		uiMiscFlagIn,
+		eUsageIn,
+		eFormatIn,
 		cpTexture2D.GetAddressOf()
 	);
 }
@@ -48,7 +43,7 @@ Texture2D::Texture2D(
 {
 	ID3D11Helper::CreateTexture2D(
 		DirectXDevice::pDevice,
-		uiWidth, uiHeight,
+		uiWidthIn, uiHeightIn,
 		uiBindFlagIn,
 		uiCPUAccessIn,
 		uiMiscFlagIn,

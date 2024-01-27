@@ -5,28 +5,26 @@
 SpotLight::SpotLight(
 	const float& fXPos,
 	const float& fYPos,
-	const float& fZPos,
-	const UINT& uiWidthIn,
-	const UINT& uiHeightIn
+	const float& fZPos
 )
 	: ILight(fXPos, fYPos, fZPos),
-	ViewableDepthStencil(
+	ViewableDepthOnly(
 		fXPos, fYPos, fZPos, 
 		DirectX::XMConvertToRadians(90.f), 
 		sBaseLightData.fFallOffStart, 
 		sBaseLightData.fFallOffEnd,
-		uiWidthIn, uiHeightIn,
-		0, DXGI_FORMAT_R32_TYPELESS
+		1000, 1000
 	),
 	Viewable(
 		fXPos, fYPos, fZPos, 
-		(float)uiWidthIn, 
-		(float)uiHeightIn, 
+		1000.f, 
+		1000.f, 
 		DirectX::XMConvertToRadians(90.f),
 		sBaseLightData.fFallOffStart, 
 		sBaseLightData.fFallOffEnd
 	),
-	IMovable(fXPos, fYPos, fZPos)
+	IMovable(fXPos, fYPos, fZPos),
+	IRectangle(1000, 1000)
 {
 	ID3D11Helper::CreateBuffer(
 		DirectXDevice::pDevice,
@@ -41,9 +39,10 @@ SpotLight::~SpotLight()
 
 }
 
-
 void SpotLight::UpdateLight()
 {
+	fNearZ = sBaseLightData.fFallOffStart;
+	fFarZ = sBaseLightData.fFallOffEnd;
 
 	ID3D11Helper::UpdateBuffer(
 		DirectXDevice::pDeviceContext,

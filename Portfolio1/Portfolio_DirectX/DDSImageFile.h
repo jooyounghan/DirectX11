@@ -9,7 +9,7 @@ public:
 		const std::string& strFileNameIn,
 		const bool& bIsTextureCube
 	);
-	~DDSImageFile();
+	virtual ~DDSImageFile();
 
 public:
 	virtual FileType GetFileType();

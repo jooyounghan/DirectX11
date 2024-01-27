@@ -17,7 +17,8 @@ RenderTarget::RenderTarget(
 		uiWidthIn, uiHeightIn, uiArraySizeIn,
 		uiNumQualityLevelsIn, uiBindFlagIn | D3D11_BIND_RENDER_TARGET, uiCPUAccessIn,
 		uiMiscFlagIn, eUsageIn, eFormatIn
-	)
+	),
+	IRectangle(uiWidthIn, uiHeightIn)
 {
 	ID3D11Helper::CreateRenderTargetView(DirectXDevice::pDevice, cpTexture2D.Get(), cpRTV.GetAddressOf());
 }

@@ -1,8 +1,6 @@
 #pragma once
 
 #include "BaseApp.h"
-#include "PickableCamera.h"
-#include "CubeModel.h"
 
 class PortfolioApp : public BaseApp
 {
@@ -27,9 +25,11 @@ public:
 	virtual LRESULT WINAPI AppProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) override;
 
 public:
-	CubeModel* pCubeModel1;
-	CubeModel* pCubeModel2;
-	PickableCamera* pPickableCamera;
+	class CubeModel* pCubeModel1;
+	class CubeModel* pCubeModel2;
+	class PickableCamera* pPickableCamera;
+	class SpotLight* pSpotLight;
+
 	Microsoft::WRL::ComPtr<ID3D11VertexShader> cpVS;
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> cpPS;
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> cpIL;

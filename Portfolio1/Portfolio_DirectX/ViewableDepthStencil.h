@@ -1,8 +1,9 @@
 #pragma once
-#include "DepthStencil.h"
+#include "IDepthStencil.h"
+#include "Texture2D.h"
 #include "Viewable.h"
 
-class ViewableDepthStencil : public DepthStencil, virtual public Viewable
+class ViewableDepthStencil : public IDepthStencil, public Texture2D, virtual public Viewable
 {
 public:
 	ViewableDepthStencil(
@@ -17,9 +18,10 @@ public:
 		const UINT& uiNumQualityLevelsIn,
 		DXGI_FORMAT eDSVFormatIn
 	);
-	~ViewableDepthStencil();
+	virtual ~ViewableDepthStencil();
 
 public:
+	virtual void ClearDSV() override;
 	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn) override;
 };
 

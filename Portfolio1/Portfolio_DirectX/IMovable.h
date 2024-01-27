@@ -8,7 +8,6 @@
 class IMovable
 {
 public:
-	IMovable();
 	IMovable(
 		const float& fXPos,
 		const float& fYPos,

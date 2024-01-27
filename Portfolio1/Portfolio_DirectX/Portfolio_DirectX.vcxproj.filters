@@ -165,9 +165,6 @@
     <ClInclude Include="NormalImageFile.h">
       <Filter>헤더 파일\File\Extended</Filter>
     </ClInclude>
-    <ClInclude Include="DepthStencil.h">
-      <Filter>헤더 파일\Texture2D</Filter>
-    </ClInclude>
     <ClInclude Include="AFilter.h">
       <Filter>헤더 파일\Texture2D</Filter>
     </ClInclude>
@@ -226,6 +223,12 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="ViewableDepthStencil.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewableDepthOnly.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="IDepthStencil.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -299,9 +302,6 @@
     <ClCompile Include="PickableCamera.cpp">
       <Filter>소스 파일\Camera\Extended</Filter>
     </ClCompile>
-    <ClCompile Include="DepthStencil.cpp">
-      <Filter>소스 파일\Texture2D</Filter>
-    </ClCompile>
     <ClCompile Include="AFilter.cpp">
       <Filter>소스 파일\Texture2D</Filter>
     </ClCompile>
@@ -360,6 +360,12 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="ViewableDepthStencil.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewableDepthOnly.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="IDepthStencil.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

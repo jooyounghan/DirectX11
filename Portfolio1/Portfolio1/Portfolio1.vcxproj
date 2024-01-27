@@ -143,6 +143,7 @@
     <ClCompile Include="BloomFilter.cpp" />
     <ClCompile Include="CameraInterface.cpp" />
     <ClCompile Include="CameraManageGui.cpp" />
+    <ClCompile Include="DebugHelper.cpp" />
     <ClCompile Include="LightInterface.cpp" />
     <ClCompile Include="NormalCamera.cpp" />
     <ClCompile Include="CubeMapDrawer.cpp" />
@@ -201,6 +202,7 @@
     <ClInclude Include="BloomFilter.h" />
     <ClInclude Include="CameraInterface.h" />
     <ClInclude Include="CameraManageGui.h" />
+    <ClInclude Include="DebugHelper.h" />
     <ClInclude Include="LightInterface.h" />
     <ClInclude Include="ManualDataType.h" />
     <ClInclude Include="NormalCamera.h" />

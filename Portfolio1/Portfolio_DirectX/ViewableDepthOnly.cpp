@@ -1,8 +1,8 @@
-#include "ViewableDepthStencil.h"
+#include "ViewableDepthOnly.h"
 #include "ID3D11Helper.h"
 #include "DirectXDevice.h"
 
-ViewableDepthStencil::ViewableDepthStencil(
+ViewableDepthOnly::ViewableDepthOnly(
 	const float& fXPos,
 	const float& fYPos,
 	const float& fZPos,
@@ -10,21 +10,19 @@ ViewableDepthStencil::ViewableDepthStencil(
 	const float& fNearZIn,
 	const float& fFarZIn,
 	const UINT& uiWidthIn,
-	const UINT& uiHeightIn,
-	const UINT& uiNumQualityLevelsIn,
-	DXGI_FORMAT eDSVFormatIn
+	const UINT& uiHeightIn
 )
-	: IDepthStencil(
-		uiWidthIn, uiHeightIn
-	),
-	Texture2D(
-		uiWidthIn, uiHeightIn, 1, uiNumQualityLevelsIn,
-		D3D11_BIND_DEPTH_STENCIL,
-		NULL, NULL, D3D11_USAGE_DEFAULT, eDSVFormatIn
+	: 
+	IDepthStencil(uiWidthIn, uiHeightIn),
+	ShaderResource(
+		uiWidthIn, uiHeightIn, 1, 0,
+		D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL,
+		NULL, NULL, D3D11_USAGE_DEFAULT, 
+		DXGI_FORMAT_D32_FLOAT
 	),
 	Viewable(
-		fXPos, fYPos, fZPos,
-		(float)uiWidthIn, (float)uiHeightIn,
+		fXPos, fYPos, fZPos, 
+		(float)uiWidthIn, (float)uiHeightIn, 
 		fFovRadianIn, fNearZIn, fFarZIn
 	),
 	IMovable(fXPos, fYPos, fZPos),
@@ -33,12 +31,11 @@ ViewableDepthStencil::ViewableDepthStencil(
 	ID3D11Helper::CreateDepthStencilView(DirectXDevice::pDevice, cpTexture2D.Get(), cpDSV.GetAddressOf());
 }
 
-ViewableDepthStencil::~ViewableDepthStencil()
+ViewableDepthOnly::~ViewableDepthOnly()
 {
 }
 
-
-void ViewableDepthStencil::ClearDSV()
+void ViewableDepthOnly::ClearDSV()
 {
 	DirectXDevice::pDeviceContext->ClearDepthStencilView(
 		cpDSV.Get(),
@@ -48,10 +45,10 @@ void ViewableDepthStencil::ClearDSV()
 	);
 }
 
-void ViewableDepthStencil::Resize(const UINT& uiWidthIn, const UINT& uiHeightIn)
+void ViewableDepthOnly::Resize(const UINT& uiWidthIn, const UINT& uiHeightIn)
 {
 	cpDSV.Reset();
-	Texture2D::Resize(uiWidthIn, uiHeightIn);
+	ShaderResource::Resize(uiWidthIn, uiHeightIn);
 	ID3D11Helper::CreateDepthStencilView(
 		DirectXDevice::pDevice, cpTexture2D.Get(), cpDSV.GetAddressOf()
 	);

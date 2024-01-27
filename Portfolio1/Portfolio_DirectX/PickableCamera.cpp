@@ -29,9 +29,12 @@ PickableCamera::PickableCamera(
 		uiWidthIn, uiHeightIn, 
 		uiNumQualityLevelsIn
 	),
-	Viewable(fXPos, fYPos, fZPos,
-		(float)uiWidthIn, (float)uiHeightIn, 
-		fFovRadIn, fNearZIn, fFarZIn
+	Viewable(
+		fXPos, fYPos, fZPos,
+		(float)uiWidthIn, 
+		(float)uiHeightIn, 
+		fFovRadIn, 
+		fNearZIn, fFarZIn
 	),
 	IMovable(fXPos, fYPos, fZPos),
 	IRectangle(

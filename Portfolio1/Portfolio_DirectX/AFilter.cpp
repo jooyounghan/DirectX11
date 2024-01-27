@@ -6,7 +6,11 @@ AFilter::AFilter(
 	UINT uiThreadGroupCntXIn,
 	UINT uiThreadGroupCntYIn,
 	UINT uiThreadGroupCntZIn
-) : ShaderResource(),
+) : ShaderResource(
+	1, 1, 1, 0, 
+	NULL, NULL, NULL, 
+	D3D11_USAGE::D3D11_USAGE_DEFAULT, DXGI_FORMAT_R8G8B8A8_UNORM
+	),
 	uiThreadGroupCntX(uiThreadGroupCntXIn),
 	uiThreadGroupCntY(uiThreadGroupCntYIn),
 	uiThreadGroupCntZ(uiThreadGroupCntZIn)

@@ -29,6 +29,11 @@ ACamera::ACamera(
 		uiNumQualityLevelsIn,
 		eDSVFormatIn
 	),
+	Viewable(
+		fXPos, fYPos, fZPos, 
+		(float)uiWidthIn, (float)uiHeightIn, 
+		fFovRadIn, fNearZIn, fFarZIn
+	),
 	AFilter(256, 1, 1),
 	SwapChainAccessable()
 {

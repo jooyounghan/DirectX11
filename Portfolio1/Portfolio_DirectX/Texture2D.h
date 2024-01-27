@@ -7,7 +7,6 @@
 class Texture2D : virtual public IRectangle
 {
 public:
-	Texture2D();
 	Texture2D(
 		const UINT& uiWidthIn,
 		const UINT& uiHeightIn,

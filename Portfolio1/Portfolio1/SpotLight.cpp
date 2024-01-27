@@ -51,7 +51,7 @@ SpotLight::SpotLight(
 		pDevice, 1000, 1000,
 		1, 0, D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE,
 		NULL, NULL, D3D11_USAGE_DEFAULT,
-		DXGI_FORMAT_R32_TYPELESS,
+		DXGI_FORMAT_D32_FLOAT,
 		cpShadowMapTexture.GetAddressOf()
 	);
 	ID3D11Helper::CreateDepthOnlyViews(pDevice, cpShadowMapTexture.Get(), cpShadowMapSRV.GetAddressOf(), cpShadowMapDSV.GetAddressOf());

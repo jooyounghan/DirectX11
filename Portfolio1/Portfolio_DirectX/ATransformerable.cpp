@@ -7,7 +7,7 @@
 using namespace DirectX;
 
 ATransformerable::ATransformerable()
-	: IMovable(), IScalable(), IAngleAdjustable()
+	: IMovable(0.f, 0.f, 0.f), IScalable(), IAngleAdjustable()
 {
 	ID3D11Helper::CreateBuffer(
 		DirectXDevice::pDevice, 

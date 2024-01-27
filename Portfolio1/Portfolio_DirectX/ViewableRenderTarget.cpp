@@ -24,6 +24,7 @@ ViewableRenderTarget::ViewableRenderTarget(
 		(float)uiWidthIn, (float)uiHeightIn,
 		fFovRadianIn, fNearZIn, fFarZIn
 	),
+	IMovable(fXPos, fYPos, fZPos),
 	IRectangle(uiWidthIn, uiHeightIn)
 {
 }

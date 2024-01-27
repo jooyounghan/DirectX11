@@ -1,16 +1,14 @@
 #pragma once
 #include "ILight.h"
-#include "ViewableDepthStencil.h"
+#include "ViewableDepthOnly.h"
 
-class SpotLight : public ILight, public ViewableDepthStencil
+class SpotLight : public ILight, public ViewableDepthOnly
 {
 public:
 	SpotLight(
 		const float& fXPos,
 		const float& fYPos,
-		const float& fZPos,
-		const UINT& uiWidthIn,
-		const UINT& uiHeightIn
+		const float& fZPos
 	);
 	virtual ~SpotLight();
 

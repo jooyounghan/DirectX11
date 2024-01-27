@@ -11,6 +11,9 @@
 #include "ID3D11Helper.h"
 #include "RasterizationState.h"
 #include "DepthStencilState.h"
+#include "PickableCamera.h"
+#include "CubeModel.h"
+#include "SpotLight.h"
 
 using namespace std;
 
@@ -48,6 +51,8 @@ void PortfolioApp::Init()
 		DXGI_FORMAT_D24_UNORM_S8_UINT
 	);
 
+	pSpotLight = new SpotLight(0.f, 0.f, -10.f);
+
 	DirectXDevice::pDeviceContext->VSSetShader(shaders.GetVertexShader(Shaders::BaseVertexShader), NULL, NULL);
 	DirectXDevice::pDeviceContext->PSSetShader(shaders.GetPixelShader(Shaders::BasePixelShader), NULL, NULL);
 
@@ -64,13 +69,45 @@ void PortfolioApp::Update(const float& fDelta)
 {
 	pCubeModel1->UpdateModel(fDelta);
 	pCubeModel2->UpdateModel(fDelta);
+
 	pPickableCamera->UpdateView(fDelta);
+
+	pSpotLight->fNearZ = 0.001;
+	pSpotLight->fFarZ = 1000.f;
 }
 
 void PortfolioApp::Render()
 {
 	float clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
 
+	// ========= Depth Map 업데이트 ============
+	ID3D11RenderTargetView* pNUllRTV = nullptr;
+	DirectXDevice::pDeviceContext->OMSetRenderTargets(1, &pNUllRTV, pSpotLight->cpDSV.Get());
+	pSpotLight->ClearDSV();
+
+	DirectXDevice::pDeviceContext->RSSetViewports(1, &pSpotLight->sViewPort);
+	DirectXDevice::pDeviceContext->VSSetConstantBuffers(1, 1, pSpotLight->cpViewProjBuffer.GetAddressOf());
+
+	UINT uiStride = sizeof(InputLayout);
+	UINT uiOffset = 0;
+
+	DirectXDevice::pDeviceContext->IASetVertexBuffers(0, 1, pCubeModel1->cpInputBuffer.GetAddressOf(), &uiStride, &uiOffset);
+	DirectXDevice::pDeviceContext->IASetIndexBuffer(pCubeModel1->cpIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+	DirectXDevice::pDeviceContext->VSSetConstantBuffers(0, 1, pCubeModel1->cpTransformationBuffer.GetAddressOf());
+	DirectXDevice::pDeviceContext->PSSetConstantBuffers(0, 1, pCubeModel1->cpIdBuffer.GetAddressOf());
+
+	pCubeModel1->Draw();
+
+	DirectXDevice::pDeviceContext->IASetVertexBuffers(0, 1, pCubeModel2->cpInputBuffer.GetAddressOf(), &uiStride, &uiOffset);
+	DirectXDevice::pDeviceContext->IASetIndexBuffer(pCubeModel2->cpIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+	DirectXDevice::pDeviceContext->VSSetConstantBuffers(0, 1, pCubeModel2->cpTransformationBuffer.GetAddressOf());
+	DirectXDevice::pDeviceContext->PSSetConstantBuffers(0, 1, pCubeModel2->cpIdBuffer.GetAddressOf());
+
+	pCubeModel2->Draw();
+
+
+
+	// ========= 모델 실제 그리기 업데이트 ============
 	vector<ID3D11RenderTargetView*> vRTVs = { 
 		pPickableCamera->RenderTarget::cpRTV.Get(), 
 		pPickableCamera->IDPickableRenderTarget::cpRTV.Get() 
@@ -87,9 +124,6 @@ void PortfolioApp::Render()
 	DirectXDevice::pDeviceContext->RSSetViewports(1, &pPickableCamera->sViewPort);
 
 	DirectXDevice::pDeviceContext->VSSetConstantBuffers(1, 1, pPickableCamera->cpViewProjBuffer.GetAddressOf());
-
-	UINT uiStride = sizeof(InputLayout);
-	UINT uiOffset = 0;
 
 	DirectXDevice::pDeviceContext->IASetVertexBuffers(0, 1, pCubeModel1->cpInputBuffer.GetAddressOf(), &uiStride, &uiOffset);
 	DirectXDevice::pDeviceContext->IASetIndexBuffer(pCubeModel1->cpIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);

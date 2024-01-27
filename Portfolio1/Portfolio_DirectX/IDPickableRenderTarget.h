@@ -10,7 +10,7 @@ public:
 		const UINT& uiHeightIn,
 		const UINT& uiNumQualityLevelsIn
 	);
-	~IDPickableRenderTarget();
+	virtual ~IDPickableRenderTarget();
 
 public:
 

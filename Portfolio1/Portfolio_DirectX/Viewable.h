@@ -3,7 +3,7 @@
 #include "IMovable.h"
 #include "IAngleAdjustable.h"
 
-class Viewable : virtual public IRectangle, virtual public IMovable, public IAngleAdjustable
+class Viewable : virtual public IRectangle, virtual public IMovable, virtual public IAngleAdjustable
 {
 public:
 	Viewable(

@@ -130,6 +130,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="FilteredCamera.h" />
+    <ClInclude Include="IDepthStencil.h" />
     <ClInclude Include="IDPickableRenderTarget.h" />
     <ClInclude Include="APossessable.h" />
     <ClInclude Include="SwapChainAccessable.h" />
@@ -147,7 +148,6 @@
     <ClInclude Include="ACamera.h" />
     <ClInclude Include="ICommand.h" />
     <ClInclude Include="ID3D11Helper.h" />
-    <ClInclude Include="DepthStencil.h" />
     <ClInclude Include="IFile.h" />
     <ClInclude Include="AFilter.h" />
     <ClInclude Include="IImageFile.h" />
@@ -172,11 +172,13 @@
     <ClInclude Include="PortfolioApp.h" />
     <ClInclude Include="RasterizationState.h" />
     <ClInclude Include="SamplerState.h" />
+    <ClInclude Include="ViewableDepthOnly.h" />
     <ClInclude Include="ViewableDepthStencil.h" />
     <ClInclude Include="ViewableRenderTarget.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FilteredCamera.cpp" />
+    <ClCompile Include="IDepthStencil.cpp" />
     <ClCompile Include="IDPickableRenderTarget.cpp" />
     <ClCompile Include="APossessable.cpp" />
     <ClCompile Include="SwapChainAccessable.cpp" />
@@ -192,7 +194,6 @@
     <ClCompile Include="IAngleAdjustable.cpp" />
     <ClCompile Include="ACamera.cpp" />
     <ClCompile Include="ID3D11Helper.cpp" />
-    <ClCompile Include="DepthStencil.cpp" />
     <ClCompile Include="IFile.cpp" />
     <ClCompile Include="AFilter.cpp" />
     <ClCompile Include="IImageFile.cpp" />
@@ -218,6 +219,7 @@
     <ClCompile Include="PortfolioApp.cpp" />
     <ClCompile Include="RasterizationState.cpp" />
     <ClCompile Include="SamplerState.cpp" />
+    <ClCompile Include="ViewableDepthOnly.cpp" />
     <ClCompile Include="ViewableDepthStencil.cpp" />
     <ClCompile Include="ViewableRenderTarget.cpp" />
   </ItemGroup>

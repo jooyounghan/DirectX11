@@ -369,6 +369,9 @@
     <ClCompile Include="ViewPort.cpp">
       <Filter>소스 파일\Global</Filter>
     </ClCompile>
+    <ClCompile Include="DebugHelper.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DefineVar.h">
@@ -547,6 +550,9 @@
     </ClInclude>
     <ClInclude Include="ViewPort.h">
       <Filter>헤더 파일\Global</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugHelper.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

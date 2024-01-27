@@ -21,10 +21,13 @@ FilteredCamera::FilteredCamera(
 		uiNumQualityLevelsIn,
 		eRTVFormatIn, eDSVFormatIn
 	),
-	Viewable(fXPos, fYPos, fZPos,
+	Viewable(
+		fXPos, fYPos, fZPos, 
 		(float)uiWidthIn, (float)uiHeightIn,
 		fFovRadIn, fNearZIn, fFarZIn
-	)
+	),
+	IMovable(fXPos, fYPos, fZPos),
+	IRectangle(uiWidthIn, uiHeightIn)
 {
 }
 
