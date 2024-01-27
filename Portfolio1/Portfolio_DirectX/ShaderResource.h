@@ -14,8 +14,23 @@ public:
 		const UINT& uiCPUAccessIn,
 		const UINT& uiMiscFlagIn,
 		const D3D11_USAGE& eUsageIn,
+		const DXGI_FORMAT& eTextureFormatIn,
+		const DXGI_FORMAT& eSRVFormatIn,
+		const D3D_SRV_DIMENSION& eDimensionIn
+	);
+
+	ShaderResource(
+		const UINT& uiWidthIn,
+		const UINT& uiHeightIn,
+		const UINT& uiArraySizeIn,
+		const UINT& uiNumQualityLevelsIn,
+		const UINT& uiBindFlagIn,
+		const UINT& uiCPUAccessIn,
+		const UINT& uiMiscFlagIn,
+		const D3D11_USAGE& eUsageIn,
 		const DXGI_FORMAT& eFormatIn
 	);
+
 	ShaderResource(
 		const UINT& uiWidthIn,
 		const UINT& uiHeightIn,

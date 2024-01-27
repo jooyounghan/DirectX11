@@ -12,6 +12,6 @@ public:
 	virtual ~DDSImageFile();
 
 public:
-	virtual FileType GetFileType();
+	virtual EFileType GetFileType();
 };
 

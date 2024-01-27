@@ -6,10 +6,12 @@
 using namespace std;
 
 PickableCamera::PickableCamera(
-
 	const float& fXPos,
 	const float& fYPos,
 	const float& fZPos,
+	const float& fPitchRadIn,
+	const float& fYawRadIn,
+	const float& fRollRadIn,
 	const UINT& uiWidthIn, const UINT& uiHeightIn,
 	const float& fFovRadIn,
 	const float& fNearZIn,
@@ -20,6 +22,7 @@ PickableCamera::PickableCamera(
 )
 	: FilteredCamera(
 		fXPos, fYPos, fZPos,
+		fPitchRadIn, fYawRadIn, fRollRadIn,
 		uiWidthIn, uiHeightIn,
 		fFovRadIn, fNearZIn, fFarZIn,
 		uiNumQualityLevelsIn,
@@ -31,12 +34,14 @@ PickableCamera::PickableCamera(
 	),
 	Viewable(
 		fXPos, fYPos, fZPos,
+		fPitchRadIn, fYawRadIn, fRollRadIn,
 		(float)uiWidthIn, 
 		(float)uiHeightIn, 
 		fFovRadIn, 
 		fNearZIn, fFarZIn
 	),
 	IMovable(fXPos, fYPos, fZPos),
+	IAngleAdjustable(fPitchRadIn, fYawRadIn, fRollRadIn),
 	IRectangle(
 		uiWidthIn,
 		uiHeightIn

@@ -10,12 +10,12 @@ public:
 	~APossessable();
 
 protected:
-	class ICommand* pCommand[KeyCode::NUM_KEY];
-	bool			pPressed[KeyCode::NUM_KEY];
+	class ICommand* pCommand[EKeyCode::NUM_KEY];
+	bool			pPressed[EKeyCode::NUM_KEY];
 
 public:
-	inline void Press(const KeyCode& eKeyCode, const float& fDelta) { if (pCommand[eKeyCode]) pCommand[eKeyCode]->Command(fDelta); }
-	inline void Toggle(const KeyCode& eKeyCode) { pPressed[eKeyCode] = !pPressed[eKeyCode]; }
+	inline void Press(const EKeyCode& eKeyCode, const float& fDelta) { if (pCommand[eKeyCode]) pCommand[eKeyCode]->Command(fDelta); }
+	inline void Toggle(const EKeyCode& eKeyCode) { pPressed[eKeyCode] = !pPressed[eKeyCode]; }
 
 public:
 	virtual void SetDefaultCommand() = 0;

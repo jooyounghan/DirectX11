@@ -19,7 +19,7 @@ public:
 	virtual ~IImageFile();
 
 public:
-	virtual FileType GetFileType() = 0;
+	virtual EFileType GetFileType() = 0;
 
 private:
 	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn) override final {};

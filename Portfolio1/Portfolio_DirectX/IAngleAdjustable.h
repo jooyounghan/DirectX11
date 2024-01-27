@@ -2,15 +2,19 @@
 class IAngleAdjustable
 {
 public:
-	IAngleAdjustable();
+	IAngleAdjustable(
+		const float& fPitchRadIn,
+		const float& fYawRadIn,
+		const float& fRollRadIn
+	);
 	~IAngleAdjustable();
 
 public:
 	struct
 	{
-		float fPitch;
-		float fYaw;
-		float fRoll;
+		float fPitchRad;
+		float fYawRad;
+		float fRollRad;
 	} sAngles;
 };
 

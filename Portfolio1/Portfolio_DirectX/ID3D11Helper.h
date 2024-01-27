@@ -117,9 +117,9 @@ public:
 	static void CreateShaderResoureView(
 		IN ID3D11Device* pDevice,
 		IN ID3D11Resource* pResource,
-		OUT ID3D11ShaderResourceView** ppShaderResourceView
+		OUT ID3D11ShaderResourceView** ppShaderResourceView,
+		IN D3D11_SHADER_RESOURCE_VIEW_DESC* sSRVDesc = NULL
 	);
-
 
 	static void CreateUnorderedAccessView(
 		IN ID3D11Device* pDevice,
@@ -130,7 +130,8 @@ public:
 	static void CreateDepthStencilView(
 		IN ID3D11Device* pDevice,
 		IN	ID3D11Texture2D* pDepthStencilTexture2D,
-		OUT ID3D11DepthStencilView** ppDepthStencilView
+		OUT ID3D11DepthStencilView** ppDepthStencilView,
+		IN D3D11_DEPTH_STENCIL_VIEW_DESC* sDSVDesc = NULL
 	);
 
 	static void CreateRasterizerState(

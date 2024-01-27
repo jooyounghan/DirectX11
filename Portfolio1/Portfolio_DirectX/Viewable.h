@@ -10,6 +10,9 @@ public:
 		const float& fXPos,
 		const float& fYPos,
 		const float& fZPos,
+		const float& fPitchRadIn,
+		const float& fYawRadIn,
+		const float& fRollRadIn,
 		const float& fWidthIn,
 		const float& fHeightIn,
 		const float& fFovRadianIn, 
@@ -38,6 +41,6 @@ public:
 	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn);
 
 public:
-	virtual void UpdateView(const float& fDelta);
+	virtual void UpdateView();
 };
 

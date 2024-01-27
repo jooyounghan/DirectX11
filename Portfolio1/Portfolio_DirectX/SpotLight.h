@@ -8,7 +8,10 @@ public:
 	SpotLight(
 		const float& fXPos,
 		const float& fYPos,
-		const float& fZPos
+		const float& fZPos,
+		const float& fPitchRadIn,
+		const float& fYawRadIn,
+		const float& fRollRadIn
 	);
 	virtual ~SpotLight();
 

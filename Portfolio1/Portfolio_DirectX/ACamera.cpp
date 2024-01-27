@@ -7,6 +7,9 @@ ACamera::ACamera(
 	const float& fXPos,
 	const float& fYPos,
 	const float& fZPos,
+	const float& fPitchRadIn,
+	const float& fYawRadIn,
+	const float& fRollRadIn,
 	const UINT& uiWidthIn, const UINT& uiHeightIn,
 	const float& fFovRadIn,
 	const float& fNearZIn,
@@ -17,6 +20,7 @@ ACamera::ACamera(
 )
 	: ViewableRenderTarget(
 		fXPos, fYPos, fZPos,
+		fPitchRadIn, fYawRadIn, fRollRadIn,
 		fFovRadIn, fNearZIn, fFarZIn,
 		uiWidthIn, uiHeightIn,
 		uiNumQualityLevelsIn,
@@ -24,6 +28,7 @@ ACamera::ACamera(
 	),
 	ViewableDepthStencil(
 		fXPos, fYPos, fZPos,
+		fPitchRadIn, fYawRadIn, fRollRadIn,
 		fFovRadIn, fNearZIn, fFarZIn,
 		uiWidthIn, uiHeightIn,
 		uiNumQualityLevelsIn,
@@ -31,6 +36,7 @@ ACamera::ACamera(
 	),
 	Viewable(
 		fXPos, fYPos, fZPos, 
+		fPitchRadIn, fYawRadIn, fRollRadIn,
 		(float)uiWidthIn, (float)uiHeightIn, 
 		fFovRadIn, fNearZIn, fFarZIn
 	),

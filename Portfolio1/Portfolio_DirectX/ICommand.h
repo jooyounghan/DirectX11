@@ -1,6 +1,6 @@
 #pragma once
 
-enum KeyCode : unsigned __int64
+enum EKeyCode : unsigned __int64
 {
 	Zero = 0x30,
 	One,

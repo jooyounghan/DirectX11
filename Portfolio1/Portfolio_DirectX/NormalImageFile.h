@@ -14,6 +14,6 @@ public:
 	virtual ~NormalImageFile();
 
 public:
-	virtual FileType GetFileType();
+	virtual EFileType GetFileType();
 };
 

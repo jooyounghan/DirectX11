@@ -5,11 +5,15 @@
 SpotLight::SpotLight(
 	const float& fXPos,
 	const float& fYPos,
-	const float& fZPos
+	const float& fZPos,
+	const float& fPitchRadIn,
+	const float& fYawRadIn,
+	const float& fRollRadIn
 )
 	: ILight(fXPos, fYPos, fZPos),
 	ViewableDepthOnly(
 		fXPos, fYPos, fZPos, 
+		fPitchRadIn, fYawRadIn, fRollRadIn,
 		DirectX::XMConvertToRadians(90.f), 
 		sBaseLightData.fFallOffStart, 
 		sBaseLightData.fFallOffEnd,
@@ -17,19 +21,21 @@ SpotLight::SpotLight(
 	),
 	Viewable(
 		fXPos, fYPos, fZPos, 
+		fPitchRadIn, fYawRadIn, fRollRadIn,
 		1000.f, 
 		1000.f, 
 		DirectX::XMConvertToRadians(90.f),
 		sBaseLightData.fFallOffStart, 
 		sBaseLightData.fFallOffEnd
 	),
+	IAngleAdjustable(fPitchRadIn, fYawRadIn, fRollRadIn),
 	IMovable(fXPos, fYPos, fZPos),
 	IRectangle(1000, 1000)
 {
 	ID3D11Helper::CreateBuffer(
 		DirectXDevice::pDevice,
 		sSpotLightData, D3D11_USAGE_DYNAMIC, 
-		NULL, D3D11_CPU_ACCESS_WRITE,
+		D3D11_BIND_CONSTANT_BUFFER, D3D11_CPU_ACCESS_WRITE,
 		NULL, cpSpotLightBuffer.GetAddressOf()
 	);
 }

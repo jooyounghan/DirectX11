@@ -31,7 +31,7 @@ public:
 public:
 	static DirectX::XMMATRIX MakeAffineTransformation(
 		const float& fXScale, const float& fYScale, const float& fZScale,
-		const float& fPitch, const float& fYaw, const float& fRoll,
+		const float& fPitchRad, const float& fYawRad, const float& fRollRad,
 		const float& fXTranslation, const float& fYTranslation, const float& fZTranslation
 	);
 };

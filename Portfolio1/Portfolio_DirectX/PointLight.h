@@ -1,26 +1,42 @@
 #pragma once
 #include "ILight.h"
-#include "RenderTarget.h"
+#include "IAngleAdjustable.h"
+#include "ViewableDepthOnly.h"
 
-#include <vector>
+enum EPointDirections : size_t
+{
+	PointXDirection,
+	PointNegXDirection,
+	PointYDirection,
+	PointNegYDirection,
+	PointZDirection,
+	PointNegZDirection,
+	PointDirectionNum
+};
 
-class PointLight : public ILight
+class PointLight : public ILight, public IAngleAdjustable
 {
 public:
 	PointLight(
 		const float& fXPos,
 		const float& fYPos,
 		const float& fZPos,
-		const UINT& uiWidthIn,
-		const UINT& uiHeightIn,
-		const UINT& uiBindFlagIn,
-		const UINT& uiCPUAccessIn,
-		const UINT& uiMiscFlagIn,
-		D3D11_USAGE eUsageIn,
-		DXGI_FORMAT eFormatIn
+		const float& fPitchRadIn,
+		const float& fYawRadIn,
+		const float& fRollRadIn
 	);
 	virtual ~PointLight();
 
+protected:
+	ViewableDepthOnly viewablesDirections[6];
+
 public:
-	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn);
+	inline ID3D11DepthStencilView* GetDSV(const EPointDirections& eDirection) { return viewablesDirections[eDirection].cpDSV.Get(); }
+	inline void ClearDSV(const EPointDirections& eDirection) { return viewablesDirections[eDirection].ClearDSV(); }
+	inline const D3D11_VIEWPORT& GetViewPort(const EPointDirections& eDirection) { return viewablesDirections[eDirection].sViewPort; }
+	inline ID3D11Buffer** GetAddressOfViewProj(const EPointDirections& eDirection) { return viewablesDirections[eDirection].cpViewProjBuffer.GetAddressOf(); }
+
+public:
+	virtual void UpdateLight() override;
+	virtual void UpdateView();
 };

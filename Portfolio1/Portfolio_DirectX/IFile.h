@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 
-enum class FileType
+enum class EFileType
 {
 	NormalImageFile,
 	DDSImageFile
@@ -14,7 +14,7 @@ public:
 	~IFile();
 
 public:
-	virtual FileType GetFileType() = 0;
+	virtual EFileType GetFileType() = 0;
 
 public:
 	std::string strFilePath;

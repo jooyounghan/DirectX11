@@ -2,7 +2,7 @@
 #include <memory>
 #include "AStaticMesh.h"
 
-enum ModelTextures : WORD
+enum EModelTextures : WORD
 {
 	AO_TEXUTRE_MAP,
 	COLOR_TEXTURE_MAP,

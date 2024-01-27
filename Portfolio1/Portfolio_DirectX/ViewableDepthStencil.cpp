@@ -6,6 +6,9 @@ ViewableDepthStencil::ViewableDepthStencil(
 	const float& fXPos,
 	const float& fYPos,
 	const float& fZPos,
+	const float& fPitchRadIn,
+	const float& fYawRadIn,
+	const float& fRollRadIn,
 	const float& fFovRadianIn,
 	const float& fNearZIn,
 	const float& fFarZIn,
@@ -24,9 +27,11 @@ ViewableDepthStencil::ViewableDepthStencil(
 	),
 	Viewable(
 		fXPos, fYPos, fZPos,
+		fPitchRadIn, fYawRadIn, fRollRadIn,
 		(float)uiWidthIn, (float)uiHeightIn,
 		fFovRadianIn, fNearZIn, fFarZIn
 	),
+	IAngleAdjustable(fPitchRadIn, fYawRadIn, fRollRadIn),
 	IMovable(fXPos, fYPos, fZPos),
 	IRectangle(uiWidthIn, uiHeightIn)
 {

@@ -42,7 +42,7 @@ DDSImageFile::~DDSImageFile()
 {
 }
 
-FileType DDSImageFile::GetFileType()
+EFileType DDSImageFile::GetFileType()
 {
-	return FileType::DDSImageFile;
+	return EFileType::DDSImageFile;
 }

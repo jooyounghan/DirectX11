@@ -22,7 +22,7 @@ NormalImageFile::~NormalImageFile()
 {
 }
 
-FileType NormalImageFile::GetFileType()
+EFileType NormalImageFile::GetFileType()
 {
-	return FileType::NormalImageFile;
+	return EFileType::NormalImageFile;
 }

@@ -11,7 +11,7 @@ APossessable::APossessable()
 
 APossessable::~APossessable()
 {
-	for (unsigned __int64 code = 0; code < KeyCode::NUM_KEY; ++code)
+	for (unsigned __int64 code = 0; code < EKeyCode::NUM_KEY; ++code)
 	{
 		AutoDelete(pCommand[code]);
 	}

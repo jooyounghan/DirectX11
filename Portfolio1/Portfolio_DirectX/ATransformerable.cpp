@@ -7,7 +7,7 @@
 using namespace DirectX;
 
 ATransformerable::ATransformerable()
-	: IMovable(0.f, 0.f, 0.f), IScalable(), IAngleAdjustable()
+	: IMovable(0.f, 0.f, 0.f), IScalable(), IAngleAdjustable(0.f, 0.f, 0.f)
 {
 	ID3D11Helper::CreateBuffer(
 		DirectXDevice::pDevice, 
@@ -26,7 +26,7 @@ void ATransformerable::UpdateTranformMat()
 {
 	sTransformation.xmmTransformation = MathematicalHelper::MakeAffineTransformation(
 		sScales.fScaleX, sScales.fScaleY, sScales.fScaleZ,
-		sAngles.fPitch, sAngles.fYaw, sAngles.fRoll,
+		sAngles.fPitchRad, sAngles.fYawRad, sAngles.fRollRad,
 		xmvPosition.m128_f32[0], xmvPosition.m128_f32[1], xmvPosition.m128_f32[2]
 	);
 

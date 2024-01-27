@@ -308,9 +308,14 @@ void ID3D11Helper::CreateRenderTargetView(IN ID3D11Device* pDevice, IN ID3D11Res
 	}
 }
 
-void ID3D11Helper::CreateShaderResoureView(IN ID3D11Device* pDevice, IN ID3D11Resource* pResource, OUT ID3D11ShaderResourceView** ppShaderResourceView)
+void ID3D11Helper::CreateShaderResoureView(
+	IN ID3D11Device* pDevice, 
+	IN ID3D11Resource* pResource, 
+	OUT ID3D11ShaderResourceView** ppShaderResourceView,
+	IN D3D11_SHADER_RESOURCE_VIEW_DESC* sSRVDesc
+)
 {
-	HRESULT hResult = pDevice->CreateShaderResourceView(pResource, NULL, ppShaderResourceView);
+	HRESULT hResult = pDevice->CreateShaderResourceView(pResource, sSRVDesc, ppShaderResourceView);
 	if (FAILED(hResult))
 	{
 		Console::AssertPrint("Shader Resource View를 생성하는데 실패하였습니다.");
@@ -326,9 +331,14 @@ void ID3D11Helper::CreateUnorderedAccessView(IN ID3D11Device* pDevice, IN ID3D11
 	}
 }
 
-void ID3D11Helper::CreateDepthStencilView(IN ID3D11Device* pDevice, IN ID3D11Texture2D* pDepthStencilTexture2D, OUT ID3D11DepthStencilView** ppDepthStencilView)
+void ID3D11Helper::CreateDepthStencilView(
+	IN ID3D11Device* pDevice, 
+	IN ID3D11Texture2D* pDepthStencilTexture2D, 
+	OUT ID3D11DepthStencilView** ppDepthStencilView,
+	IN D3D11_DEPTH_STENCIL_VIEW_DESC* sDSVDesc
+)
 {
-	HRESULT hResult = pDevice->CreateDepthStencilView(pDepthStencilTexture2D, NULL, ppDepthStencilView);
+	HRESULT hResult = pDevice->CreateDepthStencilView(pDepthStencilTexture2D, sDSVDesc, ppDepthStencilView);
 
 	if (FAILED(hResult))
 	{
