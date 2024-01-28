@@ -2,7 +2,7 @@
 #include "ILight.h"
 #include "ViewableDepthOnly.h"
 
-class SpotLight : public ILight, public ViewableDepthOnly
+class SpotLight : public ILight, protected ViewableDepthOnly
 {
 public:
 	SpotLight(
@@ -25,7 +25,7 @@ protected:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> cpSpotLightBuffer;
 
 public:
-	virtual void UpdateLight() override;
+	virtual void UpdateLight(const std::vector<class AStaticMesh*>& pModels) override;
 
 private:
 	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn) {};

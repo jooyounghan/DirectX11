@@ -19,29 +19,11 @@
     <Filter Include="헤더 파일\Model">
       <UniqueIdentifier>{dbd10f0d-a2d8-4f97-82d7-ab48dc4582ce}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Camera">
-      <UniqueIdentifier>{48c4b68d-0122-4b12-bfaf-18d80780f955}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\BaseInterface">
-      <UniqueIdentifier>{1330a1e1-9b6a-4216-a83d-43199ab8b822}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\BaseAbstract">
-      <UniqueIdentifier>{fd7625c0-c836-42dd-bba5-f4d6901afd62}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\Texture2D">
       <UniqueIdentifier>{4ab9d611-8253-4e48-b0b5-89d0ad5dcf5a}</UniqueIdentifier>
     </Filter>
     <Filter Include="소스 파일\Utils">
       <UniqueIdentifier>{087132cc-90b9-4958-8b25-0c8b8edc732d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\BaseAbstract">
-      <UniqueIdentifier>{7c011e25-acc7-43ff-ad5d-118e08c0ff2f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\BaseInteface">
-      <UniqueIdentifier>{b814754a-62a7-4070-b3b8-a064ced7e835}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\Camera">
-      <UniqueIdentifier>{c4d9c025-6a27-40e2-b81c-f20b7a1dad58}</UniqueIdentifier>
     </Filter>
     <Filter Include="헤더 파일\Texture2D">
       <UniqueIdentifier>{00f15671-9d2d-4e25-9728-f17ea0eb6b7f}</UniqueIdentifier>
@@ -58,12 +40,6 @@
     <Filter Include="소스 파일\File\Extended">
       <UniqueIdentifier>{2489e3c0-d145-4bc4-8863-6baba5646df1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="헤더 파일\Camera\Extended">
-      <UniqueIdentifier>{bb1a46be-3e93-44bf-ab9c-80459a216d38}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\Camera\Extended">
-      <UniqueIdentifier>{b0dc9273-53ca-464e-81dd-56e71b637cec}</UniqueIdentifier>
-    </Filter>
     <Filter Include="헤더 파일\File\Extended">
       <UniqueIdentifier>{5fc0424f-d7fb-4a7d-a84a-3079e4fd5ea7}</UniqueIdentifier>
     </Filter>
@@ -79,17 +55,59 @@
     <Filter Include="Shader\Filter">
       <UniqueIdentifier>{f199a239-e11c-4e4b-9818-1c66a4e0154a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Light">
+    <Filter Include="소스 파일\Viewable">
+      <UniqueIdentifier>{5ad55888-c7ff-4ceb-a9d8-40c3b6884c2a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Viewable\Light">
       <UniqueIdentifier>{e273aa0d-df5b-4571-b587-17078ba284e4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Light\Extended">
+    <Filter Include="소스 파일\Viewable\Light\Extended">
       <UniqueIdentifier>{1f063672-3a76-41b1-9616-7eb202ff3d2f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="헤더 파일\Light">
+    <Filter Include="소스 파일\Viewable\Camera">
+      <UniqueIdentifier>{48c4b68d-0122-4b12-bfaf-18d80780f955}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Viewable\Camera\Extended">
+      <UniqueIdentifier>{b0dc9273-53ca-464e-81dd-56e71b637cec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Model\PBR">
+      <UniqueIdentifier>{0c67cf94-e0cd-49d3-9124-f656a7966ad8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Model\PBR\Extended">
+      <UniqueIdentifier>{d23da7d2-5505-4387-81f3-1556d3ebc0c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Base">
+      <UniqueIdentifier>{fd7625c0-c836-42dd-bba5-f4d6901afd62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Base">
+      <UniqueIdentifier>{7c011e25-acc7-43ff-ad5d-118e08c0ff2f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Viewable">
+      <UniqueIdentifier>{8bc504b1-37dc-4710-81c8-e5efe90e0ba6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Viewable\Light">
       <UniqueIdentifier>{00902773-6854-4a13-a845-a63496334ac5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="헤더 파일\Light\Extended">
+    <Filter Include="헤더 파일\Viewable\Light\Extended">
       <UniqueIdentifier>{49126e72-1582-4a46-8683-34b4fa7889a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Viewable\Camera">
+      <UniqueIdentifier>{c4d9c025-6a27-40e2-b81c-f20b7a1dad58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Viewable\Camera\Extended">
+      <UniqueIdentifier>{bb1a46be-3e93-44bf-ab9c-80459a216d38}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GUI">
+      <UniqueIdentifier>{418547eb-a3ce-435d-8c78-f08dccfd1b50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\GUI">
+      <UniqueIdentifier>{8acf11eb-96bb-40b6-9ced-fca5ee998ffc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Model\PBR">
+      <UniqueIdentifier>{674cc944-26ea-4edc-980a-dcb80571a1c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Model\PBR\Extended">
+      <UniqueIdentifier>{04e62b96-fbe1-4b8b-97eb-5b3178b808e6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -106,22 +124,10 @@
       <Filter>헤더 파일\Model</Filter>
     </ClInclude>
     <ClInclude Include="APossessable.h">
-      <Filter>헤더 파일\BaseAbstract</Filter>
-    </ClInclude>
-    <ClInclude Include="SwapChainAccessable.h">
-      <Filter>헤더 파일\BaseAbstract</Filter>
-    </ClInclude>
-    <ClInclude Include="Viewable.h">
-      <Filter>헤더 파일\BaseAbstract</Filter>
-    </ClInclude>
-    <ClInclude Include="IMovable.h">
-      <Filter>헤더 파일\BaseInteface</Filter>
-    </ClInclude>
-    <ClInclude Include="IRectangle.h">
-      <Filter>헤더 파일\BaseInteface</Filter>
+      <Filter>헤더 파일\Base</Filter>
     </ClInclude>
     <ClInclude Include="ACamera.h">
-      <Filter>헤더 파일\Camera</Filter>
+      <Filter>헤더 파일\Viewable\Camera</Filter>
     </ClInclude>
     <ClInclude Include="Console.h">
       <Filter>헤더 파일\Utils</Filter>
@@ -138,12 +144,6 @@
     <ClInclude Include="MathematicalHelper.h">
       <Filter>헤더 파일\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="ICommand.h">
-      <Filter>헤더 파일\BaseInteface</Filter>
-    </ClInclude>
-    <ClInclude Include="IPBRStaticMesh.h">
-      <Filter>헤더 파일\Model</Filter>
-    </ClInclude>
     <ClInclude Include="IFile.h">
       <Filter>헤더 파일\File</Filter>
     </ClInclude>
@@ -154,10 +154,10 @@
       <Filter>헤더 파일\File</Filter>
     </ClInclude>
     <ClInclude Include="PickableCamera.h">
-      <Filter>헤더 파일\Camera\Extended</Filter>
+      <Filter>헤더 파일\Viewable\Camera\Extended</Filter>
     </ClInclude>
     <ClInclude Include="FilteredCamera.h">
-      <Filter>헤더 파일\Camera</Filter>
+      <Filter>헤더 파일\Viewable\Camera</Filter>
     </ClInclude>
     <ClInclude Include="DDSImageFile.h">
       <Filter>헤더 파일\File\Extended</Filter>
@@ -181,16 +181,7 @@
       <Filter>헤더 파일\Utils</Filter>
     </ClInclude>
     <ClInclude Include="ATransformerable.h">
-      <Filter>헤더 파일\BaseAbstract</Filter>
-    </ClInclude>
-    <ClInclude Include="IScalable.h">
-      <Filter>헤더 파일\BaseInteface</Filter>
-    </ClInclude>
-    <ClInclude Include="IAngleAdjustable.h">
-      <Filter>헤더 파일\BaseInteface</Filter>
-    </ClInclude>
-    <ClInclude Include="CubeModel.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>헤더 파일\Base</Filter>
     </ClInclude>
     <ClInclude Include="RasterizationState.h">
       <Filter>헤더 파일\Utils</Filter>
@@ -204,32 +195,59 @@
     <ClInclude Include="BlendState.h">
       <Filter>헤더 파일\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="IDPickableRenderTarget.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="Shaders.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="ILight.h">
-      <Filter>헤더 파일\Light</Filter>
+      <Filter>헤더 파일\Viewable\Light</Filter>
     </ClInclude>
     <ClInclude Include="SpotLight.h">
-      <Filter>헤더 파일\Light\Extended</Filter>
+      <Filter>헤더 파일\Viewable\Light\Extended</Filter>
     </ClInclude>
     <ClInclude Include="PointLight.h">
-      <Filter>헤더 파일\Light\Extended</Filter>
+      <Filter>헤더 파일\Viewable\Light\Extended</Filter>
     </ClInclude>
-    <ClInclude Include="ViewableRenderTarget.h">
-      <Filter>헤더 파일</Filter>
+    <ClInclude Include="IAngleAdjustable.h">
+      <Filter>헤더 파일\Base</Filter>
     </ClInclude>
-    <ClInclude Include="ViewableDepthStencil.h">
-      <Filter>헤더 파일</Filter>
+    <ClInclude Include="ICommand.h">
+      <Filter>헤더 파일\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="IMovable.h">
+      <Filter>헤더 파일\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="IRectangle.h">
+      <Filter>헤더 파일\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="IScalable.h">
+      <Filter>헤더 파일\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="IDPickableRenderTarget.h">
+      <Filter>헤더 파일\Viewable\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Viewable.h">
+      <Filter>헤더 파일\Viewable</Filter>
     </ClInclude>
     <ClInclude Include="ViewableDepthOnly.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>헤더 파일\Viewable</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewableDepthStencil.h">
+      <Filter>헤더 파일\Viewable</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewableRenderTarget.h">
+      <Filter>헤더 파일\Viewable</Filter>
     </ClInclude>
     <ClInclude Include="IDepthStencil.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>헤더 파일\Texture2D</Filter>
+    </ClInclude>
+    <ClInclude Include="SwapChainAccessable.h">
+      <Filter>헤더 파일\Texture2D</Filter>
+    </ClInclude>
+    <ClInclude Include="IPBRStaticMesh.h">
+      <Filter>헤더 파일\Model\PBR\Extended</Filter>
+    </ClInclude>
+    <ClInclude Include="CubeModel.h">
+      <Filter>헤더 파일\Model</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -246,22 +264,10 @@
       <Filter>소스 파일\Model</Filter>
     </ClCompile>
     <ClCompile Include="APossessable.cpp">
-      <Filter>소스 파일\BaseAbstract</Filter>
-    </ClCompile>
-    <ClCompile Include="SwapChainAccessable.cpp">
-      <Filter>소스 파일\BaseAbstract</Filter>
-    </ClCompile>
-    <ClCompile Include="Viewable.cpp">
-      <Filter>소스 파일\BaseAbstract</Filter>
-    </ClCompile>
-    <ClCompile Include="IMovable.cpp">
-      <Filter>소스 파일\BaseInterface</Filter>
-    </ClCompile>
-    <ClCompile Include="IRectangle.cpp">
-      <Filter>소스 파일\BaseInterface</Filter>
+      <Filter>소스 파일\Base</Filter>
     </ClCompile>
     <ClCompile Include="ACamera.cpp">
-      <Filter>소스 파일\Camera</Filter>
+      <Filter>소스 파일\Viewable\Camera</Filter>
     </ClCompile>
     <ClCompile Include="Console.cpp">
       <Filter>소스 파일\Utils</Filter>
@@ -274,9 +280,6 @@
     </ClCompile>
     <ClCompile Include="MathematicalHelper.cpp">
       <Filter>소스 파일\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="IPBRStaticMesh.cpp">
-      <Filter>소스 파일\Model</Filter>
     </ClCompile>
     <ClCompile Include="IFile.cpp">
       <Filter>소스 파일\File</Filter>
@@ -297,10 +300,10 @@
       <Filter>소스 파일\File\Extended</Filter>
     </ClCompile>
     <ClCompile Include="FilteredCamera.cpp">
-      <Filter>소스 파일\Camera</Filter>
+      <Filter>소스 파일\Viewable\Camera</Filter>
     </ClCompile>
     <ClCompile Include="PickableCamera.cpp">
-      <Filter>소스 파일\Camera\Extended</Filter>
+      <Filter>소스 파일\Viewable\Camera\Extended</Filter>
     </ClCompile>
     <ClCompile Include="AFilter.cpp">
       <Filter>소스 파일\Texture2D</Filter>
@@ -318,16 +321,7 @@
       <Filter>소스 파일\Utils</Filter>
     </ClCompile>
     <ClCompile Include="ATransformerable.cpp">
-      <Filter>소스 파일\BaseAbstract</Filter>
-    </ClCompile>
-    <ClCompile Include="IAngleAdjustable.cpp">
-      <Filter>소스 파일\BaseInterface</Filter>
-    </ClCompile>
-    <ClCompile Include="IScalable.cpp">
-      <Filter>소스 파일\BaseInterface</Filter>
-    </ClCompile>
-    <ClCompile Include="CubeModel.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\Base</Filter>
     </ClCompile>
     <ClCompile Include="RasterizationState.cpp">
       <Filter>소스 파일\Utils</Filter>
@@ -341,39 +335,63 @@
     <ClCompile Include="BlendState.cpp">
       <Filter>소스 파일\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="IDPickableRenderTarget.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="Shaders.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="ILight.cpp">
-      <Filter>소스 파일\Light</Filter>
+      <Filter>소스 파일\Viewable\Light</Filter>
     </ClCompile>
     <ClCompile Include="SpotLight.cpp">
-      <Filter>소스 파일\Light\Extended</Filter>
+      <Filter>소스 파일\Viewable\Light\Extended</Filter>
     </ClCompile>
     <ClCompile Include="PointLight.cpp">
-      <Filter>소스 파일\Light\Extended</Filter>
+      <Filter>소스 파일\Viewable\Light\Extended</Filter>
     </ClCompile>
     <ClCompile Include="ViewableRenderTarget.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="ViewableDepthStencil.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\Viewable</Filter>
     </ClCompile>
     <ClCompile Include="ViewableDepthOnly.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\Viewable</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewableDepthStencil.cpp">
+      <Filter>소스 파일\Viewable</Filter>
+    </ClCompile>
+    <ClCompile Include="Viewable.cpp">
+      <Filter>소스 파일\Viewable</Filter>
+    </ClCompile>
+    <ClCompile Include="CubeModel.cpp">
+      <Filter>소스 파일\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="IPBRStaticMesh.cpp">
+      <Filter>소스 파일\Model\PBR</Filter>
     </ClCompile>
     <ClCompile Include="IDepthStencil.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\Texture2D</Filter>
+    </ClCompile>
+    <ClCompile Include="SwapChainAccessable.cpp">
+      <Filter>소스 파일\Texture2D</Filter>
+    </ClCompile>
+    <ClCompile Include="IAngleAdjustable.cpp">
+      <Filter>소스 파일\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="IMovable.cpp">
+      <Filter>소스 파일\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="IRectangle.cpp">
+      <Filter>소스 파일\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="IScalable.cpp">
+      <Filter>소스 파일\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="IDPickableRenderTarget.cpp">
+      <Filter>소스 파일\Viewable\Camera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="VertexShader.hlsl">
+    <FxCompile Include="BaseVS.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
-    <FxCompile Include="PixelShader.hlsl">
+    <FxCompile Include="BasePS.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
     <FxCompile Include="MS16ToSS8CS.hlsl">
@@ -381,6 +399,9 @@
     </FxCompile>
     <FxCompile Include="ModelIDResolveCS.hlsl">
       <Filter>Shader\Filter</Filter>
+    </FxCompile>
+    <FxCompile Include="DepthOnlyPathPS.hlsl">
+      <Filter>Shader</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

@@ -41,12 +41,12 @@ void PortfolioApp::Init()
 
 	InitImGUI();
 
-	pCubeModels.push_back(new CubeModel(-5.f, 0.f, 0.f, 1.f, false, 8));
-	pCubeModels.push_back(new CubeModel(5.f, 0.f, 0.f, 1.f, false, 8));
-	pCubeModels.push_back(new CubeModel(0.f, -5.f, 0.f, 1.f, false, 8));
-	pCubeModels.push_back(new CubeModel(0.f, 5.f, 0.f, 1.f, false, 8));
-	pCubeModels.push_back(new CubeModel(0.f, 0.f, 5.f, 1.f, false, 8));
-	pCubeModels.push_back(new CubeModel(0.f, 0.f, -5.f, 1.f, false, 8));
+	pModels.push_back(new CubeModel(-5.f, 0.f, 0.f, 1.f, false, 8));
+	pModels.push_back(new CubeModel(5.f, 0.f, 0.f, 1.f, false, 8));
+	pModels.push_back(new CubeModel(0.f, -5.f, 0.f, 1.f, false, 8));
+	pModels.push_back(new CubeModel(0.f, 5.f, 0.f, 1.f, false, 8));
+	pModels.push_back(new CubeModel(0.f, 0.f, 5.f, 1.f, false, 8));
+	pModels.push_back(new CubeModel(0.f, 0.f, -5.f, 1.f, false, 8));
 
 	pPickableCamera = new PickableCamera(
 		0.f, 0.f, 0.f, 0.f, 0.f, 0.f, uiWidth, uiHeight,
@@ -57,24 +57,15 @@ void PortfolioApp::Init()
 		DXGI_FORMAT_D24_UNORM_S8_UINT
 	);
 
-	pSpotLight = new SpotLight(0.f, 0.f, 0.f, 0.f, 0.f, 0.f);
-	pPointLight = new PointLight(0.f, 0.f, 0.f, 0.f, 0.f, 0.f);
-
-	DirectXDevice::pDeviceContext->VSSetShader(shaders.GetVertexShader(Shaders::BaseVertexShader), NULL, NULL);
-	DirectXDevice::pDeviceContext->PSSetShader(shaders.GetPixelShader(Shaders::BasePixelShader), NULL, NULL);
+	pLights.push_back(new SpotLight(0.f, 0.f, 0.f, 0.f, 0.f, 0.f));
+	pLights.push_back(new PointLight(0.f, 0.f, 0.f, 0.f, 0.f, 0.f));
 
 	pPickableCamera->SetAsBackBufferAddress();
-
-	DirectXDevice::pDeviceContext->IASetInputLayout(shaders.GetInputLayout(Shaders::BaseVertexShader));
-	DirectXDevice::pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	DirectXDevice::pDeviceContext->RSSetState(RasterizationState::GetInstance(DirectXDevice::pDevice, DirectXDevice::pDeviceContext).GetSolidRS());
-	DepthStencilState& depthStencilState = DepthStencilState::GetInstance(DirectXDevice::pDevice);
-	DirectXDevice::pDeviceContext->OMSetDepthStencilState(depthStencilState.pGetDSS(DepthStencilState::DefaultOption), 0);
 }
 
 void PortfolioApp::Update(const float& fDelta)
 {
-	for (auto model : pCubeModels)
+	for (auto model : pModels)
 	{
 		model->UpdateModel(fDelta);
 	}
@@ -82,83 +73,37 @@ void PortfolioApp::Update(const float& fDelta)
 	pPickableCamera->UpdatePosition();
 	pPickableCamera->UpdateView();
 
-	//pSpotLight->sBaseLightData.fFallOffStart = 0.001f;
-	//pSpotLight->sBaseLightData.fFallOffEnd = 1000.f;
-	//pSpotLight->UpdateLight();
-	//pSpotLight->UpdatePosition();
-	//pSpotLight->UpdateView();
-
-	pPointLight->sBaseLightData.fFallOffStart = 0.001f;
-	pPointLight->sBaseLightData.fFallOffEnd = 1000.f;
-	pPointLight->UpdateLight();
-	pPointLight->UpdatePosition();
-	pPointLight->UpdateView();
+	DirectXDevice::AddIgnoringMessageFilter(D3D11_MESSAGE_ID_DEVICE_DRAW_RENDERTARGETVIEW_NOT_SET);
+	DirectXDevice::ApplyDebugMessageFilter();
+	for (auto& light : pLights)
+	{
+		light->UpdatePosition();
+		light->UpdateLight(pModels);
+	}
+	DirectXDevice::RemoveIgnoringMessageFilter(D3D11_MESSAGE_ID_DEVICE_DRAW_RENDERTARGETVIEW_NOT_SET);
 }
 
 void PortfolioApp::Render()
 {
-	float clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
+#pragma region 모델 그리기
+	Shaders& shaders = Shaders::GetInstance();
+	DirectXDevice::pDeviceContext->VSSetShader(shaders.GetVertexShader(Shaders::BaseVS), NULL, NULL);
+	DirectXDevice::pDeviceContext->PSSetShader(shaders.GetPixelShader(Shaders::BasePS), NULL, NULL);
+	DirectXDevice::pDeviceContext->IASetInputLayout(shaders.GetInputLayout(Shaders::BaseVS));
+	DirectXDevice::pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	
+	vector<ID3D11RenderTargetView*> vReleaseAndGetAddressOfRTVs = {
+	nullptr,
+	nullptr
+	};
+	ID3D11Buffer* pNullBuffer = nullptr;
 
-	// ========= Depth Map 업데이트 ============
-	DirectXDevice::AddIgnoringMessageFilter(D3D11_MESSAGE_ID_DEVICE_DRAW_RENDERTARGETVIEW_NOT_SET);
-	DirectXDevice::ApplyDebugMessageFilter();
-
-	ID3D11RenderTargetView* pNUllRTV = nullptr;
 	UINT uiStride = sizeof(InputLayout);
 	UINT uiOffset = 0;
 
-#pragma region SpotLight
-	//DirectXDevice::pDeviceContext->OMSetRenderTargets(1, &pNUllRTV, pSpotLight->cpDSV.Get());
-	//pSpotLight->ClearDSV();
-
-	//DirectXDevice::pDeviceContext->RSSetViewports(1, &pSpotLight->sViewPort);
-	//DirectXDevice::pDeviceContext->VSSetConstantBuffers(1, 1, pSpotLight->cpViewProjBuffer.GetAddressOf());
-
-	//for (auto model : pCubeModels)
-	//{
-	//	DirectXDevice::pDeviceContext->IASetVertexBuffers(0, 1, model->cpInputBuffer.GetAddressOf(), &uiStride, &uiOffset);
-	//	DirectXDevice::pDeviceContext->IASetIndexBuffer(model->cpIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
-	//	DirectXDevice::pDeviceContext->VSSetConstantBuffers(0, 1, model->cpTransformationBuffer.GetAddressOf());
-	//	DirectXDevice::pDeviceContext->PSSetConstantBuffers(0, 1, model->cpIdBuffer.GetAddressOf());
-
-	//	model->Draw();
-	//}
-#pragma endregion
-
-#pragma region PointLight
-	for (size_t idx = 0; idx < PointDirectionNum; ++idx)
-	{
-		EPointDirections eDirection = (EPointDirections)idx;
-		ID3D11DepthStencilView* targetDSV = pPointLight->GetDSV(eDirection);
-		DirectXDevice::pDeviceContext->OMSetRenderTargets(1, &pNUllRTV, targetDSV);
-		pPointLight->ClearDSV(eDirection);
-
-		DirectXDevice::pDeviceContext->RSSetViewports(1, &pPointLight->GetViewPort(eDirection));
-		DirectXDevice::pDeviceContext->VSSetConstantBuffers(1, 1, pPointLight->GetAddressOfViewProj(eDirection));
-
-		for (auto model : pCubeModels)
-		{
-			DirectXDevice::pDeviceContext->IASetVertexBuffers(0, 1, model->cpInputBuffer.GetAddressOf(), &uiStride, &uiOffset);
-			DirectXDevice::pDeviceContext->IASetIndexBuffer(model->cpIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
-			DirectXDevice::pDeviceContext->VSSetConstantBuffers(0, 1, model->cpTransformationBuffer.GetAddressOf());
-			DirectXDevice::pDeviceContext->PSSetConstantBuffers(0, 1, model->cpIdBuffer.GetAddressOf());
-
-			model->Draw();
-		}
-	}
-#pragma endregion
-
-	DirectXDevice::RemoveIgnoringMessageFilter(D3D11_MESSAGE_ID_DEVICE_DRAW_RENDERTARGETVIEW_NOT_SET);
-
-
-	// ========= 모델 실제 그리기 업데이트 ============
 	vector<ID3D11RenderTargetView*> vRTVs = { 
 		pPickableCamera->RenderTarget::cpRTV.Get(), 
 		pPickableCamera->IDPickableRenderTarget::cpRTV.Get() 
-	};
-	vector<ID3D11RenderTargetView*> vReleaseAndGetAddressOfRTVs = {
-		nullptr,
-		nullptr
 	};
 
 	DirectXDevice::pDeviceContext->OMSetRenderTargets(2, vRTVs.data(), pPickableCamera->cpDSV.Get());
@@ -169,7 +114,7 @@ void PortfolioApp::Render()
 
 	DirectXDevice::pDeviceContext->VSSetConstantBuffers(1, 1, pPickableCamera->cpViewProjBuffer.GetAddressOf());
 
-	for (auto model : pCubeModels)
+	for (auto model : pModels)
 	{
 		DirectXDevice::pDeviceContext->IASetVertexBuffers(0, 1, model->cpInputBuffer.GetAddressOf(), &uiStride, &uiOffset);
 		DirectXDevice::pDeviceContext->IASetIndexBuffer(model->cpIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
@@ -179,9 +124,28 @@ void PortfolioApp::Render()
 		model->Draw();
 	}
 
-	RenderImGUI();
-
 	DirectXDevice::pDeviceContext->OMSetRenderTargets(2, vReleaseAndGetAddressOfRTVs.data(), nullptr);
+
+	DirectXDevice::pDeviceContext->VSSetShader(nullptr, NULL, NULL);
+	DirectXDevice::pDeviceContext->PSSetShader(nullptr, NULL, NULL);
+	DirectXDevice::pDeviceContext->IASetInputLayout(shaders.GetInputLayout(Shaders::BaseVS));
+	DirectXDevice::pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	DirectXDevice::pDeviceContext->VSSetConstantBuffers(1, 1, &pNullBuffer);
+	DirectXDevice::pDeviceContext->VSSetConstantBuffers(0, 1, &pNullBuffer);
+	DirectXDevice::pDeviceContext->PSSetConstantBuffers(0, 1, &pNullBuffer);
+
+
+#pragma endregion
+	ID3D11RenderTargetView* pNullRTV = nullptr;
+	DirectXDevice::pDeviceContext->OMSetRenderTargets(
+		1, pPickableCamera->RenderTarget::cpRTV.GetAddressOf(), pPickableCamera->cpDSV.Get()
+	);
+	RenderImGUI();
+	DirectXDevice::pDeviceContext->OMSetRenderTargets(
+		1, &pNullRTV, nullptr
+	);
+
 	pPickableCamera->Resolve();
 }
 

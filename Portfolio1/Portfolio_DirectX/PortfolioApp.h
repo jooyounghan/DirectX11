@@ -26,10 +26,9 @@ public:
 	virtual LRESULT WINAPI AppProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) override;
 
 public:
-	std::vector<class CubeModel*> pCubeModels;
-	class PickableCamera* pPickableCamera;
-	class SpotLight* pSpotLight;
-	class PointLight* pPointLight;
+	std::vector<class AStaticMesh*> pModels;
+	std::vector<class ILight*> pLights;
+ 	class PickableCamera* pPickableCamera;
 
 	Microsoft::WRL::ComPtr<ID3D11VertexShader> cpVS;
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> cpPS;

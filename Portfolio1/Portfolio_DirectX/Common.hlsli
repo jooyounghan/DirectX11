@@ -16,5 +16,5 @@ struct VertexOutput
 struct PixelOutput
 {
     float4  pixelColor   : SV_Target0;
-    uint modelID : SV_Target1;
+    uint modelID         : SV_Target1;
 };

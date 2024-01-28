@@ -46,7 +46,7 @@ void IDPickableRenderTarget::Apply(ID3D11ShaderResourceView** ppInputSRV)
 {
 	Shaders& shaders = Shaders::GetInstance();
 
-	DirectXDevice::pDeviceContext->CSSetShader(shaders.GetComputeShader(Shaders::ResolveComputeShader), NULL, NULL);
+	DirectXDevice::pDeviceContext->CSSetShader(shaders.GetComputeShader(Shaders::ResolveCS), NULL, NULL);
 	DirectXDevice::pDeviceContext->CSSetShaderResources(0, 1, ppInputSRV);
 	DirectXDevice::pDeviceContext->CSSetUnorderedAccessViews(0, 1, IDPickableRenderTarget::cpUAV.GetAddressOf(), nullptr);
 	DirectXDevice::pDeviceContext->Dispatch(

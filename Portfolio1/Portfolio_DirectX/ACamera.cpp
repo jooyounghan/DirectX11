@@ -114,7 +114,7 @@ void ACamera::Apply(ID3D11ShaderResourceView** ppInputSRV)
 			ID3D11ComputeShader* pComputeShader = nullptr;
 
 			// Case에 대한 구분 =============================================
-			pComputeShader = shaders.GetComputeShader(Shaders::MS16ToSS8ComputeShader);
+			pComputeShader = shaders.GetComputeShader(Shaders::MS16ToSS8CS);
 			// ==============================================================	
 
 			DirectXDevice::pDeviceContext->CSSetShader(pComputeShader, NULL, NULL);

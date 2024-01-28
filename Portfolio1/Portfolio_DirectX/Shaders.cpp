@@ -16,14 +16,15 @@ void Shaders::Init(ID3D11Device* pDeviceIn)
 		{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
 		{"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20, D3D11_INPUT_PER_VERTEX_DATA, 0}
 	};
-	ID3D11Helper::CreateVSInputLayOut(pDeviceIn, L"VertexShader.hlsl", vInputElemDesc, vVertexShaders[0].GetAddressOf(), vInputLayOuts[0].GetAddressOf());
+	ID3D11Helper::CreateVSInputLayOut(pDeviceIn, L"BaseVS.hlsl", vInputElemDesc, vVertexShaders[BaseVS].GetAddressOf(), vInputLayOuts[0].GetAddressOf());
 
 	// Pixel Shader 초기화
-	ID3D11Helper::CreatePS(pDeviceIn, L"PixelShader.hlsl", vPixelShaders[0].GetAddressOf());
+	ID3D11Helper::CreatePS(pDeviceIn, L"BasePS.hlsl", vPixelShaders[BasePS].GetAddressOf());
+	ID3D11Helper::CreatePS(pDeviceIn, L"DepthOnlyPathPS.hlsl", vPixelShaders[DepthOnlyPathPS].GetAddressOf());
 
 	// Compute Shader 초기화
-	ID3D11Helper::CreateCS(pDeviceIn, L"ModelIDResolveCS.hlsl", vComputeShaders[0].GetAddressOf());
-	ID3D11Helper::CreateCS(pDeviceIn, L"MS16ToSS8CS.hlsl", vComputeShaders[1].GetAddressOf());
+	ID3D11Helper::CreateCS(pDeviceIn, L"ModelIDResolveCS.hlsl", vComputeShaders[ResolveCS].GetAddressOf());
+	ID3D11Helper::CreateCS(pDeviceIn, L"MS16ToSS8CS.hlsl", vComputeShaders[MS16ToSS8CS].GetAddressOf());
 }
 
 ID3D11VertexShader* Shaders::GetVertexShader(IN EVertexShader eVertexShader)

@@ -16,18 +16,19 @@ private:
 public:
 	enum EVertexShader : size_t
 	{
-		BaseVertexShader,
+		BaseVS,
 		NumVertexShader
 	};
 	enum EPixelShader : size_t
 	{
-		BasePixelShader,
+		BasePS,
+		DepthOnlyPathPS,
 		NumPixelShader
 	};
 	enum EComputeShader : size_t
 	{
-		ResolveComputeShader,
-		MS16ToSS8ComputeShader,
+		ResolveCS,
+		MS16ToSS8CS,
 		NumComputeShader
 	};
 

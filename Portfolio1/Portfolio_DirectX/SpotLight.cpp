@@ -2,6 +2,9 @@
 #include "ID3D11Helper.h"
 #include "DirectXDevice.h"
 
+#include "Shaders.h"
+#include "AStaticMesh.h"
+
 SpotLight::SpotLight(
 	const float& fXPos,
 	const float& fYPos,
@@ -14,9 +17,8 @@ SpotLight::SpotLight(
 	ViewableDepthOnly(
 		fXPos, fYPos, fZPos, 
 		fPitchRadIn, fYawRadIn, fRollRadIn,
-		DirectX::XMConvertToRadians(90.f), 
-		sBaseLightData.fFallOffStart, 
-		sBaseLightData.fFallOffEnd,
+		DirectX::XMConvertToRadians(gLightFovDeg),
+		gDefaultFallOffStart, gDefaultFallOffEnd,
 		1000, 1000
 	),
 	Viewable(
@@ -25,13 +27,15 @@ SpotLight::SpotLight(
 		1000.f, 
 		1000.f, 
 		DirectX::XMConvertToRadians(90.f),
-		sBaseLightData.fFallOffStart, 
-		sBaseLightData.fFallOffEnd
+		gDefaultFallOffStart, gDefaultFallOffEnd
 	),
 	IAngleAdjustable(fPitchRadIn, fYawRadIn, fRollRadIn),
 	IMovable(fXPos, fYPos, fZPos),
 	IRectangle(1000, 1000)
 {
+	sBaseLightData.fFallOffStart = gDefaultFallOffStart;
+	sBaseLightData.fFallOffEnd = gDefaultFallOffEnd;
+
 	ID3D11Helper::CreateBuffer(
 		DirectXDevice::pDevice,
 		sSpotLightData, D3D11_USAGE_DYNAMIC, 
@@ -45,7 +49,7 @@ SpotLight::~SpotLight()
 
 }
 
-void SpotLight::UpdateLight()
+void SpotLight::UpdateLight(const std::vector<class AStaticMesh*>& pModels)
 {
 	fNearZ = sBaseLightData.fFallOffStart;
 	fFarZ = sBaseLightData.fFallOffEnd;
@@ -61,4 +65,43 @@ void SpotLight::UpdateLight()
 		sSpotLightData, D3D11_MAP_WRITE_DISCARD, 
 		cpSpotLightBuffer.Get()
 	);
+
+	ID3D11RenderTargetView* pNullRTV = nullptr;
+	ID3D11Buffer* pNullBuffer = nullptr;
+	UINT uiStride = sizeof(InputLayout);
+	UINT uiOffset = 0;
+
+	Shaders& shaders = Shaders::GetInstance();
+	DirectXDevice::pDeviceContext->VSSetShader(shaders.GetVertexShader(Shaders::BaseVS), NULL, NULL);
+	DirectXDevice::pDeviceContext->PSSetShader(shaders.GetPixelShader(Shaders::DepthOnlyPathPS), NULL, NULL);
+	DirectXDevice::pDeviceContext->IASetInputLayout(shaders.GetInputLayout(Shaders::BaseVS));
+	DirectXDevice::pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	DirectXDevice::pDeviceContext->OMSetRenderTargets(1, &pNullRTV, cpDSV.Get());
+	ClearDSV();
+
+	DirectXDevice::pDeviceContext->RSSetViewports(1, &sViewPort);
+
+	DirectXDevice::pDeviceContext->VSSetConstantBuffers(1, 1, cpViewProjBuffer.GetAddressOf());
+
+	for (auto model : pModels)
+	{
+		DirectXDevice::pDeviceContext->IASetVertexBuffers(0, 1, model->cpInputBuffer.GetAddressOf(), &uiStride, &uiOffset);
+		DirectXDevice::pDeviceContext->IASetIndexBuffer(model->cpIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+		DirectXDevice::pDeviceContext->VSSetConstantBuffers(0, 1, model->cpTransformationBuffer.GetAddressOf());
+		DirectXDevice::pDeviceContext->PSSetConstantBuffers(0, 1, model->cpIdBuffer.GetAddressOf());
+
+		model->Draw();
+	}
+
+	DirectXDevice::pDeviceContext->OMSetRenderTargets(1, &pNullRTV, nullptr);
+
+	DirectXDevice::pDeviceContext->VSSetShader(nullptr, NULL, NULL);
+	DirectXDevice::pDeviceContext->PSSetShader(nullptr, NULL, NULL);
+	DirectXDevice::pDeviceContext->IASetInputLayout(nullptr);
+	DirectXDevice::pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_UNDEFINED);
+
+	DirectXDevice::pDeviceContext->VSSetConstantBuffers(1, 1, &pNullBuffer);
+	DirectXDevice::pDeviceContext->VSSetConstantBuffers(0, 1, &pNullBuffer);
+	DirectXDevice::pDeviceContext->PSSetConstantBuffers(0, 1, &pNullBuffer);
 }
