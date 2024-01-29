@@ -23,6 +23,6 @@ public:
 	virtual void UpdateModel(const float& fDelta) = 0;
 
 public:
-	void UpdateTranformMat();
+	void UpdateTranformationMatrix();
 };
 

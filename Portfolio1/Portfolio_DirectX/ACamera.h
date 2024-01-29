@@ -4,21 +4,23 @@
 #include "ViewableDepthStencil.h"
 #include "SwapChainAccessable.h"
 #include "AFilter.h"
+#include "APossessable.h"
 
 class ACamera
 	: public ViewableRenderTarget,
 	public ViewableDepthStencil, 
 	public AFilter,
-	public SwapChainAccessable
+	public SwapChainAccessable,
+	public APossessable
 {
 public:
 	ACamera(
 		const float& fXPos,
 		const float& fYPos,
 		const float& fZPos,
-		const float& fPitchRadIn,
-		const float& fYawRadIn,
-		const float& fRollRadIn,
+		const float& fPitchDegIn,
+		const float& fYawDegIn,
+		const float& fRollDegIn,
 		const UINT& uiWidthIn, const UINT& uiHeightIn,
 		const float& fFovRadIn, 
 		const float& fNearZIn,
@@ -31,6 +33,10 @@ public:
 
 public:
 	virtual void Resolve() = 0;
+
+public:
+	virtual void ManageKeyBoardInput(const float& fDelay);
+	virtual void ManageMouseInput(const int& iMouseXIn, const int& iMouseYIn);
 
 public:
 	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn) override;

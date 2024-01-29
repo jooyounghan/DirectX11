@@ -9,52 +9,52 @@ PointLight::PointLight(
 	const float& fXPos,
 	const float& fYPos,
 	const float& fZPos,
-	const float& fPitchRadIn,
-	const float& fYawRadIn,
-	const float& fRollRadIn
+	const float& fPitchDegIn,
+	const float& fYawDegIn,
+	const float& fRollDegIn
 ) : 
 	ILight(fXPos, fYPos, fZPos), 
 	IMovable(fXPos, fYPos, fZPos),
-	IAngleAdjustable(fPitchRadIn, fYawRadIn, fRollRadIn),
+	IAngleAdjustable(fPitchDegIn, fYawDegIn, fRollDegIn),
 	viewablesDirections{
 		{
 			fXPos, fYPos, fZPos,
-			fPitchRadIn, DirectX::XMConvertToRadians(-90.f) + fYawRadIn, fRollRadIn,
+			fPitchDegIn, -90.f + fYawDegIn, fRollDegIn,
 			DirectX::XMConvertToRadians(gLightFovDeg),
 			gDefaultFallOffStart, gDefaultFallOffEnd,
 			1000, 1000
 		},
 		{
 			fXPos, fYPos, fZPos,
-			fPitchRadIn, DirectX::XMConvertToRadians(90.f) + fYawRadIn, fRollRadIn,
+			fPitchDegIn, 90.f + fYawDegIn, fRollDegIn,
 			DirectX::XMConvertToRadians(gLightFovDeg),
 			gDefaultFallOffStart, gDefaultFallOffEnd,
 			1000, 1000
 		},
 		{
 			fXPos, fYPos, fZPos,
-			DirectX::XMConvertToRadians(-90.f) + fPitchRadIn, fYawRadIn, fRollRadIn,
+			-90.f + fPitchDegIn, fYawDegIn, fRollDegIn,
 			DirectX::XMConvertToRadians(gLightFovDeg),
 			gDefaultFallOffStart, gDefaultFallOffEnd,
 			1000, 1000
 		},
 		{
 			fXPos, fYPos, fZPos,
-			DirectX::XMConvertToRadians(90.f) + fPitchRadIn, fYawRadIn, fRollRadIn,
+			90.f + fPitchDegIn, fYawDegIn, fRollDegIn,
 			DirectX::XMConvertToRadians(gLightFovDeg),
 			gDefaultFallOffStart, gDefaultFallOffEnd,
 			1000, 1000
 		},
 		{
 			fXPos, fYPos, fZPos,
-			fPitchRadIn, fYawRadIn, fRollRadIn,
+			fPitchDegIn, fYawDegIn, fRollDegIn,
 			DirectX::XMConvertToRadians(gLightFovDeg),
 			gDefaultFallOffStart, gDefaultFallOffEnd,
 			1000, 1000
 		},
 		{
 			fXPos, fYPos, fZPos,
-			fPitchRadIn, fYawRadIn + DirectX::XMConvertToRadians(180.f), fRollRadIn,
+			fPitchDegIn, fYawDegIn + 180.f, fRollDegIn,
 			DirectX::XMConvertToRadians(gLightFovDeg),
 			gDefaultFallOffStart, gDefaultFallOffEnd,
 			1000, 1000
@@ -71,7 +71,7 @@ PointLight::PointLight(
 PointLight::~PointLight() {}
 
 
-void PointLight::UpdateLight(const std::vector<class AStaticMesh*>& pModels)
+void PointLight::UpdateLight(const std::unordered_map<uint32_t, AStaticMesh*>& pModels)
 {
 	for (size_t idx = 0; idx < PointDirectionNum; ++idx)
 	{
@@ -108,12 +108,12 @@ void PointLight::UpdateLight(const std::vector<class AStaticMesh*>& pModels)
 
 		for (auto model : pModels)
 		{
-			DirectXDevice::pDeviceContext->IASetVertexBuffers(0, 1, model->cpInputBuffer.GetAddressOf(), &uiStride, &uiOffset);
-			DirectXDevice::pDeviceContext->IASetIndexBuffer(model->cpIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
-			DirectXDevice::pDeviceContext->VSSetConstantBuffers(0, 1, model->cpTransformationBuffer.GetAddressOf());
-			DirectXDevice::pDeviceContext->PSSetConstantBuffers(0, 1, model->cpIdBuffer.GetAddressOf());
+			DirectXDevice::pDeviceContext->IASetVertexBuffers(0, 1, model.second->cpInputBuffer.GetAddressOf(), &uiStride, &uiOffset);
+			DirectXDevice::pDeviceContext->IASetIndexBuffer(model.second->cpIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+			DirectXDevice::pDeviceContext->VSSetConstantBuffers(0, 1, model.second->cpTransformationBuffer.GetAddressOf());
+			DirectXDevice::pDeviceContext->PSSetConstantBuffers(0, 1, model.second->cpIdBuffer.GetAddressOf());
 
-			model->Draw();
+			model.second->Draw();
 		}
 	}
 

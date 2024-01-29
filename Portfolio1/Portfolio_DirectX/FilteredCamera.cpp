@@ -6,9 +6,9 @@ FilteredCamera::FilteredCamera(
 	const float& fXPos,
 	const float& fYPos,
 	const float& fZPos,
-	const float& fPitchRadIn,
-	const float& fYawRadIn,
-	const float& fRollRadIn,
+	const float& fPitchDegIn,
+	const float& fYawDegIn,
+	const float& fRollDegIn,
 	const UINT& uiWidthIn, const UINT& uiHeightIn,
 	const float& fFovRadIn,
 	const float& fNearZIn,
@@ -19,7 +19,7 @@ FilteredCamera::FilteredCamera(
 )
 	: ACamera(
 		fXPos, fYPos, fZPos,
-		fPitchRadIn, fYawRadIn, fRollRadIn,
+		fPitchDegIn, fYawDegIn, fRollDegIn,
 		uiWidthIn, uiHeightIn,
 		fFovRadIn, fNearZIn, fFarZIn,
 		uiNumQualityLevelsIn,
@@ -27,11 +27,11 @@ FilteredCamera::FilteredCamera(
 	),
 	Viewable(
 		fXPos, fYPos, fZPos, 
-		fPitchRadIn, fYawRadIn, fRollRadIn,
+		fPitchDegIn, fYawDegIn, fRollDegIn,
 		(float)uiWidthIn, (float)uiHeightIn,
 		fFovRadIn, fNearZIn, fFarZIn
 	),
-	IAngleAdjustable(fPitchRadIn, fYawRadIn, fRollRadIn),
+	IAngleAdjustable(fPitchDegIn, fYawDegIn, fRollDegIn),
 	IMovable(fXPos, fYPos, fZPos),
 	IRectangle(uiWidthIn, uiHeightIn)
 {

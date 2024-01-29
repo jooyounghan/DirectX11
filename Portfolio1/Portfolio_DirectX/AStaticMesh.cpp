@@ -16,7 +16,7 @@ void AStaticMesh::ScaleUp(const float& fXup, const float& fYUp, const float& fZU
 	sScales.fScaleY += fYUp;
 	sScales.fScaleZ += fZUp;
 
-	UpdateTranformMat();
+	UpdateTranformationMatrix();
 	ID3D11Helper::UpdateBuffer(
 		DirectXDevice::pDeviceContext, 
 		sTransformation, 

@@ -35,12 +35,12 @@ DirectX::XMMATRIX MathematicalHelper::MakeViewProjMatrix(
 
 DirectX::XMMATRIX MathematicalHelper::MakeAffineTransformation(
 	const float& fXScale, const float& fYScale, const float& fZScale, 
-	const float& fPitchRad, const float& fYawRad, const float& fRollRad, 
+	const float& fPitchDeg, const float& fYawDeg, const float& fRollDeg, 
 	const float& fXTranslation, const float& fYTranslation, const float& fZTranslation
 ) 
 {
 	XMMATRIX xmmScale = XMMatrixScaling(fXScale, fYScale, fZScale);
-	XMMATRIX xmmRotation = XMMatrixRotationRollPitchYaw(fPitchRad, fYawRad, fRollRad);
+	XMMATRIX xmmRotation = XMMatrixRotationRollPitchYaw(fPitchDeg, fYawDeg, fRollDeg);
 	XMMATRIX xmmTranslation = XMMatrixTranslation(fXTranslation, fYTranslation, fZTranslation);
 
 	return xmmScale * xmmRotation * xmmTranslation;

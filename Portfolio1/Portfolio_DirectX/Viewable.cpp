@@ -9,9 +9,9 @@ Viewable::Viewable(
 	const float& fXPos,
 	const float& fYPos,
 	const float& fZPos,
-	const float& fPitchRadIn,
-	const float& fYawRadIn,
-	const float& fRollRadIn,
+	const float& fPitchDegIn,
+	const float& fYawDegIn,
+	const float& fRollDegIn,
 	const float& fWidthIn,
 	const float& fHeightIn,
 	const float& fFovRadianIn,
@@ -19,7 +19,7 @@ Viewable::Viewable(
 	const float& fFarZIn
 )
 	: IMovable(fXPos, fYPos, fZPos), 
-	IAngleAdjustable(fPitchRadIn, fYawRadIn, fRollRadIn),
+	IAngleAdjustable(fPitchDegIn, fYawDegIn, fRollDegIn),
 	IRectangle((UINT)fWidthIn, (UINT)fHeightIn),
 	fFovRadian(fFovRadianIn), fNearZ(fNearZIn), fFarZ(fFarZIn)
 {
@@ -55,8 +55,7 @@ void Viewable::Resize(const UINT& uiWidthIn, const UINT& uiHeightIn)
 
 void Viewable::UpdateView()
 {
-	XMMATRIX xmRotationMat = XMMatrixRotationRollPitchYaw(sAngles.fPitchRad, sAngles.fYawRad, sAngles.fRollRad);
-
+	XMMATRIX xmRotationMat = GetTransformedMatrix();
 	XMVECTOR xmvDirection = XMVector4Transform(xmvDefaultDirection, xmRotationMat);
 	XMVECTOR xmvUp = XMVector4Transform(xmvDefaultUp, xmRotationMat);
 

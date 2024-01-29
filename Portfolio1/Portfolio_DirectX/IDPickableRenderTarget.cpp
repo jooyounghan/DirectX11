@@ -38,8 +38,8 @@ void IDPickableRenderTarget::SetMousePos(const int& iMouseXIn, const int& iMouse
 	const int iMouseX = std::clamp((int)iMouseXIn, 0, (int)uiWidth - 1);
 	const int iMouseY = std::clamp((int)iMouseYIn, 0, (int)uiHeight - 1);
 
-	sMousePosNdc.uiMouseXNdc = (uint32_t)iMouseX;
-	sMousePosNdc.uiMouseYNdc = (uint32_t)iMouseY;
+	sMousePosPixel.uiMouseXPixel = (uint32_t)iMouseX;
+	sMousePosPixel.uiMouseYPixel = (uint32_t)iMouseY;
 }
 
 void IDPickableRenderTarget::Apply(ID3D11ShaderResourceView** ppInputSRV)

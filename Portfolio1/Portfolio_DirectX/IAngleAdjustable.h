@@ -1,20 +1,25 @@
 #pragma once
+#include <directxmath/DirectXMath.h>
+
 class IAngleAdjustable
 {
 public:
 	IAngleAdjustable(
-		const float& fPitchRadIn,
-		const float& fYawRadIn,
-		const float& fRollRadIn
+		const float& fPitchDegIn,
+		const float& fYawDegIn,
+		const float& fRollDegIn
 	);
 	~IAngleAdjustable();
 
 public:
 	struct
 	{
-		float fPitchRad;
-		float fYawRad;
-		float fRollRad;
-	} sAngles;
+		float fPitchDeg;
+		float fYawDeg;
+		float fRollDeg;
+	} sAnglesDegree;
+
+public:
+	DirectX::XMMATRIX GetTransformedMatrix();
 };
 

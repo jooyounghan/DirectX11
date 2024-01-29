@@ -19,10 +19,10 @@ public:
 protected:
 	struct
 	{
-		uint32_t uiMouseXNdc;
-		uint32_t uiMouseYNdc;
+		uint32_t uiMouseXPixel;
+		uint32_t uiMouseYPixel;
 		uint32_t fDummy[2];
-	} sMousePosNdc;
+	} sMousePosPixel;
 
 public:
 	virtual void SetMousePos(const int& iMouseX, const int& iMouseY);

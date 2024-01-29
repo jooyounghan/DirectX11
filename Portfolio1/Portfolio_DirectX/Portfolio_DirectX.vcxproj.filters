@@ -109,6 +109,12 @@
     <Filter Include="헤더 파일\Model\PBR\Extended">
       <UniqueIdentifier>{04e62b96-fbe1-4b8b-97eb-5b3178b808e6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\GUI\Extended">
+      <UniqueIdentifier>{a3eb3afe-2954-4708-82e9-6a8e12003ff8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\GUI\Extended">
+      <UniqueIdentifier>{b084a5a0-c95d-46e0-8206-2c49ee734262}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseApp.h">
@@ -136,9 +142,6 @@
       <Filter>헤더 파일\Utils</Filter>
     </ClInclude>
     <ClInclude Include="ID3D11Helper.h">
-      <Filter>헤더 파일\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="IncreaseCommand.h">
       <Filter>헤더 파일\Utils</Filter>
     </ClInclude>
     <ClInclude Include="MathematicalHelper.h">
@@ -249,6 +252,15 @@
     <ClInclude Include="CubeModel.h">
       <Filter>헤더 파일\Model</Filter>
     </ClInclude>
+    <ClInclude Include="MainSideBar.h">
+      <Filter>헤더 파일\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelManipulator.h">
+      <Filter>헤더 파일\GUI\Extended</Filter>
+    </ClInclude>
+    <ClInclude Include="IGuiMenu.h">
+      <Filter>헤더 파일\GUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseApp.cpp">
@@ -273,9 +285,6 @@
       <Filter>소스 파일\Utils</Filter>
     </ClCompile>
     <ClCompile Include="ID3D11Helper.cpp">
-      <Filter>소스 파일\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="IncreaseCommand.cpp">
       <Filter>소스 파일\Utils</Filter>
     </ClCompile>
     <ClCompile Include="MathematicalHelper.cpp">
@@ -385,6 +394,12 @@
     </ClCompile>
     <ClCompile Include="IDPickableRenderTarget.cpp">
       <Filter>소스 파일\Viewable\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="MainSideBar.cpp">
+      <Filter>소스 파일\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelManipulator.cpp">
+      <Filter>소스 파일\GUI\Extended</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

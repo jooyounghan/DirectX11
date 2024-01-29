@@ -9,27 +9,27 @@ SpotLight::SpotLight(
 	const float& fXPos,
 	const float& fYPos,
 	const float& fZPos,
-	const float& fPitchRadIn,
-	const float& fYawRadIn,
-	const float& fRollRadIn
+	const float& fPitchDegIn,
+	const float& fYawDegIn,
+	const float& fRollDegIn
 )
 	: ILight(fXPos, fYPos, fZPos),
 	ViewableDepthOnly(
 		fXPos, fYPos, fZPos, 
-		fPitchRadIn, fYawRadIn, fRollRadIn,
+		fPitchDegIn, fYawDegIn, fRollDegIn,
 		DirectX::XMConvertToRadians(gLightFovDeg),
 		gDefaultFallOffStart, gDefaultFallOffEnd,
 		1000, 1000
 	),
 	Viewable(
 		fXPos, fYPos, fZPos, 
-		fPitchRadIn, fYawRadIn, fRollRadIn,
+		fPitchDegIn, fYawDegIn, fRollDegIn,
 		1000.f, 
 		1000.f, 
 		DirectX::XMConvertToRadians(90.f),
 		gDefaultFallOffStart, gDefaultFallOffEnd
 	),
-	IAngleAdjustable(fPitchRadIn, fYawRadIn, fRollRadIn),
+	IAngleAdjustable(fPitchDegIn, fYawDegIn, fRollDegIn),
 	IMovable(fXPos, fYPos, fZPos),
 	IRectangle(1000, 1000)
 {
@@ -49,7 +49,7 @@ SpotLight::~SpotLight()
 
 }
 
-void SpotLight::UpdateLight(const std::vector<class AStaticMesh*>& pModels)
+void SpotLight::UpdateLight(const std::unordered_map<uint32_t, AStaticMesh*>& pModels)
 {
 	fNearZ = sBaseLightData.fFallOffStart;
 	fFarZ = sBaseLightData.fFallOffEnd;
@@ -86,12 +86,12 @@ void SpotLight::UpdateLight(const std::vector<class AStaticMesh*>& pModels)
 
 	for (auto model : pModels)
 	{
-		DirectXDevice::pDeviceContext->IASetVertexBuffers(0, 1, model->cpInputBuffer.GetAddressOf(), &uiStride, &uiOffset);
-		DirectXDevice::pDeviceContext->IASetIndexBuffer(model->cpIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
-		DirectXDevice::pDeviceContext->VSSetConstantBuffers(0, 1, model->cpTransformationBuffer.GetAddressOf());
-		DirectXDevice::pDeviceContext->PSSetConstantBuffers(0, 1, model->cpIdBuffer.GetAddressOf());
+		DirectXDevice::pDeviceContext->IASetVertexBuffers(0, 1, model.second->cpInputBuffer.GetAddressOf(), &uiStride, &uiOffset);
+		DirectXDevice::pDeviceContext->IASetIndexBuffer(model.second->cpIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+		DirectXDevice::pDeviceContext->VSSetConstantBuffers(0, 1, model.second->cpTransformationBuffer.GetAddressOf());
+		DirectXDevice::pDeviceContext->PSSetConstantBuffers(0, 1, model.second->cpIdBuffer.GetAddressOf());
 
-		model->Draw();
+		model.second->Draw();
 	}
 
 	DirectXDevice::pDeviceContext->OMSetRenderTargets(1, &pNullRTV, nullptr);

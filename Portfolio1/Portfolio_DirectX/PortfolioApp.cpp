@@ -7,10 +7,7 @@
 #include <imgui_impl_win32.h>
 #include <imgui_internal.h>
 
-//Remove
 #include "ID3D11Helper.h"
-#include "RasterizationState.h"
-#include "DepthStencilState.h"
 #include "PickableCamera.h"
 #include "CubeModel.h"
 #include "SpotLight.h"
@@ -19,9 +16,11 @@
 using namespace std;
 
 PortfolioApp::PortfolioApp(const UINT& uiWidthIn, const UINT& uiHeightIn)
-	: BaseApp(uiWidthIn, uiHeightIn)
+	: BaseApp(uiWidthIn, uiHeightIn), pSelectedMesh(nullptr)
 {
 	BaseApp::GlobalBaseApp = this;
+
+	mainSideBar.InitModelManipulator(&pSelectedMesh);
 }
 
 PortfolioApp::~PortfolioApp()
@@ -40,15 +39,14 @@ void PortfolioApp::Init()
 	shaders.Init(DirectXDevice::pDevice);
 
 	InitImGUI();
+	AddModel(new CubeModel(-5.f, 0.f, 0.f, 1.f, false, 8));
+	AddModel(new CubeModel(5.f, 0.f, 0.f, 1.f, false, 8));
+	AddModel(new CubeModel(0.f, -5.f, 0.f, 1.f, false, 8));
+	AddModel(new CubeModel(0.f, 5.f, 0.f, 1.f, false, 8));
+	AddModel(new CubeModel(0.f, 0.f, 5.f, 1.f, false, 8));
+	AddModel(new CubeModel(0.f, 0.f, -5.f, 1.f, false, 8));
 
-	pModels.push_back(new CubeModel(-5.f, 0.f, 0.f, 1.f, false, 8));
-	pModels.push_back(new CubeModel(5.f, 0.f, 0.f, 1.f, false, 8));
-	pModels.push_back(new CubeModel(0.f, -5.f, 0.f, 1.f, false, 8));
-	pModels.push_back(new CubeModel(0.f, 5.f, 0.f, 1.f, false, 8));
-	pModels.push_back(new CubeModel(0.f, 0.f, 5.f, 1.f, false, 8));
-	pModels.push_back(new CubeModel(0.f, 0.f, -5.f, 1.f, false, 8));
-
-	pPickableCamera = new PickableCamera(
+	pMainCamera = new PickableCamera(
 		0.f, 0.f, 0.f, 0.f, 0.f, 0.f, uiWidth, uiHeight,
 		70.f * 2.f * 3.141592f / 360.f,
 		0.01f, 1000.f, 1,
@@ -60,18 +58,19 @@ void PortfolioApp::Init()
 	pLights.push_back(new SpotLight(0.f, 0.f, 0.f, 0.f, 0.f, 0.f));
 	pLights.push_back(new PointLight(0.f, 0.f, 0.f, 0.f, 0.f, 0.f));
 
-	pPickableCamera->SetAsBackBufferAddress();
+	pMainCamera->SetAsBackBufferAddress();
 }
 
 void PortfolioApp::Update(const float& fDelta)
 {
 	for (auto model : pModels)
 	{
-		model->UpdateModel(fDelta);
+		model.second->UpdateModel(fDelta);
 	}
 
-	pPickableCamera->UpdatePosition();
-	pPickableCamera->UpdateView();
+	pMainCamera->UpdatePosition();
+	pMainCamera->UpdateView();
+	pMainCamera->ManageKeyBoardInput(fDelta);
 
 	DirectXDevice::AddIgnoringMessageFilter(D3D11_MESSAGE_ID_DEVICE_DRAW_RENDERTARGETVIEW_NOT_SET);
 	DirectXDevice::ApplyDebugMessageFilter();
@@ -102,26 +101,26 @@ void PortfolioApp::Render()
 	UINT uiOffset = 0;
 
 	vector<ID3D11RenderTargetView*> vRTVs = { 
-		pPickableCamera->RenderTarget::cpRTV.Get(), 
-		pPickableCamera->IDPickableRenderTarget::cpRTV.Get() 
+		pMainCamera->RenderTarget::cpRTV.Get(), 
+		pMainCamera->IDPickableRenderTarget::cpRTV.Get() 
 	};
 
-	DirectXDevice::pDeviceContext->OMSetRenderTargets(2, vRTVs.data(), pPickableCamera->cpDSV.Get());
-	pPickableCamera->ClearRTV();
-	pPickableCamera->ClearDSV();
+	DirectXDevice::pDeviceContext->OMSetRenderTargets(2, vRTVs.data(), pMainCamera->cpDSV.Get());
+	pMainCamera->ClearRTV();
+	pMainCamera->ClearDSV();
 
-	DirectXDevice::pDeviceContext->RSSetViewports(1, &pPickableCamera->sViewPort);
+	DirectXDevice::pDeviceContext->RSSetViewports(1, &pMainCamera->sViewPort);
 
-	DirectXDevice::pDeviceContext->VSSetConstantBuffers(1, 1, pPickableCamera->cpViewProjBuffer.GetAddressOf());
+	DirectXDevice::pDeviceContext->VSSetConstantBuffers(1, 1, pMainCamera->cpViewProjBuffer.GetAddressOf());
 
 	for (auto model : pModels)
 	{
-		DirectXDevice::pDeviceContext->IASetVertexBuffers(0, 1, model->cpInputBuffer.GetAddressOf(), &uiStride, &uiOffset);
-		DirectXDevice::pDeviceContext->IASetIndexBuffer(model->cpIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
-		DirectXDevice::pDeviceContext->VSSetConstantBuffers(0, 1, model->cpTransformationBuffer.GetAddressOf());
-		DirectXDevice::pDeviceContext->PSSetConstantBuffers(0, 1, model->cpIdBuffer.GetAddressOf());
+		DirectXDevice::pDeviceContext->IASetVertexBuffers(0, 1, model.second->cpInputBuffer.GetAddressOf(), &uiStride, &uiOffset);
+		DirectXDevice::pDeviceContext->IASetIndexBuffer(model.second->cpIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+		DirectXDevice::pDeviceContext->VSSetConstantBuffers(0, 1, model.second->cpTransformationBuffer.GetAddressOf());
+		DirectXDevice::pDeviceContext->PSSetConstantBuffers(0, 1, model.second->cpIdBuffer.GetAddressOf());
 
-		model->Draw();
+		model.second->Draw();
 	}
 
 	DirectXDevice::pDeviceContext->OMSetRenderTargets(2, vReleaseAndGetAddressOfRTVs.data(), nullptr);
@@ -135,18 +134,10 @@ void PortfolioApp::Render()
 	DirectXDevice::pDeviceContext->VSSetConstantBuffers(0, 1, &pNullBuffer);
 	DirectXDevice::pDeviceContext->PSSetConstantBuffers(0, 1, &pNullBuffer);
 
-
-#pragma endregion
-	ID3D11RenderTargetView* pNullRTV = nullptr;
-	DirectXDevice::pDeviceContext->OMSetRenderTargets(
-		1, pPickableCamera->RenderTarget::cpRTV.GetAddressOf(), pPickableCamera->cpDSV.Get()
-	);
 	RenderImGUI();
-	DirectXDevice::pDeviceContext->OMSetRenderTargets(
-		1, &pNullRTV, nullptr
-	);
 
-	pPickableCamera->Resolve();
+	// ¸ðµ¨ ·»´õ¸µ ¹× ImGUI ·»´õ¸µ ÈÄ Resolve¸¦ ¼öÇàÇÑ´Ù.
+	pMainCamera->Resolve();
 }
 
 void PortfolioApp::Run()
@@ -180,7 +171,7 @@ void PortfolioApp::InitImGUI()
 	ImGuiIO& io = ImGui::GetIO();
 	(void)io;
 	io.DisplaySize = ImVec2((float)uiWidth, (float)uiHeight);
-	ImGui::StyleColorsDark();
+	ImGui::StyleColorsClassic();
 	io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\malgun.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesKorean());
 	ImGui_ImplDX11_Init(DirectXDevice::pDevice, DirectXDevice::pDeviceContext);
 	ImGui_ImplWin32_Init(hMainWindow);
@@ -192,18 +183,23 @@ void PortfolioApp::SetImGUIRendering()
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
 
-	ImGui::Begin("Normal Setting");
-	ImGui::Text("Average %.3f ms/frame (%.1f FPS)",
-		1000.0f / ImGui::GetIO().Framerate,
-		ImGui::GetIO().Framerate);
-	ImGui::End();
+	mainSideBar.Draw();
 
 	ImGui::Render();
 }
 
 void PortfolioApp::RenderImGUI()
 {
+	ID3D11RenderTargetView* pNullRTV = nullptr;
+	DirectXDevice::pDeviceContext->OMSetRenderTargets(
+		1, pMainCamera->RenderTarget::cpRTV.GetAddressOf(), pMainCamera->cpDSV.Get()
+	);
+
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+
+	DirectXDevice::pDeviceContext->OMSetRenderTargets(
+		1, &pNullRTV, nullptr
+	);
 }
 
 void PortfolioApp::QuitImGUI()
@@ -224,20 +220,57 @@ LRESULT __stdcall PortfolioApp::AppProc(HWND hWnd, UINT msg, WPARAM wParam, LPAR
 	if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam))
 		return true;
 
+	uint32_t uiSelectedID = 0;
+
 	switch (msg) {
 	case WM_EXITSIZEMOVE:
-		pPickableCamera->Resize(uiWidth, uiHeight);
+		pMainCamera->Resize(uiWidth, uiHeight);
+		return 0;
+	case WM_MOUSEMOVE:
+		pMainCamera->ManageMouseInput(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		return 0;
+	case WM_KEYUP:
+		switch (wParam) {
+		case EKeyCode::W:
+		case EKeyCode::A:
+		case EKeyCode::S:
+		case EKeyCode::D:
+			pMainCamera->Release((EKeyCode)wParam);
+			break;
+		}
+		return 0;
+	case WM_KEYDOWN:
+		switch (wParam) {
+		case EKeyCode::W:
+		case EKeyCode::A:
+		case EKeyCode::S:
+		case EKeyCode::D:
+			pMainCamera->Press((EKeyCode)wParam);
+			break;
+		case EKeyCode::F:
+			pMainCamera->Toggle((EKeyCode)wParam);
+			break;
+		}
 		return 0;
 	case WM_SIZE:
 		uiWidth = (UINT)LOWORD(lParam);
 		uiHeight = (UINT)HIWORD(lParam);
 		return 0;
 	case WM_LBUTTONDOWN:
-		pPickableCamera->SetMousePos(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		if (!ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))
+		{
+			pMainCamera->SetMousePos(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+			uiSelectedID = pMainCamera->GetPickedID();
+			pModels.find(uiSelectedID) != pModels.end() ? pSelectedMesh = pModels[uiSelectedID] : pSelectedMesh = nullptr;
+		}
 		return 0;
 	case WM_LBUTTONUP:
-		Console::Print(std::to_string(pPickableCamera->GetPickedID()));
 		return 0;
 	}
 	return ::DefWindowProc(hWnd, msg, wParam, lParam);
+}
+
+void PortfolioApp::AddModel(AStaticMesh* pModel)
+{
+	pModels.emplace(pModel->sModelData.uiModelID, pModel);
 }

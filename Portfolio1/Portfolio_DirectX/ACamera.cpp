@@ -3,13 +3,17 @@
 #include "ID3D11Helper.h"
 #include "DirectXDevice.h"
 
+#include <algorithm>
+
+using namespace DirectX;
+
 ACamera::ACamera(
 	const float& fXPos,
 	const float& fYPos,
 	const float& fZPos,
-	const float& fPitchRadIn,
-	const float& fYawRadIn,
-	const float& fRollRadIn,
+	const float& fPitchDegIn,
+	const float& fYawDegIn,
+	const float& fRollDegIn,
 	const UINT& uiWidthIn, const UINT& uiHeightIn,
 	const float& fFovRadIn,
 	const float& fNearZIn,
@@ -20,7 +24,7 @@ ACamera::ACamera(
 )
 	: ViewableRenderTarget(
 		fXPos, fYPos, fZPos,
-		fPitchRadIn, fYawRadIn, fRollRadIn,
+		fPitchDegIn, fYawDegIn, fRollDegIn,
 		fFovRadIn, fNearZIn, fFarZIn,
 		uiWidthIn, uiHeightIn,
 		uiNumQualityLevelsIn,
@@ -28,7 +32,7 @@ ACamera::ACamera(
 	),
 	ViewableDepthStencil(
 		fXPos, fYPos, fZPos,
-		fPitchRadIn, fYawRadIn, fRollRadIn,
+		fPitchDegIn, fYawDegIn, fRollDegIn,
 		fFovRadIn, fNearZIn, fFarZIn,
 		uiWidthIn, uiHeightIn,
 		uiNumQualityLevelsIn,
@@ -36,7 +40,7 @@ ACamera::ACamera(
 	),
 	Viewable(
 		fXPos, fYPos, fZPos, 
-		fPitchRadIn, fYawRadIn, fRollRadIn,
+		fPitchDegIn, fYawDegIn, fRollDegIn,
 		(float)uiWidthIn, (float)uiHeightIn, 
 		fFovRadIn, fNearZIn, fFarZIn
 	),
@@ -48,6 +52,35 @@ ACamera::ACamera(
 ACamera::~ACamera()
 {
 
+}
+
+void ACamera::ManageKeyBoardInput(const float& fDelay)
+{
+	if (pPressed[EKeyCode::F])
+	{
+		XMMATRIX xmRotationMat = GetTransformedMatrix();
+		XMVECTOR xmvDirection = XMVector4Transform(xmvDefaultDirection, xmRotationMat);
+		XMVECTOR xmvRight = XMVector4Transform(xmvDefaultRight, xmRotationMat);
+
+		if (pPressed[EKeyCode::W]) xmvPosition += xmvDirection * 0.1f;
+		if (pPressed[EKeyCode::S]) xmvPosition -= xmvDirection * 0.1f;
+		if (pPressed[EKeyCode::D]) xmvPosition += xmvRight * 0.1f;
+		if (pPressed[EKeyCode::A]) xmvPosition -= xmvRight * 0.1f;
+	}
+}
+
+void ACamera::ManageMouseInput(const int& iMouseXIn, const int& iMouseYIn)
+{
+	if (pPressed[EKeyCode::F])
+	{
+		const float& fWidth = (float)uiWidth;
+		const float& fHeight = (float)uiHeight;
+		float iMouseXNDC = 2.f * (std::clamp((float)iMouseXIn, 0.f, fWidth) / fWidth) - 1.f;
+		float iMouseYNDC = 2.f * (std::clamp((float)iMouseYIn, 0.f, fHeight) / fHeight) - 1.f;
+
+		sAnglesDegree.fPitchDeg = 90.f * iMouseYNDC;
+		sAnglesDegree.fYawDeg = 180.f * iMouseXNDC;
+	}
 }
 
 void ACamera::Resize(const UINT& uiWidthIn, const UINT& uiHeightIn)

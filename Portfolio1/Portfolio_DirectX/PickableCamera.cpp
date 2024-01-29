@@ -9,9 +9,9 @@ PickableCamera::PickableCamera(
 	const float& fXPos,
 	const float& fYPos,
 	const float& fZPos,
-	const float& fPitchRadIn,
-	const float& fYawRadIn,
-	const float& fRollRadIn,
+	const float& fPitchDegIn,
+	const float& fYawDegIn,
+	const float& fRollDegIn,
 	const UINT& uiWidthIn, const UINT& uiHeightIn,
 	const float& fFovRadIn,
 	const float& fNearZIn,
@@ -22,7 +22,7 @@ PickableCamera::PickableCamera(
 )
 	: FilteredCamera(
 		fXPos, fYPos, fZPos,
-		fPitchRadIn, fYawRadIn, fRollRadIn,
+		fPitchDegIn, fYawDegIn, fRollDegIn,
 		uiWidthIn, uiHeightIn,
 		fFovRadIn, fNearZIn, fFarZIn,
 		uiNumQualityLevelsIn,
@@ -34,14 +34,14 @@ PickableCamera::PickableCamera(
 	),
 	Viewable(
 		fXPos, fYPos, fZPos,
-		fPitchRadIn, fYawRadIn, fRollRadIn,
+		fPitchDegIn, fYawDegIn, fRollDegIn,
 		(float)uiWidthIn, 
 		(float)uiHeightIn, 
 		fFovRadIn, 
 		fNearZIn, fFarZIn
 	),
 	IMovable(fXPos, fYPos, fZPos),
-	IAngleAdjustable(fPitchRadIn, fYawRadIn, fRollRadIn),
+	IAngleAdjustable(fPitchDegIn, fYawDegIn, fRollDegIn),
 	IRectangle(
 		uiWidthIn,
 		uiHeightIn
@@ -79,9 +79,9 @@ uint32_t PickableCamera::GetPickedID()
 
 	D3D11_BOX sBox;
 	AutoZeroMemory(sBox);
-	sBox.left = sMousePosNdc.uiMouseXNdc;
+	sBox.left = sMousePosPixel.uiMouseXPixel;
 	sBox.right = sBox.left + 1;
-	sBox.top = sMousePosNdc.uiMouseYNdc;
+	sBox.top = sMousePosPixel.uiMouseYPixel;
 	sBox.bottom = sBox.top + 1;
 	sBox.front = 0;
 	sBox.back = 1;

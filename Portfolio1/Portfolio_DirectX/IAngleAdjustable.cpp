@@ -2,17 +2,26 @@
 #include "DefineVar.h"
 
 IAngleAdjustable::IAngleAdjustable(
-	const float& fPitchRadIn,
-	const float& fYawRadIn,
-	const float& fRollRadIn
+	const float& fPitchDegIn,
+	const float& fYawDegIn,
+	const float& fRollDegIn
 )
 {
-	AutoZeroMemory(sAngles);
-	sAngles.fPitchRad = fPitchRadIn;
-	sAngles.fYawRad = fYawRadIn;
-	sAngles.fRollRad = fRollRadIn;
+	AutoZeroMemory(sAnglesDegree);
+	sAnglesDegree.fPitchDeg = fPitchDegIn;
+	sAnglesDegree.fYawDeg = fYawDegIn;
+	sAnglesDegree.fRollDeg = fRollDegIn;
 }
 
 IAngleAdjustable::~IAngleAdjustable()
 {
+}
+
+DirectX::XMMATRIX IAngleAdjustable::GetTransformedMatrix()
+{
+	return DirectX::XMMatrixRotationRollPitchYaw(
+		DirectX::XMConvertToRadians(sAnglesDegree.fPitchDeg),
+		DirectX::XMConvertToRadians(sAnglesDegree.fYawDeg),
+		DirectX::XMConvertToRadians(sAnglesDegree.fRollDeg)
+	);
 }

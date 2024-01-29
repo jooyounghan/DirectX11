@@ -3,6 +3,8 @@
 #include "IMovable.h"
 #include "IAngleAdjustable.h"
 
+#include <tuple>
+
 class Viewable : virtual public IRectangle, virtual public IMovable, virtual public IAngleAdjustable
 {
 public:
@@ -10,9 +12,9 @@ public:
 		const float& fXPos,
 		const float& fYPos,
 		const float& fZPos,
-		const float& fPitchRadIn,
-		const float& fYawRadIn,
-		const float& fRollRadIn,
+		const float& fPitchDegIn,
+		const float& fYawDegIn,
+		const float& fRollDegIn,
 		const float& fWidthIn,
 		const float& fHeightIn,
 		const float& fFovRadianIn, 

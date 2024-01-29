@@ -22,5 +22,9 @@ void SwapChainAccessable::SetAsBackBufferAddress()
 
 void SwapChainAccessable::ResetBackBufferAddress()
 {
-	p_back_buffer = nullptr;
+	if (p_back_buffer != nullptr)
+	{
+		p_back_buffer->Release();
+		p_back_buffer = nullptr;
+	}
 }

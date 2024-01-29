@@ -86,6 +86,6 @@ void CubeModel::Draw()
 
 void CubeModel::UpdateModel(const float& fDelta)
 {
-	UpdateTranformMat();
+	UpdateTranformationMatrix();
 	ID3D11Helper::UpdateBuffer(DirectXDevice::pDeviceContext, sTransformation, D3D11_MAP_WRITE_DISCARD, cpTransformationBuffer.Get());
 }

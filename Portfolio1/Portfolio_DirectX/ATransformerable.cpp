@@ -22,11 +22,13 @@ ATransformerable::~ATransformerable()
 {
 }
 
-void ATransformerable::UpdateTranformMat()
+void ATransformerable::UpdateTranformationMatrix()
 {
 	sTransformation.xmmTransformation = MathematicalHelper::MakeAffineTransformation(
 		sScales.fScaleX, sScales.fScaleY, sScales.fScaleZ,
-		sAngles.fPitchRad, sAngles.fYawRad, sAngles.fRollRad,
+		DirectX::XMConvertToRadians(sAnglesDegree.fPitchDeg),
+		DirectX::XMConvertToRadians(sAnglesDegree.fYawDeg), 
+		DirectX::XMConvertToRadians(sAnglesDegree.fRollDeg),
 		xmvPosition.m128_f32[0], xmvPosition.m128_f32[1], xmvPosition.m128_f32[2]
 	);
 

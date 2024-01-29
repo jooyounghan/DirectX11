@@ -133,6 +133,9 @@
     <ClInclude Include="IDepthStencil.h" />
     <ClInclude Include="IDPickableRenderTarget.h" />
     <ClInclude Include="APossessable.h" />
+    <ClInclude Include="IGuiMenu.h" />
+    <ClInclude Include="MainSideBar.h" />
+    <ClInclude Include="ModelManipulator.h" />
     <ClInclude Include="SwapChainAccessable.h" />
     <ClInclude Include="Viewable.h" />
     <ClInclude Include="BaseApp.h" />
@@ -154,7 +157,6 @@
     <ClInclude Include="ILight.h" />
     <ClInclude Include="IModel.h" />
     <ClInclude Include="IMovable.h" />
-    <ClInclude Include="IncreaseCommand.h" />
     <ClInclude Include="IPBRStaticMesh.h" />
     <ClInclude Include="IRectangle.h" />
     <ClInclude Include="RenderTarget.h" />
@@ -181,6 +183,8 @@
     <ClCompile Include="IDepthStencil.cpp" />
     <ClCompile Include="IDPickableRenderTarget.cpp" />
     <ClCompile Include="APossessable.cpp" />
+    <ClCompile Include="MainSideBar.cpp" />
+    <ClCompile Include="ModelManipulator.cpp" />
     <ClCompile Include="SwapChainAccessable.cpp" />
     <ClCompile Include="Viewable.cpp" />
     <ClCompile Include="BaseApp.cpp" />
@@ -200,7 +204,6 @@
     <ClCompile Include="ILight.cpp" />
     <ClCompile Include="IModel.cpp" />
     <ClCompile Include="IMovable.cpp" />
-    <ClCompile Include="IncreaseCommand.cpp" />
     <ClCompile Include="IPBRStaticMesh.cpp" />
     <ClCompile Include="IRectangle.cpp" />
     <ClCompile Include="RenderTarget.cpp" />
