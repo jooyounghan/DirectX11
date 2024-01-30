@@ -246,20 +246,26 @@
     <ClInclude Include="SwapChainAccessable.h">
       <Filter>헤더 파일\Texture2D</Filter>
     </ClInclude>
-    <ClInclude Include="IPBRStaticMesh.h">
+    <ClInclude Include="APBRStaticMesh.h">
       <Filter>헤더 파일\Model\PBR\Extended</Filter>
     </ClInclude>
     <ClInclude Include="CubeModel.h">
       <Filter>헤더 파일\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="MainSideBar.h">
-      <Filter>헤더 파일\GUI</Filter>
     </ClInclude>
     <ClInclude Include="ModelManipulator.h">
       <Filter>헤더 파일\GUI\Extended</Filter>
     </ClInclude>
     <ClInclude Include="IGuiMenu.h">
       <Filter>헤더 파일\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGuiFileDialogConfig.h">
+      <Filter>헤더 파일\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGuiFileDialog.h">
+      <Filter>헤더 파일\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="FileManipulator.h">
+      <Filter>헤더 파일\GUI\Extended</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -371,7 +377,7 @@
     <ClCompile Include="CubeModel.cpp">
       <Filter>소스 파일\Model</Filter>
     </ClCompile>
-    <ClCompile Include="IPBRStaticMesh.cpp">
+    <ClCompile Include="APBRStaticMesh.cpp">
       <Filter>소스 파일\Model\PBR</Filter>
     </ClCompile>
     <ClCompile Include="IDepthStencil.cpp">
@@ -395,10 +401,13 @@
     <ClCompile Include="IDPickableRenderTarget.cpp">
       <Filter>소스 파일\Viewable\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="MainSideBar.cpp">
+    <ClCompile Include="ModelManipulator.cpp">
+      <Filter>소스 파일\GUI\Extended</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGuiFileDialog.cpp">
       <Filter>소스 파일\GUI</Filter>
     </ClCompile>
-    <ClCompile Include="ModelManipulator.cpp">
+    <ClCompile Include="FileManipulator.cpp">
       <Filter>소스 파일\GUI\Extended</Filter>
     </ClCompile>
   </ItemGroup>

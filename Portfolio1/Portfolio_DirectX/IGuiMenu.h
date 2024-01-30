@@ -12,7 +12,7 @@ public:
 	~IGuiMenu() {};
 
 public:
-	virtual void AttachToBar() = 0;
+	virtual void PopAsDialog() = 0;
 	virtual bool IsGuiAvailable() = 0;
 };
 

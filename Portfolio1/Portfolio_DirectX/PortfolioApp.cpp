@@ -16,11 +16,9 @@
 using namespace std;
 
 PortfolioApp::PortfolioApp(const UINT& uiWidthIn, const UINT& uiHeightIn)
-	: BaseApp(uiWidthIn, uiHeightIn), pSelectedMesh(nullptr)
+	: BaseApp(uiWidthIn, uiHeightIn), pSelectedMesh(nullptr), modelManipulator(&pSelectedMesh)
 {
 	BaseApp::GlobalBaseApp = this;
-
-	mainSideBar.InitModelManipulator(&pSelectedMesh);
 }
 
 PortfolioApp::~PortfolioApp()
@@ -183,7 +181,7 @@ void PortfolioApp::SetImGUIRendering()
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
 
-	mainSideBar.Draw();
+	modelManipulator.PopAsDialog();
 
 	ImGui::Render();
 }

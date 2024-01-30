@@ -11,7 +11,15 @@ public:
 	AStaticMesh** ppSelectedStaticMesh;
 
 public:
-	virtual void AttachToBar() override;
+	virtual void PopAsDialog() override;
 	inline virtual bool IsGuiAvailable() override { return *ppSelectedStaticMesh != nullptr; }
+
+public:
+	void VisitModel(class AStaticMesh& staticMesh);
+	void VisitModel(class APBRStaticMesh& pbrStaticMesh);
+
+protected:
+	void DrawTransformation(AStaticMesh* pStaticMesh);
+	void DrawModelTexture(APBRStaticMesh* pPBRStaticMesh);
 };
 

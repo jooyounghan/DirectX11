@@ -1,7 +1,7 @@
 #pragma once
-#include "IPBRStaticMesh.h"
+#include "APBRStaticMesh.h"
 
-class CubeModel : public IPBRStaticMesh
+class CubeModel : public APBRStaticMesh
 {
 public:
 	CubeModel(

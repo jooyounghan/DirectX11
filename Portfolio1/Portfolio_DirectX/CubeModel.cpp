@@ -10,7 +10,7 @@ CubeModel::CubeModel(
 	const bool& bReverse,
 	const uint32_t& usLevel
 )
-	: IPBRStaticMesh()
+	: APBRStaticMesh()
 {
 	xmvPosition.m128_f32[0] = fCenterX;
 	xmvPosition.m128_f32[1] = fCenterY;
@@ -86,6 +86,5 @@ void CubeModel::Draw()
 
 void CubeModel::UpdateModel(const float& fDelta)
 {
-	UpdateTranformationMatrix();
-	ID3D11Helper::UpdateBuffer(DirectXDevice::pDeviceContext, sTransformation, D3D11_MAP_WRITE_DISCARD, cpTransformationBuffer.Get());
+	APBRStaticMesh::UpdateModel(fDelta);
 }

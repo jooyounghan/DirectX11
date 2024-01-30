@@ -1,7 +1,8 @@
 #pragma once
 
 #include "BaseApp.h"
-#include "MainSideBar.h"
+
+#include "ModelManipulator.h"
 
 #include <vector>
 #include <unordered_map>
@@ -29,7 +30,7 @@ public:
 	virtual LRESULT WINAPI AppProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) override;
 
 public:
-	MainSideBar mainSideBar;
+	ModelManipulator modelManipulator;
 
 private:
 	std::unordered_map<uint32_t, AStaticMesh*> pModels;
