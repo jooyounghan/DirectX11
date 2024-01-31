@@ -182,6 +182,7 @@ void PortfolioApp::SetImGUIRendering()
 	ImGui::NewFrame();
 
 	modelManipulator.PopAsDialog();
+	fileManipulator.PopAsDialog();
 
 	ImGui::Render();
 }

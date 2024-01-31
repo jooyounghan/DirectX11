@@ -1,5 +1,6 @@
 #include "NormalImageFile.h"
 #include "DirectXDevice.h"
+#include "FileManipulator.h"
 
 NormalImageFile::NormalImageFile(
 	const UINT& uiWidthIn,
@@ -22,7 +23,7 @@ NormalImageFile::~NormalImageFile()
 {
 }
 
-EFileType NormalImageFile::GetFileType()
+void NormalImageFile::AcceptFileManipulator(FileManipulator* pFileManipulator, std::shared_ptr<IFile>& spFile)
 {
-	return EFileType::NormalImageFile;
+	pFileManipulator->VisitFile(*this, spFile);
 }

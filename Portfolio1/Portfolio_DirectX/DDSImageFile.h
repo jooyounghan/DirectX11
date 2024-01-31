@@ -12,6 +12,6 @@ public:
 	virtual ~DDSImageFile();
 
 public:
-	virtual EFileType GetFileType();
+	virtual void AcceptFileManipulator(class FileManipulator* pFileManipulator, std::shared_ptr<IFile>& spFile);
 };
 

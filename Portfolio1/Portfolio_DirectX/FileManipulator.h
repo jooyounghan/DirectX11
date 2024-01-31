@@ -17,7 +17,15 @@ public:
 	virtual bool IsGuiAvailable() override;
 
 protected:
+	void ChooseFiles();
+	void DisplayFiles();
+
+protected:
 	void LoadFiles(const std::wstring& wstrFilePathIn);
+
+public:
+	void VisitFile(class NormalImageFile& imageFile, std::shared_ptr<class IFile>& spFile);
+	void VisitFile(class DDSImageFile& imageFile, std::shared_ptr<class IFile>& spFile);
 
 private:
 	std::string strCurrentPath;

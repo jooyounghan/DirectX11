@@ -3,6 +3,7 @@
 #include "BaseApp.h"
 
 #include "ModelManipulator.h"
+#include "FileManipulator.h"
 
 #include <vector>
 #include <unordered_map>
@@ -31,6 +32,7 @@ public:
 
 public:
 	ModelManipulator modelManipulator;
+	FileManipulator fileManipulator;
 
 private:
 	std::unordered_map<uint32_t, AStaticMesh*> pModels;

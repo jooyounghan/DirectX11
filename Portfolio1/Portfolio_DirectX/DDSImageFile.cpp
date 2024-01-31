@@ -2,6 +2,9 @@
 #include "FileLoader.h"
 #include "Console.h"
 #include "DirectXDevice.h"
+#include "ID3D11Helper.h"
+#include "FileManipulator.h"
+
 #include <directxtk/DDSTextureLoader.h>
 
 using namespace DirectX;
@@ -42,7 +45,7 @@ DDSImageFile::~DDSImageFile()
 {
 }
 
-EFileType DDSImageFile::GetFileType()
+void DDSImageFile::AcceptFileManipulator(FileManipulator* pFileManipulator, std::shared_ptr<IFile>& spFile)
 {
-	return EFileType::DDSImageFile;
+	pFileManipulator->VisitFile(*this, spFile);
 }

@@ -9,12 +9,14 @@
 #include "DirectXDevice.h"
 
 #include <filesystem>
+#include <locale.h>
 
 using namespace std;
 using namespace ImGui;
 
 FileManipulator::FileManipulator()
 {
+    std::setlocale(LC_ALL, ".UTF8");
 }
 
 FileManipulator::~FileManipulator()
@@ -24,8 +26,23 @@ FileManipulator::~FileManipulator()
 void FileManipulator::PopAsDialog()
 {
     Begin("File Loader");
+ 
+    ChooseFiles();
+    DisplayFiles();
+
+    End();
+}
+
+bool FileManipulator::IsGuiAvailable()
+{
+    return false;
+}
+
+void FileManipulator::ChooseFiles()
+{
     Text("Load Files");
     SameLine();
+
     if (ImGui::Button("Choose Directory"))
     {
         ImGuiFileDialog::Instance()->OpenDialog("FileDescriptor", "Choose File", nullptr, ".");
@@ -46,12 +63,20 @@ void FileManipulator::PopAsDialog()
         // close
         ImGuiFileDialog::Instance()->Close();
     }
-    End();
 }
 
-bool FileManipulator::IsGuiAvailable()
+void FileManipulator::DisplayFiles()
 {
-    return false;
+    ImGuiWindowFlags window_flags = ImGuiWindowFlags_AlwaysVerticalScrollbar;
+    ImVec2 imvec2ContentRegionAvail = GetContentRegionAvail();
+    ImGui::BeginChild("LoadedFiles", imvec2ContentRegionAvail, false, window_flags);
+
+    for (auto& loadedFile : vLoadedFiles)
+    {
+        Separator();
+        loadedFile->AcceptFileManipulator(this, loadedFile);
+    }
+    ImGui::EndChild();
 }
 
 void FileManipulator::LoadFiles(const std::wstring& wstrFilePathIn)
@@ -79,34 +104,81 @@ void FileManipulator::LoadFiles(const std::wstring& wstrFilePathIn)
             UINT uiWidth, uiHeight, uiChannel;
             uint8_t* ucImageRawData = nullptr;
 
-
+            const string strFileName = entry.path().filename().string();
             const string strExtention = entry.path().extension().string();
             const string strFilePathIn = entry.path().string();
 
-            if (mapNameToFiles.find(strFilePathIn) == mapNameToFiles.end())
+            bool isImage = false;
+            FileLoader::IsStrSame(&isImage, sExtensionName, ".jpg", ".png", ".exr", ".dds");
+
+            if (isImage)
             {
-                shared_ptr<IFile> spFileInterface;
-                if (strExtention == ".exr")
+                if (mapNameToFiles.find(strFilePathIn) == mapNameToFiles.end())
                 {
-                    ucImageRawData = FileLoader::LoadFileWithOpenEXR(strFilePathIn.c_str(), &uiWidth, &uiHeight, &uiChannel);
-                    spFileInterface = make_shared<NormalImageFile>(uiWidth, uiHeight, DXGI_FORMAT_R16G16B16A16_FLOAT, ucImageRawData, strFilePathIn);
-                }
-                else if (strExtention == ".dds")
-                {
-                    spFileInterface = make_shared<DDSFile>(cpDevice, cpDeviceContext, strFilePathIn, strFilePathIn.find("Brdf") == string::npos);
+                    shared_ptr<IFile> spFileInterface;
+                    if (strExtention == ".exr")
+                    {
+                        ucImageRawData = FileLoader::LoadFileWithOpenEXR(strFilePathIn.c_str(), &uiWidth, &uiHeight, &uiChannel);
+                        spFileInterface = make_shared<NormalImageFile>(uiWidth, uiHeight, DXGI_FORMAT_R16G16B16A16_FLOAT, ucImageRawData, strFileName);
+                    }
+                    else if (strExtention == ".dds")
+                    {
+                        spFileInterface = make_shared<DDSImageFile>(strFilePathIn, strFileName, strFilePathIn.find("Brdf") == string::npos);
+                    }
+                    else
+                    {
+                        ucImageRawData = FileLoader::LoadFileWithStbi(strFilePathIn.c_str(), &uiWidth, &uiHeight, &uiChannel);
+                        spFileInterface = make_shared<NormalImageFile>(uiWidth, uiHeight, DXGI_FORMAT_R8G8B8A8_UNORM, ucImageRawData, strFileName);
+                    }
+                    vLoadedFiles.emplace_back(spFileInterface);
+                    FileLoader::FreeLoadedFileData(ucImageRawData);
                 }
                 else
                 {
-                    ucImageRawData = FileLoader::LoadFileWithStbi(strFilePathIn.c_str(), &uiWidth, &uiHeight, &uiChannel);
-                    spFileInterface = make_shared<NormalImageFile>(uiWidth, uiHeight, NULL, ucImageRawData, strFilePathIn);
+                    vLoadedFiles.emplace_back(mapNameToFiles[strFilePathIn]);
                 }
-                vLoadedFiles.emplace_back(spFileInterface);
-                FileLoader::FreeLoadedFileData(ucImageRawData);
             }
-            else
-            {
-                vLoadedFiles.emplace_back(mapNameToFiles[strFilePathIn]);
-            }
+        }
+    }
+}
+
+void FileManipulator::VisitFile(NormalImageFile& imageFile, shared_ptr<IFile>& spFile)
+{
+    ID3D11ShaderResourceView* pIndexedSRV = imageFile.cpSRV.Get();
+
+    if (pIndexedSRV != nullptr)
+    {
+        BeginGroup();
+        Image(pIndexedSRV, ImVec2(60.f, 60.f));
+        SameLine();
+        TextEx(imageFile.strFileName.c_str(), (const char*)0, ImGuiTextFlags_::ImGuiTextFlags_NoWidthForLargeClippedText);
+        EndGroup();
+
+        if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
+        {
+            ImGui::SetDragDropPayload("Texture2D", &spFile, sizeof(shared_ptr<NormalImageFile>));
+            ImGui::EndDragDropSource();
+        }
+
+    }
+}
+
+void FileManipulator::VisitFile(DDSImageFile& imageFile, shared_ptr<IFile>& spFile)
+{
+    ID3D11ShaderResourceView* pIndexedSRV = imageFile.cpSRV.Get();
+
+    if (pIndexedSRV != nullptr)
+    {
+        BeginGroup();
+        Image(pIndexedSRV, ImVec2(60.f, 60.f));
+        SameLine();
+        TextEx(imageFile.strFileName.c_str(), (const char*)0, ImGuiTextFlags_::ImGuiTextFlags_NoWidthForLargeClippedText);
+        EndGroup();
+
+        if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
+        {
+            ImGui::SetDragDropPayload("CubeMap", &spFile, sizeof(shared_ptr<DDSImageFile>));
+            ImGui::EndDragDropSource();
         }
     }
 }

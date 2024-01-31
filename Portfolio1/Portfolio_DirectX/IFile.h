@@ -1,11 +1,6 @@
 #pragma once
 #include <string>
-
-enum class EFileType
-{
-	NormalImageFile,
-	DDSImageFile
-};
+#include <memory>
 
 class IFile
 {
@@ -14,7 +9,7 @@ public:
 	~IFile();
 
 public:
-	virtual EFileType GetFileType() = 0;
+	virtual void AcceptFileManipulator(class FileManipulator* pFileManipulator, std::shared_ptr<IFile>& spFile) = 0;
 
 public:
 	std::string strFilePath;

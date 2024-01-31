@@ -14,6 +14,6 @@ public:
 	virtual ~NormalImageFile();
 
 public:
-	virtual EFileType GetFileType();
+	virtual void AcceptFileManipulator(class FileManipulator* pFileManipulator, std::shared_ptr<IFile>& spFile);
 };
 

@@ -434,7 +434,7 @@ void ID3D11Helper::CreateTexture2D(
 	sTexture2DDesc.Width = uiWidth;
 	sTexture2DDesc.Height = uiHeight;
 	sTexture2DDesc.ArraySize = 1;
-	sTexture2DDesc.MipLevels = 0;
+	sTexture2DDesc.MipLevels = 1;
 	sTexture2DDesc.SampleDesc.Count = 1;
 	sTexture2DDesc.SampleDesc.Quality = 0;
 	sTexture2DDesc.BindFlags = uiBindFlag;
