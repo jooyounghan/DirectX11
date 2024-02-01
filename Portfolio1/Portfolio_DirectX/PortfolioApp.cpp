@@ -10,6 +10,7 @@
 #include "ID3D11Helper.h"
 #include "PickableCamera.h"
 #include "CubeModel.h"
+#include "CubeMapModel.h"
 #include "SpotLight.h"
 #include "PointLight.h"
 
@@ -43,6 +44,8 @@ void PortfolioApp::Init()
 	AddModel(new CubeModel(0.f, 5.f, 0.f, 1.f, false, 8));
 	AddModel(new CubeModel(0.f, 0.f, 5.f, 1.f, false, 8));
 	AddModel(new CubeModel(0.f, 0.f, -5.f, 1.f, false, 8));
+	AddModel(new CubeModel(0.f, 0.f, -5.f, 1.f, false, 8));
+	AddModel(new CubeMapModel(500.f, 15));
 
 	pMainCamera = new PickableCamera(
 		0.f, 0.f, 0.f, 0.f, 0.f, 0.f, uiWidth, uiHeight,

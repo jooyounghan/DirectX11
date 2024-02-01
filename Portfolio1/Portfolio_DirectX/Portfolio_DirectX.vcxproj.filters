@@ -246,12 +246,6 @@
     <ClInclude Include="SwapChainAccessable.h">
       <Filter>헤더 파일\Texture2D</Filter>
     </ClInclude>
-    <ClInclude Include="APBRStaticMesh.h">
-      <Filter>헤더 파일\Model\PBR\Extended</Filter>
-    </ClInclude>
-    <ClInclude Include="CubeModel.h">
-      <Filter>헤더 파일\Model</Filter>
-    </ClInclude>
     <ClInclude Include="ModelManipulator.h">
       <Filter>헤더 파일\GUI\Extended</Filter>
     </ClInclude>
@@ -266,6 +260,18 @@
     </ClInclude>
     <ClInclude Include="FileManipulator.h">
       <Filter>헤더 파일\GUI\Extended</Filter>
+    </ClInclude>
+    <ClInclude Include="APBRStaticMesh.h">
+      <Filter>헤더 파일\Model\PBR</Filter>
+    </ClInclude>
+    <ClInclude Include="CubeModel.h">
+      <Filter>헤더 파일\Model\PBR\Extended</Filter>
+    </ClInclude>
+    <ClInclude Include="CubeMapModel.h">
+      <Filter>헤더 파일\Model\PBR</Filter>
+    </ClInclude>
+    <ClInclude Include="AIBLModel.h">
+      <Filter>헤더 파일\Model\PBR</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -374,9 +380,6 @@
     <ClCompile Include="Viewable.cpp">
       <Filter>소스 파일\Viewable</Filter>
     </ClCompile>
-    <ClCompile Include="CubeModel.cpp">
-      <Filter>소스 파일\Model</Filter>
-    </ClCompile>
     <ClCompile Include="APBRStaticMesh.cpp">
       <Filter>소스 파일\Model\PBR</Filter>
     </ClCompile>
@@ -409,6 +412,15 @@
     </ClCompile>
     <ClCompile Include="FileManipulator.cpp">
       <Filter>소스 파일\GUI\Extended</Filter>
+    </ClCompile>
+    <ClCompile Include="CubeModel.cpp">
+      <Filter>소스 파일\Model\PBR\Extended</Filter>
+    </ClCompile>
+    <ClCompile Include="CubeMapModel.cpp">
+      <Filter>소스 파일\Model\PBR</Filter>
+    </ClCompile>
+    <ClCompile Include="AIBLModel.cpp">
+      <Filter>소스 파일\Model\PBR</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,6 +1,8 @@
 #pragma once
 #include "IGuiMenu.h"
 
+#include <memory>
+
 class ModelManipulator : public IGuiMenu
 {
 public:
@@ -17,9 +19,18 @@ public:
 public:
 	void VisitModel(class AStaticMesh& staticMesh);
 	void VisitModel(class APBRStaticMesh& pbrStaticMesh);
+	void VisitModel(class AIBLModel& iblModel);
 
 protected:
 	void DrawTransformation(AStaticMesh* pStaticMesh);
-	void DrawModelTexture(APBRStaticMesh* pPBRStaticMesh);
-};
+	void DrawPBRTexture(APBRStaticMesh* pPBRStaticMesh);
+	void DrawIBLTexture(AIBLModel* pIBLModel);
 
+private:
+	template<typename T>
+	void SetTextureDragAndDrop(
+		const char* pDescription, 
+		std::shared_ptr<T>& spFile,
+		const char* pDragDropLabel
+	);
+};

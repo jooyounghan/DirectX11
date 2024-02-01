@@ -177,8 +177,19 @@ void FileManipulator::VisitFile(DDSImageFile& imageFile, shared_ptr<IFile>& spFi
 
         if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
         {
-            ImGui::SetDragDropPayload("CubeMap", &spFile, sizeof(shared_ptr<DDSImageFile>));
-            ImGui::EndDragDropSource();
+            D3D11_TEXTURE2D_DESC desc;
+            imageFile.cpTexture2D->GetDesc(&desc);
+
+            if (desc.MiscFlags & D3D11_RESOURCE_MISC_TEXTURECUBE)
+            {
+                ImGui::SetDragDropPayload("CubeMap", &spFile, sizeof(shared_ptr<DDSImageFile>));
+                ImGui::EndDragDropSource();
+            }
+            else
+            {
+                ImGui::SetDragDropPayload("Texture2D", &spFile, sizeof(shared_ptr<DDSImageFile>));
+                ImGui::EndDragDropSource();
+            }
         }
     }
 }

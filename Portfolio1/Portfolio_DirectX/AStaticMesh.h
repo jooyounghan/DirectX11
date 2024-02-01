@@ -52,7 +52,7 @@ public:
 
 public:
 	virtual void Load(const std::string& path) = 0;
-	virtual void Draw() = 0;
+	virtual void Draw();
 	virtual void UpdateModel(const float& fDelta);
 
 public:
@@ -60,5 +60,14 @@ public:
 
 public:
 	virtual void ScaleUp(const float& fXup, const float& fYUp, const float& fZUp) override final;
+
+public:
+	static void CreateCubeModel(
+		std::vector<InputLayout>& inputData,
+		std::vector<uint32_t>& indexData, 
+		const float& fRadius,
+		const bool& bReverse,
+		const uint32_t& usLevel
+	);
 };
 

@@ -129,8 +129,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CubeMapModel.h" />
     <ClInclude Include="FileManipulator.h" />
     <ClInclude Include="FilteredCamera.h" />
+    <ClInclude Include="AIBLModel.h" />
     <ClInclude Include="IDepthStencil.h" />
     <ClInclude Include="IDPickableRenderTarget.h" />
     <ClInclude Include="APossessable.h" />
@@ -181,8 +183,10 @@
     <ClInclude Include="ViewableRenderTarget.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CubeMapModel.cpp" />
     <ClCompile Include="FileManipulator.cpp" />
     <ClCompile Include="FilteredCamera.cpp" />
+    <ClCompile Include="AIBLModel.cpp" />
     <ClCompile Include="IDepthStencil.cpp" />
     <ClCompile Include="IDPickableRenderTarget.cpp" />
     <ClCompile Include="APossessable.cpp" />

@@ -3,6 +3,9 @@
 #include "APBRStaticMesh.h"
 #include "NormalImageFile.h"
 
+#include "AIBLModel.h"
+#include "DDSImageFile.h"
+
 using namespace std;
 using namespace ImGui;
 
@@ -39,7 +42,14 @@ void ModelManipulator::VisitModel(APBRStaticMesh& pbrStaticMesh)
 {
 	DrawTransformation((AStaticMesh*)(&pbrStaticMesh));
 	Separator();
-	DrawModelTexture(&pbrStaticMesh);
+	DrawPBRTexture(&pbrStaticMesh);
+}
+
+void ModelManipulator::VisitModel(AIBLModel& iblModel)
+{
+	DrawTransformation((AStaticMesh*)(&iblModel));
+	Separator();
+	DrawIBLTexture(&iblModel);
 }
 
 void ModelManipulator::DrawTransformation(AStaticMesh* pStaticMesh)
@@ -53,7 +63,7 @@ void ModelManipulator::DrawTransformation(AStaticMesh* pStaticMesh)
 	}
 }
 
-void ModelManipulator::DrawModelTexture(APBRStaticMesh* pPBRStaticMesh)
+void ModelManipulator::DrawPBRTexture(APBRStaticMesh* pPBRStaticMesh)
 {
 	if (CollapsingHeader("PBR Model Textures"))
 	{
@@ -62,37 +72,77 @@ void ModelManipulator::DrawModelTexture(APBRStaticMesh* pPBRStaticMesh)
 
 		for (WORD idx = 0; idx < APBRStaticMesh::TEXTURE_MAP_NUM; ++idx)
 		{
-			Separator();
-			Text(APBRStaticMesh::unmapTextureNames[idx].c_str());
-			if (pPBRStaticMesh->pModelTexture[idx] != nullptr)
-			{
-				Image(pPBRStaticMesh->pModelTexture[idx]->cpSRV.Get(), ImVec2(60.f, 60.f));
-			}
-			else
-			{
-				Image(nullptr, ImVec2(60.f, 60.f));
-			}
-
-			if (BeginDragDropTarget())
-			{
-				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Texture2D"))
-				{
-					pPBRStaticMesh->pModelTexture[idx] = *(shared_ptr<NormalImageFile>*)payload->Data;
-				}
-				ImGui::EndDragDropTarget();
-			}
-
-			if (pPBRStaticMesh->pModelTexture[idx] != nullptr)
-			{
-				SameLine();
-				Text(pPBRStaticMesh->pModelTexture[idx]->strFileName.c_str());
-			}
-			else
-			{
-				SameLine();
-				Text("");
-			}
+			SetTextureDragAndDrop(
+				APBRStaticMesh::unmapTextureNames[idx].c_str(), 
+				pPBRStaticMesh->pModelTexture[idx], 
+				"Texture2D"
+			);
 		}
 	}
 }
 
+void ModelManipulator::DrawIBLTexture(AIBLModel* pIBLModel)
+{
+	if (CollapsingHeader("IBL Model Textures"))
+	{
+		SetTextureDragAndDrop(
+			"Model Texture",
+			pIBLModel->spIBLTextureFile,
+			"Texture2D"
+		);
+		SetTextureDragAndDrop(
+			"Specular IBL Texture",
+			pIBLModel->spEnvSpecularTextureFile,
+			"CubeMap"
+		);
+		SetTextureDragAndDrop(
+			"Diffuse IBL Texture",
+			pIBLModel->spEnvDiffuseTextureFile,
+			"CubeMap"
+		);
+		SetTextureDragAndDrop(
+			"BRDF LUT Texture",
+			pIBLModel->spEnvBrdfTextureFile,
+			"Texture2D"
+		);
+	}
+}
+
+template<typename T>
+void ModelManipulator::SetTextureDragAndDrop(
+	const char* pDescription, 
+	std::shared_ptr<T>& spFile, 
+	const char* pDragDropLabel
+)
+{
+	Separator();
+	Text(pDescription);
+	if (spFile != nullptr)
+	{
+		Image(spFile->cpSRV.Get(), ImVec2(60.f, 60.f));
+	}
+	else
+	{
+		Image(nullptr, ImVec2(60.f, 60.f));
+	}
+
+	if (BeginDragDropTarget())
+	{
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(pDragDropLabel))
+		{
+			spFile = *(shared_ptr<T>*)payload->Data;
+		}
+		ImGui::EndDragDropTarget();
+	}
+
+	if (spFile != nullptr)
+	{
+		SameLine();
+		Text(spFile->strFileName.c_str());
+	}
+	else
+	{
+		SameLine();
+		Text("");
+	}
+}
