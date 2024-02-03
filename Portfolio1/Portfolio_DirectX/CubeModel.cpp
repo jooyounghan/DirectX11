@@ -25,9 +25,3 @@ CubeModel::CubeModel(
 CubeModel::~CubeModel()
 {
 }
-
-
-void CubeModel::UpdateModel(const float& fDelta)
-{
-	APBRStaticMesh::UpdateModel(fDelta);
-}

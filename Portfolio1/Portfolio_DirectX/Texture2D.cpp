@@ -48,7 +48,7 @@ Texture2D::Texture2D(
 		uiCPUAccessIn,
 		uiMiscFlagIn,
 		eUsageIn,
-		eFormat,
+		eFormatIn,
 		pImageSourceIn,
 		cpTexture2D.GetAddressOf()
 	);

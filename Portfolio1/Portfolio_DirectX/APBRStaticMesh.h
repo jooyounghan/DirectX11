@@ -1,6 +1,8 @@
 #pragma once
-#include <memory>
 #include "AStaticMesh.h"
+#include "NormalImageFile.h"
+
+#include <memory>
 #include <unordered_map>
 
 class APBRStaticMesh : public AStaticMesh
@@ -39,9 +41,10 @@ public:
 
 public:
 	virtual void Load(const std::string& path) = 0;
-	virtual void UpdateModel(const float& fDelta);
+	virtual void UpdateModel(const float& fDelta) override;
 
 public:
-	virtual void AcceptModelManipulator(class ModelManipulator* pModelManipulator);
+	virtual void AcceptModelManipulator(class ModelManipulator* pModelManipulator) override;
+	virtual void AcceptModelRenderer(class ModelRenderer* pModelRenderer) override;
 };
 

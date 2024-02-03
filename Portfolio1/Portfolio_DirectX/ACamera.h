@@ -6,6 +6,9 @@
 #include "AFilter.h"
 #include "APossessable.h"
 
+#include <tuple>
+#include <vector>
+
 class ACamera
 	: public ViewableRenderTarget,
 	public ViewableDepthStencil, 
@@ -33,6 +36,9 @@ public:
 
 public:
 	virtual void Resolve() = 0;
+
+public:
+	virtual std::tuple<UINT, std::vector<ID3D11RenderTargetView*>, ID3D11DepthStencilView*> GetRTVs() = 0;
 
 public:
 	virtual void ManageKeyBoardInput(const float& fDelay);

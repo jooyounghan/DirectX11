@@ -5,6 +5,9 @@
 #include "ModelManipulator.h"
 #include "FileManipulator.h"
 
+#include "ModelRenderer.h"
+#include "LightRenderer.h"
+
 #include <vector>
 #include <unordered_map>
 
@@ -34,7 +37,12 @@ public:
 	ModelManipulator modelManipulator;
 	FileManipulator fileManipulator;
 
+public:
+	ModelRenderer modelRenderer;
+	LightRenderer lightRenderer;
+
 private:
+	class AIBLModel* pIBLModel;
 	std::unordered_map<uint32_t, AStaticMesh*> pModels;
 	AStaticMesh* pSelectedMesh;
 

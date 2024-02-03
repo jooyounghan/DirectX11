@@ -115,6 +115,18 @@
     <Filter Include="헤더 파일\GUI\Extended">
       <UniqueIdentifier>{b084a5a0-c95d-46e0-8206-2c49ee734262}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Renderer">
+      <UniqueIdentifier>{e422ef01-8ba8-4d4e-9a24-fac266c5ae4d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Renderer">
+      <UniqueIdentifier>{c27c3d6a-0893-4142-a6fd-9e68385320f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Renderer\Extended">
+      <UniqueIdentifier>{4de72885-b08c-443e-8487-ec033af3ffe1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Renderer\Extended">
+      <UniqueIdentifier>{e64e1940-cf6a-4ed5-ba81-f961d928e032}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseApp.h">
@@ -187,9 +199,6 @@
       <Filter>헤더 파일\Base</Filter>
     </ClInclude>
     <ClInclude Include="RasterizationState.h">
-      <Filter>헤더 파일\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="SamplerState.h">
       <Filter>헤더 파일\Utils</Filter>
     </ClInclude>
     <ClInclude Include="DepthStencilState.h">
@@ -273,6 +282,15 @@
     <ClInclude Include="AIBLModel.h">
       <Filter>헤더 파일\Model\PBR</Filter>
     </ClInclude>
+    <ClInclude Include="IRenderer.h">
+      <Filter>헤더 파일\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelRenderer.h">
+      <Filter>헤더 파일\Renderer\Extended</Filter>
+    </ClInclude>
+    <ClInclude Include="LightRenderer.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseApp.cpp">
@@ -347,9 +365,6 @@
     <ClCompile Include="RasterizationState.cpp">
       <Filter>소스 파일\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="SamplerState.cpp">
-      <Filter>소스 파일\Utils</Filter>
-    </ClCompile>
     <ClCompile Include="DepthStencilState.cpp">
       <Filter>소스 파일\Utils</Filter>
     </ClCompile>
@@ -422,12 +437,21 @@
     <ClCompile Include="AIBLModel.cpp">
       <Filter>소스 파일\Model\PBR</Filter>
     </ClCompile>
+    <ClCompile Include="IRenderer.cpp">
+      <Filter>소스 파일\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelRenderer.cpp">
+      <Filter>소스 파일\Renderer\Extended</Filter>
+    </ClCompile>
+    <ClCompile Include="LightRenderer.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="BaseVS.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
-    <FxCompile Include="BasePS.hlsl">
+    <FxCompile Include="PBRWithSpotPS.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
     <FxCompile Include="MS16ToSS8CS.hlsl">
@@ -437,6 +461,15 @@
       <Filter>Shader\Filter</Filter>
     </FxCompile>
     <FxCompile Include="DepthOnlyPathPS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="PBRWithPointPS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="IBLModelPS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="BasePS.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
   </ItemGroup>

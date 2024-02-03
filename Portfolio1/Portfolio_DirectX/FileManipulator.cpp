@@ -144,7 +144,7 @@ void FileManipulator::LoadFiles(const std::wstring& wstrFilePathIn)
 
 void FileManipulator::VisitFile(NormalImageFile& imageFile, shared_ptr<IFile>& spFile)
 {
-    ID3D11ShaderResourceView* pIndexedSRV = imageFile.cpSRV.Get();
+    ID3D11ShaderResourceView* pIndexedSRV = imageFile.cpThumbnailSRV.Get();
 
     if (pIndexedSRV != nullptr)
     {
@@ -165,7 +165,7 @@ void FileManipulator::VisitFile(NormalImageFile& imageFile, shared_ptr<IFile>& s
 
 void FileManipulator::VisitFile(DDSImageFile& imageFile, shared_ptr<IFile>& spFile)
 {
-    ID3D11ShaderResourceView* pIndexedSRV = imageFile.cpSRV.Get();
+    ID3D11ShaderResourceView* pIndexedSRV = imageFile.cpThumbnailSRV.Get();
 
     if (pIndexedSRV != nullptr)
     {

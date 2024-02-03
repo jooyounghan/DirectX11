@@ -17,7 +17,7 @@ public:
 	);
 	virtual ~RenderTarget();
 
-public:
+protected:
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView>		cpRTV;
 
 protected:

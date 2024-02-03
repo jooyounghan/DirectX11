@@ -9,8 +9,5 @@ public:
 		const uint32_t& usLevel
 	);
 	virtual ~CubeMapModel();
-
-public:
-	virtual void UpdateModel(const float& fDelta);
 };
 

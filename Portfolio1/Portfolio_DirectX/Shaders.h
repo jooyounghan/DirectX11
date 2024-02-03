@@ -23,6 +23,9 @@ public:
 	{
 		BasePS,
 		DepthOnlyPathPS,
+		PBRWithSpotPS,
+		PBRWithPointPS,
+		IBLModelPS,
 		NumPixelShader
 	};
 	enum EComputeShader : size_t

@@ -74,14 +74,13 @@ uint8_t* FileLoader::LoadFileWithOpenEXR(const wchar_t* pFileName, UINT* x, UINT
     return result;
 }
 
-// req_comp 인자를 통하여 기존 함수에서 사용가능 하므로 삭제 필요시 삭제
 void FileLoader::ExtendChannel(uint8_t*& ucRawData, const int& iWidth, const int& iHeight, int& iChannelCurrent, const int& iChannelIn)
 {
     if (iChannelCurrent < iChannelIn)
     {
         const int& iTotalDataSizeAfter = iWidth * iHeight * iChannelIn;
         uint8_t* pDataNew = new uint8_t[iTotalDataSizeAfter];
-        memset(pDataNew, 255, iTotalDataSizeAfter);
+        memset(pDataNew, 0, iTotalDataSizeAfter);
 
         for (int h = 0; h < iHeight; ++h)
         {

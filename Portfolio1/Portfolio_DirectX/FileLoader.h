@@ -14,7 +14,6 @@ public:
 	static uint8_t* LoadFileWithOpenEXR(const wchar_t* pFileName, UINT* x, UINT* y, UINT* comp);
 
 public:
-	static void ExtendChannel(uint8_t*& ucRawData, const int& iWidth, const int& iHeight, int& iChannelCurrent, const int& iChannelIn);
 	static std::wstring GetLastDirectoryName(const std::filesystem::path& filePath);
 
 public:

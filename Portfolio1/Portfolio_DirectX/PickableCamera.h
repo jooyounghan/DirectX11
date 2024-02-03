@@ -23,6 +23,18 @@ public:
 	virtual ~PickableCamera();
 
 public:
+	inline virtual std::tuple<UINT, std::vector<ID3D11RenderTargetView*>, ID3D11DepthStencilView*> GetRTVs() {
+		return std::make_tuple<UINT, std::vector<ID3D11RenderTargetView*>>(
+			2, 
+			std::vector<ID3D11RenderTargetView*> { 
+				RenderTarget::cpRTV.Get(),
+				IDPickableRenderTarget::cpRTV.Get()
+			},
+			cpDSV.Get()
+		);
+	};
+
+public:
 	virtual void ClearRTV() override;
 	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn) override;
 

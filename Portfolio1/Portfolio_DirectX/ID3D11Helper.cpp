@@ -448,11 +448,11 @@ void ID3D11Helper::CreateTexture2D(
 
 	switch (eFormat)
 	{
-	case DXGI_FORMAT_R16G16B16A16_UINT:
+	case DXGI_FORMAT_R16G16B16A16_FLOAT:
 		pData.SysMemPitch = uiWidth * 8;
 		pData.SysMemSlicePitch = uiWidth * uiHeight * 8;
 		break;
-	case DXGI_FORMAT_R8G8B8A8_UINT:
+	case DXGI_FORMAT_R8G8B8A8_UNORM:
 	default:
 		pData.SysMemPitch = uiWidth * 4;
 		pData.SysMemSlicePitch = uiWidth * uiHeight * 4;

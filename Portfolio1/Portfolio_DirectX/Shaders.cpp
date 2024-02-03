@@ -21,6 +21,10 @@ void Shaders::Init(ID3D11Device* pDeviceIn)
 	// Pixel Shader 초기화
 	ID3D11Helper::CreatePS(pDeviceIn, L"BasePS.hlsl", vPixelShaders[BasePS].GetAddressOf());
 	ID3D11Helper::CreatePS(pDeviceIn, L"DepthOnlyPathPS.hlsl", vPixelShaders[DepthOnlyPathPS].GetAddressOf());
+	ID3D11Helper::CreatePS(pDeviceIn, L"PBRWithSpotPS.hlsl", vPixelShaders[PBRWithSpotPS].GetAddressOf());
+	ID3D11Helper::CreatePS(pDeviceIn, L"PBRWithPointPS.hlsl", vPixelShaders[PBRWithPointPS].GetAddressOf());
+	ID3D11Helper::CreatePS(pDeviceIn, L"IBLModelPS.hlsl", vPixelShaders[IBLModelPS].GetAddressOf());
+
 
 	// Compute Shader 초기화
 	ID3D11Helper::CreateCS(pDeviceIn, L"ModelIDResolveCS.hlsl", vComputeShaders[ResolveCS].GetAddressOf());

@@ -21,8 +21,3 @@ CubeMapModel::CubeMapModel(
 CubeMapModel::~CubeMapModel()
 {
 }
-
-void CubeMapModel::UpdateModel(const float& fDelta)
-{
-	AStaticMesh::UpdateModel(fDelta);
-}

@@ -1,7 +1,9 @@
 #include "APBRStaticMesh.h"
 #include "ID3D11Helper.h"
 #include "DirectXDevice.h"
+
 #include "ModelManipulator.h"
+#include "ModelRenderer.h"
 
 std::unordered_map<WORD, std::string> APBRStaticMesh::unmapTextureNames
 {
@@ -42,4 +44,9 @@ void APBRStaticMesh::UpdateModel(const float& fDelta)
 void APBRStaticMesh::AcceptModelManipulator(ModelManipulator* pModelManipulator)
 {
 	pModelManipulator->VisitModel(*this);
+}
+
+void APBRStaticMesh::AcceptModelRenderer(ModelRenderer* pModelRenderer)
+{
+	pModelRenderer->VisitModel(*this);
 }

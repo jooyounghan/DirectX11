@@ -17,6 +17,9 @@ NormalImageFile::NormalImageFile(
 	IRectangle(uiWidthIn, uiHeightIn)
 {
 	DirectXDevice::pDeviceContext->GenerateMips(cpSRV.Get());
+
+	cpThumbnailTexture2D = cpTexture2D;
+	cpThumbnailSRV = cpSRV;
 }
 
 NormalImageFile::~NormalImageFile()

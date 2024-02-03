@@ -32,6 +32,8 @@ protected:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> cpBaseLightBuffer;
 
 public:
-	virtual void UpdateLight(const std::unordered_map<uint32_t, class AStaticMesh*>& pModels) = 0;
-};
+	virtual void UpdateLight() = 0;
 
+public:
+	virtual void AcceptLightRenderer(class LightRenderer* pLightRenderer) = 0;
+};

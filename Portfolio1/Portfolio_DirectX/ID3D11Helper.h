@@ -170,7 +170,7 @@ public:
 		IN const UINT&					uiMiscFlag,
 		IN D3D11_USAGE					eUsage,
 		IN DXGI_FORMAT					eFormat,
-		IN uint8_t*				pImageRawData,
+		IN uint8_t*						pImageRawData,
 		OUT ID3D11Texture2D**			ppTexture2D
 	);
 

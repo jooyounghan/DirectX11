@@ -7,6 +7,8 @@
 #include <imgui_impl_win32.h>
 #include <imgui_internal.h>
 
+#include "ModelRenderer.h"
+
 #include "ID3D11Helper.h"
 #include "PickableCamera.h"
 #include "CubeModel.h"
@@ -45,7 +47,9 @@ void PortfolioApp::Init()
 	AddModel(new CubeModel(0.f, 0.f, 5.f, 1.f, false, 8));
 	AddModel(new CubeModel(0.f, 0.f, -5.f, 1.f, false, 8));
 	AddModel(new CubeModel(0.f, 0.f, -5.f, 1.f, false, 8));
-	AddModel(new CubeMapModel(500.f, 15));
+
+	pIBLModel = new CubeMapModel(500.f, 15);
+	AddModel(pIBLModel);
 
 	pMainCamera = new PickableCamera(
 		0.f, 0.f, 0.f, 0.f, 0.f, 0.f, uiWidth, uiHeight,
@@ -55,11 +59,12 @@ void PortfolioApp::Init()
 		DXGI_FORMAT_R16G16B16A16_FLOAT,
 		DXGI_FORMAT_D24_UNORM_S8_UINT
 	);
+	pMainCamera->SetAsBackBufferAddress();
+
+	modelRenderer.SetCamera(pMainCamera);
 
 	pLights.push_back(new SpotLight(0.f, 0.f, 0.f, 0.f, 0.f, 0.f));
 	pLights.push_back(new PointLight(0.f, 0.f, 0.f, 0.f, 0.f, 0.f));
-
-	pMainCamera->SetAsBackBufferAddress();
 }
 
 void PortfolioApp::Update(const float& fDelta)
@@ -73,68 +78,21 @@ void PortfolioApp::Update(const float& fDelta)
 	pMainCamera->UpdateView();
 	pMainCamera->ManageKeyBoardInput(fDelta);
 
-	DirectXDevice::AddIgnoringMessageFilter(D3D11_MESSAGE_ID_DEVICE_DRAW_RENDERTARGETVIEW_NOT_SET);
-	DirectXDevice::ApplyDebugMessageFilter();
 	for (auto& light : pLights)
 	{
 		light->UpdatePosition();
-		light->UpdateLight(pModels);
+		light->UpdateLight();
 	}
-	DirectXDevice::RemoveIgnoringMessageFilter(D3D11_MESSAGE_ID_DEVICE_DRAW_RENDERTARGETVIEW_NOT_SET);
 }
 
 void PortfolioApp::Render()
 {
-#pragma region ¸ðµ¨ ±×¸®±â
-	Shaders& shaders = Shaders::GetInstance();
-	DirectXDevice::pDeviceContext->VSSetShader(shaders.GetVertexShader(Shaders::BaseVS), NULL, NULL);
-	DirectXDevice::pDeviceContext->PSSetShader(shaders.GetPixelShader(Shaders::BasePS), NULL, NULL);
-	DirectXDevice::pDeviceContext->IASetInputLayout(shaders.GetInputLayout(Shaders::BaseVS));
-	DirectXDevice::pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	
-	vector<ID3D11RenderTargetView*> vReleaseAndGetAddressOfRTVs = {
-	nullptr,
-	nullptr
-	};
-	ID3D11Buffer* pNullBuffer = nullptr;
+	lightRenderer.UpdateLightMap(pModels, pLights);
 
-	UINT uiStride = sizeof(InputLayout);
-	UINT uiOffset = 0;
-
-	vector<ID3D11RenderTargetView*> vRTVs = { 
-		pMainCamera->RenderTarget::cpRTV.Get(), 
-		pMainCamera->IDPickableRenderTarget::cpRTV.Get() 
-	};
-
-	DirectXDevice::pDeviceContext->OMSetRenderTargets(2, vRTVs.data(), pMainCamera->cpDSV.Get());
 	pMainCamera->ClearRTV();
 	pMainCamera->ClearDSV();
 
-	DirectXDevice::pDeviceContext->RSSetViewports(1, &pMainCamera->sViewPort);
-
-	DirectXDevice::pDeviceContext->VSSetConstantBuffers(1, 1, pMainCamera->cpViewProjBuffer.GetAddressOf());
-
-	for (auto model : pModels)
-	{
-		DirectXDevice::pDeviceContext->IASetVertexBuffers(0, 1, model.second->cpInputBuffer.GetAddressOf(), &uiStride, &uiOffset);
-		DirectXDevice::pDeviceContext->IASetIndexBuffer(model.second->cpIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
-		DirectXDevice::pDeviceContext->VSSetConstantBuffers(0, 1, model.second->cpTransformationBuffer.GetAddressOf());
-		DirectXDevice::pDeviceContext->PSSetConstantBuffers(0, 1, model.second->cpIdBuffer.GetAddressOf());
-
-		model.second->Draw();
-	}
-
-	DirectXDevice::pDeviceContext->OMSetRenderTargets(2, vReleaseAndGetAddressOfRTVs.data(), nullptr);
-
-	DirectXDevice::pDeviceContext->VSSetShader(nullptr, NULL, NULL);
-	DirectXDevice::pDeviceContext->PSSetShader(nullptr, NULL, NULL);
-	DirectXDevice::pDeviceContext->IASetInputLayout(shaders.GetInputLayout(Shaders::BaseVS));
-	DirectXDevice::pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-	DirectXDevice::pDeviceContext->VSSetConstantBuffers(1, 1, &pNullBuffer);
-	DirectXDevice::pDeviceContext->VSSetConstantBuffers(0, 1, &pNullBuffer);
-	DirectXDevice::pDeviceContext->PSSetConstantBuffers(0, 1, &pNullBuffer);
-
+	modelRenderer.RenderObjects(pIBLModel, pModels, pLights);
 	RenderImGUI();
 
 	// ¸ðµ¨ ·»´õ¸µ ¹× ImGUI ·»´õ¸µ ÈÄ Resolve¸¦ ¼öÇàÇÑ´Ù.
@@ -193,9 +151,10 @@ void PortfolioApp::SetImGUIRendering()
 void PortfolioApp::RenderImGUI()
 {
 	ID3D11RenderTargetView* pNullRTV = nullptr;
-	DirectXDevice::pDeviceContext->OMSetRenderTargets(
-		1, pMainCamera->RenderTarget::cpRTV.GetAddressOf(), pMainCamera->cpDSV.Get()
-	);
+
+	auto [rtvCnt, vRTVs, pDSV] = pMainCamera->GetRTVs();
+
+	DirectXDevice::pDeviceContext->OMSetRenderTargets(rtvCnt, vRTVs.data(), pDSV);
 
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 

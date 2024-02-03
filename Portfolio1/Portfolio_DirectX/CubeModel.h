@@ -16,8 +16,5 @@ public:
 
 private:
 	virtual void Load(const std::string& path) override {};
-
-public:
-	virtual void UpdateModel(const float& fDelta);
 };
 

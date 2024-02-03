@@ -52,11 +52,12 @@ public:
 
 public:
 	virtual void Load(const std::string& path) = 0;
-	virtual void Draw();
-	virtual void UpdateModel(const float& fDelta);
+	virtual void Draw() override;
+	virtual void UpdateModel(const float& fDelta) override;
 
 public:
-	virtual void AcceptModelManipulator(class ModelManipulator* pModelManipulator);
+	virtual void AcceptModelManipulator(class ModelManipulator* pModelManipulator) override;
+	virtual void AcceptModelRenderer(class ModelRenderer* pModelRenderer) = 0;
 
 public:
 	virtual void ScaleUp(const float& fXup, const float& fYUp, const float& fZUp) override final;

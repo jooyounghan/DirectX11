@@ -17,6 +17,10 @@ DDSFile::DDSFile(
 
 	D3D11_TEXTURE2D_DESC desc;
 	cpDDSTexutre2D->GetDesc(&desc);
+
+	D3D11_SHADER_RESOURCE_VIEW_DESC test;
+	cpDDSSRV->GetDesc(&test);
+
 	eThumbNailFormat = desc.Format;
 	desc.MiscFlags = NULL;
 	desc.ArraySize = 1;

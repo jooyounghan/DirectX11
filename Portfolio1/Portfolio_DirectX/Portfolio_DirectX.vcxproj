@@ -130,6 +130,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="CubeMapModel.h" />
+    <ClInclude Include="IRenderer.h" />
     <ClInclude Include="FileManipulator.h" />
     <ClInclude Include="FilteredCamera.h" />
     <ClInclude Include="AIBLModel.h" />
@@ -139,7 +140,9 @@
     <ClInclude Include="IGuiMenu.h" />
     <ClInclude Include="ImGuiFileDialog.h" />
     <ClInclude Include="ImGuiFileDialogConfig.h" />
+    <ClInclude Include="LightRenderer.h" />
     <ClInclude Include="ModelManipulator.h" />
+    <ClInclude Include="ModelRenderer.h" />
     <ClInclude Include="SwapChainAccessable.h" />
     <ClInclude Include="Viewable.h" />
     <ClInclude Include="BaseApp.h" />
@@ -177,13 +180,13 @@
     <ClInclude Include="PickableCamera.h" />
     <ClInclude Include="PortfolioApp.h" />
     <ClInclude Include="RasterizationState.h" />
-    <ClInclude Include="SamplerState.h" />
     <ClInclude Include="ViewableDepthOnly.h" />
     <ClInclude Include="ViewableDepthStencil.h" />
     <ClInclude Include="ViewableRenderTarget.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CubeMapModel.cpp" />
+    <ClCompile Include="IRenderer.cpp" />
     <ClCompile Include="FileManipulator.cpp" />
     <ClCompile Include="FilteredCamera.cpp" />
     <ClCompile Include="AIBLModel.cpp" />
@@ -191,7 +194,9 @@
     <ClCompile Include="IDPickableRenderTarget.cpp" />
     <ClCompile Include="APossessable.cpp" />
     <ClCompile Include="ImGuiFileDialog.cpp" />
+    <ClCompile Include="LightRenderer.cpp" />
     <ClCompile Include="ModelManipulator.cpp" />
+    <ClCompile Include="ModelRenderer.cpp" />
     <ClCompile Include="SwapChainAccessable.cpp" />
     <ClCompile Include="Viewable.cpp" />
     <ClCompile Include="BaseApp.cpp" />
@@ -228,17 +233,30 @@
     <ClCompile Include="PickableCamera.cpp" />
     <ClCompile Include="PortfolioApp.cpp" />
     <ClCompile Include="RasterizationState.cpp" />
-    <ClCompile Include="SamplerState.cpp" />
     <ClCompile Include="ViewableDepthOnly.cpp" />
     <ClCompile Include="ViewableDepthStencil.cpp" />
     <ClCompile Include="ViewableRenderTarget.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="BasePS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+    </FxCompile>
     <FxCompile Include="DepthOnlyPathPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="IBLModelPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="MS16ToSS8CS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
@@ -260,7 +278,14 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
     </FxCompile>
-    <FxCompile Include="BasePS.hlsl">
+    <FxCompile Include="PBRWithPointPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="PBRWithSpotPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>

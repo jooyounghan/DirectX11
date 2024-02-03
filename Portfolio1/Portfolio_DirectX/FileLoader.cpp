@@ -65,7 +65,8 @@ uint8_t* FileLoader::LoadFileWithOpenEXR(const wchar_t* pFileName, UINT* x, UINT
     {
         *x = (UINT)metaData.width;
         *y = (UINT)metaData.height;
-        *comp = (UINT)metaData.dimension;
+        const Image* pImage = scratch.GetImage(NULL, NULL, NULL);
+        *comp = pImage->rowPitch / (pImage->width * 2);
 
         result = (uint8_t*)malloc(scratch.GetPixelsSize());
         if (result != nullptr)

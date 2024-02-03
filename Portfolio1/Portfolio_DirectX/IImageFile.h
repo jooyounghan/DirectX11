@@ -19,6 +19,10 @@ public:
 	virtual ~IImageFile();
 
 public:
+	Microsoft::WRL::ComPtr<ID3D11Texture2D>				cpThumbnailTexture2D;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>	cpThumbnailSRV;
+
+public:
 	virtual void AcceptFileManipulator(class FileManipulator* pFileManipulator, std::shared_ptr<IFile>& spFile) = 0;
 
 private:

@@ -12,7 +12,7 @@ public:
 	);
 	virtual ~IDepthStencil();
 
-public:
+protected:
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> cpDSV;
 
 public:

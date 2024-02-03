@@ -16,6 +16,7 @@ enum EPointDirections : size_t
 
 class PointLight : public ILight, public IAngleAdjustable
 {
+	friend class LightRenderer;
 public:
 	PointLight(
 		const float& fXPos,
@@ -31,5 +32,8 @@ protected:
 	ViewableDepthOnly viewablesDirections[6];
 
 public:
-	virtual void UpdateLight(const std::unordered_map<uint32_t, AStaticMesh*>& pModels) override;
+	virtual void UpdateLight() override;
+
+public:
+	virtual void AcceptLightRenderer(class LightRenderer* pLightRenderer) override;
 };

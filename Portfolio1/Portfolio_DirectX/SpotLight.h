@@ -4,6 +4,7 @@
 
 class SpotLight : public ILight, protected ViewableDepthOnly
 {
+	friend class LightRenderer;
 public:
 	SpotLight(
 		const float& fXPos,
@@ -25,7 +26,10 @@ protected:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> cpSpotLightBuffer;
 
 public:
-	virtual void UpdateLight(const std::unordered_map<uint32_t, AStaticMesh*>& pModels) override;
+	virtual void UpdateLight() override;
+
+public:
+	virtual void AcceptLightRenderer(class LightRenderer* pLightRenderer) override;
 
 private:
 	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn) {};

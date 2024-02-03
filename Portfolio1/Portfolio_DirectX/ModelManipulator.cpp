@@ -86,11 +86,6 @@ void ModelManipulator::DrawIBLTexture(AIBLModel* pIBLModel)
 	if (CollapsingHeader("IBL Model Textures"))
 	{
 		SetTextureDragAndDrop(
-			"Model Texture",
-			pIBLModel->spIBLTextureFile,
-			"Texture2D"
-		);
-		SetTextureDragAndDrop(
 			"Specular IBL Texture",
 			pIBLModel->spEnvSpecularTextureFile,
 			"CubeMap"
@@ -119,11 +114,11 @@ void ModelManipulator::SetTextureDragAndDrop(
 	Text(pDescription);
 	if (spFile != nullptr)
 	{
-		Image(spFile->cpSRV.Get(), ImVec2(60.f, 60.f));
+		Image(spFile->cpThumbnailSRV.Get(), ImVec2(60.f, 60.f));
 	}
 	else
 	{
-		Image(nullptr, ImVec2(60.f, 60.f));
+		Dummy(ImVec2(60.f, 60.f));
 	}
 
 	if (BeginDragDropTarget())
