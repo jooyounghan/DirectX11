@@ -92,7 +92,9 @@ void PortfolioApp::Render()
 	pMainCamera->ClearRTV();
 	pMainCamera->ClearDSV();
 
+	normalVectorRenderer.RenderNormalVector(pMainCamera, pModels);
 	modelRenderer.RenderObjects(pIBLModel, pModels, pLights);
+	
 	RenderImGUI();
 
 	// ¸ðµ¨ ·»´õ¸µ ¹× ImGUI ·»´õ¸µ ÈÄ Resolve¸¦ ¼öÇàÇÑ´Ù.
@@ -155,8 +157,8 @@ void PortfolioApp::RenderImGUI()
 	auto [rtvCnt, vRTVs, pDSV] = pMainCamera->GetRTVs();
 
 	DirectXDevice::pDeviceContext->OMSetRenderTargets(rtvCnt, vRTVs.data(), pDSV);
-
-	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+	ImDrawData* test = ImGui::GetDrawData();
+	ImGui_ImplDX11_RenderDrawData(test);
 
 	DirectXDevice::pDeviceContext->OMSetRenderTargets(
 		1, &pNullRTV, nullptr

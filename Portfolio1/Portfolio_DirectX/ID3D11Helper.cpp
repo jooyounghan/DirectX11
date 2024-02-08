@@ -114,6 +114,41 @@ bool ID3D11Helper::GetBackBuffer(IN IDXGISwapChain* pSwapChain, OUT ID3D11Textur
 	return true;
 }
 
+void ID3D11Helper::CreateVS(IN ID3D11Device* pDevice, IN LPCWSTR pFileName, OUT ID3D11VertexShader** ppVertexShader)
+{
+	ComPtr<ID3DBlob> cpShaderBlob;
+	ComPtr<ID3DBlob> cpErrorBlob;
+
+	HRESULT hResult = D3DCompileFromFile(pFileName,
+		NULL,
+		D3D_COMPILE_STANDARD_FILE_INCLUDE,
+		"main",
+		"vs_5_0",
+		D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
+		NULL,
+		cpShaderBlob.GetAddressOf(),
+		cpErrorBlob.GetAddressOf()
+	);
+
+	if (FAILED(hResult))
+	{
+		Console::AssertPrint("Vertex Shader를 컴파일하는데 실패하였습니다.");
+		return;
+	}
+
+	hResult = pDevice->CreateVertexShader(
+		cpShaderBlob->GetBufferPointer(),
+		cpShaderBlob->GetBufferSize(),
+		NULL,
+		ppVertexShader
+	);
+	if (FAILED(hResult))
+	{
+		Console::AssertPrint("Vertex Shader를 생성하는데 실패하였습니다.");
+		return;
+	}
+}
+
 void ID3D11Helper::CreatePS(IN ID3D11Device* pDevice, IN LPCWSTR pFileName, OUT ID3D11PixelShader** ppPixelShader)
 {
 	ComPtr<ID3DBlob> cpShaderBlob;
@@ -415,6 +450,15 @@ void ID3D11Helper::CreateSampler(IN D3D11_FILTER eFilter, IN D3D11_TEXTURE_ADDRE
 		Console::AssertPrint("샘플러를 생성하는데 실패하였습니다.");
 	}
 
+}
+
+void ID3D11Helper::CreateBlendState(IN ID3D11Device* pDevice, IN D3D11_BLEND_DESC* pBlendDesc, OUT ID3D11BlendState** ppBlendState)
+{
+	HRESULT hResult = pDevice->CreateBlendState(pBlendDesc, ppBlendState);
+	if (FAILED(hResult))
+	{
+		Console::AssertPrint("Blend State를 생성하는데 실패하였습니다.");
+	}
 }
 
 void ID3D11Helper::CreateTexture2D(

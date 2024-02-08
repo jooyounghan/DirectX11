@@ -78,6 +78,12 @@ public:
 		OUT ID3D11Texture2D** ppTexture2D
 	);
 
+	static void CreateVS(
+		IN ID3D11Device* pDevice,
+		IN LPCWSTR pFileName,
+		OUT ID3D11VertexShader** ppVertexShader
+	);
+
 	static void CreatePS(
 		IN ID3D11Device* pDevice,
 		IN LPCWSTR pFileName,
@@ -159,6 +165,12 @@ public:
 		IN FLOAT						pFloat4[4],
 		IN ID3D11Device*				pDevice,
 		OUT ID3D11SamplerState**		ppSamplerState
+	);
+
+	static void CreateBlendState(
+		IN ID3D11Device* pDevice,
+		IN D3D11_BLEND_DESC* pBlendDesc,
+		OUT ID3D11BlendState** ppBlendState
 	);
 
 	static void CreateTexture2D(

@@ -33,18 +33,25 @@ public:
 public:
 	struct
 	{
-		float fFrenelConstant[3];
+		float fFresnelConstant[3];
 		float fHeightFactor;
 	} sPBRConstant;
 	Microsoft::WRL::ComPtr<ID3D11Buffer> cpPBRConstantBuffer;
 
+	struct
+	{
+		BOOL bIsTextureOn[TEXTURE_MAP_NUM];
+		BOOL bDummy;
+	} sPBRTextureFlag;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> cpPBRTextureFlagBuffer;
 
 public:
 	virtual void Load(const std::string& path) = 0;
 	virtual void UpdateModel(const float& fDelta) override;
 
 public:
-	virtual void AcceptModelManipulator(class ModelManipulator* pModelManipulator) override;
-	virtual void AcceptModelRenderer(class ModelRenderer* pModelRenderer) override;
+	virtual void AcceptModelManipulating(class ModelManipulator* pModelManipulator) override;
+	virtual void AcceptModelRendering(class ModelRenderer* pModelRenderer) override;
+	virtual void AcceptNormalVectorRendering(class NormalVectorRenderer* pNormalVectorRenderer) override;
 };
 

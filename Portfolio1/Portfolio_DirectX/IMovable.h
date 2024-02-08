@@ -23,7 +23,7 @@ protected:
 public:
 	DirectX::XMVECTOR						xmvPosition;
 
-protected:
+public:
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	cpPositionBuffer;
 
 public:

@@ -17,6 +17,8 @@ enum EPointDirections : size_t
 class PointLight : public ILight, public IAngleAdjustable
 {
 	friend class LightRenderer;
+	friend class ModelRenderer;
+
 public:
 	PointLight(
 		const float& fXPos,
@@ -36,4 +38,9 @@ public:
 
 public:
 	virtual void AcceptLightRenderer(class LightRenderer* pLightRenderer) override;
+
+public:
+	virtual void AcceptSettingForDirectLighting(class ModelRenderer* pModelRenderer) override;
+	virtual void AcceptResetingForDirectLighting(class ModelRenderer* pModelRenderer) override;
+
 };

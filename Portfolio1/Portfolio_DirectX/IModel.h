@@ -30,6 +30,6 @@ public:
 	virtual void UpdateModel(const float& fDelta) = 0;
 
 public:
-	virtual void AcceptModelManipulator(class ModelManipulator* pModelManipulator) = 0;
+	virtual void AcceptModelManipulating(class ModelManipulator* pModelManipulator) = 0;
 };
 

@@ -17,9 +17,9 @@ public:
 	inline virtual bool IsGuiAvailable() override { return *ppSelectedStaticMesh != nullptr; }
 
 public:
-	void VisitModel(class AStaticMesh& staticMesh);
-	void VisitModel(class APBRStaticMesh& pbrStaticMesh);
-	void VisitModel(class AIBLModel& iblModel);
+	void ManipulateModel(class AStaticMesh& staticMesh);
+	void ManipulateModel(class APBRStaticMesh& pbrStaticMesh);
+	void ManipulateModel(class AIBLModel& iblModel);
 
 protected:
 	void DrawTransformation(AStaticMesh* pStaticMesh);

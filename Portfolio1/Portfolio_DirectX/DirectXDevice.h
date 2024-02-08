@@ -34,6 +34,12 @@ private:
 	static Microsoft::WRL::ComPtr<ID3D11SamplerState> cpBorderSampler;
 
 public:
+	static ID3D11BlendState* pAddingBlendState;
+
+private:
+	static Microsoft::WRL::ComPtr<ID3D11BlendState> cpAddingBlendState;
+
+public:
 	static void InitDevice(
 		IN const UINT& uiWidthIn,
 		IN const UINT& uiHeightIn,

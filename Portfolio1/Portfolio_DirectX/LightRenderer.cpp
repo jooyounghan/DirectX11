@@ -24,7 +24,6 @@ void LightRenderer::UpdateLightMap(
 )
 {
 	DirectXDevice::AddIgnoringMessageFilter(D3D11_MESSAGE_ID_DEVICE_DRAW_RENDERTARGETVIEW_NOT_SET);
-	DirectXDevice::AddIgnoringMessageFilter(D3D11_MESSAGE_ID_DEVICE_IASETPRIMITIVETOPOLOGY_TOPOLOGY_UNDEFINED);
 	DirectXDevice::ApplyDebugMessageFilter();
 
 	pModelSet = &vStaticMeshes;
@@ -38,7 +37,6 @@ void LightRenderer::UpdateLightMap(
 	pModelSet = nullptr;
 
 	DirectXDevice::RemoveIgnoringMessageFilter(D3D11_MESSAGE_ID_DEVICE_DRAW_RENDERTARGETVIEW_NOT_SET);
-	DirectXDevice::RemoveIgnoringMessageFilter(D3D11_MESSAGE_ID_DEVICE_IASETPRIMITIVETOPOLOGY_TOPOLOGY_UNDEFINED);
 	DirectXDevice::ApplyDebugMessageFilter();
 }
 
@@ -80,7 +78,6 @@ void LightRenderer::VisitLight(PointLight& pointLight)
 	DirectXDevice::pDeviceContext->VSSetShader(nullptr, NULL, NULL);
 	DirectXDevice::pDeviceContext->PSSetShader(nullptr, NULL, NULL);
 	DirectXDevice::pDeviceContext->IASetInputLayout(nullptr);
-	DirectXDevice::pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_UNDEFINED);
 
 	DirectXDevice::pDeviceContext->VSSetConstantBuffers(1, 1, &pNullBuffer);
 	DirectXDevice::pDeviceContext->VSSetConstantBuffers(0, 1, &pNullBuffer);
@@ -122,7 +119,6 @@ void LightRenderer::VisitLight(SpotLight& spotLight)
 	DirectXDevice::pDeviceContext->VSSetShader(nullptr, NULL, NULL);
 	DirectXDevice::pDeviceContext->PSSetShader(nullptr, NULL, NULL);
 	DirectXDevice::pDeviceContext->IASetInputLayout(nullptr);
-	DirectXDevice::pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_UNDEFINED);
 
 	DirectXDevice::pDeviceContext->VSSetConstantBuffers(1, 1, &pNullBuffer);
 	DirectXDevice::pDeviceContext->VSSetConstantBuffers(0, 1, &pNullBuffer);

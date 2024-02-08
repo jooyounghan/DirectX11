@@ -56,8 +56,9 @@ public:
 	virtual void UpdateModel(const float& fDelta) override;
 
 public:
-	virtual void AcceptModelManipulator(class ModelManipulator* pModelManipulator) override;
-	virtual void AcceptModelRenderer(class ModelRenderer* pModelRenderer) = 0;
+	virtual void AcceptModelManipulating(class ModelManipulator* pModelManipulator) override;
+	virtual void AcceptModelRendering(class ModelRenderer* pModelRenderer) = 0;
+	virtual void AcceptNormalVectorRendering(class NormalVectorRenderer* pNormalVectorRenderer) = 0;
 
 public:
 	virtual void ScaleUp(const float& fXup, const float& fYUp, const float& fZUp) override final;

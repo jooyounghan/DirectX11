@@ -12,6 +12,14 @@ public:
 	virtual ~AIBLModel();
 
 public:
+	struct
+	{
+		float DiffuseRate;
+		float fDummy[3];
+	} sIBLData;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> cpIBLDataBuffer;
+
+public:
 	std::shared_ptr<class DDSImageFile>		spEnvSpecularTextureFile;
 	std::shared_ptr<class DDSImageFile>		spEnvDiffuseTextureFile;
 	std::shared_ptr<class NormalImageFile>	spEnvBrdfTextureFile;
@@ -20,7 +28,13 @@ private:
 	virtual void Load(const std::string& path) override {};
 
 public:
-	virtual void AcceptModelManipulator(class ModelManipulator* pModelManipulator) override;
-	virtual void AcceptModelRenderer(class ModelRenderer* pModelRenderer) override;
+	virtual void UpdateModel(const float& fDelta) override;
+
+public:
+	virtual void AcceptModelManipulating(class ModelManipulator* pModelManipulator) override;
+	virtual void AcceptModelRendering(class ModelRenderer* pModelRenderer) override;
+
+private:
+	virtual void AcceptNormalVectorRendering(class NormalVectorRenderer* pNormalVectorRenderer) override {};
 };
 

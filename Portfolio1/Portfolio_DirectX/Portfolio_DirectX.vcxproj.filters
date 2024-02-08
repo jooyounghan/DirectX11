@@ -127,6 +127,15 @@
     <Filter Include="소스 파일\Renderer\Extended">
       <UniqueIdentifier>{e64e1940-cf6a-4ed5-ba81-f961d928e032}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shader\PBRModel">
+      <UniqueIdentifier>{36172d08-d571-4974-be87-1645c123ca2e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader\IBL">
+      <UniqueIdentifier>{339153a1-ca76-46b1-bdf6-e259e987e9ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader\DebugHelper">
+      <UniqueIdentifier>{0913e968-4e73-429d-aeba-4d8131a6dbea}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseApp.h">
@@ -202,9 +211,6 @@
       <Filter>헤더 파일\Utils</Filter>
     </ClInclude>
     <ClInclude Include="DepthStencilState.h">
-      <Filter>헤더 파일\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="BlendState.h">
       <Filter>헤더 파일\Utils</Filter>
     </ClInclude>
     <ClInclude Include="Shaders.h">
@@ -289,7 +295,10 @@
       <Filter>헤더 파일\Renderer\Extended</Filter>
     </ClInclude>
     <ClInclude Include="LightRenderer.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>헤더 파일\Renderer\Extended</Filter>
+    </ClInclude>
+    <ClInclude Include="NormalVectorRenderer.h">
+      <Filter>헤더 파일\Renderer\Extended</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -368,9 +377,6 @@
     <ClCompile Include="DepthStencilState.cpp">
       <Filter>소스 파일\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="BlendState.cpp">
-      <Filter>소스 파일\Utils</Filter>
-    </ClCompile>
     <ClCompile Include="Shaders.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -444,16 +450,13 @@
       <Filter>소스 파일\Renderer\Extended</Filter>
     </ClCompile>
     <ClCompile Include="LightRenderer.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\Renderer\Extended</Filter>
+    </ClCompile>
+    <ClCompile Include="NormalVectorRenderer.cpp">
+      <Filter>소스 파일\Renderer\Extended</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="BaseVS.hlsl">
-      <Filter>Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="PBRWithSpotPS.hlsl">
-      <Filter>Shader</Filter>
-    </FxCompile>
     <FxCompile Include="MS16ToSS8CS.hlsl">
       <Filter>Shader\Filter</Filter>
     </FxCompile>
@@ -463,14 +466,38 @@
     <FxCompile Include="DepthOnlyPathPS.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
-    <FxCompile Include="PBRWithPointPS.hlsl">
-      <Filter>Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="IBLModelPS.hlsl">
-      <Filter>Shader</Filter>
-    </FxCompile>
     <FxCompile Include="BasePS.hlsl">
       <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="PBRWithPointPS.hlsl">
+      <Filter>Shader\PBRModel</Filter>
+    </FxCompile>
+    <FxCompile Include="PBRWithSpotPS.hlsl">
+      <Filter>Shader\PBRModel</Filter>
+    </FxCompile>
+    <FxCompile Include="IBLModelPS.hlsl">
+      <Filter>Shader\IBL</Filter>
+    </FxCompile>
+    <FxCompile Include="BaseVS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="BaseDS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="BaseHS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="PBRWithIBLPS.hlsl">
+      <Filter>Shader\PBRModel</Filter>
+    </FxCompile>
+    <FxCompile Include="NormalVectorPS.hlsl">
+      <Filter>Shader\DebugHelper</Filter>
+    </FxCompile>
+    <FxCompile Include="NormalVectorGS.hlsl">
+      <Filter>Shader\DebugHelper</Filter>
+    </FxCompile>
+    <FxCompile Include="NormalVectorVS.hlsl">
+      <Filter>Shader\DebugHelper</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
@@ -479,6 +506,15 @@
     </None>
     <None Include="CommonFilterArgs.hlsli">
       <Filter>Shader\Filter</Filter>
+    </None>
+    <None Include="MathematicalHelper.hlsli">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="BrdfHelper.hlsli">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="NormalVector.hlsli">
+      <Filter>Shader\DebugHelper</Filter>
     </None>
   </ItemGroup>
 </Project>

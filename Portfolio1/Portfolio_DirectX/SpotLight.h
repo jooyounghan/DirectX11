@@ -5,6 +5,8 @@
 class SpotLight : public ILight, protected ViewableDepthOnly
 {
 	friend class LightRenderer;
+	friend class ModelRenderer;
+
 public:
 	SpotLight(
 		const float& fXPos,
@@ -30,6 +32,10 @@ public:
 
 public:
 	virtual void AcceptLightRenderer(class LightRenderer* pLightRenderer) override;
+	
+public:
+	virtual void AcceptSettingForDirectLighting(class ModelRenderer* pModelRenderer) override;
+	virtual void AcceptResetingForDirectLighting(class ModelRenderer* pModelRenderer) override;
 
 private:
 	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn) {};

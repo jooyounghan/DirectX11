@@ -15,7 +15,7 @@ private:
 
 private:
 	class AIBLModel* pIBLModel;
-	const std::vector<class ILight*>* vLights;
+	const std::vector<class ILight*>* pLights;
 
 public:
 	inline void SetCamera(ACamera* pCameraIn) { pCamera = pCameraIn; }
@@ -29,7 +29,13 @@ public:
 	);
 
 public:
-	void VisitModel(class APBRStaticMesh& pbrStaticMesh);
-	void VisitModel(class AIBLModel& iblMesh);
+	void RenderModel(class APBRStaticMesh& pbrStaticMesh);
+	void RenderModel(class AIBLModel& iblMesh);
+
+public:
+	void SetLight(class PointLight& pointLight);
+	void SetLight(class SpotLight& spotLight);
+	void ResetLight(class PointLight& pointLight);
+	void ResetLight(class SpotLight& pointLight);
 };
 

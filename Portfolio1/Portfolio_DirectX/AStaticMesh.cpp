@@ -22,9 +22,9 @@ void AStaticMesh::UpdateModel(const float& fDelta)
 	ID3D11Helper::UpdateBuffer(DirectXDevice::pDeviceContext, sTransformation, D3D11_MAP_WRITE_DISCARD, cpTransformationBuffer.Get());
 }
 
-void AStaticMesh::AcceptModelManipulator(ModelManipulator* pModelManipulator)
+void AStaticMesh::AcceptModelManipulating(ModelManipulator* pModelManipulator)
 {
-	pModelManipulator->VisitModel(*this);
+	pModelManipulator->ManipulateModel(*this);
 }
 
 void AStaticMesh::ScaleUp(const float& fXup, const float& fYUp, const float& fZUp)

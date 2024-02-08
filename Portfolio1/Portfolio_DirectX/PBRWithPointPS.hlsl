@@ -1,4 +1,9 @@
-float4 main() : SV_TARGET
+#include "Common.hlsli"
+
+
+PixelOutput main(VertexOutput input)
 {
-	return float4(1.0f, 1.0f, 1.0f, 1.0f);
+    PixelOutput result;
+    result.pixelColor = float4(input.f2TexCoord.x, input.f2TexCoord.y, 0.0f, 1.0f);
+    return result;
 }

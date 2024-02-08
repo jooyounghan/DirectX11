@@ -7,6 +7,7 @@
 
 #include "ModelRenderer.h"
 #include "LightRenderer.h"
+#include "NormalVectorRenderer.h"
 
 #include <vector>
 #include <unordered_map>
@@ -36,10 +37,11 @@ public:
 public:
 	ModelManipulator modelManipulator;
 	FileManipulator fileManipulator;
-
+	
 public:
 	ModelRenderer modelRenderer;
 	LightRenderer lightRenderer;
+	NormalVectorRenderer normalVectorRenderer;
 
 private:
 	class AIBLModel* pIBLModel;

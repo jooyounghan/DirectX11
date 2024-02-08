@@ -3,6 +3,7 @@
 #include "DirectXDevice.h"
 
 #include "LightRenderer.h"
+#include "ModelRenderer.h"
 
 SpotLight::SpotLight(
 	const float& fXPos,
@@ -70,4 +71,14 @@ void SpotLight::UpdateLight()
 void SpotLight::AcceptLightRenderer(LightRenderer* pLightRenderer)
 {
 	pLightRenderer->VisitLight(*this);
+}
+
+void SpotLight::AcceptSettingForDirectLighting(ModelRenderer* pModelRenderer)
+{
+	pModelRenderer->SetLight(*this);
+}
+
+void SpotLight::AcceptResetingForDirectLighting(ModelRenderer* pModelRenderer)
+{
+	pModelRenderer->ResetLight(*this);
 }

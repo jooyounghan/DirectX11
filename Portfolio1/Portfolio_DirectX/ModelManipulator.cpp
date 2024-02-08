@@ -28,24 +28,24 @@ void ModelManipulator::PopAsDialog()
 
 	if (*ppSelectedStaticMesh != nullptr)
 	{
-		(*ppSelectedStaticMesh)->AcceptModelManipulator(this);
+		(*ppSelectedStaticMesh)->AcceptModelManipulating(this);
 	}
 	End();
 }
 
-void ModelManipulator::VisitModel(AStaticMesh& staticMesh)
+void ModelManipulator::ManipulateModel(AStaticMesh& staticMesh)
 {
 	DrawTransformation(&staticMesh);
 }
 
-void ModelManipulator::VisitModel(APBRStaticMesh& pbrStaticMesh)
+void ModelManipulator::ManipulateModel(APBRStaticMesh& pbrStaticMesh)
 {
 	DrawTransformation((AStaticMesh*)(&pbrStaticMesh));
 	Separator();
 	DrawPBRTexture(&pbrStaticMesh);
 }
 
-void ModelManipulator::VisitModel(AIBLModel& iblModel)
+void ModelManipulator::ManipulateModel(AIBLModel& iblModel)
 {
 	DrawTransformation((AStaticMesh*)(&iblModel));
 	Separator();
@@ -67,8 +67,19 @@ void ModelManipulator::DrawPBRTexture(APBRStaticMesh* pPBRStaticMesh)
 {
 	if (CollapsingHeader("PBR Model Textures"))
 	{
-		DragFloat3("Frenel Reflectance", pPBRStaticMesh->sPBRConstant.fFrenelConstant, 0.005f, 0.f, 1.f, "%.3f");
-		DragFloat("Height Factor", &pPBRStaticMesh->sPBRConstant.fHeightFactor, 0.005f, 0.f, 1.f, "%.3f");
+		DragFloat3("Fresnel Reflectance", pPBRStaticMesh->sPBRConstant.fFresnelConstant, 0.005f, 0.f, 1.f, "%.3f");
+
+		if (pPBRStaticMesh->pModelTexture[APBRStaticMesh::HEIGHT_TEXTURE_MAP])
+		{
+			DragFloat("Height Factor", &pPBRStaticMesh->sPBRConstant.fHeightFactor, 0.005f, 0.f, 1.f, "%.3f");
+		}
+		else
+		{
+			BeginDisabled();
+			pPBRStaticMesh->sPBRConstant.fHeightFactor = 0.f;
+			DragFloat("Height Factor", &pPBRStaticMesh->sPBRConstant.fHeightFactor, 0.005f, 0.f, 1.f, "%.3f");
+			EndDisabled();
+		}
 
 		for (WORD idx = 0; idx < APBRStaticMesh::TEXTURE_MAP_NUM; ++idx)
 		{
@@ -85,6 +96,13 @@ void ModelManipulator::DrawIBLTexture(AIBLModel* pIBLModel)
 {
 	if (CollapsingHeader("IBL Model Textures"))
 	{
+		DragFloat(
+			"Diffuse Rate",
+			&pIBLModel->sIBLData.DiffuseRate,
+			0.005f,
+			0.f, 1.f, "%.4f"
+		);
+
 		SetTextureDragAndDrop(
 			"Specular IBL Texture",
 			pIBLModel->spEnvSpecularTextureFile,

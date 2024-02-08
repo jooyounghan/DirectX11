@@ -3,6 +3,7 @@
 #include "DirectXDevice.h"
 
 #include "LightRenderer.h"
+#include "ModelRenderer.h"
 
 PointLight::PointLight(
 	const float& fXPos,
@@ -89,3 +90,14 @@ void PointLight::AcceptLightRenderer(LightRenderer* pLightRenderer)
 {
 	pLightRenderer->VisitLight(*this);
 }
+
+void PointLight::AcceptSettingForDirectLighting(ModelRenderer* pModelRenderer)
+{
+	pModelRenderer->SetLight(*this);
+}
+
+void PointLight::AcceptResetingForDirectLighting(ModelRenderer* pModelRenderer)
+{
+	pModelRenderer->ResetLight(*this);
+}
+
