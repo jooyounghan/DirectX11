@@ -1,13 +1,19 @@
 #include "NormalVector.hlsli"
 #include "MathematicalHelper.hlsli"
 
-cbuffer CameraViewProj : register(b0)
+cbuffer PBRConstant : register(b0)
+{
+    float3 fFresnelConstant;
+    float fHeightFactor;
+};
+
+cbuffer CameraViewProj : register(b1)
 {
     matrix mViewProj;
     matrix mViewProjInv;
 };
 
-cbuffer IsPBRTextureOn : register(b1)
+cbuffer IsPBRTextureOn : register(b2)
 {
     bool bIsAOOn;
     bool bIsColorOn;
@@ -20,6 +26,7 @@ cbuffer IsPBRTextureOn : register(b1)
 };
 
 Texture2D NormalTexture : register(t0);
+Texture2D HeightTexture : register(t1);
 
 SamplerState ClampSampler : register(s0);
 
@@ -28,7 +35,7 @@ void main(
 	triangle NormalVectorVSOutput input[3],
 	inout LineStream<NormalVectorGSOutput> output
 )
-{
+{    
     float2x3 TB;
     if (bIsNormalOn)
     {
@@ -50,21 +57,27 @@ void main(
     for (uint i = 0; i < 3; i++)
     {
         NormalVectorGSOutput element;
-       
-        float3 fNormalSampled = input[i].f4ModelNormal;
-        
-        if (bIsNormalOn)
-        {           
-            fNormalSampled = 2.f * NormalTexture.SampleLevel(ClampSampler, input[i].f2TexCoord, 0.f).xyz - 1.f;
-            float3x3 TBN = float3x3(TB[0], TB[1], input[i].f4ModelNormal.xyz);
-            fNormalSampled = normalize(mul(fNormalSampled, TBN));
-        }
 
+        float4 f4ModelNormal = input[i].f4ModelNormal;
+        if (bIsNormalOn)
+        {
+            float3 fNormalSampled = 2.f * NormalTexture.SampleLevel(ClampSampler, input[i].f2TexCoord, 0.f).xyz - 1.f;
+            float3x3 TBN = float3x3(TB[0], TB[1], input[i].f4ModelNormal.xyz);
+            f4ModelNormal = float4(normalize(mul(fNormalSampled, TBN)), 0.f);
+        }
+        
+        float4 f4ModelPos = input[i].f4ModelPos;
+        if (bIsHeightOn)
+        {
+            float fHeightSampled = 2.f * HeightTexture.SampleLevel(ClampSampler, input[i].f2TexCoord, 0.f).x - 1.f;
+            fHeightSampled = fHeightFactor * fHeightSampled;
+            f4ModelPos += fHeightSampled * f4ModelNormal;
+        }
+       
         for (uint j = 0; j < 2; j++)
         {
+            element.f4ProjPos = mul(f4ModelPos + f4ModelNormal * j, mViewProj);
             element.f2TexCoord = float2(j, 0);
-            element.f4ProjPos = input[i].f4ModelPos + float4(fNormalSampled, 0.f) * j;
-            element.f4ProjPos = mul(element.f4ProjPos, mViewProj);
             output.Append(element);
         }
         output.RestartStrip();

@@ -92,7 +92,11 @@ void PortfolioApp::Render()
 	pMainCamera->ClearRTV();
 	pMainCamera->ClearDSV();
 
-	normalVectorRenderer.RenderNormalVector(pMainCamera, pModels);
+	if (modelManipulator.GetIsDrawingNormal())
+	{
+		normalVectorRenderer.RenderNormalVector(pMainCamera, pModels);
+	}
+
 	modelRenderer.RenderObjects(pIBLModel, pModels, pLights);
 	
 	RenderImGUI();
@@ -196,7 +200,7 @@ LRESULT __stdcall PortfolioApp::AppProc(HWND hWnd, UINT msg, WPARAM wParam, LPAR
 		switch (wParam) {
 		case EKeyCode::W:
 		case EKeyCode::A:
-		case EKeyCode::S:
+		case EKeyCode::S:	normalVectorRenderer.RenderNormalVector(pMainCamera, pModels);
 		case EKeyCode::D:
 			pMainCamera->Release((EKeyCode)wParam);
 			break;

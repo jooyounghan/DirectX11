@@ -9,8 +9,12 @@ public:
 	ModelManipulator(class AStaticMesh** ppSelectedStaticMeshIn);
 	virtual ~ModelManipulator();
 
-public:
+private:
 	AStaticMesh** ppSelectedStaticMesh;
+	bool bIsDrawingNormal;
+
+public:
+	inline bool GetIsDrawingNormal() { return bIsDrawingNormal; }
 
 public:
 	virtual void PopAsDialog() override;

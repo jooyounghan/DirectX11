@@ -21,6 +21,9 @@ void NormalVectorRenderer::RenderNormalVector(
 	const std::unordered_map<uint32_t, class AStaticMesh*>& vStaticMeshesIn
 )
 {
+	DirectXDevice::AddIgnoringMessageFilter(D3D11_MESSAGE_ID_DEVICE_DRAW_SHADERRESOURCEVIEW_NOT_SET);
+	DirectXDevice::ApplyDebugMessageFilter();
+	
 	auto [rtvCnt, vRTVs, pDSV] = pCameraIn->GetRTVs();
 	DirectXDevice::pDeviceContext->OMSetRenderTargets(rtvCnt, vRTVs.data(), pDSV);
 	DirectXDevice::pDeviceContext->RSSetViewports(1, &pCameraIn->sViewPort);
@@ -51,6 +54,9 @@ void NormalVectorRenderer::RenderNormalVector(
 	DirectXDevice::pDeviceContext->GSSetShader(nullptr, NULL, NULL);
 	DirectXDevice::pDeviceContext->PSSetShader(nullptr, NULL, NULL);
 	DirectXDevice::pDeviceContext->IASetInputLayout(nullptr);
+
+	DirectXDevice::RemoveIgnoringMessageFilter(D3D11_MESSAGE_ID_DEVICE_DRAW_SHADERRESOURCEVIEW_NOT_SET);
+	DirectXDevice::ApplyDebugMessageFilter();
 }
 
 void NormalVectorRenderer::RenderNormal(APBRStaticMesh& pbrStaticMesh)
@@ -67,18 +73,30 @@ void NormalVectorRenderer::RenderNormal(APBRStaticMesh& pbrStaticMesh)
 
 	DirectXDevice::pDeviceContext->VSSetConstantBuffers(0, 1, pbrStaticMesh.cpTransformationBuffer.GetAddressOf());
 
-	DirectXDevice::pDeviceContext->GSSetConstantBuffers(0, 1, pCamera->cpViewProjBuffer.GetAddressOf());
-	DirectXDevice::pDeviceContext->GSSetConstantBuffers(1, 1, pbrStaticMesh.cpPBRTextureFlagBuffer.GetAddressOf());
+	DirectXDevice::pDeviceContext->GSSetConstantBuffers(0, 1, pbrStaticMesh.cpPBRConstantBuffer.GetAddressOf());
+	DirectXDevice::pDeviceContext->GSSetConstantBuffers(1, 1, pCamera->cpViewProjBuffer.GetAddressOf());
+	DirectXDevice::pDeviceContext->GSSetConstantBuffers(2, 1, pbrStaticMesh.cpPBRTextureFlagBuffer.GetAddressOf());
+
 	DirectXDevice::pDeviceContext->GSSetShaderResources(0, 1, 
-		pbrStaticMesh.pModelTexture[APBRStaticMesh::NORMAL_TEXTURE_MAP] ? 
-		pbrStaticMesh.pModelTexture[APBRStaticMesh::NORMAL_TEXTURE_MAP]->cpSRV.GetAddressOf() : & pNullSRV);
+		pbrStaticMesh.pModelTexture[APBRStaticMesh::NORMAL_TEXTURE_MAP] != nullptr ? 
+		pbrStaticMesh.pModelTexture[APBRStaticMesh::NORMAL_TEXTURE_MAP]->cpSRV.GetAddressOf() : &pNullSRV);
+	DirectXDevice::pDeviceContext->GSSetShaderResources(1, 1,
+		pbrStaticMesh.pModelTexture[APBRStaticMesh::HEIGHT_TEXTURE_MAP] != nullptr ?
+		pbrStaticMesh.pModelTexture[APBRStaticMesh::HEIGHT_TEXTURE_MAP]->cpSRV.GetAddressOf() : &pNullSRV);
+
 	DirectXDevice::pDeviceContext->GSSetSamplers(0, 1, DirectXDevice::ppClampSampler);
 
 	pbrStaticMesh.Draw();
 
 	DirectXDevice::pDeviceContext->VSSetConstantBuffers(0, 1, &pNullBuffer);
+
 	DirectXDevice::pDeviceContext->GSSetConstantBuffers(0, 1, &pNullBuffer);
 	DirectXDevice::pDeviceContext->GSSetConstantBuffers(1, 1, &pNullBuffer);
+	DirectXDevice::pDeviceContext->GSSetConstantBuffers(2, 1, &pNullBuffer);
+
 	DirectXDevice::pDeviceContext->GSSetShaderResources(0, 1, &pNullSRV);
+	DirectXDevice::pDeviceContext->GSSetShaderResources(1, 1, &pNullSRV);
+
 	DirectXDevice::pDeviceContext->GSSetSamplers(0, 1, &pNullSampler);
+
 }

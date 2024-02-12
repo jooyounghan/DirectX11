@@ -42,13 +42,6 @@ DomainOutput main(
     Output.f2TexCoord = patch[0].f2TexCoord * domain.x + patch[1].f2TexCoord * domain.y + patch[2].f2TexCoord * domain.z;
     Output.f4ModelNormal = normalize(patch[0].f4ModelNormal * domain.x + patch[1].f4ModelNormal * domain.y + patch[2].f4ModelNormal * domain.z);
             
-    float fHeightSampled = 2.f * HeightTexture.SampleLevel(WrapSampler, Output.f2TexCoord, 0.f).x - 1.f;
-    fHeightSampled = fHeightFactor * fHeightSampled;
-    
-    Output.f4ModelPos += fHeightSampled * Output.f4ModelNormal;
-    Output.f4ProjPos = Output.f4ModelPos;
-    Output.f4ProjPos = mul(Output.f4ProjPos, mViewProj);
-
     if (bIsNormalOn)
     {
         float3 e1 = normalize((patch[1].f4ModelPos - patch[0].f4ModelPos).xyz);
@@ -71,5 +64,14 @@ DomainOutput main(
         Output.f4ModelNormal = float4(normalize(mul(fNormalSampled, TBN)), 0.f);
     }
 
+    if (bIsHeightOn)
+    {
+        float fHeightSampled = 2.f * HeightTexture.SampleLevel(WrapSampler, Output.f2TexCoord, 0.f).x - 1.f;
+        fHeightSampled = fHeightFactor * fHeightSampled;
+        Output.f4ModelPos += fHeightSampled * Output.f4ModelNormal;        
+    }
+
+    Output.f4ProjPos = mul(Output.f4ModelPos, mViewProj);
+    
     return Output;
 }

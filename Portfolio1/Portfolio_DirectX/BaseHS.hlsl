@@ -12,8 +12,8 @@ HS_CONSTANT_DATA_OUTPUT CalcHSPatchConstants(
 	HS_CONSTANT_DATA_OUTPUT Output;
 	
     float3 fAveragePos = (ip[0].f4ModelPos.xyz + ip[1].f4ModelPos.xyz + ip[2].f4ModelPos.xyz) / 3.f;
-    float distance = length(fAveragePos - f4CameraPos.xyz / f4CameraPos.w);
-    float fact = max(4 * exp(-(distance / 10)), 1.f);
+    float distance = length(fAveragePos - f4CameraPos.xyz);
+    float fact = max(3 * exp(-(distance / 5.f)), 1.f);
 	
 	Output.EdgeTessFactor[0] = 
 		Output.EdgeTessFactor[1] = 

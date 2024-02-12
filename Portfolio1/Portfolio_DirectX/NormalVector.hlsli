@@ -12,6 +12,7 @@ struct NormalVectorVSOutput
     float4 f4ModelNormal : NORMAL;
 };
 
+
 struct NormalVectorGSOutput
 {
     float4 f4ProjPos : SV_Position;
@@ -20,5 +21,5 @@ struct NormalVectorGSOutput
 
 struct NormalVectorPSOutput
 {
-    float4 pixelColor : SV_Target;
+    float4 pixelColor : SV_Target0;
 };

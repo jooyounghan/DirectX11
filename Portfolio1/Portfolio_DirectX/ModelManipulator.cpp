@@ -10,7 +10,7 @@ using namespace std;
 using namespace ImGui;
 
 ModelManipulator::ModelManipulator(AStaticMesh** ppSelectedStaticMeshIn)
-	: ppSelectedStaticMesh(ppSelectedStaticMeshIn)
+	: ppSelectedStaticMesh(ppSelectedStaticMeshIn), bIsDrawingNormal(false)
 {
 }
 
@@ -25,6 +25,8 @@ void ModelManipulator::PopAsDialog()
 	ImGui::Text("Average %.3f ms/frame (%.1f FPS)",
 		1000.0f / ImGui::GetIO().Framerate,
 		ImGui::GetIO().Framerate);
+
+	Checkbox("Drawing Normal Vector", &bIsDrawingNormal);
 
 	if (*ppSelectedStaticMesh != nullptr)
 	{
