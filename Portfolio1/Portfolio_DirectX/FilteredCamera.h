@@ -1,6 +1,7 @@
 #pragma once
 #include "ACamera.h"
 #include <vector>
+#include <memory>
 
 class FilteredCamera : public ACamera
 {
@@ -23,7 +24,7 @@ public:
 	virtual ~FilteredCamera();
 
 protected:
-	std::vector<AFilter*> pFilters;
+	std::vector<std::unique_ptr<class AFilter>> upFilters;
 
 public:
 	inline virtual std::tuple<UINT, std::vector<ID3D11RenderTargetView*>, ID3D11DepthStencilView*> GetRTVs() {
@@ -35,5 +36,8 @@ public:
 public:
 	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn) override;
 	virtual void Resolve() override;
+
+public:
+	void AddBlurState();
 };
 

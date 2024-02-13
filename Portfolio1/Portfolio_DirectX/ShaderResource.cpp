@@ -33,7 +33,7 @@ ShaderResource::ShaderResource(
 	sDesc.Format = eSRVFormatIn;
 	sDesc.ViewDimension = eDimensionIn;
 	sDesc.Texture2D.MipLevels = 1;
-	ID3D11Helper::CreateShaderResoureView(DirectXDevice::pDevice, cpTexture2D.Get(), cpSRV.GetAddressOf(), &sDesc);
+	ID3D11Helper::CreateShaderResoureView(DirectXDevice::pDevice, cpTexture2D.Get(), GetAddressOfSRV(), &sDesc);
 }
 
 ShaderResource::ShaderResource(
@@ -58,7 +58,7 @@ ShaderResource::ShaderResource(
 	),
 	IRectangle(uiWidthIn, uiHeightIn)
 {
-	ID3D11Helper::CreateShaderResoureView(DirectXDevice::pDevice, cpTexture2D.Get(), cpSRV.GetAddressOf());
+	ID3D11Helper::CreateShaderResoureView(DirectXDevice::pDevice, cpTexture2D.Get(), GetAddressOfSRV());
 }
 
 ShaderResource::ShaderResource(
@@ -82,7 +82,7 @@ ShaderResource::ShaderResource(
 	),
 	IRectangle(uiWidthIn, uiHeightIn)
 {
-	ID3D11Helper::CreateShaderResoureView(DirectXDevice::pDevice, cpTexture2D.Get(), cpSRV.GetAddressOf());
+	ID3D11Helper::CreateShaderResoureView(DirectXDevice::pDevice, cpTexture2D.Get(), GetAddressOfSRV());
 }
 
 ShaderResource::~ShaderResource()
@@ -94,7 +94,7 @@ void ShaderResource::Resize(const UINT& uiWidthIn, const UINT& uiHeightIn)
 	cpSRV.Reset();
 	Texture2D::Resize(uiWidthIn, uiHeightIn);
 	ID3D11Helper::CreateShaderResoureView(
-		DirectXDevice::pDevice, cpTexture2D.Get(), cpSRV.GetAddressOf()
+		DirectXDevice::pDevice, cpTexture2D.Get(), GetAddressOfSRV()
 	);
 }
 

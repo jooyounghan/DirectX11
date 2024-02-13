@@ -43,8 +43,13 @@ public:
 	);
 	virtual ~ShaderResource();
 
-public:
+protected:
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> cpSRV;
+
+public:
+	inline void ResetSRV() { cpSRV.ReleaseAndGetAddressOf(); cpSRV = nullptr; }
+	inline ID3D11ShaderResourceView* GetSRV() { return cpSRV.Get(); }
+	inline ID3D11ShaderResourceView** GetAddressOfSRV() { return cpSRV.GetAddressOf(); }
 
 public:
 	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn);

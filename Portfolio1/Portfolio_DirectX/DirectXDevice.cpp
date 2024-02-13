@@ -10,6 +10,12 @@ Microsoft::WRL::ComPtr<ID3D11Device> DirectXDevice::cpDevice;
 Microsoft::WRL::ComPtr<ID3D11DeviceContext> DirectXDevice::cpDeviceContext;
 Microsoft::WRL::ComPtr<IDXGISwapChain> DirectXDevice::cpSwapChain;
 
+ID3D11Texture2D* DirectXDevice::pBackBuffer = nullptr;
+ID3D11RenderTargetView* DirectXDevice::pRenderTargetView = nullptr;
+
+Microsoft::WRL::ComPtr<ID3D11Texture2D> DirectXDevice::cpBackBuffer;
+Microsoft::WRL::ComPtr<ID3D11RenderTargetView> DirectXDevice::cpRenderTargetView;
+
 ID3D11Debug* DirectXDevice::pDebug = nullptr;
 ID3D11InfoQueue* DirectXDevice::pDebugInfoQueue = nullptr;
 std::vector<D3D11_MESSAGE_ID> DirectXDevice::vDebugMessages;
@@ -24,6 +30,11 @@ Microsoft::WRL::ComPtr<ID3D11SamplerState> DirectXDevice::cpBorderSampler;
 
 ID3D11BlendState* DirectXDevice::pAddingBlendState = nullptr;
 Microsoft::WRL::ComPtr<ID3D11BlendState> DirectXDevice::cpAddingBlendState;
+
+ID3D11DepthStencilState* DirectXDevice::pDrawLessEqualDSS = nullptr;
+Microsoft::WRL::ComPtr<ID3D11DepthStencilState> DirectXDevice::cpDrawLessEqualDSS;
+
+
 
 void DirectXDevice::InitDevice(
 	IN const UINT& uiWidthIn, 
@@ -47,6 +58,8 @@ void DirectXDevice::InitDevice(
 	pDevice = cpDevice.Get();
 	pDeviceContext = cpDeviceContext.Get();
 	pSwapChain = cpSwapChain.Get();
+
+	SetBackBuffer();
 
 	HRESULT hr = pDevice->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<void**>(&pDebug));
 	if (SUCCEEDED(hr))
@@ -97,18 +110,57 @@ void DirectXDevice::InitDevice(
 	sBlendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
 	sBlendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 
-	sBlendDesc.RenderTarget[1].BlendEnable = true;
-	sBlendDesc.RenderTarget[1].SrcBlend = D3D11_BLEND_ONE;
-	sBlendDesc.RenderTarget[1].DestBlend = D3D11_BLEND_ZERO;
-	sBlendDesc.RenderTarget[1].BlendOp = D3D11_BLEND_OP_ADD;
-
-	sBlendDesc.RenderTarget[1].SrcBlendAlpha = D3D11_BLEND_ONE;
-	sBlendDesc.RenderTarget[1].DestBlendAlpha = D3D11_BLEND_ZERO;
-	sBlendDesc.RenderTarget[1].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-	sBlendDesc.RenderTarget[1].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+	sBlendDesc.RenderTarget[1].BlendEnable = false;
 
 	ID3D11Helper::CreateBlendState(pDevice, &sBlendDesc, cpAddingBlendState.GetAddressOf());
 	pAddingBlendState = cpAddingBlendState.Get();
+
+
+
+	D3D11_DEPTH_STENCIL_DESC sDepthStencilDesc;
+	AutoZeroMemory(sDepthStencilDesc);
+
+	sDepthStencilDesc.DepthEnable = TRUE;
+	sDepthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	sDepthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
+	sDepthStencilDesc.StencilEnable = TRUE;
+	sDepthStencilDesc.StencilReadMask = D3D11_DEFAULT_STENCIL_READ_MASK;
+	sDepthStencilDesc.StencilWriteMask = D3D11_DEFAULT_STENCIL_WRITE_MASK;
+	sDepthStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+	sDepthStencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+	sDepthStencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	sDepthStencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+
+	sDepthStencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_EQUAL;
+	sDepthStencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+	sDepthStencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	sDepthStencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+
+	HRESULT hResult = pDevice->CreateDepthStencilState(&sDepthStencilDesc, cpDrawLessEqualDSS.GetAddressOf());
+	pDrawLessEqualDSS = cpDrawLessEqualDSS.Get();
+}
+
+void DirectXDevice::ResetBackBuffer()
+{
+	if (cpRenderTargetView) cpRenderTargetView.Reset();
+	cpRenderTargetView = nullptr;
+
+	if (cpBackBuffer) cpBackBuffer.Reset();
+	cpBackBuffer = nullptr;
+}
+
+void DirectXDevice::SetBackBuffer()
+{
+	ResetBackBuffer();
+
+	if (pSwapChain != nullptr)
+	{
+		pSwapChain->GetBuffer(0, IID_PPV_ARGS(cpBackBuffer.GetAddressOf()));
+		pBackBuffer = cpBackBuffer.Get();
+
+		ID3D11Helper::CreateRenderTargetView(DirectXDevice::pDevice, cpBackBuffer.Get(), cpRenderTargetView.GetAddressOf());
+		pRenderTargetView = cpRenderTargetView.Get();
+	}
 }
 
 void DirectXDevice::AddIgnoringMessageFilter(D3D11_MESSAGE_ID eMessage)

@@ -19,7 +19,8 @@ void main(uint3 DTid : SV_DispatchThreadID)
     uint pointIdx = 0;
     for (uint sampleIdx = 0; sampleIdx < MAX_MS_COUNT; ++sampleIdx)
     {
-        uint loadedValue = InputTexture2D.Load(DTid.xy, sampleIdx);
+        float2 loadPos = float2(clamp(DTid.x, 0, uiWidth), clamp(DTid.y, 0, uiHeight));
+        uint loadedValue = InputTexture2D.Load(loadPos, sampleIdx);
 
         for (uint idx = 0; idx < MAX_MS_COUNT; ++idx)
         {

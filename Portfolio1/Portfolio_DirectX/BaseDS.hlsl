@@ -25,10 +25,9 @@ cbuffer IsPBRTextureOn : register(b2)
     bool bDummy;
 };
 
-Texture2D NormalTexture : register(t0);
-Texture2D HeightTexture : register(t1);
+Texture2D HeightTexture : register(t0);
 
-SamplerState WrapSampler : register(s0);
+SamplerState ClampSampler : register(s0);
 
 [domain("tri")]
 DomainOutput main(
@@ -40,33 +39,16 @@ DomainOutput main(
     
     Output.f4ModelPos = patch[0].f4ModelPos * domain.x + patch[1].f4ModelPos * domain.y + patch[2].f4ModelPos * domain.z;
     Output.f2TexCoord = patch[0].f2TexCoord * domain.x + patch[1].f2TexCoord * domain.y + patch[2].f2TexCoord * domain.z;
-    Output.f4ModelNormal = normalize(patch[0].f4ModelNormal * domain.x + patch[1].f4ModelNormal * domain.y + patch[2].f4ModelNormal * domain.z);
-            
-    if (bIsNormalOn)
-    {
-        float3 e1 = normalize((patch[1].f4ModelPos - patch[0].f4ModelPos).xyz);
-        float3 e2 = normalize((patch[2].f4ModelPos - patch[0].f4ModelPos).xyz);
+              
+    float2x3 TB = GetTBMatrix(patch[0].f4ModelPos, patch[1].f4ModelPos, patch[2].f4ModelPos, patch[0].f2TexCoord, patch[1].f2TexCoord, patch[2].f2TexCoord);
     
-        float2 dtexXY1 = patch[1].f2TexCoord - patch[0].f2TexCoord;
-        float dtexXY1Lenght = length(dtexXY1);
-        float2 dtexXY2 = patch[2].f2TexCoord - patch[0].f2TexCoord;
-        float dtexXY2Lenght = length(dtexXY2);
+    Output.f4ModelNormal = normalize(patch[0].f4ModelNormal * domain.x + patch[1].f4ModelNormal * domain.y + patch[2].f4ModelNormal * domain.z); 
+    Output.f4ModelTangent = normalize(float4(TB[0], 0.f));
+    Output.f4ModelBiTangent = normalize(float4(TB[1], 0.f));
     
-        float2x2 dTexXY = float2x2(dtexXY1, dtexXY2);
-        float2x2 dTexXYInv = Get2X2InvMatrix(dTexXY);
-        float2x3 e = float2x3(dtexXY1Lenght * e1, dtexXY2Lenght * e2);
-    
-        float2x3 TB = mul(dTexXYInv, e);
-    
-        float3 fNormalSampled = 2.f * NormalTexture.SampleLevel(WrapSampler, Output.f2TexCoord, 0.f).xyz - 1.f;
-        float3x3 TBN = float3x3(TB[0], TB[1], Output.f4ModelNormal.xyz);
-    
-        Output.f4ModelNormal = float4(normalize(mul(fNormalSampled, TBN)), 0.f);
-    }
-
     if (bIsHeightOn)
     {
-        float fHeightSampled = 2.f * HeightTexture.SampleLevel(WrapSampler, Output.f2TexCoord, 0.f).x - 1.f;
+        float fHeightSampled = 2.f * HeightTexture.SampleLevel(ClampSampler, Output.f2TexCoord, 0.f).x - 1.f;
         fHeightSampled = fHeightFactor * fHeightSampled;
         Output.f4ModelPos += fHeightSampled * Output.f4ModelNormal;        
     }

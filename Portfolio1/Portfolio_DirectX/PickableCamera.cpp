@@ -73,7 +73,7 @@ uint32_t PickableCamera::GetPickedID()
 
 	if (RenderTarget::uiNumQualityLevels > 0)
 	{
-		IDPickableRenderTarget::Apply(IDPickableRenderTarget::RenderTarget::cpSRV.GetAddressOf());
+		IDPickableRenderTarget::Apply(IDPickableRenderTarget::RenderTarget::GetAddressOfSRV());
 		pReferenceIDTexture = IDPickableRenderTarget::AFilter::cpTexture2D.Get();
 	}
 

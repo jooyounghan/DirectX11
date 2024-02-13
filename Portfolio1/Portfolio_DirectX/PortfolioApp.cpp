@@ -59,9 +59,10 @@ void PortfolioApp::Init()
 		DXGI_FORMAT_R16G16B16A16_FLOAT,
 		DXGI_FORMAT_D24_UNORM_S8_UINT
 	);
-	pMainCamera->SetAsBackBufferAddress();
 
-	modelRenderer.SetCamera(pMainCamera);
+	pMainCamera->AddBlurState();
+	pMainCamera->LinkWithBackBuffer(true);
+
 
 	pLights.push_back(new SpotLight(0.f, 0.f, 0.f, 0.f, 0.f, 0.f));
 	pLights.push_back(new PointLight(0.f, 0.f, 0.f, 0.f, 0.f, 0.f));
@@ -87,22 +88,22 @@ void PortfolioApp::Update(const float& fDelta)
 
 void PortfolioApp::Render()
 {
-	lightRenderer.UpdateLightMap(pModels, pLights);
-
 	pMainCamera->ClearRTV();
 	pMainCamera->ClearDSV();
+
+	lightRenderer.UpdateLightMap(pModels, pLights);
 
 	if (modelManipulator.GetIsDrawingNormal())
 	{
 		normalVectorRenderer.RenderNormalVector(pMainCamera, pModels);
 	}
 
-	modelRenderer.RenderObjects(pIBLModel, pModels, pLights);
-	
+	modelRenderer.RenderObjects(pMainCamera, pIBLModel, pModels, pLights);
+
+	pMainCamera->Resolve();
+
 	RenderImGUI();
 
-	// ¸ðµ¨ ·»´õ¸µ ¹× ImGUI ·»´õ¸µ ÈÄ Resolve¸¦ ¼öÇàÇÑ´Ù.
-	pMainCamera->Resolve();
 }
 
 void PortfolioApp::Run()
@@ -157,16 +158,12 @@ void PortfolioApp::SetImGUIRendering()
 void PortfolioApp::RenderImGUI()
 {
 	ID3D11RenderTargetView* pNullRTV = nullptr;
+	DirectXDevice::pDeviceContext->OMSetRenderTargets(1, &DirectXDevice::pRenderTargetView, nullptr);
 
-	auto [rtvCnt, vRTVs, pDSV] = pMainCamera->GetRTVs();
-
-	DirectXDevice::pDeviceContext->OMSetRenderTargets(rtvCnt, vRTVs.data(), pDSV);
 	ImDrawData* test = ImGui::GetDrawData();
 	ImGui_ImplDX11_RenderDrawData(test);
 
-	DirectXDevice::pDeviceContext->OMSetRenderTargets(
-		1, &pNullRTV, nullptr
-	);
+	DirectXDevice::pDeviceContext->OMSetRenderTargets(1, &pNullRTV, nullptr);
 }
 
 void PortfolioApp::QuitImGUI()

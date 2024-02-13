@@ -79,10 +79,10 @@ void NormalVectorRenderer::RenderNormal(APBRStaticMesh& pbrStaticMesh)
 
 	DirectXDevice::pDeviceContext->GSSetShaderResources(0, 1, 
 		pbrStaticMesh.pModelTexture[APBRStaticMesh::NORMAL_TEXTURE_MAP] != nullptr ? 
-		pbrStaticMesh.pModelTexture[APBRStaticMesh::NORMAL_TEXTURE_MAP]->cpSRV.GetAddressOf() : &pNullSRV);
+		pbrStaticMesh.pModelTexture[APBRStaticMesh::NORMAL_TEXTURE_MAP]->GetAddressOfSRV() : &pNullSRV);
 	DirectXDevice::pDeviceContext->GSSetShaderResources(1, 1,
 		pbrStaticMesh.pModelTexture[APBRStaticMesh::HEIGHT_TEXTURE_MAP] != nullptr ?
-		pbrStaticMesh.pModelTexture[APBRStaticMesh::HEIGHT_TEXTURE_MAP]->cpSRV.GetAddressOf() : &pNullSRV);
+		pbrStaticMesh.pModelTexture[APBRStaticMesh::HEIGHT_TEXTURE_MAP]->GetAddressOfSRV() : &pNullSRV);
 
 	DirectXDevice::pDeviceContext->GSSetSamplers(0, 1, DirectXDevice::ppClampSampler);
 

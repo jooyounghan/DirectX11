@@ -36,23 +36,7 @@ void main(
 	inout LineStream<NormalVectorGSOutput> output
 )
 {    
-    float2x3 TB;
-    if (bIsNormalOn)
-    {
-        float3 e1 = normalize((input[1].f4ModelPos - input[0].f4ModelPos).xyz);
-        float3 e2 = normalize((input[2].f4ModelPos - input[0].f4ModelPos).xyz);
-    
-        float2 dtexXY1 = input[1].f2TexCoord - input[0].f2TexCoord;
-        float dtexXY1Lenght = length(dtexXY1);
-        float2 dtexXY2 = input[2].f2TexCoord - input[0].f2TexCoord;
-        float dtexXY2Lenght = length(dtexXY2);
-    
-        float2x2 dTexXY = float2x2(dtexXY1, dtexXY2);
-        float2x2 dTexXYInv = Get2X2InvMatrix(dTexXY);
-        float2x3 e = float2x3(dtexXY1Lenght * e1, dtexXY2Lenght * e2);
-    
-        TB = mul(dTexXYInv, e);
-    }
+    float2x3 TB = GetTBMatrix(input[0].f4ModelPos, input[1].f4ModelPos, input[2].f4ModelPos, input[0].f2TexCoord, input[1].f2TexCoord, input[2].f2TexCoord);
     
     for (uint i = 0; i < 3; i++)
     {
@@ -61,9 +45,7 @@ void main(
         float4 f4ModelNormal = input[i].f4ModelNormal;
         if (bIsNormalOn)
         {
-            float3 fNormalSampled = 2.f * NormalTexture.SampleLevel(ClampSampler, input[i].f2TexCoord, 0.f).xyz - 1.f;
-            float3x3 TBN = float3x3(TB[0], TB[1], input[i].f4ModelNormal.xyz);
-            f4ModelNormal = float4(normalize(mul(fNormalSampled, TBN)), 0.f);
+            f4ModelNormal = float4(GetNormalFromTexture(NormalTexture, ClampSampler, input[i].f2TexCoord, TB[0], TB[1], input[i].f4ModelNormal.xyz), 0.f);
         }
         
         float4 f4ModelPos = input[i].f4ModelPos;

@@ -16,7 +16,7 @@ NormalImageFile::NormalImageFile(
 	),
 	IRectangle(uiWidthIn, uiHeightIn)
 {
-	DirectXDevice::pDeviceContext->GenerateMips(cpSRV.Get());
+	DirectXDevice::pDeviceContext->GenerateMips(GetSRV());
 
 	cpThumbnailTexture2D = cpTexture2D;
 	cpThumbnailSRV = cpSRV;

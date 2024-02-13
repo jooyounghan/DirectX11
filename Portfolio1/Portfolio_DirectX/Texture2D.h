@@ -32,7 +32,7 @@ public:
 
 	virtual ~Texture2D();
 
-public:
+protected:
 	UINT		uiArraySize;
 	UINT		uiNumQualityLevels;
 	UINT		uiBindFlag;
@@ -42,7 +42,16 @@ public:
 	DXGI_FORMAT eFormat;
 
 public:
+	inline const UINT& GetArraySize() { return uiArraySize; }
+	inline const UINT& GetQualityLevels() { return uiNumQualityLevels; }
+
+protected:
 	Microsoft::WRL::ComPtr<ID3D11Texture2D>				cpTexture2D;
+
+public:
+	inline void ResetTexture() { cpTexture2D.ReleaseAndGetAddressOf(); cpTexture2D = nullptr; }
+	inline ID3D11Texture2D* GetTexture() { return cpTexture2D.Get(); }
+	inline ID3D11Texture2D** GetAddressOfTexture() { return cpTexture2D.GetAddressOf(); }
 
 public:
 	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn);

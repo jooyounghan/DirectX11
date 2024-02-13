@@ -2,7 +2,6 @@
 
 #include "ViewableRenderTarget.h"
 #include "ViewableDepthStencil.h"
-#include "SwapChainAccessable.h"
 #include "AFilter.h"
 #include "APossessable.h"
 
@@ -13,7 +12,6 @@ class ACamera
 	: public ViewableRenderTarget,
 	public ViewableDepthStencil, 
 	public AFilter,
-	public SwapChainAccessable,
 	public APossessable
 {
 public:
@@ -34,6 +32,9 @@ public:
 	);
 	virtual ~ACamera();
 
+protected:
+	bool isLinkedWithBackBuffer;
+
 public:
 	virtual void Resolve() = 0;
 
@@ -46,7 +47,7 @@ public:
 
 public:
 	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn) override;
-	virtual void SetAsBackBufferAddress() override;
+	inline void LinkWithBackBuffer(bool isLinked) { isLinkedWithBackBuffer = isLinked; };
 
 public:
 	virtual void Apply(ID3D11ShaderResourceView** ppInputSRV) override final;

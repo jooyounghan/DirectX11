@@ -12,16 +12,12 @@ public:
 
 private:
 	class ACamera* pCamera;
-
-private:
 	class AIBLModel* pIBLModel;
 	const std::vector<class ILight*>* pLights;
 
 public:
-	inline void SetCamera(ACamera* pCameraIn) { pCamera = pCameraIn; }
-
-public:
 	void RenderObjects(
+		class ACamera* pCameraIn,
 		class AIBLModel* pIBLModelIn,
 		const std::unordered_map<uint32_t, class AStaticMesh*>& vStaticMeshesIn,
 		const std::vector<class ILight*>& vLightsIn

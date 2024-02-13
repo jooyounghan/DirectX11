@@ -621,6 +621,5 @@
     <None Include="BrdfFunction.hlsli">
       <Filter>Shader\BaseModel</Filter>
     </None>
-    <None Include="ClassDiagram.cd" />
   </ItemGroup>
 </Project>

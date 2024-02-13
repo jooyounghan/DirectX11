@@ -136,6 +136,9 @@
     <Filter Include="Shader\DebugHelper">
       <UniqueIdentifier>{0913e968-4e73-429d-aeba-4d8131a6dbea}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shader\Include">
+      <UniqueIdentifier>{5ed0a9a9-3e48-4c68-aebc-fb0572a6b49f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseApp.h">
@@ -258,9 +261,6 @@
     <ClInclude Include="IDepthStencil.h">
       <Filter>헤더 파일\Texture2D</Filter>
     </ClInclude>
-    <ClInclude Include="SwapChainAccessable.h">
-      <Filter>헤더 파일\Texture2D</Filter>
-    </ClInclude>
     <ClInclude Include="ModelManipulator.h">
       <Filter>헤더 파일\GUI\Extended</Filter>
     </ClInclude>
@@ -299,6 +299,9 @@
     </ClInclude>
     <ClInclude Include="NormalVectorRenderer.h">
       <Filter>헤더 파일\Renderer\Extended</Filter>
+    </ClInclude>
+    <ClInclude Include="BlurFilter.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -407,9 +410,6 @@
     <ClCompile Include="IDepthStencil.cpp">
       <Filter>소스 파일\Texture2D</Filter>
     </ClCompile>
-    <ClCompile Include="SwapChainAccessable.cpp">
-      <Filter>소스 파일\Texture2D</Filter>
-    </ClCompile>
     <ClCompile Include="IAngleAdjustable.cpp">
       <Filter>소스 파일\Base</Filter>
     </ClCompile>
@@ -455,6 +455,9 @@
     <ClCompile Include="NormalVectorRenderer.cpp">
       <Filter>소스 파일\Renderer\Extended</Filter>
     </ClCompile>
+    <ClCompile Include="BlurFilter.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="MS16ToSS8CS.hlsl">
@@ -499,22 +502,25 @@
     <FxCompile Include="NormalVectorVS.hlsl">
       <Filter>Shader\DebugHelper</Filter>
     </FxCompile>
+    <FxCompile Include="BlurCS.hlsl">
+      <Filter>Shader\Filter</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Common.hlsli">
-      <Filter>Shader</Filter>
-    </None>
     <None Include="CommonFilterArgs.hlsli">
       <Filter>Shader\Filter</Filter>
     </None>
-    <None Include="MathematicalHelper.hlsli">
-      <Filter>Shader</Filter>
-    </None>
-    <None Include="BrdfHelper.hlsli">
-      <Filter>Shader</Filter>
-    </None>
     <None Include="NormalVector.hlsli">
       <Filter>Shader\DebugHelper</Filter>
+    </None>
+    <None Include="BrdfHelper.hlsli">
+      <Filter>Shader\Include</Filter>
+    </None>
+    <None Include="Common.hlsli">
+      <Filter>Shader\Include</Filter>
+    </None>
+    <None Include="MathematicalHelper.hlsli">
+      <Filter>Shader\Include</Filter>
     </None>
   </ItemGroup>
 </Project>

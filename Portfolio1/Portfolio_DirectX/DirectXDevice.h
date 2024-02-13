@@ -18,6 +18,14 @@ private:
 	static Microsoft::WRL::ComPtr<ID3D11DeviceContext> cpDeviceContext;
 	static Microsoft::WRL::ComPtr<IDXGISwapChain> cpSwapChain;
 
+public:
+	static ID3D11Texture2D*			pBackBuffer;
+	static ID3D11RenderTargetView*	pRenderTargetView;
+
+private:
+	static Microsoft::WRL::ComPtr<ID3D11Texture2D> cpBackBuffer;
+	static Microsoft::WRL::ComPtr<ID3D11RenderTargetView> cpRenderTargetView;
+
 private:
 	static ID3D11Debug* pDebug;
 	static ID3D11InfoQueue* pDebugInfoQueue;
@@ -40,6 +48,15 @@ private:
 	static Microsoft::WRL::ComPtr<ID3D11BlendState> cpAddingBlendState;
 
 public:
+	static ID3D11DepthStencilState* pDrawLessEqualDSS;
+
+private:
+	static Microsoft::WRL::ComPtr<ID3D11DepthStencilState> cpDrawLessEqualDSS;
+
+
+
+
+public:
 	static void InitDevice(
 		IN const UINT& uiWidthIn,
 		IN const UINT& uiHeightIn,
@@ -47,6 +64,10 @@ public:
 		IN const bool& bWindowed,
 		IN HWND hOutputWindow
 	);
+
+public:
+	static void ResetBackBuffer();
+	static void SetBackBuffer();
 
 public:
 	static void AddIgnoringMessageFilter(D3D11_MESSAGE_ID eMessage);

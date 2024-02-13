@@ -1,5 +1,6 @@
 #include "Common.hlsli"
 #include "BrdfHelper.hlsli"
+#include "MathematicalHelper.hlsli"
 
 TextureCube EnvSpecularTexture : register(t0);
 TextureCube EnvDiffuseTexture : register(t1);
@@ -10,6 +11,7 @@ Texture2D ColorTexture : register(t4);
 Texture2D MetalnessTexture : register(t5);
 Texture2D RoughnessTexture : register(t6);
 Texture2D EmissionTexture : register(t7);
+Texture2D NormalTexture : register(t8);
 
 cbuffer ModelID : register(b0)
 {
@@ -51,17 +53,23 @@ PixelOutput main(DomainOutput input)
     float3 f3Color = ColorTexture.Sample(ClampSampler, input.f2TexCoord).xyz;
     float3 f3AmbientOcclusion = AOTexture.Sample(ClampSampler, input.f2TexCoord).xyz;
 
+    float3 f3NormalVector = input.f4ModelNormal.xyz;
+    if (bIsNormalOn)
+    {
+        f3NormalVector = GetNormalFromTexture(NormalTexture, ClampSampler, input.f2TexCoord, input.f4ModelTangent, input.f4ModelBiTangent, input.f4ModelNormal);
+    }
+    
     float3 toEyes = normalize(f4CameraPos.xyz - input.f4ModelPos.xyz);
 
-    float NDotE = max(0.f, dot(input.f4ModelNormal.xyz, toEyes));
+    float NDotE = max(0.f, dot(f3NormalVector, toEyes));
 
     float3 F0 = lerp(fFresnelConstant, f3Color, fMetallic);
     float3 F = GetFresnelSchlick(NDotE, F0);
     
     float3 f3DiffuseColor = lerp(f3Color, float3(0, 0, 0), fMetallic);
 
-    float3 f3DiffuseSampled = EnvDiffuseTexture.Sample(ClampSampler, input.f4ModelNormal.xyz).xyz;
-    float3 f3SpecularSampled = EnvSpecularTexture.SampleLevel(ClampSampler, reflect(-toEyes, input.f4ModelNormal.xyz), fRoughness * 5.f).xyz;
+    float3 f3DiffuseSampled = EnvDiffuseTexture.Sample(ClampSampler, f3NormalVector).xyz;
+    float3 f3SpecularSampled = EnvSpecularTexture.SampleLevel(ClampSampler, reflect(-toEyes, f3NormalVector), fRoughness * 5.f).xyz;
     
     float2 IBLBrdf = EnvBrdfTexture.Sample(ClampSampler, float2(1.f - fRoughness, NDotE)).xy;
     

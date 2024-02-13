@@ -44,8 +44,13 @@ ACamera::ACamera(
 		(float)uiWidthIn, (float)uiHeightIn, 
 		fFovRadIn, fNearZIn, fFarZIn
 	),
-	AFilter(256, 1, 1),
-	SwapChainAccessable()
+	AFilter(
+		uiWidthIn, uiHeightIn, 1, 0,
+		D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS,
+		NULL, NULL, D3D11_USAGE_DEFAULT,
+		DXGI_FORMAT_R8G8B8A8_UNORM,
+		256, 1, 1
+	), isLinkedWithBackBuffer(false)
 {
 }
 
@@ -90,53 +95,27 @@ void ACamera::Resize(const UINT& uiWidthIn, const UINT& uiHeightIn)
 	AFilter::Resize(uiWidthIn, uiHeightIn);
 
 	// 백버퍼 및 Swap Chain 사이즈 변경
-	if (p_back_buffer)
+	if (isLinkedWithBackBuffer)
 	{
-		ResetBackBufferAddress();
+		DirectXDevice::ResetBackBuffer();
+
 		DirectXDevice::pSwapChain->ResizeBuffers(
 			0, uiWidth, uiHeight,
 			DXGI_FORMAT_UNKNOWN,
 			DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH
 		);
 
-		SetAsBackBufferAddress();
+		DirectXDevice::SetBackBuffer();
 	}
 }
 
-void ACamera::SetAsBackBufferAddress()
-{
-	SwapChainAccessable::SetAsBackBufferAddress();
-
-	if (p_back_buffer != nullptr)
-	{ 
-		D3D11_TEXTURE2D_DESC desc;
-		p_back_buffer->GetDesc(&desc);
-		
-		if (desc.SampleDesc.Quality != RenderTarget::uiNumQualityLevels ||
-			desc.Format != RenderTarget::eFormat
-		)
-		{
-			AFilter::uiWidth = desc.Width;
-			AFilter::uiHeight = desc.Height;
-			AFilter::uiArraySize = 1;
-			AFilter::uiNumQualityLevels = desc.SampleDesc.Quality;
-			AFilter::uiBindFlag = D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE;
-			AFilter::uiCPUAccess = NULL;
-			AFilter::uiMiscFlag = NULL;
-			AFilter::eUsage = D3D11_USAGE_DEFAULT;
-			AFilter::eFormat = desc.Format;
-
-			AFilter::Resize(AFilter::uiWidth, AFilter::uiHeight);
-		}
-	}
-}
 
 void ACamera::Apply(ID3D11ShaderResourceView** ppInputSRV)
 {
-	if (p_back_buffer != nullptr)
+	if (isLinkedWithBackBuffer)
 	{
 		D3D11_TEXTURE2D_DESC desc;
-		p_back_buffer->GetDesc(&desc);
+		DirectXDevice::pBackBuffer->GetDesc(&desc);
 
 		if (desc.SampleDesc.Quality != RenderTarget::uiNumQualityLevels ||
 			desc.Format != RenderTarget::eFormat

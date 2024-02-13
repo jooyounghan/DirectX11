@@ -54,6 +54,8 @@ void SpotLight::UpdateLight()
 	fNearZ = sBaseLightData.fFallOffStart;
 	fFarZ = sBaseLightData.fFallOffEnd;
 
+	ViewableDepthOnly::UpdateView();
+
 	ID3D11Helper::UpdateBuffer(
 		DirectXDevice::pDeviceContext,
 		sBaseLightData, D3D11_MAP_WRITE_DISCARD,

@@ -178,7 +178,7 @@ void FileManipulator::VisitFile(DDSImageFile& imageFile, shared_ptr<IFile>& spFi
         if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
         {
             D3D11_TEXTURE2D_DESC desc;
-            imageFile.cpTexture2D->GetDesc(&desc);
+            imageFile.GetTexture()->GetDesc(&desc);
 
             if (desc.MiscFlags & D3D11_RESOURCE_MISC_TEXTURECUBE)
             {

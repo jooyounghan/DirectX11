@@ -3,9 +3,9 @@
 
 struct VertexInput
 {
-    float3  f4WorldPos      : POSITION;
+    float3  f3WorldPos      : POSITION;
     float2  f2TexCoord      : TEXCOORD;
-    float3  f4WorldNormal   : NORMAL;
+    float3  f3WorldNormal   : NORMAL;
 };
 
 struct VertexOutput
@@ -36,6 +36,8 @@ struct DomainOutput
     float4 f4ModelPos : POSITION;
     float2 f2TexCoord : TEXCOORD;
     float4 f4ModelNormal : NORMAL;
+    float4 f4ModelTangent : TANGENT;
+    float4 f4ModelBiTangent : BINORMAL;
 };
 
 

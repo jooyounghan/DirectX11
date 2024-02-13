@@ -2,6 +2,8 @@
 #include "ID3D11Helper.h"
 #include "DirectXDevice.h"
 
+#include "BlurFilter.h"
+
 FilteredCamera::FilteredCamera(
 	const float& fXPos,
 	const float& fYPos,
@@ -39,39 +41,34 @@ FilteredCamera::FilteredCamera(
 
 FilteredCamera::~FilteredCamera()
 {
+
 }
 
 void FilteredCamera::Resize(const UINT& uiWidthIn, const UINT& uiHeightIn)
 {
 	ACamera::Resize(uiWidthIn, uiHeightIn);
 
-	for (AFilter* filter : pFilters)
+	for (std::unique_ptr<AFilter>& filter : upFilters)
 	{
 		// 필터 초기화
-		filter->cpUAV.ReleaseAndGetAddressOf();
-		filter->cpSRV.ReleaseAndGetAddressOf();
-		filter->cpTexture2D.ReleaseAndGetAddressOf();
-
-		filter->cpUAV = nullptr;
-		filter->cpSRV = nullptr;
-		filter->cpTexture2D = nullptr;
+		filter->ResetFilter();
+		filter->ResetSRV();
+		filter->ResetTexture();
 
 		// 필터 재설정
 		filter->uiWidth = uiWidthIn;
 		filter->uiHeight = uiHeightIn;
-		filter->uiArraySize = 1;
-		filter->uiNumQualityLevels = 0;
 
 		ID3D11Helper::CreateTexture2D(DirectXDevice::pDevice,
 			filter->uiWidth, filter->uiHeight,
-			filter->uiArraySize, 0,
+			filter->GetArraySize(), filter->GetQualityLevels(),
 			D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS, NULL,
-			NULL, D3D11_USAGE_DEFAULT, RenderTarget::eFormat, filter->cpTexture2D.GetAddressOf()
+			NULL, D3D11_USAGE_DEFAULT, RenderTarget::eFormat, filter->GetAddressOfTexture()
 		);
 		ID3D11Helper::CreateUnorderedAccessView(
 			DirectXDevice::pDevice,
-			filter->cpTexture2D.Get(),
-			filter->cpUAV.GetAddressOf()
+			filter->GetTexture(),
+			filter->GetAddressOfFilterUAV()
 		);
 	}
 }
@@ -81,38 +78,47 @@ void FilteredCamera::Resolve()
 	ID3D11ShaderResourceView** ppInputSRV = nullptr;
 	ID3D11Texture2D* pOutputResource = nullptr;
 
-	if (p_back_buffer != nullptr)
+	if (isLinkedWithBackBuffer)
 	{
 		D3D11_TEXTURE2D_DESC back_buffer_desc;
-		p_back_buffer->GetDesc(&back_buffer_desc);
-
+		DirectXDevice::pBackBuffer->GetDesc(&back_buffer_desc);
+		
 		if (back_buffer_desc.SampleDesc.Quality != RenderTarget::uiNumQualityLevels ||
 			back_buffer_desc.Format != RenderTarget::eFormat
 			)
 		{
-			Apply(RenderTarget::cpSRV.GetAddressOf());
-			ppInputSRV = AFilter::cpSRV.GetAddressOf();
+			Apply(RenderTarget::GetAddressOfSRV());
+			ppInputSRV = AFilter::GetAddressOfSRV();
 			pOutputResource = AFilter::cpTexture2D.Get();
 		}
 		else
 		{
-			ppInputSRV = RenderTarget::cpSRV.GetAddressOf();
+			ppInputSRV = RenderTarget::GetAddressOfSRV();
 			pOutputResource = RenderTarget::cpTexture2D.Get();
 
 		}
 
-		if (pFilters.size() > 0)
+		if (upFilters.size() > 0)
 		{
-			for (AFilter* pFilter : pFilters)
+			for (std::unique_ptr<AFilter>& pFilter : upFilters)
 			{
 				pFilter->Apply(ppInputSRV);
-				ppInputSRV = pFilter->cpSRV.GetAddressOf();
+				ppInputSRV = pFilter->GetAddressOfSRV();
 			}
 
-			pOutputResource = pFilters[pFilters.size() - 1]->cpTexture2D.Get();
+			pOutputResource = upFilters[upFilters.size() - 1]->GetTexture();
 		}
 
-		DirectXDevice::pDeviceContext->ResolveSubresource(p_back_buffer, 0, pOutputResource, 0, back_buffer_desc.Format);
+		DirectXDevice::pDeviceContext->ResolveSubresource(DirectXDevice::pBackBuffer, 0, pOutputResource, 0, back_buffer_desc.Format);
 	}
 
+}
+
+void FilteredCamera::AddBlurState()
+{
+	upFilters.push_back(std::make_unique<BlurFilter>(
+		uiWidth, uiHeight, AFilter::uiArraySize, AFilter::uiNumQualityLevels,
+		D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS, NULL,
+		NULL, D3D11_USAGE_DEFAULT, AFilter::eFormat
+	));
 }

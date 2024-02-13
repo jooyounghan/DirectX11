@@ -5,11 +5,6 @@ class AFilter : public ShaderResource
 {
 public:
 	AFilter(
-		UINT uiThreadGroupCntXIn,
-		UINT uiThreadGroupCntYIn,
-		UINT uiThreadGroupCntZIn
-	);
-	AFilter(
 		UINT uiWidthIn,
 		UINT uiHeightIn,
 		UINT uiArraySizeIn,
@@ -30,8 +25,13 @@ protected:
 	const UINT uiThreadGroupCntY;
 	const UINT uiThreadGroupCntZ;
 
-public:
+protected:
 	Microsoft::WRL::ComPtr<ID3D11UnorderedAccessView> cpUAV;
+
+public:
+	inline void ResetFilter() { cpUAV.ReleaseAndGetAddressOf(); cpUAV = nullptr; }
+	inline ID3D11UnorderedAccessView* GetFilterUAV() { return cpUAV.Get(); }
+	inline ID3D11UnorderedAccessView** GetAddressOfFilterUAV() { return cpUAV.GetAddressOf(); }
 
 public:
 	virtual void Apply(ID3D11ShaderResourceView** ppInputSRV) = 0;
