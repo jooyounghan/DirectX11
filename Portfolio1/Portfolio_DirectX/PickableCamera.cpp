@@ -5,6 +5,8 @@
 
 using namespace std;
 
+size_t PickableCamera::ullPickableCamaraCnt = 0;
+
 PickableCamera::PickableCamera(
 	const float& fXPos,
 	const float& fYPos,
@@ -47,7 +49,9 @@ PickableCamera::PickableCamera(
 		uiHeightIn
 	)
 {
-
+	ullPickableCamaraCnt++;
+	ullFiltertedCamaraCnt--;
+	ullPickableCamaraIdx = ullPickableCamaraCnt;
 }
 
 PickableCamera::~PickableCamera()

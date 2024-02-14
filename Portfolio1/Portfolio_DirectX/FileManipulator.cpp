@@ -35,7 +35,7 @@ void FileManipulator::PopAsDialog()
 
 bool FileManipulator::IsGuiAvailable()
 {
-    return false;
+    return true;
 }
 
 void FileManipulator::ChooseFiles()

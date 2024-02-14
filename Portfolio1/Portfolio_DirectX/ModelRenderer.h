@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <unordered_map>
+#include <memory>
 
 class ModelRenderer : public IRenderer
 {
@@ -13,15 +14,15 @@ public:
 private:
 	class ACamera* pCamera;
 	class AIBLModel* pIBLModel;
-	const std::vector<class ILight*>* pLights;
+	const std::vector<std::shared_ptr<class ILight>>* pLights;
 
 public:
 	void RenderObjects(
 		class ACamera* pCameraIn,
 		class AIBLModel* pIBLModelIn,
 		const std::unordered_map<uint32_t, class AStaticMesh*>& vStaticMeshesIn,
-		const std::vector<class ILight*>& vLightsIn
-		= std::vector<ILight*>()
+		const std::vector<std::shared_ptr<class ILight>>& vLightsIn
+		= std::vector<std::shared_ptr<ILight>>()
 	);
 
 public:

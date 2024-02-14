@@ -303,6 +303,9 @@
     <ClInclude Include="BlurFilter.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="StageManipulator.h">
+      <Filter>헤더 파일\GUI\Extended</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseApp.cpp">
@@ -457,6 +460,9 @@
     </ClCompile>
     <ClCompile Include="BlurFilter.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="StageManipulator.cpp">
+      <Filter>소스 파일\GUI\Extended</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

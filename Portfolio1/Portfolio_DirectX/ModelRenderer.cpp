@@ -29,7 +29,7 @@ void ModelRenderer::RenderObjects(
 	class ACamera* pCameraIn,
 	class AIBLModel* pIBLModelIn,
 	const std::unordered_map<uint32_t, AStaticMesh*>& vStaticMeshesIn,
-	const std::vector<class ILight*>& vLightsIn
+	const std::vector<std::shared_ptr<ILight>>& vLightsIn
 )
 {
 	DirectXDevice::AddIgnoringMessageFilter(D3D11_MESSAGE_ID_DEVICE_DRAW_RENDERTARGETVIEW_NOT_SET);
@@ -165,7 +165,7 @@ void ModelRenderer::RenderModel(APBRStaticMesh& pbrStaticMesh)
 #pragma endregion
 	DirectXDevice::pDeviceContext->OMSetBlendState(DirectXDevice::pAddingBlendState, NULL, UINT(0xFFFFFFFF));
 	DirectXDevice::pDeviceContext->OMSetDepthStencilState(DirectXDevice::pDrawLessEqualDSS, 0.f);
-	for (ILight* pLight : *pLights)
+	for (auto& pLight : *pLights)
 	{
 #pragma region Direct Lighting Preset
 		pLight->AcceptSettingForDirectLighting(this);

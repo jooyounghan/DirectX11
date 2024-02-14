@@ -4,6 +4,7 @@
 
 #include "ModelManipulator.h"
 #include "FileManipulator.h"
+#include "StageManipulator.h"
 
 #include "ModelRenderer.h"
 #include "LightRenderer.h"
@@ -37,7 +38,8 @@ public:
 public:
 	ModelManipulator modelManipulator;
 	FileManipulator fileManipulator;
-	
+	StageManipulator stageManipulator;
+
 public:
 	ModelRenderer modelRenderer;
 	LightRenderer lightRenderer;
@@ -46,13 +48,12 @@ public:
 private:
 	class AIBLModel* pIBLModel;
 	std::unordered_map<uint32_t, AStaticMesh*> pModels;
-	AStaticMesh* pSelectedMesh;
 
 public:
 	void AddModel(AStaticMesh* pModel);
 
 public:
-	std::vector<class ILight*> pLights;
- 	class PickableCamera* pMainCamera;
+	std::vector<std::shared_ptr<class ILight>> pLights;
+	std::vector<std::shared_ptr<class ACamera>> pCameras;
 };
 

@@ -4,6 +4,8 @@
 
 #include "BlurFilter.h"
 
+size_t FilteredCamera::ullFiltertedCamaraCnt = 0;
+
 FilteredCamera::FilteredCamera(
 	const float& fXPos,
 	const float& fYPos,
@@ -37,6 +39,8 @@ FilteredCamera::FilteredCamera(
 	IMovable(fXPos, fYPos, fZPos),
 	IRectangle(uiWidthIn, uiHeightIn)
 {
+	ullFiltertedCamaraCnt++;
+	ullFiltertedCamaraIdx = ullFiltertedCamaraCnt;
 }
 
 FilteredCamera::~FilteredCamera()

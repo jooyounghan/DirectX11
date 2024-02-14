@@ -9,8 +9,8 @@
 using namespace std;
 using namespace ImGui;
 
-ModelManipulator::ModelManipulator(AStaticMesh** ppSelectedStaticMeshIn)
-	: ppSelectedStaticMesh(ppSelectedStaticMeshIn), bIsDrawingNormal(false)
+ModelManipulator::ModelManipulator()
+	: ppSelectedStaticMesh(nullptr), bIsDrawingNormal(false)
 {
 }
 
@@ -28,7 +28,7 @@ void ModelManipulator::PopAsDialog()
 
 	Checkbox("Drawing Normal Vector", &bIsDrawingNormal);
 
-	if (*ppSelectedStaticMesh != nullptr)
+	if (ppSelectedStaticMesh != nullptr)
 	{
 		(*ppSelectedStaticMesh)->AcceptModelManipulating(this);
 	}

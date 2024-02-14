@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <unordered_map>
+#include <memory>
 
 class LightRenderer : public IRenderer
 {
@@ -16,7 +17,7 @@ private:
 public:
 	void UpdateLightMap(
 		const std::unordered_map<uint32_t, class AStaticMesh*>& vStaticMeshes,
-		const std::vector<class ILight*>& vLights
+		const std::vector<std::shared_ptr<class ILight>>& vLights
 	);
 
 public:

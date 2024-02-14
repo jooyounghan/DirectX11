@@ -19,7 +19,9 @@
 using namespace std;
 
 PortfolioApp::PortfolioApp(const UINT& uiWidthIn, const UINT& uiHeightIn)
-	: BaseApp(uiWidthIn, uiHeightIn), pSelectedMesh(nullptr), modelManipulator(&pSelectedMesh)
+	: 
+	BaseApp(uiWidthIn, uiHeightIn), 
+	stageManipulator(uiWidth, uiHeight, pLights, pCameras)
 {
 	BaseApp::GlobalBaseApp = this;
 }
@@ -50,22 +52,6 @@ void PortfolioApp::Init()
 
 	pIBLModel = new CubeMapModel(500.f, 15);
 	AddModel(pIBLModel);
-
-	pMainCamera = new PickableCamera(
-		0.f, 0.f, 0.f, 0.f, 0.f, 0.f, uiWidth, uiHeight,
-		70.f * 2.f * 3.141592f / 360.f,
-		0.01f, 1000.f, 1,
-		//DXGI_FORMAT_R8G8B8A8_UNORM,
-		DXGI_FORMAT_R16G16B16A16_FLOAT,
-		DXGI_FORMAT_D24_UNORM_S8_UINT
-	);
-
-	pMainCamera->AddBlurState();
-	pMainCamera->LinkWithBackBuffer(true);
-
-
-	pLights.push_back(new SpotLight(0.f, 0.f, 0.f, 0.f, 0.f, 0.f));
-	pLights.push_back(new PointLight(0.f, 0.f, 0.f, 0.f, 0.f, 0.f));
 }
 
 void PortfolioApp::Update(const float& fDelta)
@@ -75,9 +61,13 @@ void PortfolioApp::Update(const float& fDelta)
 		model.second->UpdateModel(fDelta);
 	}
 
-	pMainCamera->UpdatePosition();
-	pMainCamera->UpdateView();
-	pMainCamera->ManageKeyBoardInput(fDelta);
+	ACamera* pCamera = stageManipulator.GetSelectedCamera();
+	if (pCamera)
+	{
+		pCamera->UpdatePosition();
+		pCamera->UpdateView();
+		pCamera->ManageKeyBoardInput(fDelta);
+	}
 
 	for (auto& light : pLights)
 	{
@@ -88,22 +78,25 @@ void PortfolioApp::Update(const float& fDelta)
 
 void PortfolioApp::Render()
 {
-	pMainCamera->ClearRTV();
-	pMainCamera->ClearDSV();
-
-	lightRenderer.UpdateLightMap(pModels, pLights);
-
-	if (modelManipulator.GetIsDrawingNormal())
+	ACamera* pCamera = stageManipulator.GetSelectedCamera();
+	if (pCamera)
 	{
-		normalVectorRenderer.RenderNormalVector(pMainCamera, pModels);
+		pCamera->ClearRTV();
+		pCamera->ClearDSV();
+
+		lightRenderer.UpdateLightMap(pModels, pLights);
+
+		if (modelManipulator.GetIsDrawingNormal())
+		{
+			normalVectorRenderer.RenderNormalVector(pCamera, pModels);
+		}
+
+		modelRenderer.RenderObjects(pCamera, pIBLModel, pModels, pLights);
+
+		pCamera->Resolve();
 	}
 
-	modelRenderer.RenderObjects(pMainCamera, pIBLModel, pModels, pLights);
-
-	pMainCamera->Resolve();
-
 	RenderImGUI();
-
 }
 
 void PortfolioApp::Run()
@@ -151,6 +144,7 @@ void PortfolioApp::SetImGUIRendering()
 
 	modelManipulator.PopAsDialog();
 	fileManipulator.PopAsDialog();
+	stageManipulator.PopAsDialog();
 
 	ImGui::Render();
 }
@@ -186,51 +180,61 @@ LRESULT __stdcall PortfolioApp::AppProc(HWND hWnd, UINT msg, WPARAM wParam, LPAR
 
 	uint32_t uiSelectedID = 0;
 
-	switch (msg) {
-	case WM_EXITSIZEMOVE:
-		pMainCamera->Resize(uiWidth, uiHeight);
-		return 0;
-	case WM_MOUSEMOVE:
-		pMainCamera->ManageMouseInput(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
-		return 0;
-	case WM_KEYUP:
-		switch (wParam) {
-		case EKeyCode::W:
-		case EKeyCode::A:
-		case EKeyCode::S:	normalVectorRenderer.RenderNormalVector(pMainCamera, pModels);
-		case EKeyCode::D:
-			pMainCamera->Release((EKeyCode)wParam);
-			break;
+	ACamera* pCamera = stageManipulator.GetSelectedCamera();
+	PickableCamera* pPickableCamera = dynamic_cast<PickableCamera*>(pCamera);
+
+	if (pCamera)
+	{
+		switch (msg) {
+		case WM_EXITSIZEMOVE:
+			pCamera->Resize(uiWidth, uiHeight);
+			return 0;
+		case WM_MOUSEMOVE:
+			pCamera->ManageMouseInput(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+			return 0;
+		case WM_KEYUP:
+			switch (wParam)
+			{
+			case EKeyCode::W:
+			case EKeyCode::A:
+			case EKeyCode::S:
+			case EKeyCode::D:
+				pCamera->Release((EKeyCode)wParam);
+				break;
+			}
+			return 0;
+		case WM_KEYDOWN:
+			switch (wParam) {
+			case EKeyCode::W:
+			case EKeyCode::A:
+			case EKeyCode::S:
+			case EKeyCode::D:
+				pCamera->Press((EKeyCode)wParam);
+				break;
+			case EKeyCode::F:
+				pCamera->Toggle((EKeyCode)wParam);
+				break;
+			}
+			return 0;
+		case WM_SIZE:
+			uiWidth = (UINT)LOWORD(lParam);
+			uiHeight = (UINT)HIWORD(lParam);
+			return 0;
+		case WM_LBUTTONDOWN:
+			if (!ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow) && pPickableCamera != nullptr)
+			{
+				pPickableCamera->SetMousePos(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+				uiSelectedID = pPickableCamera->GetPickedID();
+				pModels.find(uiSelectedID) != pModels.end() ?
+					modelManipulator.SetAddressOfSelectedMesh(&pModels[uiSelectedID])
+					: modelManipulator.SetAddressOfSelectedMesh(nullptr);
+			}
+			return 0;
+		case WM_LBUTTONUP:
+			return 0;
 		}
-		return 0;
-	case WM_KEYDOWN:
-		switch (wParam) {
-		case EKeyCode::W:
-		case EKeyCode::A:
-		case EKeyCode::S:
-		case EKeyCode::D:
-			pMainCamera->Press((EKeyCode)wParam);
-			break;
-		case EKeyCode::F:
-			pMainCamera->Toggle((EKeyCode)wParam);
-			break;
-		}
-		return 0;
-	case WM_SIZE:
-		uiWidth = (UINT)LOWORD(lParam);
-		uiHeight = (UINT)HIWORD(lParam);
-		return 0;
-	case WM_LBUTTONDOWN:
-		if (!ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))
-		{
-			pMainCamera->SetMousePos(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
-			uiSelectedID = pMainCamera->GetPickedID();
-			pModels.find(uiSelectedID) != pModels.end() ? pSelectedMesh = pModels[uiSelectedID] : pSelectedMesh = nullptr;
-		}
-		return 0;
-	case WM_LBUTTONUP:
-		return 0;
 	}
+
 	return ::DefWindowProc(hWnd, msg, wParam, lParam);
 }
 

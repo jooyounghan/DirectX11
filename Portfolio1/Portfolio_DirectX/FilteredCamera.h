@@ -24,6 +24,10 @@ public:
 	virtual ~FilteredCamera();
 
 protected:
+	static size_t ullFiltertedCamaraCnt;
+	size_t ullFiltertedCamaraIdx;
+
+protected:
 	std::vector<std::unique_ptr<class AFilter>> upFilters;
 
 public:
@@ -36,6 +40,9 @@ public:
 public:
 	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn) override;
 	virtual void Resolve() override;
+
+public:
+	virtual std::string GetCameraName() { return "Filtering Camera " + std::to_string(ullFiltertedCamaraIdx); };
 
 public:
 	void AddBlurState();

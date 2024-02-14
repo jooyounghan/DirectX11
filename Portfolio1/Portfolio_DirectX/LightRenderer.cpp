@@ -20,7 +20,7 @@ LightRenderer::~LightRenderer()
 
 void LightRenderer::UpdateLightMap(
 	const std::unordered_map<uint32_t, class AStaticMesh*>& vStaticMeshes,
-	const std::vector<class ILight*>& vLights
+	const std::vector<std::shared_ptr<ILight>>& vLights
 )
 {
 	DirectXDevice::AddIgnoringMessageFilter(D3D11_MESSAGE_ID_DEVICE_DRAW_RENDERTARGETVIEW_NOT_SET);
@@ -30,7 +30,7 @@ void LightRenderer::UpdateLightMap(
 	Shaders& shaders = Shaders::GetInstance();
 	ID3D11VertexShader* pVS = shaders.GetVertexShader(Shaders::EVertexShader::BaseVS);
 	ID3D11PixelShader* pPS = shaders.GetPixelShader(Shaders::EPixelShader::DepthOnlyPathPS);
-	for (ILight* pLight : vLights)
+	for (auto& pLight : vLights)
 	{
 		pLight->AcceptLightRenderer(this);
 	}

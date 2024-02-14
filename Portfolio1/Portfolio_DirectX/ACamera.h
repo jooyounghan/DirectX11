@@ -6,6 +6,7 @@
 #include "APossessable.h"
 
 #include <tuple>
+#include <string>
 #include <vector>
 
 class ACamera
@@ -52,5 +53,8 @@ public:
 public:
 	virtual void Apply(ID3D11ShaderResourceView** ppInputSRV) override final;
 	virtual void SetUAVBarrier() override final;
+
+public:
+	virtual std::string GetCameraName() = 0;
 };
 

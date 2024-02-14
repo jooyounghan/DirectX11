@@ -145,6 +145,7 @@
     <ClInclude Include="ModelManipulator.h" />
     <ClInclude Include="ModelRenderer.h" />
     <ClInclude Include="NormalVectorRenderer.h" />
+    <ClInclude Include="StageManipulator.h" />
     <ClInclude Include="Viewable.h" />
     <ClInclude Include="BaseApp.h" />
     <ClInclude Include="Console.h" />
@@ -199,6 +200,7 @@
     <ClCompile Include="ModelManipulator.cpp" />
     <ClCompile Include="ModelRenderer.cpp" />
     <ClCompile Include="NormalVectorRenderer.cpp" />
+    <ClCompile Include="StageManipulator.cpp" />
     <ClCompile Include="Viewable.cpp" />
     <ClCompile Include="BaseApp.cpp" />
     <ClCompile Include="Console.cpp" />

@@ -6,14 +6,16 @@
 class ModelManipulator : public IGuiMenu
 {
 public:
-	ModelManipulator(class AStaticMesh** ppSelectedStaticMeshIn);
+	ModelManipulator();
 	virtual ~ModelManipulator();
 
 private:
-	AStaticMesh** ppSelectedStaticMesh;
+	class AStaticMesh** ppSelectedStaticMesh;
 	bool bIsDrawingNormal;
 
 public:
+	inline AStaticMesh** GetAddressOfSelectedMesh() { return ppSelectedStaticMesh; }
+	inline void SetAddressOfSelectedMesh(AStaticMesh** ppSelectedMeshIn) { ppSelectedStaticMesh = ppSelectedMeshIn; }
 	inline bool GetIsDrawingNormal() { return bIsDrawingNormal; }
 
 public:
