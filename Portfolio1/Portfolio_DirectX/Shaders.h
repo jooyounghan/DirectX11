@@ -35,6 +35,7 @@ public:
 	{
 		ResolveCS,
 		MS16ToSS8CS,
+		TypeResolveCS,
 		BlurCS,
 		NumComputeShader
 	};

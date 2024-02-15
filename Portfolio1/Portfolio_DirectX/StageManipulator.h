@@ -32,7 +32,18 @@ protected:
 	bool	bSupportPicking;
 
 protected:
+	int		iSelectedVPWidth;
+	int		iSelectedVPHeight;
+	float	fSelecedFovDegree;
+	bool	bIsSelectedSupportMultiSampled;
+	bool	bIsSelectedSupportHDR;
+	bool	bIsSelectedSupportPicking;
+
+protected:
 	float	fLightPos[3];
+
+protected:
+	void InitCameraVariable();
 
 protected:
 	std::vector<std::shared_ptr<ILight>>& pLights;
@@ -41,6 +52,12 @@ protected:
 protected:
 	std::shared_ptr<ILight> spSelectedLight;
 	std::shared_ptr<ACamera> spSelectedCamera;
+
+protected:
+	bool bIsAddingCamera;
+	bool bIsShowingCameraInfo;
+
+protected:
 	int iCameraSelectedIdx;
 
 public:
@@ -53,6 +70,23 @@ public:
 
 protected:
 	void SetCameraGui();
+	void AddCamera();
+	void ShowCameraSetting(
+		const bool& bIsEditable,
+		float* pCameraPosIn,
+		float* pCameraAngleIn,
+		int* pViewportWidth,
+		int* pViewportHeight,
+		float* pFovAngle,
+		float* pNearZ,
+		float* pFarZ,
+		bool* pIsSupportMultiSampled,
+		bool* pSupportHDR,
+		bool* pSupportPicking
+	);
+	void UpdateSelectedVariable();
+
+protected:
 	void SetLightGui();
 };
 

@@ -20,7 +20,7 @@ public:
 protected:
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView>		cpRTV;
 
-protected:
+public:
 	static constexpr float fClearColor[4] = { 0.f, 0.f, 0.f, 0.f };
 
 public:

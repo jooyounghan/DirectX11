@@ -34,6 +34,7 @@ void Shaders::Init(ID3D11Device* pDeviceIn)
 	// Compute Shader 초기화
 	ID3D11Helper::CreateCS(pDeviceIn, L"ModelIDResolveCS.hlsl", vComputeShaders[ResolveCS].GetAddressOf());
 	ID3D11Helper::CreateCS(pDeviceIn, L"MS16ToSS8CS.hlsl", vComputeShaders[MS16ToSS8CS].GetAddressOf());
+	ID3D11Helper::CreateCS(pDeviceIn, L"TypeResolveCS.hlsl", vComputeShaders[TypeResolveCS].GetAddressOf());
 	ID3D11Helper::CreateCS(pDeviceIn, L"BlurCS.hlsl", vComputeShaders[BlurCS].GetAddressOf());
 	// Hull Shader 초기화
 	ID3D11Helper::CreateHS(pDeviceIn, L"BaseHS.hlsl", vHullShaders[BaseHS].GetAddressOf());

@@ -78,6 +78,8 @@ void PortfolioApp::Update(const float& fDelta)
 
 void PortfolioApp::Render()
 {
+
+
 	ACamera* pCamera = stageManipulator.GetSelectedCamera();
 	if (pCamera)
 	{
@@ -94,6 +96,16 @@ void PortfolioApp::Render()
 		modelRenderer.RenderObjects(pCamera, pIBLModel, pModels, pLights);
 
 		pCamera->Resolve();
+	}
+	else
+	{
+		if (DirectXDevice::pRenderTargetView != nullptr)
+		{
+			DirectXDevice::pDeviceContext->ClearRenderTargetView(
+				DirectXDevice::pRenderTargetView,
+				RenderTarget::fClearColor
+			);
+		}
 	}
 
 	RenderImGUI();

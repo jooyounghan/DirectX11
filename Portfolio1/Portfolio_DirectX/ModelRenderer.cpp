@@ -164,7 +164,7 @@ void ModelRenderer::RenderModel(APBRStaticMesh& pbrStaticMesh)
 	DirectXDevice::pDeviceContext->PSSetSamplers(0, 1, &pNullSampler);
 #pragma endregion
 	DirectXDevice::pDeviceContext->OMSetBlendState(DirectXDevice::pAddingBlendState, NULL, UINT(0xFFFFFFFF));
-	DirectXDevice::pDeviceContext->OMSetDepthStencilState(DirectXDevice::pDrawLessEqualDSS, 0.f);
+	DirectXDevice::pDeviceContext->OMSetDepthStencilState(DirectXDevice::pDrawLessEqualDSS, 0);
 	for (auto& pLight : *pLights)
 	{
 #pragma region Direct Lighting Preset
@@ -215,7 +215,7 @@ void ModelRenderer::RenderModel(APBRStaticMesh& pbrStaticMesh)
 	}
 
 	DirectXDevice::pDeviceContext->OMSetBlendState(nullptr, NULL, UINT(0xFFFFFFFF));
-	DirectXDevice::pDeviceContext->OMSetDepthStencilState(nullptr, 0.f);
+	DirectXDevice::pDeviceContext->OMSetDepthStencilState(nullptr, 0);
 #pragma region Reset
 	DirectXDevice::pDeviceContext->VSSetShader(nullptr, NULL, NULL);
 	DirectXDevice::pDeviceContext->HSSetShader(nullptr, NULL, NULL);

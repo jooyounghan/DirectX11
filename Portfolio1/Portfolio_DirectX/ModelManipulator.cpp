@@ -59,7 +59,7 @@ void ModelManipulator::DrawTransformation(AStaticMesh* pStaticMesh)
 	if (CollapsingHeader("Transformation", ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		Separator();
-		DragFloat3("Translation", pStaticMesh->xmvPosition.m128_f32, 1.f, -1000000.f, 1000000.f, "%.2f");
+		DragFloat3("Translation", pStaticMesh->GetPosition().m128_f32, 1.f, -1000000.f, 1000000.f, "%.2f");
 		DragFloat3("Rotaion", &pStaticMesh->sAnglesDegree.fPitchDeg, 1.f, 0.f, 360.f, "%.2f");
 		DragFloat3("Scale", &pStaticMesh->sScales.fScaleX, 0.005f, -1000000.f, 1000000.f, "%.2f");
 	}

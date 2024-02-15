@@ -20,13 +20,14 @@ protected:
 	static const DirectX::XMVECTOR			xmvDefaultUp;
 	static const DirectX::XMVECTOR			xmvDefaultRight;
 
-public:
+protected:
 	DirectX::XMVECTOR						xmvPosition;
 
 public:
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	cpPositionBuffer;
 
 public:
+	inline DirectX::XMVECTOR& GetPosition() { return xmvPosition; }
 	void UpdatePosition();
 };
 

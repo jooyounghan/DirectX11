@@ -117,18 +117,24 @@ void ACamera::Apply(ID3D11ShaderResourceView** ppInputSRV)
 		D3D11_TEXTURE2D_DESC desc;
 		DirectXDevice::pBackBuffer->GetDesc(&desc);
 
-		if (desc.SampleDesc.Quality != RenderTarget::uiNumQualityLevels ||
-			desc.Format != RenderTarget::eFormat
-			)
+		const bool bIsMSToSS = desc.SampleDesc.Quality != RenderTarget::uiNumQualityLevels;
+		const bool bIsFormatResolve = desc.Format != RenderTarget::eFormat;
+
+		Shaders& shaders = Shaders::GetInstance();
+		ID3D11ComputeShader* pComputeShader = nullptr;
+
+		if (bIsMSToSS)
 		{
-			Shaders& shaders = Shaders::GetInstance();
-
-			ID3D11ComputeShader* pComputeShader = nullptr;
-
-			// Case에 대한 구분 =============================================
 			pComputeShader = shaders.GetComputeShader(Shaders::MS16ToSS8CS);
-			// ==============================================================	
+		}
+		else if (bIsFormatResolve)
+		{
+			pComputeShader = shaders.GetComputeShader(Shaders::TypeResolveCS);
+			DirectXDevice::pDeviceContext->CSSetSamplers(0, 1, DirectXDevice::ppClampSampler);
+		}
 
+		if (bIsMSToSS || bIsFormatResolve)
+		{
 			DirectXDevice::pDeviceContext->CSSetShader(pComputeShader, NULL, NULL);
 			DirectXDevice::pDeviceContext->CSSetShaderResources(0, 1, ppInputSRV);
 			DirectXDevice::pDeviceContext->CSSetUnorderedAccessViews(0, 1, AFilter::cpUAV.GetAddressOf(), nullptr);
@@ -150,4 +156,5 @@ void ACamera::SetUAVBarrier()
 	DirectXDevice::pDeviceContext->CSSetShader(nullptr, NULL, NULL);
 	DirectXDevice::pDeviceContext->CSSetShaderResources(0, 1, &pReleaseAndGetAddressOfSRV);
 	DirectXDevice::pDeviceContext->CSSetUnorderedAccessViews(0, 1, &pReleaseAndGetAddressOfUAV, nullptr);
+	DirectXDevice::pDeviceContext->CSSetSamplers(0, 1, &pSampler);
 }

@@ -44,6 +44,7 @@ protected:
 public:
 	inline const UINT& GetArraySize() { return uiArraySize; }
 	inline const UINT& GetQualityLevels() { return uiNumQualityLevels; }
+	inline const DXGI_FORMAT& GetFormat() { return eFormat; }
 
 protected:
 	Microsoft::WRL::ComPtr<ID3D11Texture2D>				cpTexture2D;

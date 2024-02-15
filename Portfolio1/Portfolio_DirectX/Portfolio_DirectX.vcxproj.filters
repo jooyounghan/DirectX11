@@ -511,6 +511,9 @@
     <FxCompile Include="BlurCS.hlsl">
       <Filter>Shader\Filter</Filter>
     </FxCompile>
+    <FxCompile Include="TypeResolveCS.hlsl">
+      <Filter>Shader\Filter</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="CommonFilterArgs.hlsli">
