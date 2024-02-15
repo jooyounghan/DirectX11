@@ -159,7 +159,7 @@ void StageManipulator::AddCamera()
 	std::shared_ptr<ACamera> pAddedCamera = nullptr;
 	if (bSupportPicking)
 	{
-		pAddedCamera = std::make_unique<PickableCamera>(
+		pAddedCamera = std::make_shared<PickableCamera>(
 			fCameraPos[0], fCameraPos[1], fCameraPos[2],
 			fCameraAngle[0], fCameraAngle[1], fCameraAngle[2],
 			(UINT)uiCameraWidth, (UINT)uiCameraHeight,

@@ -15,7 +15,6 @@ void main(uint3 DTid : SV_DispatchThreadID)
 
     for (uint idx = 0; idx < uiSampleCount; ++idx)
     {
-        float2 loadPos = float2(clamp(DTid.x, 0, uiWidth), clamp(DTid.y, 0, uiHeight));
         float4 sampleColor = InputTexture2D.Load(DTid.xy, idx);
         
         if (length(sampleColor) > 0.0f)
