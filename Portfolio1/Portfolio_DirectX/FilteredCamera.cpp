@@ -2,6 +2,7 @@
 #include "ID3D11Helper.h"
 #include "DirectXDevice.h"
 
+#include "CameraManipulator.h"
 #include "BlurFilter.h"
 
 size_t FilteredCamera::ullFiltertedCamaraCnt = 0;
@@ -14,7 +15,7 @@ FilteredCamera::FilteredCamera(
 	const float& fYawDegIn,
 	const float& fRollDegIn,
 	const UINT& uiWidthIn, const UINT& uiHeightIn,
-	const float& fFovRadIn,
+	const float& fFovDegIn,
 	const float& fNearZIn,
 	const float& fFarZIn,
 	const UINT& uiNumQualityLevelsIn,
@@ -25,7 +26,7 @@ FilteredCamera::FilteredCamera(
 		fXPos, fYPos, fZPos,
 		fPitchDegIn, fYawDegIn, fRollDegIn,
 		uiWidthIn, uiHeightIn,
-		fFovRadIn, fNearZIn, fFarZIn,
+		fFovDegIn, fNearZIn, fFarZIn,
 		uiNumQualityLevelsIn,
 		eRTVFormatIn, eDSVFormatIn
 	),
@@ -33,7 +34,7 @@ FilteredCamera::FilteredCamera(
 		fXPos, fYPos, fZPos, 
 		fPitchDegIn, fYawDegIn, fRollDegIn,
 		(float)uiWidthIn, (float)uiHeightIn,
-		fFovRadIn, fNearZIn, fFarZIn
+		fFovDegIn, fNearZIn, fFarZIn
 	),
 	IAngleAdjustable(fPitchDegIn, fYawDegIn, fRollDegIn),
 	IMovable(fXPos, fYPos, fZPos),
@@ -116,6 +117,16 @@ void FilteredCamera::Resolve()
 		DirectXDevice::pDeviceContext->ResolveSubresource(DirectXDevice::pBackBuffer, 0, pOutputResource, 0, back_buffer_desc.Format);
 	}
 
+}
+
+void FilteredCamera::AcceptCameraList(CameraManipulator* pCameraManipulator)
+{
+	pCameraManipulator->VisitCameraList(*this);
+}
+
+void FilteredCamera::AcceptCameraInformation(CameraManipulator* pCameraManipulator)
+{
+	pCameraManipulator->VisitCameraInfo(*this);
 }
 
 void FilteredCamera::AddBlurState()

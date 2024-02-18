@@ -4,6 +4,7 @@
 
 #include "ModelManipulator.h"
 #include "ModelRenderer.h"
+#include "LightRenderer.h"
 #include "NormalVectorRenderer.h"
 
 std::unordered_map<WORD, std::string> APBRStaticMesh::unmapTextureNames
@@ -72,4 +73,9 @@ void APBRStaticMesh::AcceptModelRendering(ModelRenderer* pModelRenderer)
 void APBRStaticMesh::AcceptNormalVectorRendering(NormalVectorRenderer* pNormalVectorRenderer)
 {
 	pNormalVectorRenderer->RenderNormal(*this);
+}
+
+void APBRStaticMesh::AcceptLightMapUpdating(LightRenderer* pLightRnederer)
+{
+	pLightRnederer->SetModelSettingForLightMap(*this);
 }

@@ -14,14 +14,14 @@ Viewable::Viewable(
 	const float& fRollDegIn,
 	const float& fWidthIn,
 	const float& fHeightIn,
-	const float& fFovRadianIn,
+	const float& fFovDegreeIn,
 	const float& fNearZIn,
 	const float& fFarZIn
 )
 	: IMovable(fXPos, fYPos, fZPos), 
 	IAngleAdjustable(fPitchDegIn, fYawDegIn, fRollDegIn),
 	IRectangle((UINT)fWidthIn, (UINT)fHeightIn),
-	fFovRadian(fFovRadianIn), fNearZ(fNearZIn), fFarZ(fFarZIn)
+	fFovDegree(fFovDegreeIn), fNearZ(fNearZIn), fFarZ(fFarZIn)
 {
 	AutoZeroMemory(sViewPort);
 	
@@ -63,7 +63,7 @@ void Viewable::UpdateView()
 		xmvPosition,
 		xmvDirection,
 		xmvUp,
-		fFovRadian, sViewPort.Width / sViewPort.Height,
+		DirectX::XMConvertToRadians(fFovDegree), sViewPort.Width / sViewPort.Height,
 		fNearZ, fFarZ
 	);
 

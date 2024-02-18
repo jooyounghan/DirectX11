@@ -7,6 +7,11 @@
 
 class ModelRenderer : public IRenderer
 {
+	friend class APBRStaticMesh;
+	friend class AIBLModel;
+	friend class PointLight;
+	friend class SpotLight;
+
 public:
 	ModelRenderer();
 	virtual ~ModelRenderer();
@@ -25,11 +30,11 @@ public:
 		= std::vector<std::shared_ptr<ILight>>()
 	);
 
-public:
+private:
 	void RenderModel(class APBRStaticMesh& pbrStaticMesh);
 	void RenderModel(class AIBLModel& iblMesh);
 
-public:
+private:
 	void SetLight(class PointLight& pointLight);
 	void SetLight(class SpotLight& spotLight);
 	void ResetLight(class PointLight& pointLight);

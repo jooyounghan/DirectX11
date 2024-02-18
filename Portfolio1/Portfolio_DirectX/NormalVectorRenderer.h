@@ -5,6 +5,9 @@
 
 class NormalVectorRenderer : public IRenderer
 {
+	friend class APBRStaticMesh;
+	friend class AIBLModel;
+
 public:
 	NormalVectorRenderer();
 	virtual ~NormalVectorRenderer();
@@ -18,7 +21,8 @@ public:
 		const std::unordered_map<uint32_t, class AStaticMesh*>& vStaticMeshesIn
 	);
 
-public:
+private:
 	void RenderNormal(class APBRStaticMesh& pbrStaticMesh);
+	void RenderNormal(class AIBLModel& iblMesh);
 };
 

@@ -4,77 +4,88 @@
 
 #include "LightRenderer.h"
 #include "ModelRenderer.h"
+#include "LightManipulator.h"
+
+size_t PointLight::ullPointLightCnt = 0;
 
 PointLight::PointLight(
 	const float& fXPos,
 	const float& fYPos,
 	const float& fZPos,
-	const float& fPitchDegIn,
-	const float& fYawDegIn,
-	const float& fRollDegIn
+	const float& fLightRColorIn,
+	const float& fLightGColorIn,
+	const float& fLightBColorIn,
+	const float& fFallOffStartIn,
+	const float& fFallOffEndIn,
+	const float& fLightPowerIn
 ) : 
-	ILight(fXPos, fYPos, fZPos), 
+	ILight(
+		fXPos, fYPos, fZPos,
+		fLightRColorIn,
+		fLightGColorIn,
+		fLightBColorIn,
+		fFallOffStartIn,
+		fFallOffEndIn,
+		fLightPowerIn
+	),
 	IMovable(fXPos, fYPos, fZPos),
-	IAngleAdjustable(fPitchDegIn, fYawDegIn, fRollDegIn),
 	viewablesDirections{
 		{
 			fXPos, fYPos, fZPos,
-			fPitchDegIn, -90.f + fYawDegIn, fRollDegIn,
-			DirectX::XMConvertToRadians(gLightFovDeg),
-			gDefaultFallOffStart, gDefaultFallOffEnd,
-			1000, 1000
+			0.f, -90.f, 0.f,
+			gLightFovDeg,
+			gLightNearZ, fFallOffEndIn,
+			gShadowMapWidth, gShadowMapHeight
 		},
 		{
 			fXPos, fYPos, fZPos,
-			fPitchDegIn, 90.f + fYawDegIn, fRollDegIn,
-			DirectX::XMConvertToRadians(gLightFovDeg),
-			gDefaultFallOffStart, gDefaultFallOffEnd,
-			1000, 1000
+			0.f, 90.f, 0.f,
+			gLightFovDeg,
+			gLightNearZ, fFallOffEndIn,
+			gShadowMapWidth, gShadowMapHeight
 		},
 		{
 			fXPos, fYPos, fZPos,
-			-90.f + fPitchDegIn, fYawDegIn, fRollDegIn,
-			DirectX::XMConvertToRadians(gLightFovDeg),
-			gDefaultFallOffStart, gDefaultFallOffEnd,
-			1000, 1000
+			-90.f, 0.f, 0.f,
+			gLightFovDeg,
+			gLightNearZ, fFallOffEndIn,
+			gShadowMapWidth, gShadowMapHeight
 		},
 		{
 			fXPos, fYPos, fZPos,
-			90.f + fPitchDegIn, fYawDegIn, fRollDegIn,
-			DirectX::XMConvertToRadians(gLightFovDeg),
-			gDefaultFallOffStart, gDefaultFallOffEnd,
-			1000, 1000
+			90.f, 0.f, 0.f,
+			gLightFovDeg,
+			gLightNearZ, fFallOffEndIn,
+			gShadowMapWidth, gShadowMapHeight
 		},
 		{
 			fXPos, fYPos, fZPos,
-			fPitchDegIn, fYawDegIn, fRollDegIn,
-			DirectX::XMConvertToRadians(gLightFovDeg),
-			gDefaultFallOffStart, gDefaultFallOffEnd,
-			1000, 1000
+			0.f, 0.f, 0.f,
+			gLightFovDeg,
+			gLightNearZ, fFallOffEndIn,
+			gShadowMapWidth, gShadowMapHeight
 		},
 		{
 			fXPos, fYPos, fZPos,
-			fPitchDegIn, fYawDegIn + 180.f, fRollDegIn,
-			DirectX::XMConvertToRadians(gLightFovDeg),
-			gDefaultFallOffStart, gDefaultFallOffEnd,
-			1000, 1000
+			0.f, 180.f, 0.f,
+			gLightFovDeg,
+			gLightNearZ, fFallOffEndIn,
+			gShadowMapWidth, gShadowMapHeight
 		}
 }
 {
-	for (size_t idx = 0; idx < PointDirectionNum; ++idx)
-	{
-		sBaseLightData.fFallOffStart = gDefaultFallOffStart;
-		sBaseLightData.fFallOffEnd = gDefaultFallOffEnd;
-	}
+	ullPointLightCnt++;
+	ullPointLightId = ullPointLightCnt;
 }
 
 PointLight::~PointLight() {}
+
+size_t PointLight::GetLightID() { return ullPointLightId; }
 
 void PointLight::UpdateLight()
 {
 	for (size_t idx = 0; idx < PointDirectionNum; ++idx)
 	{
-		viewablesDirections[idx].fNearZ = sBaseLightData.fFallOffStart;
 		viewablesDirections[idx].fFarZ = sBaseLightData.fFallOffEnd;
 		viewablesDirections[idx].UpdateView();
 	}
@@ -88,7 +99,7 @@ void PointLight::UpdateLight()
 
 void PointLight::AcceptLightRenderer(LightRenderer* pLightRenderer)
 {
-	pLightRenderer->VisitLight(*this);
+	pLightRenderer->RenderLightMap(*this);
 }
 
 void PointLight::AcceptSettingForDirectLighting(ModelRenderer* pModelRenderer)
@@ -99,5 +110,15 @@ void PointLight::AcceptSettingForDirectLighting(ModelRenderer* pModelRenderer)
 void PointLight::AcceptResetingForDirectLighting(ModelRenderer* pModelRenderer)
 {
 	pModelRenderer->ResetLight(*this);
+}
+
+void PointLight::AcceptLightList(LightManipulator* pLightManipulator)
+{
+	pLightManipulator->VisitLightList(*this);
+}
+
+void PointLight::AcceptLightSetting(LightManipulator* pLightManipulator)
+{
+	pLightManipulator->VisitLightSetting(*this);
 }
 

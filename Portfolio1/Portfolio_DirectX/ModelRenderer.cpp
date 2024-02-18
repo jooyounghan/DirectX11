@@ -46,7 +46,6 @@ void ModelRenderer::RenderObjects(
 	DirectXDevice::pDeviceContext->OMSetRenderTargets(rtvCnt, vRTVs.data(), pDSV);
 	DirectXDevice::pDeviceContext->RSSetViewports(1, &pCamera->sViewPort);
 
-
 	for (auto meshes : vStaticMeshesIn)
 	{
 		meshes.second->AcceptModelRendering(this);
@@ -267,7 +266,7 @@ void ModelRenderer::RenderModel(AIBLModel& iblMesh)
 	DirectXDevice::pDeviceContext->PSSetConstantBuffers(1, 1, iblMesh.cpIBLDataBuffer.GetAddressOf());
 
 	DirectXDevice::pDeviceContext->PSSetShaderResources(0, (UINT)SRVs.size(), SRVs.data());
-	DirectXDevice::pDeviceContext->PSSetSamplers(0, 1, DirectXDevice::ppWrapSampler);
+	DirectXDevice::pDeviceContext->PSSetSamplers(0, 1, DirectXDevice::ppClampSampler);
 #pragma endregion
 
 	iblMesh.Draw();

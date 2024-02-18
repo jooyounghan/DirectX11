@@ -4,6 +4,8 @@
 
 class PickableCamera : public FilteredCamera, public IDPickableRenderTarget
 {
+	friend class CameraManipulator;
+
 public:
 	PickableCamera(
 		const float& fXPos,
@@ -13,7 +15,7 @@ public:
 		const float& fYawDegIn,
 		const float& fRollDegIn,
 		const UINT& uiWidthIn, const UINT& uiHeightIn,
-		const float& fFovRadIn,
+		const float& fFovDegIn,
 		const float& fNearZIn,
 		const float& fFarZIn,
 		const UINT& uiNumQualityLevelsIn,
@@ -39,11 +41,14 @@ public:
 	};
 
 public:
+	virtual size_t GetCameraID() override { return ullPickableCamaraIdx; };
 	virtual void ClearRTV() override;
 	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn) override;
 
 public:
-	virtual std::string GetCameraName() { return "Pickable Camera " + std::to_string(ullPickableCamaraIdx); };
+	virtual void AcceptFilterList(class CameraManipulator* pCameraManipulator) override;
+	virtual void AcceptCameraList(class CameraManipulator* pCameraManipulator) override;
+	virtual void AcceptCameraInformation(class CameraManipulator* pCameraManipulator) override;
 
 public:
 	virtual uint32_t GetPickedID() override;

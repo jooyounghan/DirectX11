@@ -3,6 +3,8 @@
 #include "ID3D11Helper.h"
 #include "DirectXDevice.h"
 
+#include "CameraManipulator.h"
+
 using namespace std;
 
 size_t PickableCamera::ullPickableCamaraCnt = 0;
@@ -15,7 +17,7 @@ PickableCamera::PickableCamera(
 	const float& fYawDegIn,
 	const float& fRollDegIn,
 	const UINT& uiWidthIn, const UINT& uiHeightIn,
-	const float& fFovRadIn,
+	const float& fFovDegIn,
 	const float& fNearZIn,
 	const float& fFarZIn,
 	const UINT& uiNumQualityLevelsIn,
@@ -26,7 +28,7 @@ PickableCamera::PickableCamera(
 		fXPos, fYPos, fZPos,
 		fPitchDegIn, fYawDegIn, fRollDegIn,
 		uiWidthIn, uiHeightIn,
-		fFovRadIn, fNearZIn, fFarZIn,
+		fFovDegIn, fNearZIn, fFarZIn,
 		uiNumQualityLevelsIn,
 		eRTVFormatIn, eDSVFormatIn
 	), 
@@ -39,7 +41,7 @@ PickableCamera::PickableCamera(
 		fPitchDegIn, fYawDegIn, fRollDegIn,
 		(float)uiWidthIn, 
 		(float)uiHeightIn, 
-		fFovRadIn, 
+		fFovDegIn,
 		fNearZIn, fFarZIn
 	),
 	IMovable(fXPos, fYPos, fZPos),
@@ -68,6 +70,22 @@ void PickableCamera::Resize(const UINT& uiWidthIn, const UINT& uiHeightIn)
 {
 	FilteredCamera::Resize(uiWidthIn, uiHeightIn);
 	IDPickableRenderTarget::Resize(uiWidthIn, uiHeightIn);
+}
+
+void PickableCamera::AcceptFilterList(CameraManipulator* pCameraManipulator)
+{
+	ACamera::AcceptFilterList(pCameraManipulator);
+	pCameraManipulator->VisitFilterList(*this);
+}
+
+void PickableCamera::AcceptCameraList(CameraManipulator* pCameraManipulator)
+{
+	pCameraManipulator->VisitCameraList(*this);
+}
+
+void PickableCamera::AcceptCameraInformation(CameraManipulator* pCameraManipulator)
+{
+	pCameraManipulator->VisitCameraInfo(*this);
 }
 
 uint32_t PickableCamera::GetPickedID()

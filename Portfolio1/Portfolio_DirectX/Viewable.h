@@ -17,7 +17,7 @@ public:
 		const float& fRollDegIn,
 		const float& fWidthIn,
 		const float& fHeightIn,
-		const float& fFovRadianIn, 
+		const float& fFovDegreeIn, 
 		const float& fNearZIn, 
 		const float& fFarZIn
 	);
@@ -25,7 +25,7 @@ public:
 
 public:
 	D3D11_VIEWPORT sViewPort;
-	float fFovRadian;
+	float fFovDegree;
 	float fNearZ;
 	float fFarZ;
 

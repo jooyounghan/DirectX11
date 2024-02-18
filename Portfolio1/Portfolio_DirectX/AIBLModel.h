@@ -7,6 +7,10 @@
 
 class AIBLModel : public AStaticMesh
 {
+	friend class ModelRenderer;
+	friend class LightRenderer;
+	friend class NormalVectorRenderer;
+
 public:
 	AIBLModel();
 	virtual ~AIBLModel();
@@ -30,11 +34,12 @@ private:
 public:
 	virtual void UpdateModel(const float& fDelta) override;
 
-public:
+private:
 	virtual void AcceptModelManipulating(class ModelManipulator* pModelManipulator) override;
 	virtual void AcceptModelRendering(class ModelRenderer* pModelRenderer) override;
 
 private:
-	virtual void AcceptNormalVectorRendering(class NormalVectorRenderer* pNormalVectorRenderer) override {};
+	virtual void AcceptNormalVectorRendering(class NormalVectorRenderer* pNormalVectorRenderer) override;
+	virtual void AcceptLightMapUpdating(class LightRenderer* pLightRnederer) override;
 };
 

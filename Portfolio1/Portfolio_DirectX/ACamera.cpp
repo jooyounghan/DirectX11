@@ -2,6 +2,7 @@
 #include "Shaders.h"
 #include "ID3D11Helper.h"
 #include "DirectXDevice.h"
+#include "CameraManipulator.h"
 
 #include <algorithm>
 
@@ -15,7 +16,7 @@ ACamera::ACamera(
 	const float& fYawDegIn,
 	const float& fRollDegIn,
 	const UINT& uiWidthIn, const UINT& uiHeightIn,
-	const float& fFovRadIn,
+	const float& fFovDegIn,
 	const float& fNearZIn,
 	const float& fFarZIn,
 	const UINT& uiNumQualityLevelsIn,
@@ -25,7 +26,7 @@ ACamera::ACamera(
 	: ViewableRenderTarget(
 		fXPos, fYPos, fZPos,
 		fPitchDegIn, fYawDegIn, fRollDegIn,
-		fFovRadIn, fNearZIn, fFarZIn,
+		fFovDegIn, fNearZIn, fFarZIn,
 		uiWidthIn, uiHeightIn,
 		uiNumQualityLevelsIn,
 		eRTVFormatIn
@@ -33,7 +34,7 @@ ACamera::ACamera(
 	ViewableDepthStencil(
 		fXPos, fYPos, fZPos,
 		fPitchDegIn, fYawDegIn, fRollDegIn,
-		fFovRadIn, fNearZIn, fFarZIn,
+		fFovDegIn, fNearZIn, fFarZIn,
 		uiWidthIn, uiHeightIn,
 		uiNumQualityLevelsIn,
 		eDSVFormatIn
@@ -42,7 +43,7 @@ ACamera::ACamera(
 		fXPos, fYPos, fZPos, 
 		fPitchDegIn, fYawDegIn, fRollDegIn,
 		(float)uiWidthIn, (float)uiHeightIn, 
-		fFovRadIn, fNearZIn, fFarZIn
+		fFovDegIn, fNearZIn, fFarZIn
 	),
 	AFilter(
 		uiWidthIn, uiHeightIn, 1, 0,
@@ -109,6 +110,10 @@ void ACamera::Resize(const UINT& uiWidthIn, const UINT& uiHeightIn)
 	}
 }
 
+void ACamera::AcceptFilterList(CameraManipulator* pCameraManipulator) 
+{
+	pCameraManipulator->VisitFilterList(*this);
+}
 
 void ACamera::Apply(ID3D11ShaderResourceView** ppInputSRV)
 {

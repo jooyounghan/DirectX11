@@ -5,3 +5,4 @@
 #define AutoDelete(a) if(a == nullptr) { delete a; a = nullptr; }
 
 #define NOT_SELECTED -1
+#define NEAR_CLOSE 0.00001f;

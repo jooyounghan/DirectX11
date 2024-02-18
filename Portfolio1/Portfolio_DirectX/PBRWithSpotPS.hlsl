@@ -96,8 +96,8 @@ PixelOutput main(DomainOutput input)
     
     float2 f2LightTex = float2(f4LightProjPos.x, -f4LightProjPos.y);
     f2LightTex = (f2LightTex + 1.f) * 0.5f;
-
-    float fSpotFactor = clamp(1 - f4LightProjPos.x * f4LightProjPos.x - f4LightProjPos.y * f4LightProjPos.y, 0.f, 1.f);
+     
+    float fSpotFactor = clamp(1.f - f4LightProjPos.x * f4LightProjPos.x - f4LightProjPos.y * f4LightProjPos.y, 0.f, 1.f);
 
     float3 f3ToLight = normalize(f4LightPos.xyz - input.f4ModelPos.xyz);
     float fToLightDistance = length(f4LightPos.xyz - input.f4ModelPos.xyz);
@@ -120,8 +120,7 @@ PixelOutput main(DomainOutput input)
     
     if (fDepth < 1.f && fDepth + 1E-6 > f4LightProjPos.z)
     {
-        fDirectColor = (diffuseBrdf + specularBrdf) * 1.f * NDotL * f3LightColor;
-        fDirectColor = float3(1.f, 0.f, 0.f);
+        fDirectColor = (diffuseBrdf + specularBrdf) * NDotL * f3LightColor * fLightPowerSaturated;
     }
        
     result.pixelColor = float4(fDirectColor, 1.f);

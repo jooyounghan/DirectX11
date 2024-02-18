@@ -43,12 +43,6 @@
     <Filter Include="헤더 파일\File\Extended">
       <UniqueIdentifier>{5fc0424f-d7fb-4a7d-a84a-3079e4fd5ea7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Texture2D\Extended">
-      <UniqueIdentifier>{bd9064d5-8f12-4486-a5f5-80f78241bb97}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\Texture2D\Extended">
-      <UniqueIdentifier>{a2cd1a36-b049-4b26-95b2-eb212e32fa7d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Shader">
       <UniqueIdentifier>{2a2334f3-bf48-4e07-849c-5795f0e8ef8a}</UniqueIdentifier>
     </Filter>
@@ -139,6 +133,24 @@
     <Filter Include="Shader\Include">
       <UniqueIdentifier>{5ed0a9a9-3e48-4c68-aebc-fb0572a6b49f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\GUI\Extended\Stage">
+      <UniqueIdentifier>{96bdc20b-90fd-4166-8644-686ed23e3006}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\GUI\Extended\Stage">
+      <UniqueIdentifier>{125eb9df-eafa-450b-acbb-b056b47d4db1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Texture2D\Filter">
+      <UniqueIdentifier>{a2cd1a36-b049-4b26-95b2-eb212e32fa7d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Texture2D\Filter\Extended">
+      <UniqueIdentifier>{16bea631-9948-478a-9422-b4e62d4bf269}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Texture2D\Filter">
+      <UniqueIdentifier>{bd9064d5-8f12-4486-a5f5-80f78241bb97}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Texture2D\Filter\Extended">
+      <UniqueIdentifier>{c29f0bb3-8718-44dd-9535-10e8aebc69c7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseApp.h">
@@ -191,9 +203,6 @@
     </ClInclude>
     <ClInclude Include="NormalImageFile.h">
       <Filter>헤더 파일\File\Extended</Filter>
-    </ClInclude>
-    <ClInclude Include="AFilter.h">
-      <Filter>헤더 파일\Texture2D</Filter>
     </ClInclude>
     <ClInclude Include="RenderTarget.h">
       <Filter>헤더 파일\Texture2D</Filter>
@@ -300,11 +309,20 @@
     <ClInclude Include="NormalVectorRenderer.h">
       <Filter>헤더 파일\Renderer\Extended</Filter>
     </ClInclude>
-    <ClInclude Include="BlurFilter.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="StageManipulator.h">
-      <Filter>헤더 파일\GUI\Extended</Filter>
+      <Filter>헤더 파일\GUI\Extended\Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraManipulator.h">
+      <Filter>헤더 파일\GUI\Extended\Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="LightManipulator.h">
+      <Filter>헤더 파일\GUI\Extended\Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="AFilter.h">
+      <Filter>헤더 파일\Texture2D\Filter</Filter>
+    </ClInclude>
+    <ClInclude Include="BlurFilter.h">
+      <Filter>헤더 파일\Texture2D\Filter\Extended</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -358,9 +376,6 @@
     </ClCompile>
     <ClCompile Include="PickableCamera.cpp">
       <Filter>소스 파일\Viewable\Camera\Extended</Filter>
-    </ClCompile>
-    <ClCompile Include="AFilter.cpp">
-      <Filter>소스 파일\Texture2D</Filter>
     </ClCompile>
     <ClCompile Include="RenderTarget.cpp">
       <Filter>소스 파일\Texture2D</Filter>
@@ -458,11 +473,20 @@
     <ClCompile Include="NormalVectorRenderer.cpp">
       <Filter>소스 파일\Renderer\Extended</Filter>
     </ClCompile>
-    <ClCompile Include="BlurFilter.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="StageManipulator.cpp">
-      <Filter>소스 파일\GUI\Extended</Filter>
+      <Filter>소스 파일\GUI\Extended\Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraManipulator.cpp">
+      <Filter>소스 파일\GUI\Extended\Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="LightManipulator.cpp">
+      <Filter>소스 파일\GUI\Extended\Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="BlurFilter.cpp">
+      <Filter>소스 파일\Texture2D\Filter\Extended</Filter>
+    </ClCompile>
+    <ClCompile Include="AFilter.cpp">
+      <Filter>소스 파일\Texture2D\Filter</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

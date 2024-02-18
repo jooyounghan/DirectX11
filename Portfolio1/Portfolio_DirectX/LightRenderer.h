@@ -7,12 +7,18 @@
 
 class LightRenderer : public IRenderer
 {
+	friend class APBRStaticMesh;
+	friend class AIBLModel;
+	friend class PointLight;
+	friend class SpotLight;
+
 public:
 	LightRenderer();
 	virtual ~LightRenderer();
 
 private:
 	const std::unordered_map<uint32_t, class AStaticMesh*>* pModelSet;
+	std::shared_ptr<class ILight> spSelectedLight;
 
 public:
 	void UpdateLightMap(
@@ -20,9 +26,12 @@ public:
 		const std::vector<std::shared_ptr<class ILight>>& vLights
 	);
 
-public:
-	void VisitLight(class PointLight& pointLight);
-	void VisitLight(class SpotLight& spotLight);
+private:
+	void RenderLightMap(class PointLight& pointLight);
+	void RenderLightMap(class SpotLight& spotLight);
 
+private:
+	void SetModelSettingForLightMap(class APBRStaticMesh& pbrStaticMesh);
+	void SetModelSettingForLightMap(class AIBLModel& iblMesh);
 };
 

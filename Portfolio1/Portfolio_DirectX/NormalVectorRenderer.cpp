@@ -5,6 +5,8 @@
 
 #include "ACamera.h"
 #include "APBRStaticMesh.h"
+#include "AIBLModel.h"
+
 #include <vector>
 
 NormalVectorRenderer::NormalVectorRenderer()
@@ -99,4 +101,8 @@ void NormalVectorRenderer::RenderNormal(APBRStaticMesh& pbrStaticMesh)
 
 	DirectXDevice::pDeviceContext->GSSetSamplers(0, 1, &pNullSampler);
 
+}
+
+void NormalVectorRenderer::RenderNormal(AIBLModel& iblMesh)
+{
 }

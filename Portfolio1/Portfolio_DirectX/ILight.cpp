@@ -3,13 +3,27 @@
 #include "DirectXDevice.h"
 
 ILight::ILight(
-	const float& fXPos,
-	const float& fYPos,
-	const float& fZPos
+	const float& fXPosIn,
+	const float& fYPosIn,
+	const float& fZPosIn,
+	const float& fLightRColorIn,
+	const float& fLightGColorIn,
+	const float& fLightBColorIn,
+	const float& fFallOffStartIn,
+	const float& fFallOffEndIn,
+	const float& fLightPowerIn
 )
-	: IMovable(fXPos, fYPos, fZPos)
+	: IMovable(fXPosIn, fYPosIn, fZPosIn)
 {
 	AutoZeroMemory(sBaseLightData);
+
+	sBaseLightData.fLightColor[0] = fLightRColorIn;
+	sBaseLightData.fLightColor[1] = fLightGColorIn;
+	sBaseLightData.fLightColor[2] = fLightBColorIn;
+
+	sBaseLightData.fFallOffStart = fFallOffStartIn;
+	sBaseLightData.fFallOffEnd = fFallOffEndIn;
+	sBaseLightData.fLightPower = fLightPowerIn;
 
 	ID3D11Helper::CreateBuffer(
 		DirectXDevice::pDevice,

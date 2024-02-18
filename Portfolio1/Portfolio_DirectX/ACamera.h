@@ -6,7 +6,6 @@
 #include "APossessable.h"
 
 #include <tuple>
-#include <string>
 #include <vector>
 
 class ACamera
@@ -24,7 +23,7 @@ public:
 		const float& fYawDegIn,
 		const float& fRollDegIn,
 		const UINT& uiWidthIn, const UINT& uiHeightIn,
-		const float& fFovRadIn, 
+		const float& fFovDegIn, 
 		const float& fNearZIn,
 		const float& fFarZIn,
 		const UINT& uiNumQualityLevelsIn,
@@ -37,6 +36,7 @@ protected:
 	bool isLinkedWithBackBuffer;
 
 public:
+	virtual size_t GetCameraID() = 0;
 	virtual void Resolve() = 0;
 
 public:
@@ -55,6 +55,8 @@ public:
 	virtual void SetUAVBarrier() override final;
 
 public:
-	virtual std::string GetCameraName() = 0;
+	virtual void AcceptFilterList(class CameraManipulator* pCameraManipulator) override;
+	virtual void AcceptCameraList(class CameraManipulator* pCameraManipulator) = 0;
+	virtual void AcceptCameraInformation(class CameraManipulator* pCameraManipulator) = 0;
 };
 

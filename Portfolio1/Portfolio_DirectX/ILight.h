@@ -6,16 +6,21 @@ class ILight : virtual public IMovable
 {
 protected:
 	static constexpr float gLightFovDeg = 90.f;
+	static constexpr float gLightNearZ = 0.001f;
 	static constexpr UINT gShadowMapWidth = 1000;
 	static constexpr UINT gShadowMapHeight = 1000;
-	static constexpr float gDefaultFallOffStart = 0.001f;
-	static constexpr float gDefaultFallOffEnd = 10.f;
 
 public:
 	ILight(
-		const float& fXPos,
-		const float& fYPos,
-		const float& fZPos
+		const float& fXPosIn,
+		const float& fYPosIn,
+		const float& fZPosIn,
+		const float& fLightRColorIn,
+		const float& fLightGColorIn,
+		const float& fLightBColorIn,
+		const float& fFallOffStartIn,
+		const float& fFallOffEndIn,
+		const float& fLightPowerIn
 	);
 	virtual ~ILight();
 
@@ -32,6 +37,7 @@ protected:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> cpBaseLightBuffer;
 
 public:
+	virtual size_t GetLightID() = 0;
 	virtual void UpdateLight() = 0;
 
 public:
@@ -41,4 +47,7 @@ public:
 	virtual void AcceptSettingForDirectLighting(class ModelRenderer* pModelRenderer) = 0;
 	virtual void AcceptResetingForDirectLighting(class ModelRenderer* pModelRenderer) = 0;
 
+public:
+	virtual void AcceptLightList(class LightManipulator* pLightManipulator) = 0;
+	virtual void AcceptLightSetting(class LightManipulator* pLightManipulator) = 0;
 };

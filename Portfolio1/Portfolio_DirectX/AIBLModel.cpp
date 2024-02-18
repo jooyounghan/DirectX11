@@ -1,8 +1,11 @@
 #include "AIBLModel.h"
 #include "ID3D11Helper.h"
 #include "DirectXDevice.h"
+
 #include "ModelManipulator.h"
 #include "ModelRenderer.h"
+#include "NormalVectorRenderer.h"
+#include "LightRenderer.h"
 
 AIBLModel::AIBLModel()
 	: AStaticMesh()
@@ -38,4 +41,14 @@ void AIBLModel::AcceptModelManipulating(ModelManipulator* pModelManipulator)
 void AIBLModel::AcceptModelRendering(ModelRenderer* pModelRenderer)
 {
 	pModelRenderer->RenderModel(*this);
+}
+
+void AIBLModel::AcceptNormalVectorRendering(NormalVectorRenderer* pNormalVectorRenderer)
+{
+	pNormalVectorRenderer->RenderNormal(*this);
+}
+
+void AIBLModel::AcceptLightMapUpdating(LightRenderer* pLightRnederer)
+{
+	pLightRnederer->SetModelSettingForLightMap(*this);
 }

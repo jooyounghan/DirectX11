@@ -130,6 +130,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="BlurFilter.h" />
+    <ClInclude Include="CameraManipulator.h" />
     <ClInclude Include="CubeMapModel.h" />
     <ClInclude Include="IRenderer.h" />
     <ClInclude Include="FileManipulator.h" />
@@ -141,6 +142,7 @@
     <ClInclude Include="IGuiMenu.h" />
     <ClInclude Include="ImGuiFileDialog.h" />
     <ClInclude Include="ImGuiFileDialogConfig.h" />
+    <ClInclude Include="LightManipulator.h" />
     <ClInclude Include="LightRenderer.h" />
     <ClInclude Include="ModelManipulator.h" />
     <ClInclude Include="ModelRenderer.h" />
@@ -187,6 +189,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BlurFilter.cpp" />
+    <ClCompile Include="CameraManipulator.cpp" />
     <ClCompile Include="CubeMapModel.cpp" />
     <ClCompile Include="IRenderer.cpp" />
     <ClCompile Include="FileManipulator.cpp" />
@@ -196,6 +199,7 @@
     <ClCompile Include="IDPickableRenderTarget.cpp" />
     <ClCompile Include="APossessable.cpp" />
     <ClCompile Include="ImGuiFileDialog.cpp" />
+    <ClCompile Include="LightManipulator.cpp" />
     <ClCompile Include="LightRenderer.cpp" />
     <ClCompile Include="ModelManipulator.cpp" />
     <ClCompile Include="ModelRenderer.cpp" />

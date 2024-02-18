@@ -1,6 +1,7 @@
 #include "BlurFilter.h"
 #include "Shaders.h"
 #include "DirectXDevice.h"
+#include "CameraManipulator.h"
 
 BlurFilter::BlurFilter(
 	UINT uiWidthIn, 
@@ -27,6 +28,11 @@ BlurFilter::BlurFilter(
 
 BlurFilter::~BlurFilter()
 {
+}
+
+void BlurFilter::AcceptFilterList(CameraManipulator* pCameraManipulator)
+{
+	pCameraManipulator->VisitFilterList(*this);
 }
 
 void BlurFilter::Apply(ID3D11ShaderResourceView** ppInputSRV)

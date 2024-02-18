@@ -9,7 +9,7 @@ ViewableDepthStencil::ViewableDepthStencil(
 	const float& fPitchDegIn,
 	const float& fYawDegIn,
 	const float& fRollDegIn,
-	const float& fFovRadianIn,
+	const float& fFovDegreeIn,
 	const float& fNearZIn,
 	const float& fFarZIn,
 	const UINT& uiWidthIn,
@@ -29,7 +29,7 @@ ViewableDepthStencil::ViewableDepthStencil(
 		fXPos, fYPos, fZPos,
 		fPitchDegIn, fYawDegIn, fRollDegIn,
 		(float)uiWidthIn, (float)uiHeightIn,
-		fFovRadianIn, fNearZIn, fFarZIn
+		fFovDegreeIn, fNearZIn, fFarZIn
 	),
 	IAngleAdjustable(fPitchDegIn, fYawDegIn, fRollDegIn),
 	IMovable(fXPos, fYPos, fZPos),

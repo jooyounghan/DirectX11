@@ -4,37 +4,53 @@
 
 #include "LightRenderer.h"
 #include "ModelRenderer.h"
+#include "LightManipulator.h"
+
+size_t SpotLight::ullSpotLightCnt = 0;
 
 SpotLight::SpotLight(
-	const float& fXPos,
-	const float& fYPos,
-	const float& fZPos,
+	const float& fXPosIn,
+	const float& fYPosIn,
+	const float& fZPosIn,
 	const float& fPitchDegIn,
 	const float& fYawDegIn,
-	const float& fRollDegIn
+	const float& fRollDegIn,
+	const float& fLightRColorIn,
+	const float& fLightGColorIn,
+	const float& fLightBColorIn,
+	const float& fFallOffStartIn,
+	const float& fFallOffEndIn,
+	const float& fLightPowerIn,
+	const float& fSpotPowerIn
 )
-	: ILight(fXPos, fYPos, fZPos),
+	: ILight(
+		fXPosIn, fYPosIn, fZPosIn,
+		fLightRColorIn, fLightGColorIn, fLightBColorIn,
+		fFallOffStartIn, fFallOffEndIn, fLightPowerIn
+		),
 	ViewableDepthOnly(
-		fXPos, fYPos, fZPos, 
+		fXPosIn, fYPosIn, fZPosIn,
 		fPitchDegIn, fYawDegIn, fRollDegIn,
-		DirectX::XMConvertToRadians(gLightFovDeg),
-		gDefaultFallOffStart, gDefaultFallOffEnd,
-		1000, 1000
+		gLightFovDeg,
+		gLightNearZ, fFallOffEndIn,
+		gShadowMapWidth, gShadowMapHeight
 	),
 	Viewable(
-		fXPos, fYPos, fZPos, 
+		fXPosIn, fYPosIn, fZPosIn,
 		fPitchDegIn, fYawDegIn, fRollDegIn,
-		1000.f, 
-		1000.f, 
-		DirectX::XMConvertToRadians(90.f),
-		gDefaultFallOffStart, gDefaultFallOffEnd
+		(float)gShadowMapWidth,
+		(float)gShadowMapHeight,
+		90.f,
+		gLightNearZ, fFallOffEndIn
 	),
 	IAngleAdjustable(fPitchDegIn, fYawDegIn, fRollDegIn),
-	IMovable(fXPos, fYPos, fZPos),
-	IRectangle(1000, 1000)
+	IMovable(fXPosIn, fYPosIn, fZPosIn),
+	IRectangle(gShadowMapWidth, gShadowMapHeight)
 {
-	sBaseLightData.fFallOffStart = gDefaultFallOffStart;
-	sBaseLightData.fFallOffEnd = gDefaultFallOffEnd;
+	ullSpotLightCnt++;
+	ullSpotLightId = ullSpotLightCnt;
+
+	sSpotLightData.fSpotPower = fSpotPowerIn;
 
 	ID3D11Helper::CreateBuffer(
 		DirectXDevice::pDevice,
@@ -49,9 +65,10 @@ SpotLight::~SpotLight()
 
 }
 
+size_t SpotLight::GetLightID() { return ullSpotLightId; }
+
 void SpotLight::UpdateLight()
 {
-	fNearZ = sBaseLightData.fFallOffStart;
 	fFarZ = sBaseLightData.fFallOffEnd;
 
 	ViewableDepthOnly::UpdateView();
@@ -72,7 +89,7 @@ void SpotLight::UpdateLight()
 
 void SpotLight::AcceptLightRenderer(LightRenderer* pLightRenderer)
 {
-	pLightRenderer->VisitLight(*this);
+	pLightRenderer->RenderLightMap(*this);
 }
 
 void SpotLight::AcceptSettingForDirectLighting(ModelRenderer* pModelRenderer)
@@ -83,4 +100,14 @@ void SpotLight::AcceptSettingForDirectLighting(ModelRenderer* pModelRenderer)
 void SpotLight::AcceptResetingForDirectLighting(ModelRenderer* pModelRenderer)
 {
 	pModelRenderer->ResetLight(*this);
+}
+
+void SpotLight::AcceptLightList(LightManipulator* pLightManipulator)
+{
+	pLightManipulator->VisitLightList(*this);
+}
+
+void SpotLight::AcceptLightSetting(LightManipulator* pLightManipulator)
+{
+	pLightManipulator->VisitLightSetting(*this);
 }

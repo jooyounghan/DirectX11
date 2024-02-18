@@ -7,6 +7,10 @@
 
 class APBRStaticMesh : public AStaticMesh
 {
+	friend class ModelRenderer;
+	friend class LightRenderer;
+	friend class NormalVectorRenderer;
+
 public:
 	enum EModelTextures : WORD
 	{
@@ -49,9 +53,12 @@ public:
 	virtual void Load(const std::string& path) = 0;
 	virtual void UpdateModel(const float& fDelta) override;
 
-public:
+private:
 	virtual void AcceptModelManipulating(class ModelManipulator* pModelManipulator) override;
 	virtual void AcceptModelRendering(class ModelRenderer* pModelRenderer) override;
+
+private:
 	virtual void AcceptNormalVectorRendering(class NormalVectorRenderer* pNormalVectorRenderer) override;
+	virtual void AcceptLightMapUpdating(class LightRenderer* pLightRnederer) override;
 };
 

@@ -10,7 +10,6 @@
 #include "LightRenderer.h"
 #include "NormalVectorRenderer.h"
 
-#include <vector>
 #include <unordered_map>
 
 class PortfolioApp : public BaseApp
@@ -36,9 +35,9 @@ public:
 	virtual LRESULT WINAPI AppProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) override;
 
 public:
-	ModelManipulator modelManipulator;
-	FileManipulator fileManipulator;
-	StageManipulator stageManipulator;
+	std::unique_ptr<ModelManipulator> upModelManipulator;
+	std::unique_ptr<FileManipulator> upFileManipulator;
+	std::unique_ptr<StageManipulator> upStageManipulator;
 
 public:
 	ModelRenderer modelRenderer;
@@ -51,9 +50,5 @@ private:
 
 public:
 	void AddModel(AStaticMesh* pModel);
-
-public:
-	std::vector<std::shared_ptr<class ILight>> pLights;
-	std::vector<std::shared_ptr<class ACamera>> pCameras;
 };
 

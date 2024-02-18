@@ -20,8 +20,7 @@ using namespace std;
 
 PortfolioApp::PortfolioApp(const UINT& uiWidthIn, const UINT& uiHeightIn)
 	: 
-	BaseApp(uiWidthIn, uiHeightIn), 
-	stageManipulator(uiWidth, uiHeight, pLights, pCameras)
+	BaseApp(uiWidthIn, uiHeightIn)
 {
 	BaseApp::GlobalBaseApp = this;
 }
@@ -40,6 +39,10 @@ void PortfolioApp::Init()
 
 	Shaders& shaders = Shaders::GetInstance();
 	shaders.Init(DirectXDevice::pDevice);
+
+	upModelManipulator = make_unique<ModelManipulator>();
+	upFileManipulator = make_unique<FileManipulator>();
+	upStageManipulator = make_unique<StageManipulator>(uiWidth, uiHeight);
 
 	InitImGUI();
 	AddModel(new CubeModel(-5.f, 0.f, 0.f, 1.f, false, 8));
@@ -61,7 +64,7 @@ void PortfolioApp::Update(const float& fDelta)
 		model.second->UpdateModel(fDelta);
 	}
 
-	ACamera* pCamera = stageManipulator.GetSelectedCamera();
+	ACamera* pCamera = upStageManipulator->GetSelectedCamera();
 	if (pCamera)
 	{
 		pCamera->UpdatePosition();
@@ -69,7 +72,7 @@ void PortfolioApp::Update(const float& fDelta)
 		pCamera->ManageKeyBoardInput(fDelta);
 	}
 
-	for (auto& light : pLights)
+	for (auto& light : upStageManipulator->GetLights())
 	{
 		light->UpdatePosition();
 		light->UpdateLight();
@@ -80,15 +83,17 @@ void PortfolioApp::Render()
 {
 
 
-	ACamera* pCamera = stageManipulator.GetSelectedCamera();
+	ACamera* pCamera = upStageManipulator->GetSelectedCamera();
 	if (pCamera)
 	{
 		pCamera->ClearRTV();
 		pCamera->ClearDSV();
 
+		auto& pLights = upStageManipulator->GetLights();
+
 		lightRenderer.UpdateLightMap(pModels, pLights);
 
-		if (modelManipulator.GetIsDrawingNormal())
+		if (upModelManipulator->GetIsDrawingNormal())
 		{
 			normalVectorRenderer.RenderNormalVector(pCamera, pModels);
 		}
@@ -154,9 +159,9 @@ void PortfolioApp::SetImGUIRendering()
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
 
-	modelManipulator.PopAsDialog();
-	fileManipulator.PopAsDialog();
-	stageManipulator.PopAsDialog();
+	upModelManipulator->PopAsDialog();
+	upFileManipulator->PopAsDialog();
+	upStageManipulator->PopAsDialog();
 
 	ImGui::Render();
 }
@@ -192,7 +197,7 @@ LRESULT __stdcall PortfolioApp::AppProc(HWND hWnd, UINT msg, WPARAM wParam, LPAR
 
 	uint32_t uiSelectedID = 0;
 
-	ACamera* pCamera = stageManipulator.GetSelectedCamera();
+	ACamera* pCamera = upStageManipulator->GetSelectedCamera();
 	PickableCamera* pPickableCamera = dynamic_cast<PickableCamera*>(pCamera);
 
 	if (pCamera)
@@ -238,8 +243,8 @@ LRESULT __stdcall PortfolioApp::AppProc(HWND hWnd, UINT msg, WPARAM wParam, LPAR
 				pPickableCamera->SetMousePos(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
 				uiSelectedID = pPickableCamera->GetPickedID();
 				pModels.find(uiSelectedID) != pModels.end() ?
-					modelManipulator.SetAddressOfSelectedMesh(&pModels[uiSelectedID])
-					: modelManipulator.SetAddressOfSelectedMesh(nullptr);
+					upModelManipulator->SetAddressOfSelectedMesh(&pModels[uiSelectedID])
+					: upModelManipulator->SetAddressOfSelectedMesh(nullptr);
 			}
 			return 0;
 		case WM_LBUTTONUP:

@@ -5,6 +5,8 @@
 
 class FilteredCamera : public ACamera
 {
+	friend class CameraManipulator;
+
 public:
 	FilteredCamera(
 		const float& fXPos,
@@ -14,7 +16,7 @@ public:
 		const float& fYawDegIn,
 		const float& fRollDegIn,
 		const UINT& uiWidthIn, const UINT& uiHeightIn,
-		const float& fFovRadIn,
+		const float& fFovDegIn,
 		const float& fNearZIn,
 		const float& fFarZIn,
 		const UINT& uiNumQualityLevelsIn,
@@ -38,11 +40,16 @@ public:
 	};
 
 public:
+	inline const std::vector<std::unique_ptr<class AFilter>>& GetFilters() { return upFilters; }
+	virtual size_t GetCameraID() override { return ullFiltertedCamaraIdx; };
+
+public:
 	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn) override;
 	virtual void Resolve() override;
 
-public:
-	virtual std::string GetCameraName() { return "Filtering Camera " + std::to_string(ullFiltertedCamaraIdx); };
+protected:
+	virtual void AcceptCameraList(class CameraManipulator* pCameraManipulator) override;
+	virtual void AcceptCameraInformation(class CameraManipulator* pCameraManipulator) override;
 
 public:
 	void AddBlurState();

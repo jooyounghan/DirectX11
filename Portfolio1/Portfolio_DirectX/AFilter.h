@@ -34,6 +34,7 @@ public:
 	inline ID3D11UnorderedAccessView** GetAddressOfFilterUAV() { return cpUAV.GetAddressOf(); }
 
 public:
+	virtual void AcceptFilterList(class CameraManipulator* pCameraManipulator) = 0;
 	virtual void Apply(ID3D11ShaderResourceView** ppInputSRV) = 0;
 	virtual void SetUAVBarrier() = 0;
 
