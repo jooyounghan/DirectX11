@@ -32,8 +32,8 @@ public:
 protected:
 	struct 
 	{
-		DirectX::XMMATRIX			xmmViewProjMat;
-		DirectX::XMMATRIX			xmmInvViewProjMat;
+		DirectX::XMMATRIX xmmViewProjMat;
+		DirectX::XMMATRIX xmmInvViewProjMat;
 	} sViewProjs;
 
 public:

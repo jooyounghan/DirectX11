@@ -34,12 +34,14 @@ private:
 public:
 	static ID3D11SamplerState** ppWrapSampler;
 	static ID3D11SamplerState** ppClampSampler;
-	static ID3D11SamplerState** ppBorderSampler;
+	static ID3D11SamplerState** ppCompareClampSampler;
+	static ID3D11SamplerState** ppCompareBorderSampler;
 
 private:
 	static Microsoft::WRL::ComPtr<ID3D11SamplerState> cpWrapSampler;
 	static Microsoft::WRL::ComPtr<ID3D11SamplerState> cpClampSampler;
-	static Microsoft::WRL::ComPtr<ID3D11SamplerState> cpBorderSampler;
+	static Microsoft::WRL::ComPtr<ID3D11SamplerState> cpCompareClampSampler;
+	static Microsoft::WRL::ComPtr<ID3D11SamplerState> cpCompareBorderSampler;
 
 public:
 	static ID3D11BlendState* pAddingBlendState;
@@ -52,9 +54,6 @@ public:
 
 private:
 	static Microsoft::WRL::ComPtr<ID3D11DepthStencilState> cpDrawLessEqualDSS;
-
-
-
 
 public:
 	static void InitDevice(

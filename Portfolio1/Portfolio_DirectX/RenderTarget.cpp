@@ -20,7 +20,7 @@ RenderTarget::RenderTarget(
 	),
 	IRectangle(uiWidthIn, uiHeightIn)
 {
-	ID3D11Helper::CreateRenderTargetView(DirectXDevice::pDevice, cpTexture2D.Get(), cpRTV.GetAddressOf());
+	ID3D11Helper::CreateRenderTargetView(DirectXDevice::pDevice, cpTexture2D.Get(), nullptr, cpRTV.GetAddressOf());
 }
 
 RenderTarget::~RenderTarget()
@@ -39,6 +39,7 @@ void RenderTarget::Resize(const UINT& uiWidthIn, const UINT& uiHeightIn)
 	ID3D11Helper::CreateRenderTargetView(
 		DirectXDevice::pDevice,
 		cpTexture2D.Get(),
+		nullptr, 
 		cpRTV.GetAddressOf()
 	);
 }

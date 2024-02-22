@@ -28,51 +28,19 @@ PointLight::PointLight(
 		fFallOffEndIn,
 		fLightPowerIn
 	),
+	CubeRenderTargets(
+		gShadowMapWidth, gShadowMapHeight, 0
+	),
+	viewable{
+		Viewable(fXPos, fYPos, fZPos, 0.f, 90.f, 0.f, gShadowMapWidth, gShadowMapHeight, gLightFovDeg, gLightNearZ, fFallOffEndIn),
+		Viewable(fXPos, fYPos, fZPos, 0.f, -90.f, 0.f, gShadowMapWidth, gShadowMapHeight, gLightFovDeg, gLightNearZ, fFallOffEndIn),
+		Viewable(fXPos, fYPos, fZPos, -90.f, 0.f, 0.f, gShadowMapWidth, gShadowMapHeight, gLightFovDeg, gLightNearZ, fFallOffEndIn),
+		Viewable(fXPos, fYPos, fZPos, 90.f, 0.f, 0.f, gShadowMapWidth, gShadowMapHeight, gLightFovDeg, gLightNearZ, fFallOffEndIn),
+		Viewable(fXPos, fYPos, fZPos, 0.f, 0.f, 0.f, gShadowMapWidth, gShadowMapHeight, gLightFovDeg, gLightNearZ, fFallOffEndIn),
+		Viewable(fXPos, fYPos, fZPos, 0.f, 180.f, 0.f, gShadowMapWidth, gShadowMapHeight, gLightFovDeg, gLightNearZ, fFallOffEndIn)
+	},
 	IMovable(fXPos, fYPos, fZPos),
-	viewablesDirections{
-		{
-			fXPos, fYPos, fZPos,
-			0.f, -90.f, 0.f,
-			gLightFovDeg,
-			gLightNearZ, fFallOffEndIn,
-			gShadowMapWidth, gShadowMapHeight
-		},
-		{
-			fXPos, fYPos, fZPos,
-			0.f, 90.f, 0.f,
-			gLightFovDeg,
-			gLightNearZ, fFallOffEndIn,
-			gShadowMapWidth, gShadowMapHeight
-		},
-		{
-			fXPos, fYPos, fZPos,
-			-90.f, 0.f, 0.f,
-			gLightFovDeg,
-			gLightNearZ, fFallOffEndIn,
-			gShadowMapWidth, gShadowMapHeight
-		},
-		{
-			fXPos, fYPos, fZPos,
-			90.f, 0.f, 0.f,
-			gLightFovDeg,
-			gLightNearZ, fFallOffEndIn,
-			gShadowMapWidth, gShadowMapHeight
-		},
-		{
-			fXPos, fYPos, fZPos,
-			0.f, 0.f, 0.f,
-			gLightFovDeg,
-			gLightNearZ, fFallOffEndIn,
-			gShadowMapWidth, gShadowMapHeight
-		},
-		{
-			fXPos, fYPos, fZPos,
-			0.f, 180.f, 0.f,
-			gLightFovDeg,
-			gLightNearZ, fFallOffEndIn,
-			gShadowMapWidth, gShadowMapHeight
-		}
-}
+	IRectangle(gShadowMapWidth, gShadowMapHeight)
 {
 	ullPointLightCnt++;
 	ullPointLightId = ullPointLightCnt;
@@ -84,17 +52,20 @@ size_t PointLight::GetLightID() { return ullPointLightId; }
 
 void PointLight::UpdateLight()
 {
-	for (size_t idx = 0; idx < PointDirectionNum; ++idx)
-	{
-		viewablesDirections[idx].fFarZ = sBaseLightData.fFallOffEnd;
-		viewablesDirections[idx].UpdateView();
-	}
-
 	ID3D11Helper::UpdateBuffer(
 		DirectXDevice::pDeviceContext,
 		sBaseLightData, D3D11_MAP_WRITE_DISCARD,
 		cpBaseLightBuffer.Get()
 	);
+
+	for (size_t idx = 0; idx < PointDirectionNum; ++idx)
+	{
+		viewable[idx].fFarZ = sBaseLightData.fFallOffEnd;
+		DirectX::XMVECTOR& pos = viewable[idx].GetPosition();
+		memcpy(pos.m128_f32, xmvPosition.m128_f32, sizeof(float) * 4);
+		viewable[idx].UpdatePosition();
+		viewable[idx].UpdateView();
+	}
 }
 
 void PointLight::AcceptLightRenderer(LightRenderer* pLightRenderer)

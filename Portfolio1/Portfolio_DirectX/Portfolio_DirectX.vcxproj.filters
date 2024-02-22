@@ -324,6 +324,9 @@
     <ClInclude Include="BlurFilter.h">
       <Filter>헤더 파일\Texture2D\Filter\Extended</Filter>
     </ClInclude>
+    <ClInclude Include="CubeRenderTargets.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseApp.cpp">
@@ -487,6 +490,9 @@
     </ClCompile>
     <ClCompile Include="AFilter.cpp">
       <Filter>소스 파일\Texture2D\Filter</Filter>
+    </ClCompile>
+    <ClCompile Include="CubeRenderTargets.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,7 +1,7 @@
 #pragma once
 #include "ILight.h"
-#include "IAngleAdjustable.h"
-#include "ViewableDepthOnly.h"
+#include "CubeRenderTargets.h"
+#include "Viewable.h"
 
 enum EPointDirections : size_t
 {
@@ -14,7 +14,7 @@ enum EPointDirections : size_t
 	PointDirectionNum
 };
 
-class PointLight : public ILight
+class PointLight : public ILight, public CubeRenderTargets
 {
 	friend class LightRenderer;
 	friend class ModelRenderer;
@@ -39,7 +39,7 @@ private:
 	size_t ullPointLightId;
 
 protected:
-	ViewableDepthOnly viewablesDirections[6];
+	Viewable viewable[PointDirectionNum];
 
 public:
 	virtual size_t GetLightID();

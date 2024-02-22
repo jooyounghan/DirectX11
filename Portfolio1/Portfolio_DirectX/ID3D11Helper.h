@@ -117,6 +117,7 @@ public:
 	static void CreateRenderTargetView(
 		IN ID3D11Device* pDevice,
 		IN ID3D11Resource* pResource,
+		IN D3D11_RENDER_TARGET_VIEW_DESC* pRTVDesc,
 		OUT ID3D11RenderTargetView** ppRenderTargetView
 	);
 
@@ -136,8 +137,8 @@ public:
 	static void CreateDepthStencilView(
 		IN ID3D11Device* pDevice,
 		IN	ID3D11Texture2D* pDepthStencilTexture2D,
-		OUT ID3D11DepthStencilView** ppDepthStencilView,
-		IN D3D11_DEPTH_STENCIL_VIEW_DESC* sDSVDesc = NULL
+		IN D3D11_DEPTH_STENCIL_VIEW_DESC* sDSVDesc,
+		OUT ID3D11DepthStencilView** ppDepthStencilView
 	);
 
 	static void CreateRasterizerState(

@@ -334,9 +334,14 @@ void ID3D11Helper::CreateCS(IN ID3D11Device* pDevice, IN LPCWSTR pFileName, OUT 
 	}
 }
 
-void ID3D11Helper::CreateRenderTargetView(IN ID3D11Device* pDevice, IN ID3D11Resource* pResource, OUT ID3D11RenderTargetView** ppRenderTargetView)
+void ID3D11Helper::CreateRenderTargetView(
+	IN ID3D11Device* pDevice, 
+	IN ID3D11Resource* pResource, 
+	IN D3D11_RENDER_TARGET_VIEW_DESC* pRTVDesc, 
+	OUT ID3D11RenderTargetView** ppRenderTargetView
+)
 {
-	HRESULT hResult = pDevice->CreateRenderTargetView(pResource, NULL, ppRenderTargetView);
+	HRESULT hResult = pDevice->CreateRenderTargetView(pResource, pRTVDesc, ppRenderTargetView);
 	if (FAILED(hResult))
 	{
 		Console::AssertPrint("Render Target View를 생성하는데 실패하였습니다.");
@@ -369,8 +374,8 @@ void ID3D11Helper::CreateUnorderedAccessView(IN ID3D11Device* pDevice, IN ID3D11
 void ID3D11Helper::CreateDepthStencilView(
 	IN ID3D11Device* pDevice, 
 	IN ID3D11Texture2D* pDepthStencilTexture2D, 
-	OUT ID3D11DepthStencilView** ppDepthStencilView,
-	IN D3D11_DEPTH_STENCIL_VIEW_DESC* sDSVDesc
+	IN D3D11_DEPTH_STENCIL_VIEW_DESC* sDSVDesc,
+	OUT ID3D11DepthStencilView** ppDepthStencilView
 )
 {
 	HRESULT hResult = pDevice->CreateDepthStencilView(pDepthStencilTexture2D, sDSVDesc, ppDepthStencilView);
@@ -443,7 +448,7 @@ void ID3D11Helper::CreateSampler(IN D3D11_FILTER eFilter, IN D3D11_TEXTURE_ADDRE
 	sSamplerDesc.MipLODBias = 0;
 	sSamplerDesc.MinLOD = 0;
 	sSamplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
-	sSamplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+	sSamplerDesc.ComparisonFunc = D3D11_COMPARISON_LESS_EQUAL;
 	HRESULT hResult = pDevice->CreateSamplerState(&sSamplerDesc, ppSamplerState);
 	if (FAILED(hResult))
 	{

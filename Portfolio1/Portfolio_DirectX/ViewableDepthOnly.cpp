@@ -38,7 +38,7 @@ ViewableDepthOnly::ViewableDepthOnly(
 	sDesc.Format = DXGI_FORMAT_D32_FLOAT;
 	sDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 
-	ID3D11Helper::CreateDepthStencilView(DirectXDevice::pDevice, cpTexture2D.Get(), cpDSV.GetAddressOf(), &sDesc);
+	ID3D11Helper::CreateDepthStencilView(DirectXDevice::pDevice, cpTexture2D.Get(), &sDesc, cpDSV.GetAddressOf());
 }
 
 ViewableDepthOnly::~ViewableDepthOnly()
@@ -47,6 +47,7 @@ ViewableDepthOnly::~ViewableDepthOnly()
 
 void ViewableDepthOnly::ClearDSV()
 {
+	// TODO : D3D11_CLEAR_STENCIL DELETE
 	DirectXDevice::pDeviceContext->ClearDepthStencilView(
 		cpDSV.Get(),
 		D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL,
@@ -60,7 +61,10 @@ void ViewableDepthOnly::Resize(const UINT& uiWidthIn, const UINT& uiHeightIn)
 	cpDSV.Reset();
 	ShaderResource::Resize(uiWidthIn, uiHeightIn);
 	ID3D11Helper::CreateDepthStencilView(
-		DirectXDevice::pDevice, cpTexture2D.Get(), cpDSV.GetAddressOf()
+		DirectXDevice::pDevice, 
+		cpTexture2D.Get(), 
+		nullptr, 
+		cpDSV.GetAddressOf()
 	);
 
 	sViewPort.Width = (float)uiWidthIn;

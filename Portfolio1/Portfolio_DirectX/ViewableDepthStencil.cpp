@@ -35,7 +35,12 @@ ViewableDepthStencil::ViewableDepthStencil(
 	IMovable(fXPos, fYPos, fZPos),
 	IRectangle(uiWidthIn, uiHeightIn)
 {
-	ID3D11Helper::CreateDepthStencilView(DirectXDevice::pDevice, cpTexture2D.Get(), cpDSV.GetAddressOf());
+	ID3D11Helper::CreateDepthStencilView(
+		DirectXDevice::pDevice, 
+		cpTexture2D.Get(),
+		nullptr,
+		cpDSV.GetAddressOf()
+	);
 }
 
 ViewableDepthStencil::~ViewableDepthStencil()
@@ -58,7 +63,10 @@ void ViewableDepthStencil::Resize(const UINT& uiWidthIn, const UINT& uiHeightIn)
 	cpDSV.Reset();
 	Texture2D::Resize(uiWidthIn, uiHeightIn);
 	ID3D11Helper::CreateDepthStencilView(
-		DirectXDevice::pDevice, cpTexture2D.Get(), cpDSV.GetAddressOf()
+		DirectXDevice::pDevice, 
+		cpTexture2D.Get(),
+		nullptr, 
+		cpDSV.GetAddressOf()
 	);
 
 	sViewPort.Width = (float)uiWidthIn;

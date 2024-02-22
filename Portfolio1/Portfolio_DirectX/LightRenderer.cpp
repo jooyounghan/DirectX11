@@ -51,44 +51,46 @@ void LightRenderer::RenderLightMap(PointLight& pointLight)
 {
 	ID3D11RenderTargetView* pNullRTV = nullptr;
 	ID3D11Buffer* pNullBuffer = nullptr;
-	UINT uiStride = sizeof(InputLayout);
-	UINT uiOffset = 0;
 
 	Shaders& shaders = Shaders::GetInstance();
 	DirectXDevice::pDeviceContext->VSSetShader(shaders.GetVertexShader(Shaders::BaseVS), NULL, NULL);
+	DirectXDevice::pDeviceContext->HSSetShader(shaders.GetHullShader(Shaders::BaseHS), NULL, NULL);
+	DirectXDevice::pDeviceContext->DSSetShader(shaders.GetDomainShader(Shaders::BaseDS), NULL, NULL);
 	DirectXDevice::pDeviceContext->PSSetShader(shaders.GetPixelShader(Shaders::DepthOnlyPathPS), NULL, NULL);
 	DirectXDevice::pDeviceContext->IASetInputLayout(shaders.GetInputLayout(Shaders::BaseVS));
-	DirectXDevice::pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	DirectXDevice::pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
 
 	for (size_t idx = 0; idx < PointDirectionNum; ++idx)
 	{
-		DirectXDevice::pDeviceContext->OMSetRenderTargets(1, &pNullRTV, pointLight.viewablesDirections[idx].cpDSV.Get());
-		pointLight.viewablesDirections[idx].ClearDSV();
+		DirectXDevice::pDeviceContext->OMSetRenderTargets(1, &pNullRTV, pointLight.GetDSVAddress(idx));
+		DirectXDevice::pDeviceContext->ClearDepthStencilView(pointLight.GetDSVAddress(idx), D3D11_CLEAR_DEPTH, 1.f, NULL);
 
-		DirectXDevice::pDeviceContext->RSSetViewports(1, &pointLight.viewablesDirections[idx].sViewPort);
+		Viewable& current_view = pointLight.viewable[idx];
+		DirectXDevice::pDeviceContext->RSSetViewports(1, &current_view.sViewPort);
 
-		DirectXDevice::pDeviceContext->VSSetConstantBuffers(1, 1, pointLight.viewablesDirections[idx].cpViewProjBuffer.GetAddressOf());
+		DirectXDevice::pDeviceContext->VSSetConstantBuffers(1, 1, current_view.cpViewProjBuffer.GetAddressOf());
+		DirectXDevice::pDeviceContext->HSSetConstantBuffers(0, 1, pointLight.cpPositionBuffer.GetAddressOf());
+		DirectXDevice::pDeviceContext->DSSetConstantBuffers(1, 1, current_view.cpViewProjBuffer.GetAddressOf());
 
 		for (auto model : *pModelSet)
 		{
-			AStaticMesh* pModel = model.second;
-			DirectXDevice::pDeviceContext->IASetVertexBuffers(0, 1, pModel->cpInputBuffer.GetAddressOf(), &uiStride, &uiOffset);
-			DirectXDevice::pDeviceContext->IASetIndexBuffer(pModel->cpIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
-			DirectXDevice::pDeviceContext->VSSetConstantBuffers(0, 1, pModel->cpTransformationBuffer.GetAddressOf());
-			DirectXDevice::pDeviceContext->PSSetConstantBuffers(0, 1, pModel->cpIdBuffer.GetAddressOf());
-			pModel->Draw();
+			model.second->AcceptLightMapUpdating(this);
 		}
+
+		DirectXDevice::pDeviceContext->OMSetRenderTargets(1, &pNullRTV, nullptr);
+
+
+		DirectXDevice::pDeviceContext->VSSetConstantBuffers(1, 1, &pNullBuffer);
+		DirectXDevice::pDeviceContext->HSSetConstantBuffers(0, 1, &pNullBuffer);
+		DirectXDevice::pDeviceContext->DSSetConstantBuffers(1, 1, &pNullBuffer);
 	}
 
-	DirectXDevice::pDeviceContext->OMSetRenderTargets(1, &pNullRTV, nullptr);
-
 	DirectXDevice::pDeviceContext->VSSetShader(nullptr, NULL, NULL);
+	DirectXDevice::pDeviceContext->HSSetShader(nullptr, NULL, NULL);
+	DirectXDevice::pDeviceContext->DSSetShader(nullptr, NULL, NULL);
 	DirectXDevice::pDeviceContext->PSSetShader(nullptr, NULL, NULL);
 	DirectXDevice::pDeviceContext->IASetInputLayout(nullptr);
-
-	DirectXDevice::pDeviceContext->VSSetConstantBuffers(1, 1, &pNullBuffer);
-	DirectXDevice::pDeviceContext->VSSetConstantBuffers(0, 1, &pNullBuffer);
-	DirectXDevice::pDeviceContext->PSSetConstantBuffers(0, 1, &pNullBuffer);
 }
 
 void LightRenderer::RenderLightMap(SpotLight& spotLight)

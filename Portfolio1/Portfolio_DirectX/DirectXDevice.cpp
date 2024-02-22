@@ -22,11 +22,13 @@ std::vector<D3D11_MESSAGE_ID> DirectXDevice::vDebugMessages;
 
 ID3D11SamplerState** DirectXDevice::ppWrapSampler = nullptr;
 ID3D11SamplerState** DirectXDevice::ppClampSampler = nullptr;
-ID3D11SamplerState** DirectXDevice::ppBorderSampler = nullptr;
+ID3D11SamplerState** DirectXDevice::ppCompareClampSampler = nullptr;
+ID3D11SamplerState** DirectXDevice::ppCompareBorderSampler = nullptr;
 
 Microsoft::WRL::ComPtr<ID3D11SamplerState> DirectXDevice::cpWrapSampler;
 Microsoft::WRL::ComPtr<ID3D11SamplerState> DirectXDevice::cpClampSampler;
-Microsoft::WRL::ComPtr<ID3D11SamplerState> DirectXDevice::cpBorderSampler;
+Microsoft::WRL::ComPtr<ID3D11SamplerState> DirectXDevice::cpCompareClampSampler;
+Microsoft::WRL::ComPtr<ID3D11SamplerState> DirectXDevice::cpCompareBorderSampler;
 
 ID3D11BlendState* DirectXDevice::pAddingBlendState = nullptr;
 Microsoft::WRL::ComPtr<ID3D11BlendState> DirectXDevice::cpAddingBlendState;
@@ -84,14 +86,24 @@ void DirectXDevice::InitDevice(
 	);
 	ppClampSampler = cpClampSampler.GetAddressOf();
 
+	ID3D11Helper::CreateSampler(
+		D3D11_FILTER_COMPARISON_MIN_MAG_LINEAR_MIP_POINT,
+		D3D11_TEXTURE_ADDRESS_CLAMP,
+		NULL, pDevice,
+		cpCompareClampSampler.GetAddressOf()
+	);
+	ppCompareClampSampler = cpCompareClampSampler.GetAddressOf();
+
+
+
 	float fBorderColor[4] = { 1.f, 1.f, 1.f, 1.f };
 	ID3D11Helper::CreateSampler(
-		D3D11_FILTER_MIN_MAG_MIP_LINEAR,
+		D3D11_FILTER_COMPARISON_MIN_MAG_LINEAR_MIP_POINT,
 		D3D11_TEXTURE_ADDRESS_BORDER,
 		fBorderColor, pDevice,
-		cpBorderSampler.GetAddressOf()
+		cpCompareBorderSampler.GetAddressOf()
 	);
-	ppBorderSampler = cpBorderSampler.GetAddressOf();
+	ppCompareBorderSampler = cpCompareBorderSampler.GetAddressOf();
 
 	D3D11_BLEND_DESC sBlendDesc;
 	AutoZeroMemory(sBlendDesc);
@@ -158,7 +170,7 @@ void DirectXDevice::SetBackBuffer()
 		pSwapChain->GetBuffer(0, IID_PPV_ARGS(cpBackBuffer.GetAddressOf()));
 		pBackBuffer = cpBackBuffer.Get();
 
-		ID3D11Helper::CreateRenderTargetView(DirectXDevice::pDevice, cpBackBuffer.Get(), cpRenderTargetView.GetAddressOf());
+		ID3D11Helper::CreateRenderTargetView(DirectXDevice::pDevice, cpBackBuffer.Get(), nullptr, cpRenderTargetView.GetAddressOf());
 		pRenderTargetView = cpRenderTargetView.Get();
 	}
 }

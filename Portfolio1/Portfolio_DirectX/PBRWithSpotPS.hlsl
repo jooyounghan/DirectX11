@@ -66,7 +66,7 @@ cbuffer LightViewProj : register(b7)
 };
 
 SamplerState ClampSampler : register(s0);
-SamplerState BorderToOne : register(s1);
+SamplerComparisonState CmopareBorderToOne : register(s1);
 
 PixelOutput main(DomainOutput input)
 {
@@ -115,14 +115,9 @@ PixelOutput main(DomainOutput input)
     float3 diffuseBrdf = (float3(1, 1, 1) - F) * f3DiffuseColor;
     float3 specularBrdf = (F * D * G) / (max(1e-6, 4.0 * NDotL * NDotE));
 
-    float fDepth = ShadowMap.Sample(BorderToOne, f2LightTex).x;    
-    float3 fDirectColor = float3(0.f, 0.f, 0.f);
-    
-    if (fDepth < 1.f && fDepth + 1E-6 > f4LightProjPos.z)
-    {
-        fDirectColor = (diffuseBrdf + specularBrdf) * NDotL * f3LightColor * fLightPowerSaturated;
-    }
-       
+    float fDepthFactor = ShadowMap.SampleCmpLevelZero(CmopareBorderToOne, f2LightTex, f4LightProjPos.z - 1E-6).x;
+    float3 fDirectColor = (diffuseBrdf + specularBrdf) * NDotL * f3LightColor * fLightPowerSaturated * fDepthFactor;
+           
     result.pixelColor = float4(fDirectColor, 1.f);
     result.modelID = uiModelId;
     return result;

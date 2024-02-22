@@ -53,6 +53,7 @@ DomainOutput main(
         Output.f4ModelPos += fHeightSampled * Output.f4ModelNormal;        
     }
 
+    // TODO : Delete PorjPos
     Output.f4ProjPos = mul(Output.f4ModelPos, mViewProj);
     
     return Output;

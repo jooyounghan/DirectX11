@@ -190,7 +190,7 @@ void ModelRenderer::RenderModel(APBRStaticMesh& pbrStaticMesh)
 		DirectXDevice::pDeviceContext->PSSetConstantBuffers(6, 1, pCamera->cpPositionBuffer.GetAddressOf());
 		
 		DirectXDevice::pDeviceContext->PSSetSamplers(0, 1, DirectXDevice::ppClampSampler);
-		DirectXDevice::pDeviceContext->PSSetSamplers(1, 1, DirectXDevice::ppBorderSampler);
+		DirectXDevice::pDeviceContext->PSSetSamplers(1, 1, DirectXDevice::ppCompareBorderSampler);
 #pragma endregion
 
 		pbrStaticMesh.Draw();
@@ -295,6 +295,19 @@ void ModelRenderer::SetLight(PointLight& pointLight)
 	Shaders& shaders = Shaders::GetInstance();
 	DirectXDevice::pDeviceContext->PSSetShader(shaders.GetPixelShader(Shaders::PBRWithPointPS), NULL, NULL);
 
+	DirectXDevice::pDeviceContext->PSSetShaderResources(5, 1, pointLight.cpSRV.GetAddressOf());
+
+	DirectXDevice::pDeviceContext->PSSetConstantBuffers(1, 1, pointLight.cpPositionBuffer.GetAddressOf());
+	DirectXDevice::pDeviceContext->PSSetConstantBuffers(2, 1, pointLight.cpBaseLightBuffer.GetAddressOf());
+
+	DirectXDevice::pDeviceContext->PSSetConstantBuffers(7, 1, pointLight.viewable[0].cpViewProjBuffer.GetAddressOf());
+	DirectXDevice::pDeviceContext->PSSetConstantBuffers(8, 1, pointLight.viewable[1].cpViewProjBuffer.GetAddressOf());
+	DirectXDevice::pDeviceContext->PSSetConstantBuffers(9, 1, pointLight.viewable[2].cpViewProjBuffer.GetAddressOf());
+	DirectXDevice::pDeviceContext->PSSetConstantBuffers(10, 1, pointLight.viewable[3].cpViewProjBuffer.GetAddressOf());
+	DirectXDevice::pDeviceContext->PSSetConstantBuffers(11, 1, pointLight.viewable[4].cpViewProjBuffer.GetAddressOf());
+	DirectXDevice::pDeviceContext->PSSetConstantBuffers(12, 1, pointLight.viewable[5].cpViewProjBuffer.GetAddressOf());
+
+	DirectXDevice::pDeviceContext->PSSetSamplers(2, 1, DirectXDevice::ppCompareClampSampler);
 }
 
 void ModelRenderer::SetLight(SpotLight& spotLight)
@@ -307,12 +320,31 @@ void ModelRenderer::SetLight(SpotLight& spotLight)
 	DirectXDevice::pDeviceContext->PSSetConstantBuffers(1, 1, spotLight.cpPositionBuffer.GetAddressOf());
 	DirectXDevice::pDeviceContext->PSSetConstantBuffers(2, 1, spotLight.cpBaseLightBuffer.GetAddressOf());
 	DirectXDevice::pDeviceContext->PSSetConstantBuffers(3, 1, spotLight.cpSpotLightBuffer.GetAddressOf());
+
 	DirectXDevice::pDeviceContext->PSSetConstantBuffers(7, 1, spotLight.cpViewProjBuffer.GetAddressOf());
 }
 
 void ModelRenderer::ResetLight(PointLight& pointLight)
 {
+	ID3D11Buffer* pNullBuffer = nullptr;
+	ID3D11ShaderResourceView* pNullSRV = nullptr;
+	ID3D11SamplerState* pNullSampler = nullptr;
 	DirectXDevice::pDeviceContext->PSSetShader(nullptr, NULL, NULL);
+	DirectXDevice::pDeviceContext->PSSetShaderResources(5, 1, &pNullSRV);
+
+	DirectXDevice::pDeviceContext->PSSetConstantBuffers(1, 1, &pNullBuffer);
+	DirectXDevice::pDeviceContext->PSSetConstantBuffers(2, 1, &pNullBuffer);
+
+	DirectXDevice::pDeviceContext->PSSetConstantBuffers(7, 1, &pNullBuffer);
+	DirectXDevice::pDeviceContext->PSSetConstantBuffers(8, 1, &pNullBuffer);
+	DirectXDevice::pDeviceContext->PSSetConstantBuffers(9, 1, &pNullBuffer);
+	DirectXDevice::pDeviceContext->PSSetConstantBuffers(10, 1, &pNullBuffer);
+	DirectXDevice::pDeviceContext->PSSetConstantBuffers(11, 1, &pNullBuffer);
+	DirectXDevice::pDeviceContext->PSSetConstantBuffers(12, 1, &pNullBuffer);
+
+
+
+	DirectXDevice::pDeviceContext->PSSetSamplers(2, 1, &pNullSampler);
 }
 
 void ModelRenderer::ResetLight(SpotLight& pointLight)
@@ -328,6 +360,7 @@ void ModelRenderer::ResetLight(SpotLight& pointLight)
 	DirectXDevice::pDeviceContext->PSSetConstantBuffers(1, 1, &pNullBuffer);
 	DirectXDevice::pDeviceContext->PSSetConstantBuffers(2, 1, &pNullBuffer);
 	DirectXDevice::pDeviceContext->PSSetConstantBuffers(3, 1, &pNullBuffer);
+
 	DirectXDevice::pDeviceContext->PSSetConstantBuffers(7, 1, &pNullBuffer);
 }
 
