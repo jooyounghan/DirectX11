@@ -58,5 +58,12 @@ public:
 	virtual void AcceptFilterList(class CameraManipulator* pCameraManipulator) override;
 	virtual void AcceptCameraList(class CameraManipulator* pCameraManipulator) = 0;
 	virtual void AcceptCameraInformation(class CameraManipulator* pCameraManipulator) = 0;
+
+public:
+	virtual void AcceptLButtonDown(
+		class CameraManipulator* pCameraManipulator,
+		const int& xPosIn,
+		const int& yPosIn
+	) = 0;
 };
 

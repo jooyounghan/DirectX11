@@ -88,9 +88,10 @@ void FileManipulator::LoadFiles(const std::wstring& wstrFilePathIn)
         {
             if (loadedFile.use_count() > 1)
             {
-                if (mapNameToFiles.find(loadedFile->strFileName) == mapNameToFiles.end())
+                const string& fileName = loadedFile->GetFileName();
+                if (mapNameToFiles.find(fileName) == mapNameToFiles.end())
                 {
-                    mapNameToFiles.emplace(loadedFile->strFileName, loadedFile);
+                    mapNameToFiles.emplace(fileName, loadedFile);
                 }
             }
         }
@@ -102,7 +103,6 @@ void FileManipulator::LoadFiles(const std::wstring& wstrFilePathIn)
             string sExtensionName = entry.path().extension().string();
 
             UINT uiWidth, uiHeight, uiChannel;
-            uint8_t* ucImageRawData = nullptr;
 
             const string strFileName = entry.path().filename().string();
             const string strExtention = entry.path().extension().string();
@@ -113,13 +113,33 @@ void FileManipulator::LoadFiles(const std::wstring& wstrFilePathIn)
 
             if (isImage)
             {
-                if (mapNameToFiles.find(strFilePathIn) == mapNameToFiles.end())
+                bool isNeedLoad = false;
+                uint8_t* ucImageRawData = nullptr;
+                shared_ptr<IFile> spFileInterface;
+
+                if (mapNameToFiles.find(strFileName) == mapNameToFiles.end())
                 {
-                    shared_ptr<IFile> spFileInterface;
+                    isNeedLoad = true;
+                }
+                else
+                {
+                    if (!mapNameToFiles[strFileName].expired())
+                    {
+                        spFileInterface = mapNameToFiles[strFileName].lock();
+                    }
+                    else
+                    {
+                        mapNameToFiles.erase(strFileName);
+                        isNeedLoad = true;
+                    }
+                }
+
+                if (isNeedLoad)
+                {
                     if (strExtention == ".exr")
                     {
                         ucImageRawData = FileLoader::LoadFileWithOpenEXR(strFilePathIn.c_str(), &uiWidth, &uiHeight, &uiChannel);
-                        spFileInterface = make_shared<NormalImageFile>(uiWidth, uiHeight, DXGI_FORMAT_R16G16B16A16_FLOAT, ucImageRawData, strFileName);
+                        spFileInterface = make_shared<NormalImageFile>(uiWidth, uiHeight, DXGI_FORMAT_R16G16B16A16_FLOAT, ucImageRawData, strFilePathIn, strFileName);
                     }
                     else if (strExtention == ".dds")
                     {
@@ -128,15 +148,12 @@ void FileManipulator::LoadFiles(const std::wstring& wstrFilePathIn)
                     else
                     {
                         ucImageRawData = FileLoader::LoadFileWithStbi(strFilePathIn.c_str(), &uiWidth, &uiHeight, &uiChannel);
-                        spFileInterface = make_shared<NormalImageFile>(uiWidth, uiHeight, DXGI_FORMAT_R8G8B8A8_UNORM, ucImageRawData, strFileName);
+                        spFileInterface = make_shared<NormalImageFile>(uiWidth, uiHeight, DXGI_FORMAT_R8G8B8A8_UNORM, ucImageRawData, strFilePathIn, strFileName);
                     }
-                    vLoadedFiles.emplace_back(spFileInterface);
                     FileLoader::FreeLoadedFileData(ucImageRawData);
                 }
-                else
-                {
-                    vLoadedFiles.emplace_back(mapNameToFiles[strFilePathIn]);
-                }
+ 
+                vLoadedFiles.emplace_back(spFileInterface);
             }
         }
     }
@@ -151,7 +168,7 @@ void FileManipulator::VisitFile(NormalImageFile& imageFile, shared_ptr<IFile>& s
         BeginGroup();
         Image(pIndexedSRV, ImVec2(60.f, 60.f));
         SameLine();
-        TextEx(imageFile.strFileName.c_str(), (const char*)0, ImGuiTextFlags_::ImGuiTextFlags_NoWidthForLargeClippedText);
+        TextEx(imageFile.GetFileName().c_str(), (const char*)0, ImGuiTextFlags_::ImGuiTextFlags_NoWidthForLargeClippedText);
         EndGroup();
 
         if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
@@ -172,7 +189,7 @@ void FileManipulator::VisitFile(DDSImageFile& imageFile, shared_ptr<IFile>& spFi
         BeginGroup();
         Image(pIndexedSRV, ImVec2(60.f, 60.f));
         SameLine();
-        TextEx(imageFile.strFileName.c_str(), (const char*)0, ImGuiTextFlags_::ImGuiTextFlags_NoWidthForLargeClippedText);
+        TextEx(imageFile.GetFileName().c_str(), (const char*)0, ImGuiTextFlags_::ImGuiTextFlags_NoWidthForLargeClippedText);
         EndGroup();
 
         if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))

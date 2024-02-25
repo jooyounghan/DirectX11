@@ -1,7 +1,8 @@
 #pragma once
 #include "IGuiMenu.h"
-
+#include <vector>
 #include <memory>
+#include <unordered_map>
 
 class ModelManipulator : public IGuiMenu
 {
@@ -10,17 +11,36 @@ public:
 	virtual ~ModelManipulator();
 
 private:
-	class AStaticMesh** ppSelectedStaticMesh;
 	bool bIsDrawingNormal;
 
 public:
-	inline AStaticMesh** GetAddressOfSelectedMesh() { return ppSelectedStaticMesh; }
-	inline void SetAddressOfSelectedMesh(AStaticMesh** ppSelectedMeshIn) { ppSelectedStaticMesh = ppSelectedMeshIn; }
+	void SetSelctedMesh(const uint32_t selected_id);
 	inline bool GetIsDrawingNormal() { return bIsDrawingNormal; }
+
+private:
+	std::shared_ptr<class AIBLModel> spIBLModel;
+	std::unordered_map<uint32_t, std::shared_ptr<class AStaticMesh>> pModels;
+
+private:
+	std::shared_ptr<AStaticMesh> spSelectedMesh;
+
+public:
+	inline const std::unordered_map<uint32_t, std::shared_ptr<AStaticMesh>>& GetModels() { return pModels; }
+	inline const std::shared_ptr<AIBLModel>& GetIBLModel() { return spIBLModel; }
+public:
+	void AddModel(std::shared_ptr<AStaticMesh> spMesh);
 
 public:
 	virtual void PopAsDialog() override;
-	inline virtual bool IsGuiAvailable() override { return *ppSelectedStaticMesh != nullptr; }
+	inline virtual bool IsGuiAvailable() override { return spSelectedMesh != nullptr; }
+
+private:
+	void ListUpModel();
+
+
+
+
+
 
 public:
 	void ManipulateModel(class AStaticMesh& staticMesh);
@@ -29,6 +49,8 @@ public:
 
 protected:
 	void DrawTransformation(AStaticMesh* pStaticMesh);
+
+protected:
 	void DrawPBRTexture(APBRStaticMesh* pPBRStaticMesh);
 	void DrawIBLTexture(AIBLModel* pIBLModel);
 

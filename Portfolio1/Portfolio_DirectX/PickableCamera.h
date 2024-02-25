@@ -49,6 +49,11 @@ public:
 	virtual void AcceptFilterList(class CameraManipulator* pCameraManipulator) override;
 	virtual void AcceptCameraList(class CameraManipulator* pCameraManipulator) override;
 	virtual void AcceptCameraInformation(class CameraManipulator* pCameraManipulator) override;
+	virtual void AcceptLButtonDown(
+		class CameraManipulator* pCameraManipulator,
+		const int& xPosIn,
+		const int& yPosIn
+	) override;
 
 public:
 	virtual uint32_t GetPickedID() override;

@@ -17,7 +17,7 @@
 using namespace std;
 
 ModelRenderer::ModelRenderer()
-	: IRenderer(), pCamera(nullptr), pIBLModel(nullptr), pLights(nullptr)
+	: IRenderer(), pCamera(nullptr), pLights(nullptr)
 {
 }
 
@@ -27,9 +27,9 @@ ModelRenderer::~ModelRenderer()
 
 void ModelRenderer::RenderObjects(
 	class ACamera* pCameraIn,
-	class AIBLModel* pIBLModelIn,
-	const std::unordered_map<uint32_t, AStaticMesh*>& vStaticMeshesIn,
-	const std::vector<std::shared_ptr<ILight>>& vLightsIn
+	shared_ptr<AIBLModel> spIBLModelIn,
+	const unordered_map<uint32_t, shared_ptr<AStaticMesh>>& vStaticMeshesIn,
+	const vector<shared_ptr<ILight>>& vLightsIn
 )
 {
 	DirectXDevice::AddIgnoringMessageFilter(D3D11_MESSAGE_ID_DEVICE_DRAW_RENDERTARGETVIEW_NOT_SET);
@@ -39,7 +39,7 @@ void ModelRenderer::RenderObjects(
 
 
 	pCamera = pCameraIn;
-	pIBLModel = pIBLModelIn;
+	spIBLModel = spIBLModelIn;
 	pLights = &vLightsIn;
 
 	auto [rtvCnt, vRTVs, pDSV] = pCamera->GetRTVs();
@@ -52,7 +52,7 @@ void ModelRenderer::RenderObjects(
 	}
 
 	pLights = nullptr;
-	pIBLModel = nullptr;
+	spIBLModelIn = nullptr;
 	pCamera = nullptr;
 
 	vector<ID3D11RenderTargetView*> vNullRTVs;
@@ -73,17 +73,16 @@ void ModelRenderer::RenderModel(APBRStaticMesh& pbrStaticMesh)
 	ID3D11ShaderResourceView* pNullSRV = nullptr;
 	ID3D11SamplerState* pNullSampler = nullptr;
 
-	UINT uiStride = sizeof(InputLayout);
-	UINT uiOffset = 0;
-
 	Shaders& shaders = Shaders::GetInstance();
 	DirectXDevice::pDeviceContext->VSSetShader(shaders.GetVertexShader(Shaders::BaseVS), NULL, NULL);
 	DirectXDevice::pDeviceContext->HSSetShader(shaders.GetHullShader(Shaders::BaseHS), NULL, NULL);
 	DirectXDevice::pDeviceContext->DSSetShader(shaders.GetDomainShader(Shaders::BaseDS), NULL, NULL);
 	DirectXDevice::pDeviceContext->IASetInputLayout(shaders.GetInputLayout(Shaders::BaseVS));
 
+	auto [uiStrides, uiOffsets, vertexBuffers] = pbrStaticMesh.GetInputInfo();
+	DirectXDevice::pDeviceContext->IASetVertexBuffers(0, 4, vertexBuffers.data(), uiStrides.data(), uiOffsets.data());
+	
 	DirectXDevice::pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
-	DirectXDevice::pDeviceContext->IASetVertexBuffers(0, 1, pbrStaticMesh.cpInputBuffer.GetAddressOf(), &uiStride, &uiOffset);
 	DirectXDevice::pDeviceContext->IASetIndexBuffer(pbrStaticMesh.cpIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 
 	DirectXDevice::pDeviceContext->VSSetConstantBuffers(0, 1, pbrStaticMesh.cpTransformationBuffer.GetAddressOf());
@@ -96,8 +95,8 @@ void ModelRenderer::RenderModel(APBRStaticMesh& pbrStaticMesh)
 	DirectXDevice::pDeviceContext->DSSetConstantBuffers(2, 1, pbrStaticMesh.cpPBRTextureFlagBuffer.GetAddressOf());
 
 	DirectXDevice::pDeviceContext->DSSetShaderResources(0, 1,
-		pbrStaticMesh.pModelTexture[APBRStaticMesh::HEIGHT_TEXTURE_MAP] ?
-		pbrStaticMesh.pModelTexture[APBRStaticMesh::HEIGHT_TEXTURE_MAP]->GetAddressOfSRV() : &pNullSRV);
+		pbrStaticMesh.pModelTexture[HEIGHT_TEXTURE_MAP] ?
+		pbrStaticMesh.pModelTexture[HEIGHT_TEXTURE_MAP]->GetAddressOfSRV() : &pNullSRV);
 
 	DirectXDevice::pDeviceContext->DSSetSamplers(0, 1, DirectXDevice::ppClampSampler);
 #pragma endregion
@@ -106,30 +105,30 @@ void ModelRenderer::RenderModel(APBRStaticMesh& pbrStaticMesh)
 	DirectXDevice::pDeviceContext->PSSetShader(shaders.GetPixelShader(Shaders::PBRWithIBLPS), NULL, NULL);
 
 	DirectXDevice::pDeviceContext->PSSetShaderResources(0, 1, 
-		pIBLModel->spEnvSpecularTextureFile ? pIBLModel->spEnvSpecularTextureFile->GetAddressOfSRV() : &pNullSRV);
+		spIBLModel->spEnvSpecularTextureFile ? spIBLModel->spEnvSpecularTextureFile->GetAddressOfSRV() : &pNullSRV);
 	DirectXDevice::pDeviceContext->PSSetShaderResources(1, 1, 
-		pIBLModel->spEnvDiffuseTextureFile ? pIBLModel->spEnvDiffuseTextureFile->GetAddressOfSRV() : &pNullSRV);
+		spIBLModel->spEnvDiffuseTextureFile ? spIBLModel->spEnvDiffuseTextureFile->GetAddressOfSRV() : &pNullSRV);
 	DirectXDevice::pDeviceContext->PSSetShaderResources(2, 1, 
-		pIBLModel->spEnvBrdfTextureFile ? pIBLModel->spEnvBrdfTextureFile->GetAddressOfSRV() : &pNullSRV);
+		spIBLModel->spEnvBrdfTextureFile ? spIBLModel->spEnvBrdfTextureFile->GetAddressOfSRV() : &pNullSRV);
 
 	DirectXDevice::pDeviceContext->PSSetShaderResources(3, 1,
-		pbrStaticMesh.pModelTexture[APBRStaticMesh::AO_TEXUTRE_MAP] ?
-		pbrStaticMesh.pModelTexture[APBRStaticMesh::AO_TEXUTRE_MAP]->GetAddressOfSRV() : &pNullSRV);
+		pbrStaticMesh.pModelTexture[AO_TEXUTRE_MAP] ?
+		pbrStaticMesh.pModelTexture[AO_TEXUTRE_MAP]->GetAddressOfSRV() : &pNullSRV);
 	DirectXDevice::pDeviceContext->PSSetShaderResources(4, 1,
-		pbrStaticMesh.pModelTexture[APBRStaticMesh::COLOR_TEXTURE_MAP] ?
-		pbrStaticMesh.pModelTexture[APBRStaticMesh::COLOR_TEXTURE_MAP]->GetAddressOfSRV() : &pNullSRV);
+		pbrStaticMesh.pModelTexture[COLOR_TEXTURE_MAP] ?
+		pbrStaticMesh.pModelTexture[COLOR_TEXTURE_MAP]->GetAddressOfSRV() : &pNullSRV);
 	DirectXDevice::pDeviceContext->PSSetShaderResources(5, 1,
-		pbrStaticMesh.pModelTexture[APBRStaticMesh::METALNESS_TEXTURE_MAP] ?
-		pbrStaticMesh.pModelTexture[APBRStaticMesh::METALNESS_TEXTURE_MAP]->GetAddressOfSRV() : &pNullSRV);
+		pbrStaticMesh.pModelTexture[METALNESS_TEXTURE_MAP] ?
+		pbrStaticMesh.pModelTexture[METALNESS_TEXTURE_MAP]->GetAddressOfSRV() : &pNullSRV);
 	DirectXDevice::pDeviceContext->PSSetShaderResources(6, 1,
-		pbrStaticMesh.pModelTexture[APBRStaticMesh::ROUGHNESS_TEXTURE_MAP] ?
-		pbrStaticMesh.pModelTexture[APBRStaticMesh::ROUGHNESS_TEXTURE_MAP]->GetAddressOfSRV() : &pNullSRV);
+		pbrStaticMesh.pModelTexture[ROUGHNESS_TEXTURE_MAP] ?
+		pbrStaticMesh.pModelTexture[ROUGHNESS_TEXTURE_MAP]->GetAddressOfSRV() : &pNullSRV);
 	DirectXDevice::pDeviceContext->PSSetShaderResources(7, 1,
-		pbrStaticMesh.pModelTexture[APBRStaticMesh::EMISSION_TEXTURE_MAP] ?
-		pbrStaticMesh.pModelTexture[APBRStaticMesh::EMISSION_TEXTURE_MAP]->GetAddressOfSRV() : &pNullSRV);
+		pbrStaticMesh.pModelTexture[EMISSION_TEXTURE_MAP] ?
+		pbrStaticMesh.pModelTexture[EMISSION_TEXTURE_MAP]->GetAddressOfSRV() : &pNullSRV);
 	DirectXDevice::pDeviceContext->PSSetShaderResources(8, 1,
-		pbrStaticMesh.pModelTexture[APBRStaticMesh::NORMAL_TEXTURE_MAP] ?
-		pbrStaticMesh.pModelTexture[APBRStaticMesh::NORMAL_TEXTURE_MAP]->GetAddressOfSRV() : &pNullSRV);
+		pbrStaticMesh.pModelTexture[NORMAL_TEXTURE_MAP] ?
+		pbrStaticMesh.pModelTexture[NORMAL_TEXTURE_MAP]->GetAddressOfSRV() : &pNullSRV);
 
 	DirectXDevice::pDeviceContext->PSSetConstantBuffers(0, 1, pbrStaticMesh.cpIdBuffer.GetAddressOf());
 	DirectXDevice::pDeviceContext->PSSetConstantBuffers(1, 1, pCamera->cpPositionBuffer.GetAddressOf());
@@ -169,20 +168,20 @@ void ModelRenderer::RenderModel(APBRStaticMesh& pbrStaticMesh)
 #pragma region Direct Lighting Preset
 		pLight->AcceptSettingForDirectLighting(this);
 		DirectXDevice::pDeviceContext->PSSetShaderResources(0, 1,
-			pbrStaticMesh.pModelTexture[APBRStaticMesh::COLOR_TEXTURE_MAP] ?
-			pbrStaticMesh.pModelTexture[APBRStaticMesh::COLOR_TEXTURE_MAP]->GetAddressOfSRV() : &pNullSRV);
+			pbrStaticMesh.pModelTexture[COLOR_TEXTURE_MAP] ?
+			pbrStaticMesh.pModelTexture[COLOR_TEXTURE_MAP]->GetAddressOfSRV() : &pNullSRV);
 		DirectXDevice::pDeviceContext->PSSetShaderResources(1, 1,
-			pbrStaticMesh.pModelTexture[APBRStaticMesh::METALNESS_TEXTURE_MAP] ?
-			pbrStaticMesh.pModelTexture[APBRStaticMesh::METALNESS_TEXTURE_MAP]->GetAddressOfSRV() : &pNullSRV);
+			pbrStaticMesh.pModelTexture[METALNESS_TEXTURE_MAP] ?
+			pbrStaticMesh.pModelTexture[METALNESS_TEXTURE_MAP]->GetAddressOfSRV() : &pNullSRV);
 		DirectXDevice::pDeviceContext->PSSetShaderResources(2, 1,
-			pbrStaticMesh.pModelTexture[APBRStaticMesh::ROUGHNESS_TEXTURE_MAP] ?
-			pbrStaticMesh.pModelTexture[APBRStaticMesh::ROUGHNESS_TEXTURE_MAP]->GetAddressOfSRV() : &pNullSRV);
+			pbrStaticMesh.pModelTexture[ROUGHNESS_TEXTURE_MAP] ?
+			pbrStaticMesh.pModelTexture[ROUGHNESS_TEXTURE_MAP]->GetAddressOfSRV() : &pNullSRV);
 		DirectXDevice::pDeviceContext->PSSetShaderResources(3, 1,
-			pbrStaticMesh.pModelTexture[APBRStaticMesh::EMISSION_TEXTURE_MAP] ?
-			pbrStaticMesh.pModelTexture[APBRStaticMesh::EMISSION_TEXTURE_MAP]->GetAddressOfSRV() : &pNullSRV);
+			pbrStaticMesh.pModelTexture[EMISSION_TEXTURE_MAP] ?
+			pbrStaticMesh.pModelTexture[EMISSION_TEXTURE_MAP]->GetAddressOfSRV() : &pNullSRV);
 		DirectXDevice::pDeviceContext->PSSetShaderResources(4, 1,
-			pbrStaticMesh.pModelTexture[APBRStaticMesh::NORMAL_TEXTURE_MAP] ?
-			pbrStaticMesh.pModelTexture[APBRStaticMesh::NORMAL_TEXTURE_MAP]->GetAddressOfSRV() : &pNullSRV);
+			pbrStaticMesh.pModelTexture[NORMAL_TEXTURE_MAP] ?
+			pbrStaticMesh.pModelTexture[NORMAL_TEXTURE_MAP]->GetAddressOfSRV() : &pNullSRV);
 
 		DirectXDevice::pDeviceContext->PSSetConstantBuffers(0, 1, pbrStaticMesh.cpIdBuffer.GetAddressOf());
 		DirectXDevice::pDeviceContext->PSSetConstantBuffers(4, 1, pbrStaticMesh.cpPBRConstantBuffer.GetAddressOf());
@@ -242,16 +241,15 @@ void ModelRenderer::RenderModel(AIBLModel& iblMesh)
 	ID3D11SamplerState* pNullSampler = nullptr;
 
 #pragma region Preset
-	UINT uiStride = sizeof(InputLayout);
-	UINT uiOffset = 0;
-
 	Shaders& shaders = Shaders::GetInstance();
 	DirectXDevice::pDeviceContext->VSSetShader(shaders.GetVertexShader(Shaders::BaseVS), NULL, NULL);
 	DirectXDevice::pDeviceContext->PSSetShader(shaders.GetPixelShader(Shaders::IBLModelPS), NULL, NULL);
 	DirectXDevice::pDeviceContext->IASetInputLayout(shaders.GetInputLayout(Shaders::BaseVS));
 
+	auto [uiStrides, uiOffsets, vertexBuffers] = iblMesh.GetInputInfo();
+	DirectXDevice::pDeviceContext->IASetVertexBuffers(0, 4, vertexBuffers.data(), uiStrides.data(), uiOffsets.data());
+
 	DirectXDevice::pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	DirectXDevice::pDeviceContext->IASetVertexBuffers(0, 1, iblMesh.cpInputBuffer.GetAddressOf(), &uiStride, &uiOffset);
 	DirectXDevice::pDeviceContext->IASetIndexBuffer(iblMesh.cpIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 
 	vector<ID3D11ShaderResourceView*> SRVs{

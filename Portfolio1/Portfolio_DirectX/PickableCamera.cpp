@@ -88,6 +88,15 @@ void PickableCamera::AcceptCameraInformation(CameraManipulator* pCameraManipulat
 	pCameraManipulator->VisitCameraInfo(*this);
 }
 
+void PickableCamera::AcceptLButtonDown(
+	CameraManipulator* pCameraManipulator,
+	const int& xPosIn,
+	const int& yPosIn
+)
+{
+	pCameraManipulator->VisitLButtonDown(*this, xPosIn, yPosIn);
+}
+
 uint32_t PickableCamera::GetPickedID()
 {
 	uint32_t uiResult = 0;

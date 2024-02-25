@@ -325,7 +325,10 @@
       <Filter>헤더 파일\Texture2D\Filter\Extended</Filter>
     </ClInclude>
     <ClInclude Include="CubeRenderTargets.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>헤더 파일\Viewable</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelFile.h">
+      <Filter>헤더 파일\File\Extended</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -492,7 +495,10 @@
       <Filter>소스 파일\Texture2D\Filter</Filter>
     </ClCompile>
     <ClCompile Include="CubeRenderTargets.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\Viewable</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelFile.cpp">
+      <Filter>소스 파일\File\Extended</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

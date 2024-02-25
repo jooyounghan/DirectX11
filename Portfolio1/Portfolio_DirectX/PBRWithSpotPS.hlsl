@@ -76,11 +76,9 @@ PixelOutput main(DomainOutput input)
     float fMetallic = MetalnessTexture.Sample(ClampSampler, input.f2TexCoord).x;
     float3 f3Color = ColorTexture.Sample(ClampSampler, input.f2TexCoord).xyz;
 
-    float3 f3NormalVector = input.f4ModelNormal.xyz;
-    if (bIsNormalOn)
-    {
-        f3NormalVector = GetNormalFromTexture(NormalTexture, ClampSampler, input.f2TexCoord, input.f4ModelTangent, input.f4ModelBiTangent, input.f4ModelNormal);
-    }
+    float3 f3NormalVector = GetNormalFromTexture(
+        bIsNormalOn, NormalTexture, ClampSampler, input.f2TexCoord, input.f3ModelTangent, input.f3ModelBiTangent, input.f3ModelNormal
+    );
     
     float3 toEyes = normalize(f4CameraPos.xyz - input.f4ModelPos.xyz);
 

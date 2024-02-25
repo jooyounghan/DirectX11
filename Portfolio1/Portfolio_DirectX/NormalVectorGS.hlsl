@@ -35,30 +35,23 @@ void main(
 	triangle NormalVectorVSOutput input[3],
 	inout LineStream<NormalVectorGSOutput> output
 )
-{    
-    float2x3 TB = GetTBMatrix(input[0].f4ModelPos, input[1].f4ModelPos, input[2].f4ModelPos, input[0].f2TexCoord, input[1].f2TexCoord, input[2].f2TexCoord);
-    
+{      
     for (uint i = 0; i < 3; i++)
     {
         NormalVectorGSOutput element;
 
-        float4 f4ModelNormal = input[i].f4ModelNormal;
-        if (bIsNormalOn)
-        {
-            f4ModelNormal = float4(GetNormalFromTexture(NormalTexture, ClampSampler, input[i].f2TexCoord, TB[0], TB[1], input[i].f4ModelNormal.xyz), 0.f);
-        }
-        
-        float4 f4ModelPos = input[i].f4ModelPos;
-        if (bIsHeightOn)
-        {
-            float fHeightSampled = 2.f * HeightTexture.SampleLevel(ClampSampler, input[i].f2TexCoord, 0.f).x - 1.f;
-            fHeightSampled = fHeightFactor * fHeightSampled;
-            f4ModelPos += fHeightSampled * f4ModelNormal;
-        }
+        float3 f3ModelBiTangent = normalize(cross(input[i].f3ModelNormal.xyz, input[i].f3ModelTangent.xyz));
+        float3 f3ModelNormal = GetNormalFromTexture(
+            bIsNormalOn, NormalTexture, ClampSampler, input[i].f2TexCoord, input[i].f3ModelTangent, f3ModelBiTangent, input[i].f3ModelNormal
+        );
+
+        float4 f4ModelPos = GetHeightedModelPos(
+            bIsHeightOn, HeightTexture, ClampSampler, input[i].f2TexCoord, fHeightFactor, f3ModelNormal, input[i].f4ModelPos
+        );
        
         for (uint j = 0; j < 2; j++)
         {
-            element.f4ProjPos = mul(f4ModelPos + f4ModelNormal * j, mViewProj);
+            element.f4ProjPos = mul(f4ModelPos + float4(f3ModelNormal, 0.f) * j, mViewProj);
             element.f2TexCoord = float2(j, 0);
             output.Append(element);
         }

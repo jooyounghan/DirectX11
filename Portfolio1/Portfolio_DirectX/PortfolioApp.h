@@ -43,12 +43,5 @@ public:
 	ModelRenderer modelRenderer;
 	LightRenderer lightRenderer;
 	NormalVectorRenderer normalVectorRenderer;
-
-private:
-	class AIBLModel* pIBLModel;
-	std::unordered_map<uint32_t, AStaticMesh*> pModels;
-
-public:
-	void AddModel(AStaticMesh* pModel);
 };
 

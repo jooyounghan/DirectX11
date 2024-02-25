@@ -10,6 +10,7 @@
 AIBLModel::AIBLModel()
 	: AStaticMesh()
 {
+	AutoZeroMemory(sIBLData);
 	ID3D11Helper::CreateBuffer(
 		DirectXDevice::pDevice, 
 		sIBLData, D3D11_USAGE_DYNAMIC, 

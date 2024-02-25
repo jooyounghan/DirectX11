@@ -40,20 +40,14 @@ DomainOutput main(
     Output.f4ModelPos = patch[0].f4ModelPos * domain.x + patch[1].f4ModelPos * domain.y + patch[2].f4ModelPos * domain.z;
     Output.f2TexCoord = patch[0].f2TexCoord * domain.x + patch[1].f2TexCoord * domain.y + patch[2].f2TexCoord * domain.z;
               
-    float2x3 TB = GetTBMatrix(patch[0].f4ModelPos, patch[1].f4ModelPos, patch[2].f4ModelPos, patch[0].f2TexCoord, patch[1].f2TexCoord, patch[2].f2TexCoord);
+    Output.f3ModelNormal = normalize(patch[0].f3ModelNormal * domain.x + patch[1].f3ModelNormal * domain.y + patch[2].f3ModelNormal * domain.z);
+    Output.f3ModelTangent = normalize(patch[0].f3ModelTangent * domain.x + patch[1].f3ModelTangent * domain.y + patch[2].f3ModelTangent * domain.z);
+    Output.f3ModelBiTangent = normalize(cross(Output.f3ModelNormal.xyz, Output.f3ModelTangent.xyz));
     
-    Output.f4ModelNormal = normalize(patch[0].f4ModelNormal * domain.x + patch[1].f4ModelNormal * domain.y + patch[2].f4ModelNormal * domain.z); 
-    Output.f4ModelTangent = normalize(float4(TB[0], 0.f));
-    Output.f4ModelBiTangent = normalize(float4(TB[1], 0.f));
+    Output.f4ModelPos = GetHeightedModelPos(
+        bIsHeightOn, HeightTexture, ClampSampler, Output.f2TexCoord, fHeightFactor, Output.f3ModelNormal, Output.f4ModelPos
+    );
     
-    if (bIsHeightOn)
-    {
-        float fHeightSampled = 2.f * HeightTexture.SampleLevel(ClampSampler, Output.f2TexCoord, 0.f).x - 1.f;
-        fHeightSampled = fHeightFactor * fHeightSampled;
-        Output.f4ModelPos += fHeightSampled * Output.f4ModelNormal;        
-    }
-
-    // TODO : Delete PorjPos
     Output.f4ProjPos = mul(Output.f4ModelPos, mViewProj);
     
     return Output;

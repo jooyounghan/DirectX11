@@ -22,6 +22,7 @@ std::unordered_map<WORD, std::string> APBRStaticMesh::unmapTextureNames
 APBRStaticMesh::APBRStaticMesh()
 	: AStaticMesh()
 {
+	AutoZeroMemory(sPBRConstant);
 	ID3D11Helper::CreateBuffer(
 		DirectXDevice::pDevice, sPBRConstant, D3D11_USAGE_DYNAMIC,
 		D3D11_BIND_CONSTANT_BUFFER, D3D11_CPU_ACCESS_WRITE, NULL,

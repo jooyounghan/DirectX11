@@ -61,6 +61,12 @@ private:
 	size_t ullFilterListCheckIdx;
 
 private:
+	uint32_t ullSelectedModelID;
+
+public:
+	inline const uint32_t& GetSelecetedModelID() { return ullSelectedModelID; }
+
+private:
 	void InitCameraVariable();
 
 public:
@@ -72,6 +78,10 @@ public:
 
 private:
 	void AddCamera();
+
+public:
+	void ResizeSelectedCamera(const UINT uiWidthIn, const UINT uiHeightIn);
+	void ProcWindowMsg(UINT msg, WPARAM wParam, LPARAM lParam);
 
 private:
 	void ShowCameraSetting(
@@ -103,5 +113,17 @@ private:
 
 private:
 	void SetFilterList(const std::string& strFilterName);
+
+private:
+	void VisitLButtonDown(
+		class FilteredCamera& fFiltered,
+		const int& xPosIn,
+		const int& yPosIn
+	);
+	void VisitLButtonDown(
+		class PickableCamera& pickable,
+		const int& xPosIn,
+		const int& yPosIn
+	);
 };
 

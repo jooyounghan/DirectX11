@@ -18,10 +18,8 @@ protected:
 
 
 public:
-	inline const std::vector<std::shared_ptr<class ACamera>>& GetCameras() { return upCameraManipulator->GetCameras(); }
-	inline const std::vector<std::shared_ptr<class ILight>>& GetLights() { return upLightManipulator->GetLights(); }
-	inline ACamera* GetSelectedCamera() { return upCameraManipulator->GetSelectedCamera(); }
-	inline ILight* GetSelectedLight() { return upLightManipulator->GetSelectedLight(); }
+	inline CameraManipulator* const GetCameraManipulator() { return upCameraManipulator.get(); }
+	inline LightManipulator* const GetLightManipulator() { return upLightManipulator.get(); }
 
 public:
 	virtual void PopAsDialog() override;

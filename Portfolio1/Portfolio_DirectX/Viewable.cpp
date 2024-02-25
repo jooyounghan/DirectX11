@@ -3,8 +3,6 @@
 #include "MathematicalHelper.h"
 #include "DirectXDevice.h"
 
-using namespace DirectX;
-
 Viewable::Viewable(
 	const float& fXPos,
 	const float& fYPos,
@@ -55,9 +53,9 @@ void Viewable::Resize(const UINT& uiWidthIn, const UINT& uiHeightIn)
 
 void Viewable::UpdateView()
 {
-	XMMATRIX xmRotationMat = GetTransformedMatrix();
-	XMVECTOR xmvDirection = XMVector4Transform(xmvDefaultDirection, xmRotationMat);
-	XMVECTOR xmvUp = XMVector4Transform(xmvDefaultUp, xmRotationMat);
+	DirectX::XMMATRIX xmRotationMat = GetTransformedMatrix();
+	DirectX::XMVECTOR xmvDirection = XMVector4Transform(xmvDefaultDirection, xmRotationMat);
+	DirectX::XMVECTOR xmvUp = XMVector4Transform(xmvDefaultUp, xmRotationMat);
 
 	sViewProjs.xmmViewProjMat = MathematicalHelper::MakeViewProjMatrix(
 		xmvPosition,

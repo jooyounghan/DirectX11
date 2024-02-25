@@ -10,11 +10,9 @@
 #include "ModelRenderer.h"
 
 #include "ID3D11Helper.h"
-#include "PickableCamera.h"
-#include "CubeModel.h"
-#include "CubeMapModel.h"
-#include "SpotLight.h"
-#include "PointLight.h"
+#include "AStaticMesh.h"
+#include "ACamera.h"
+#include "ILight.h"
 
 using namespace std;
 
@@ -45,26 +43,19 @@ void PortfolioApp::Init()
 	upStageManipulator = make_unique<StageManipulator>(uiWidth, uiHeight);
 
 	InitImGUI();
-	AddModel(new CubeModel(-5.f, 0.f, 0.f, 1.f, false, 8));
-	AddModel(new CubeModel(5.f, 0.f, 0.f, 1.f, false, 8));
-	AddModel(new CubeModel(0.f, -5.f, 0.f, 1.f, false, 8));
-	AddModel(new CubeModel(0.f, 5.f, 0.f, 1.f, false, 8));
-	AddModel(new CubeModel(0.f, 0.f, 5.f, 1.f, false, 8));
-	AddModel(new CubeModel(0.f, 0.f, -5.f, 1.f, false, 8));
-	AddModel(new CubeModel(0.f, 0.f, -5.f, 1.f, false, 8));
-
-	pIBLModel = new CubeMapModel(500.f, 15);
-	AddModel(pIBLModel);
 }
 
 void PortfolioApp::Update(const float& fDelta)
 {
-	for (auto model : pModels)
+	for (const auto& model : upModelManipulator->GetModels())
 	{
 		model.second->UpdateModel(fDelta);
 	}
 
-	ACamera* pCamera = upStageManipulator->GetSelectedCamera();
+	CameraManipulator* const pCameraManipulator = upStageManipulator->GetCameraManipulator();
+	LightManipulator* const pLightManipulator = upStageManipulator->GetLightManipulator();
+
+	ACamera* pCamera = pCameraManipulator->GetSelectedCamera();
 	if (pCamera)
 	{
 		pCamera->UpdatePosition();
@@ -72,7 +63,7 @@ void PortfolioApp::Update(const float& fDelta)
 		pCamera->ManageKeyBoardInput(fDelta);
 	}
 
-	for (auto& light : upStageManipulator->GetLights())
+	for (auto& light : pLightManipulator->GetLights())
 	{
 		light->UpdatePosition();
 		light->UpdateLight();
@@ -81,15 +72,19 @@ void PortfolioApp::Update(const float& fDelta)
 
 void PortfolioApp::Render()
 {
+	CameraManipulator* const pCameraManipulator = upStageManipulator->GetCameraManipulator();
+	LightManipulator* const pLightManipulator = upStageManipulator->GetLightManipulator();
 
-
-	ACamera* pCamera = upStageManipulator->GetSelectedCamera();
+	ACamera* pCamera = pCameraManipulator->GetSelectedCamera();
 	if (pCamera)
 	{
 		pCamera->ClearRTV();
 		pCamera->ClearDSV();
 
-		auto& pLights = upStageManipulator->GetLights();
+		const std::vector<std::shared_ptr<ILight>>& pLights = pLightManipulator->GetLights();
+
+		const shared_ptr<AIBLModel>& spIBLModel = upModelManipulator->GetIBLModel();
+		const unordered_map<uint32_t, std::shared_ptr<AStaticMesh>>& pModels = upModelManipulator->GetModels();
 
 		lightRenderer.UpdateLightMap(pModels, pLights);
 
@@ -98,7 +93,7 @@ void PortfolioApp::Render()
 			normalVectorRenderer.RenderNormalVector(pCamera, pModels);
 		}
 
-		modelRenderer.RenderObjects(pCamera, pIBLModel, pModels, pLights);
+		modelRenderer.RenderObjects(pCamera, spIBLModel, pModels, pLights);
 
 		pCamera->Resolve();
 	}
@@ -195,67 +190,21 @@ LRESULT __stdcall PortfolioApp::AppProc(HWND hWnd, UINT msg, WPARAM wParam, LPAR
 	if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam))
 		return true;
 
-	uint32_t uiSelectedID = 0;
+	CameraManipulator* const pCameraManipulator = upStageManipulator->GetCameraManipulator();
+	LightManipulator* const pLightManipulator = upStageManipulator->GetLightManipulator();
 
-	ACamera* pCamera = upStageManipulator->GetSelectedCamera();
-	PickableCamera* pPickableCamera = dynamic_cast<PickableCamera*>(pCamera);
+	pCameraManipulator->ProcWindowMsg(msg, wParam, lParam);
 
-	if (pCamera)
-	{
-		switch (msg) {
-		case WM_EXITSIZEMOVE:
-			pCamera->Resize(uiWidth, uiHeight);
-			return 0;
-		case WM_MOUSEMOVE:
-			pCamera->ManageMouseInput(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
-			return 0;
-		case WM_KEYUP:
-			switch (wParam)
-			{
-			case EKeyCode::W:
-			case EKeyCode::A:
-			case EKeyCode::S:
-			case EKeyCode::D:
-				pCamera->Release((EKeyCode)wParam);
-				break;
-			}
-			return 0;
-		case WM_KEYDOWN:
-			switch (wParam) {
-			case EKeyCode::W:
-			case EKeyCode::A:
-			case EKeyCode::S:
-			case EKeyCode::D:
-				pCamera->Press((EKeyCode)wParam);
-				break;
-			case EKeyCode::F:
-				pCamera->Toggle((EKeyCode)wParam);
-				break;
-			}
-			return 0;
-		case WM_SIZE:
-			uiWidth = (UINT)LOWORD(lParam);
-			uiHeight = (UINT)HIWORD(lParam);
-			return 0;
-		case WM_LBUTTONDOWN:
-			if (!ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow) && pPickableCamera != nullptr)
-			{
-				pPickableCamera->SetMousePos(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
-				uiSelectedID = pPickableCamera->GetPickedID();
-				pModels.find(uiSelectedID) != pModels.end() ?
-					upModelManipulator->SetAddressOfSelectedMesh(&pModels[uiSelectedID])
-					: upModelManipulator->SetAddressOfSelectedMesh(nullptr);
-			}
-			return 0;
-		case WM_LBUTTONUP:
-			return 0;
-		}
+	upModelManipulator->SetSelctedMesh(pCameraManipulator->GetSelecetedModelID());
+
+	switch (msg) {
+	case WM_EXITSIZEMOVE:
+		pCameraManipulator->ResizeSelectedCamera(uiWidth, uiHeight);
+		return 0;
+	case WM_SIZE:
+		uiWidth = (UINT)LOWORD(lParam);
+		uiHeight = (UINT)HIWORD(lParam);
+		return 0;
 	}
-
 	return ::DefWindowProc(hWnd, msg, wParam, lParam);
-}
-
-void PortfolioApp::AddModel(AStaticMesh* pModel)
-{
-	pModels.emplace(pModel->sModelData.uiModelID, pModel);
 }

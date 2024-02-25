@@ -102,9 +102,11 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NOMINMAX;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -144,6 +146,7 @@
     <ClInclude Include="ImGuiFileDialogConfig.h" />
     <ClInclude Include="LightManipulator.h" />
     <ClInclude Include="LightRenderer.h" />
+    <ClInclude Include="ModelFile.h" />
     <ClInclude Include="ModelManipulator.h" />
     <ClInclude Include="ModelRenderer.h" />
     <ClInclude Include="NormalVectorRenderer.h" />
@@ -202,6 +205,7 @@
     <ClCompile Include="ImGuiFileDialog.cpp" />
     <ClCompile Include="LightManipulator.cpp" />
     <ClCompile Include="LightRenderer.cpp" />
+    <ClCompile Include="ModelFile.cpp" />
     <ClCompile Include="ModelManipulator.cpp" />
     <ClCompile Include="ModelRenderer.cpp" />
     <ClCompile Include="NormalVectorRenderer.cpp" />

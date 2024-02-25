@@ -37,6 +37,7 @@ HullOutput main(
     Output.f4ProjPos = ip[i].f4ProjPos;
     Output.f4ModelPos = ip[i].f4ModelPos;
     Output.f2TexCoord = ip[i].f2TexCoord;
-    Output.f4ModelNormal = ip[i].f4ModelNormal;
+    Output.f3ModelNormal = ip[i].f3ModelNormal;
+    Output.f3ModelTangent = ip[i].f3ModelTangent;
 	return Output;
 }

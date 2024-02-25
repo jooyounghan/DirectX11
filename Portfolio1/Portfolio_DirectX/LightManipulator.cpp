@@ -1,8 +1,6 @@
 #include "LightManipulator.h"
 
 #include "DefineVar.h"
-#include "directxmath/DirectXMath.h"
-
 #include "SpotLight.h"
 #include "PointLight.h"
 
@@ -10,6 +8,7 @@
 #include <imgui_impl_dx11.h>
 #include <imgui_impl_win32.h>
 #include <imgui_internal.h>
+#include <DirectXMath.h>
 
 using namespace ImGui;
 using namespace std;

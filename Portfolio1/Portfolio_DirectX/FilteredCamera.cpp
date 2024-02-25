@@ -129,6 +129,15 @@ void FilteredCamera::AcceptCameraInformation(CameraManipulator* pCameraManipulat
 	pCameraManipulator->VisitCameraInfo(*this);
 }
 
+void FilteredCamera::AcceptLButtonDown(
+	CameraManipulator* pCameraManipulator,
+	const int& xPosIn,
+	const int& yPosIn
+)
+{
+	pCameraManipulator->VisitLButtonDown(*this, xPosIn, yPosIn);
+}
+
 void FilteredCamera::AddBlurState()
 {
 	upFilters.push_back(std::make_unique<BlurFilter>(

@@ -1,10 +1,6 @@
 #pragma once
 #include "IRenderer.h"
 
-#include <vector>
-#include <unordered_map>
-#include <memory>
-
 class ModelRenderer : public IRenderer
 {
 	friend class APBRStaticMesh;
@@ -18,14 +14,14 @@ public:
 
 private:
 	class ACamera* pCamera;
-	class AIBLModel* pIBLModel;
+	class std::shared_ptr<class AIBLModel> spIBLModel;
 	const std::vector<std::shared_ptr<class ILight>>* pLights;
 
 public:
 	void RenderObjects(
 		class ACamera* pCameraIn,
-		class AIBLModel* pIBLModelIn,
-		const std::unordered_map<uint32_t, class AStaticMesh*>& vStaticMeshesIn,
+		std::shared_ptr<class AIBLModel> spIBLModelIn,
+		const std::unordered_map<uint32_t, std::shared_ptr<class AStaticMesh>>& vStaticMeshesIn,
 		const std::vector<std::shared_ptr<class ILight>>& vLightsIn
 		= std::vector<std::shared_ptr<ILight>>()
 	);

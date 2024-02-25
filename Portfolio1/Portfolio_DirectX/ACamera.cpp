@@ -6,8 +6,6 @@
 
 #include <algorithm>
 
-using namespace DirectX;
-
 ACamera::ACamera(
 	const float& fXPos,
 	const float& fYPos,
@@ -64,14 +62,15 @@ void ACamera::ManageKeyBoardInput(const float& fDelay)
 {
 	if (pPressed[EKeyCode::F])
 	{
-		XMMATRIX xmRotationMat = GetTransformedMatrix();
-		XMVECTOR xmvDirection = XMVector4Transform(xmvDefaultDirection, xmRotationMat);
-		XMVECTOR xmvRight = XMVector4Transform(xmvDefaultRight, xmRotationMat);
+		DirectX::XMMATRIX xmRotationMat = GetTransformedMatrix();
+		DirectX::XMVECTOR xmvDirection = XMVector4Transform(xmvDefaultDirection, xmRotationMat);
+		DirectX::XMVECTOR xmvRight = XMVector4Transform(xmvDefaultRight, xmRotationMat);
 
-		if (pPressed[EKeyCode::W]) xmvPosition += xmvDirection * 0.1f;
-		if (pPressed[EKeyCode::S]) xmvPosition -= xmvDirection * 0.1f;
-		if (pPressed[EKeyCode::D]) xmvPosition += xmvRight * 0.1f;
-		if (pPressed[EKeyCode::A]) xmvPosition -= xmvRight * 0.1f;
+		
+		if (pPressed[EKeyCode::W]) xmvPosition = DirectX::XMVectorAdd(xmvPosition, DirectX::XMVectorScale(xmvDirection, 0.1f));
+		if (pPressed[EKeyCode::S]) xmvPosition = DirectX::XMVectorSubtract(xmvPosition, DirectX::XMVectorScale(xmvDirection, 0.1f));
+		if (pPressed[EKeyCode::D]) xmvPosition = DirectX::XMVectorAdd(xmvPosition, DirectX::XMVectorScale(xmvRight, 0.1f));
+		if (pPressed[EKeyCode::A]) xmvPosition = DirectX::XMVectorSubtract(xmvPosition, DirectX::XMVectorScale(xmvRight, 0.1f));
 	}
 }
 

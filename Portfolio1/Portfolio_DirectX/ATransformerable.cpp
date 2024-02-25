@@ -4,8 +4,6 @@
 #include "ID3D11Helper.h"
 #include "MathematicalHelper.h"
 
-using namespace DirectX;
-
 ATransformerable::ATransformerable()
 	: IMovable(0.f, 0.f, 0.f), IScalable(), IAngleAdjustable(0.f, 0.f, 0.f)
 {

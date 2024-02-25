@@ -20,7 +20,7 @@ NormalVectorRenderer::~NormalVectorRenderer()
 
 void NormalVectorRenderer::RenderNormalVector(
 	ACamera* pCameraIn, 
-	const std::unordered_map<uint32_t, class AStaticMesh*>& vStaticMeshesIn
+	const std::unordered_map<uint32_t, std::shared_ptr<AStaticMesh>>& vStaticMeshesIn
 )
 {
 	DirectXDevice::AddIgnoringMessageFilter(D3D11_MESSAGE_ID_DEVICE_DRAW_SHADERRESOURCEVIEW_NOT_SET);
@@ -67,10 +67,9 @@ void NormalVectorRenderer::RenderNormal(APBRStaticMesh& pbrStaticMesh)
 	ID3D11ShaderResourceView* pNullSRV = nullptr;
 	ID3D11SamplerState* pNullSampler = nullptr;
 	
-	UINT uiStride = sizeof(InputLayout);
-	UINT uiOffset = 0;
+	auto [uiStrides, uiOffsets, vertexBuffers] = pbrStaticMesh.GetInputInfo();
+	DirectXDevice::pDeviceContext->IASetVertexBuffers(0, 4, vertexBuffers.data(), uiStrides.data(), uiOffsets.data());
 
-	DirectXDevice::pDeviceContext->IASetVertexBuffers(0, 1, pbrStaticMesh.cpInputBuffer.GetAddressOf(), &uiStride, &uiOffset);
 	DirectXDevice::pDeviceContext->IASetIndexBuffer(pbrStaticMesh.cpIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 
 	DirectXDevice::pDeviceContext->VSSetConstantBuffers(0, 1, pbrStaticMesh.cpTransformationBuffer.GetAddressOf());
@@ -80,11 +79,11 @@ void NormalVectorRenderer::RenderNormal(APBRStaticMesh& pbrStaticMesh)
 	DirectXDevice::pDeviceContext->GSSetConstantBuffers(2, 1, pbrStaticMesh.cpPBRTextureFlagBuffer.GetAddressOf());
 
 	DirectXDevice::pDeviceContext->GSSetShaderResources(0, 1, 
-		pbrStaticMesh.pModelTexture[APBRStaticMesh::NORMAL_TEXTURE_MAP] != nullptr ? 
-		pbrStaticMesh.pModelTexture[APBRStaticMesh::NORMAL_TEXTURE_MAP]->GetAddressOfSRV() : &pNullSRV);
+		pbrStaticMesh.pModelTexture[NORMAL_TEXTURE_MAP] != nullptr ? 
+		pbrStaticMesh.pModelTexture[NORMAL_TEXTURE_MAP]->GetAddressOfSRV() : &pNullSRV);
 	DirectXDevice::pDeviceContext->GSSetShaderResources(1, 1,
-		pbrStaticMesh.pModelTexture[APBRStaticMesh::HEIGHT_TEXTURE_MAP] != nullptr ?
-		pbrStaticMesh.pModelTexture[APBRStaticMesh::HEIGHT_TEXTURE_MAP]->GetAddressOfSRV() : &pNullSRV);
+		pbrStaticMesh.pModelTexture[HEIGHT_TEXTURE_MAP] != nullptr ?
+		pbrStaticMesh.pModelTexture[HEIGHT_TEXTURE_MAP]->GetAddressOfSRV() : &pNullSRV);
 
 	DirectXDevice::pDeviceContext->GSSetSamplers(0, 1, DirectXDevice::ppClampSampler);
 

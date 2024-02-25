@@ -30,6 +30,5 @@ public:
 private:
 	std::string strCurrentPath;
 	std::vector<std::shared_ptr<class IFile>> vLoadedFiles;
-	std::map<std::string, std::shared_ptr<class IFile>> mapNameToFiles;
+	std::map<std::string, std::weak_ptr<class IFile>> mapNameToFiles;
 };
-

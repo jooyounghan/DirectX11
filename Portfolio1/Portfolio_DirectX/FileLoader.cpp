@@ -13,7 +13,6 @@
 #include <atlconv.h>
 
 using namespace std;
-using namespace DirectX;
 
 uint8_t* FileLoader::LoadFileWithStbi(const char* sFilename, UINT* x, UINT* y, UINT* comp)
 {
@@ -54,8 +53,8 @@ uint8_t* FileLoader::LoadFileWithOpenEXR(const char* pFileName, UINT* x, UINT* y
 uint8_t* FileLoader::LoadFileWithOpenEXR(const wchar_t* pFileName, UINT* x, UINT* y, UINT* comp)
 {
     uint8_t* result = nullptr;
-    ScratchImage scratch;
-    TexMetadata metaData;
+    DirectX::ScratchImage scratch;
+    DirectX::TexMetadata metaData;
     HRESULT hResult = LoadFromEXRFile(pFileName, &metaData, scratch);
     if (FAILED(hResult))
     {
@@ -65,7 +64,7 @@ uint8_t* FileLoader::LoadFileWithOpenEXR(const wchar_t* pFileName, UINT* x, UINT
     {
         *x = (UINT)metaData.width;
         *y = (UINT)metaData.height;
-        const Image* pImage = scratch.GetImage(NULL, NULL, NULL);
+        const DirectX::Image* pImage = scratch.GetImage(NULL, NULL, NULL);
         *comp = pImage->rowPitch / (pImage->width * 2);
 
         result = (uint8_t*)malloc(scratch.GetPixelsSize());

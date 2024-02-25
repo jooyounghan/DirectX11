@@ -2,7 +2,6 @@
 #include "AStaticMesh.h"
 #include "NormalImageFile.h"
 
-#include <memory>
 #include <unordered_map>
 
 class APBRStaticMesh : public AStaticMesh
@@ -12,19 +11,6 @@ class APBRStaticMesh : public AStaticMesh
 	friend class NormalVectorRenderer;
 
 public:
-	enum EModelTextures : WORD
-	{
-		AO_TEXUTRE_MAP,
-		COLOR_TEXTURE_MAP,
-		METALNESS_TEXTURE_MAP,
-		ROUGHNESS_TEXTURE_MAP,
-		EMISSION_TEXTURE_MAP,
-		NORMAL_TEXTURE_MAP,
-		HEIGHT_TEXTURE_MAP,
-		TEXTURE_MAP_NUM
-	};
-
-public:
 	static std::unordered_map<WORD, std::string> unmapTextureNames;
 
 public:
@@ -32,7 +18,7 @@ public:
 	virtual ~APBRStaticMesh();
 
 public:
-	std::shared_ptr<class NormalImageFile> pModelTexture[TEXTURE_MAP_NUM];
+	std::shared_ptr<NormalImageFile> pModelTexture[TEXTURE_MAP_NUM];
 
 public:
 	struct

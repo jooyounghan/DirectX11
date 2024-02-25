@@ -2,11 +2,9 @@
 #include "ID3D11Helper.h"
 #include "DirectXDevice.h"
 
-using namespace DirectX;
-
-const XMVECTOR IMovable::xmvDefaultDirection = XMVectorSet(0.f, 0.f, 1.f, 0.f);
-const XMVECTOR IMovable::xmvDefaultUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
-const XMVECTOR IMovable::xmvDefaultRight = XMVectorSet(1.f, 0.f, 0.f, 0.f);
+const DirectX::XMVECTOR IMovable::xmvDefaultDirection = DirectX::XMVectorSet(0.f, 0.f, 1.f, 0.f);
+const DirectX::XMVECTOR IMovable::xmvDefaultUp = DirectX::XMVectorSet(0.f, 1.f, 0.f, 0.f);
+const DirectX::XMVECTOR IMovable::xmvDefaultRight = DirectX::XMVectorSet(1.f, 0.f, 0.f, 0.f);
 
 IMovable::IMovable(const float& fXPos, const float& fYPos, const float& fZPos)
 {

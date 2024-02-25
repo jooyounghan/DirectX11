@@ -23,7 +23,7 @@ LightRenderer::~LightRenderer()
 }
 
 void LightRenderer::UpdateLightMap(
-	const std::unordered_map<uint32_t, class AStaticMesh*>& vStaticMeshes,
+	const std::unordered_map<uint32_t, std::shared_ptr<AStaticMesh>>& vStaticMeshes,
 	const std::vector<std::shared_ptr<ILight>>& vLights
 )
 {
@@ -142,10 +142,9 @@ void LightRenderer::SetModelSettingForLightMap(APBRStaticMesh& pbrStaticMesh)
 	ID3D11ShaderResourceView* pNullSRV = nullptr;
 	ID3D11SamplerState* pNullSampler = nullptr;
 
-	UINT uiStride = sizeof(InputLayout);
-	UINT uiOffset = 0;
+	auto [uiStrides, uiOffsets, vertexBuffers] = pbrStaticMesh.GetInputInfo();
+	DirectXDevice::pDeviceContext->IASetVertexBuffers(0, 4, vertexBuffers.data(), uiStrides.data(), uiOffsets.data());
 
-	DirectXDevice::pDeviceContext->IASetVertexBuffers(0, 1, pbrStaticMesh.cpInputBuffer.GetAddressOf(), &uiStride, &uiOffset);
 	DirectXDevice::pDeviceContext->IASetIndexBuffer(pbrStaticMesh.cpIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 
 	DirectXDevice::pDeviceContext->VSSetConstantBuffers(0, 1, pbrStaticMesh.cpTransformationBuffer.GetAddressOf());
@@ -154,8 +153,8 @@ void LightRenderer::SetModelSettingForLightMap(APBRStaticMesh& pbrStaticMesh)
 	DirectXDevice::pDeviceContext->DSSetConstantBuffers(2, 1, pbrStaticMesh.cpPBRTextureFlagBuffer.GetAddressOf());
 
 	DirectXDevice::pDeviceContext->DSSetShaderResources(0, 1,
-		pbrStaticMesh.pModelTexture[APBRStaticMesh::HEIGHT_TEXTURE_MAP] ?
-		pbrStaticMesh.pModelTexture[APBRStaticMesh::HEIGHT_TEXTURE_MAP]->GetAddressOfSRV() : &pNullSRV);
+		pbrStaticMesh.pModelTexture[HEIGHT_TEXTURE_MAP] ?
+		pbrStaticMesh.pModelTexture[HEIGHT_TEXTURE_MAP]->GetAddressOfSRV() : &pNullSRV);
 
 	DirectXDevice::pDeviceContext->DSSetSamplers(0, 1, DirectXDevice::ppClampSampler);
 

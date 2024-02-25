@@ -2,39 +2,11 @@
 
 #include <d3d11.h>
 #include <d3dcompiler.h>
-#include <directxmath/DirectXMath.h>
 #include <wrl/client.h>
-
 #include <vector>
+#include <tuple>
 #include "IModel.h"
 #include "ATransformerable.h"
-
-struct TextureCoord
-{
-	float x;
-	float y;
-};
-
-struct Vertex
-{
-	float x;
-	float y;
-	float z;
-};
-
-struct NormalVector
-{
-	float x;
-	float y;
-	float z;
-};
-
-struct InputLayout
-{
-	Vertex			sVertex;
-	TextureCoord	sTexcoord;
-	NormalVector	sNormal;
-};
 
 class AStaticMesh : public IModel, public ATransformerable
 {
@@ -43,12 +15,21 @@ public:
 	virtual ~AStaticMesh();
 
 protected:
-	std::vector<InputLayout>	inputData;
-	std::vector<uint32_t>		indexData;
+	std::vector<DirectX::XMFLOAT3>	spVertices;
+	std::vector<DirectX::XMFLOAT2>	spTexcoords;
+	std::vector<DirectX::XMFLOAT3>	spNormals;
+	std::vector<DirectX::XMFLOAT3>	spTangents;
+	std::vector<uint32_t>			spIndicesData;
+
+protected:
+	Microsoft::WRL::ComPtr<ID3D11Buffer> cpVerticesBuffer;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> cpTexcoordsBuffer;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> cpNormalsBuffer;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> cpTangentsBuffer;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> cpIndexBuffer;
 
 public:
-	Microsoft::WRL::ComPtr<ID3D11Buffer> cpInputBuffer;
-	Microsoft::WRL::ComPtr<ID3D11Buffer> cpIndexBuffer;
+	std::tuple<std::vector<UINT>, std::vector<UINT>, std::vector<ID3D11Buffer*>> GetInputInfo();
 
 public:
 	virtual void Load(const std::string& path) = 0;
@@ -66,7 +47,10 @@ public:
 
 public:
 	static void CreateCubeModel(
-		std::vector<InputLayout>& inputData,
+		std::vector<DirectX::XMFLOAT3>&	inputVerticesIn,
+		std::vector<DirectX::XMFLOAT2>&	inputTexcoordsIn,
+		std::vector<DirectX::XMFLOAT3>&	inputNormalsIn,
+		std::vector<DirectX::XMFLOAT3>&	inputTangentsIn,
 		std::vector<uint32_t>& indexData, 
 		const float& fRadius,
 		const bool& bReverse,

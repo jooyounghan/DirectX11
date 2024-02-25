@@ -1,14 +1,13 @@
 #include "CameraManipulator.h"
 
 #include "DefineVar.h"
-#include "directxmath/DirectXMath.h"
-
 #include "PickableCamera.h"
 
 #include <imgui.h>
 #include <imgui_impl_dx11.h>
 #include <imgui_impl_win32.h>
 #include <imgui_internal.h>
+#include <DirectXMath.h>
 
 using namespace std;
 using namespace ImGui;
@@ -27,7 +26,8 @@ CameraManipulator::CameraManipulator(
 	bIsShowingCameraInfo(false),
 	iCameraSelectedIdx(NOT_SELECTED),
 	iFilterSelectedIdx(NOT_SELECTED),
-	ullCameraListCheckIdx(0)
+	ullCameraListCheckIdx(0),
+	ullSelectedModelID(0)
 {
 	InitCameraVariable();
 	AutoZeroMemory(fCameraPos);
@@ -168,6 +168,58 @@ void CameraManipulator::AddCamera()
 	pCameras.push_back(pAddedCamera);
 }
 
+void CameraManipulator::ResizeSelectedCamera(const UINT uiWidthIn, const UINT uiHeightIn)
+{
+	if (spSelectedCamera != nullptr)
+	{
+		spSelectedCamera->Resize(uiWidthIn, uiHeightIn);
+	}
+}
+
+void CameraManipulator::ProcWindowMsg(UINT msg, WPARAM wParam, LPARAM lParam)
+{
+	if (spSelectedCamera != nullptr)
+	{
+		switch (msg) {
+		case WM_MOUSEMOVE:
+			spSelectedCamera->ManageMouseInput(((int)(short)LOWORD(lParam)), ((int)(short)HIWORD(lParam)));
+			break;
+		case WM_KEYUP:
+			switch (wParam)
+			{
+			case EKeyCode::W:
+			case EKeyCode::A:
+			case EKeyCode::S:
+			case EKeyCode::D:
+				spSelectedCamera->Release((EKeyCode)wParam);
+				break;
+			}
+			break;
+		case WM_KEYDOWN:
+			switch (wParam) {
+			case EKeyCode::W:
+			case EKeyCode::A:
+			case EKeyCode::S:
+			case EKeyCode::D:
+				spSelectedCamera->Press((EKeyCode)wParam);
+				break;
+			case EKeyCode::F:
+				spSelectedCamera->Toggle((EKeyCode)wParam);
+				break;
+			}
+			break;
+		case WM_LBUTTONDOWN:
+			if (!ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))
+			{
+				spSelectedCamera->AcceptLButtonDown(this, (int)(short)LOWORD(lParam), (int)(short)HIWORD(lParam));
+			}
+			break;
+		case WM_LBUTTONUP:
+			break;
+		}
+	}
+}
+
 void CameraManipulator::ShowCameraSetting(
 	float* pCameraPosIn, 
 	float* pCameraAngleIn, 
@@ -297,4 +349,22 @@ void CameraManipulator::SetFilterList(const string& strFilterName)
 
 	if (is_selected)
 		SetItemDefaultFocus();
+}
+
+void CameraManipulator::VisitLButtonDown(
+	class FilteredCamera& fFiltered,
+	const int& xPosIn,
+	const int& yPosIn
+)
+{
+
+}
+void CameraManipulator::VisitLButtonDown(
+	class PickableCamera& pickable,
+	const int& xPosIn,
+	const int& yPosIn
+)
+{
+	pickable.SetMousePos(xPosIn, yPosIn);
+	ullSelectedModelID = pickable.GetPickedID();
 }

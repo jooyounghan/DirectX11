@@ -1,11 +1,9 @@
 #include "MathematicalHelper.h"
 
-using namespace DirectX;
-
-XMVECTOR MathematicalHelper::MakeReflect(const XMVECTOR& normalVec, const XMVECTOR& inVec)
+DirectX::XMVECTOR MathematicalHelper::MakeReflect(const DirectX::XMVECTOR& normalVec, const DirectX::XMVECTOR& inVec)
 {
-	XMVECTOR dotProduct = XMVector3Dot(normalVec, XMVectorNegate(inVec));
-	return inVec + 2 * normalVec * (dotProduct.m128_f32[0]);
+	DirectX::XMVECTOR dotProduct = DirectX::XMVector3Dot(normalVec, DirectX::XMVectorNegate(inVec));
+	return DirectX::XMVectorAdd(inVec, DirectX::XMVectorScale(normalVec, 2.f * dotProduct.m128_f32[0]));
 }
 
 DirectX::XMMATRIX MathematicalHelper::MakeViewProjMatrix(
@@ -16,8 +14,8 @@ DirectX::XMMATRIX MathematicalHelper::MakeViewProjMatrix(
 	const float& fNearZ, const float& fFarZ
 )
 {
-	return XMMatrixLookToLH(xmvCameraPosition, xmvCameraDirection, xmvCameraUp) *
-		XMMatrixPerspectiveFovLH(fFovRadian, fAspectRatio, fNearZ, fFarZ);
+	return DirectX::XMMatrixLookToLH(xmvCameraPosition, xmvCameraDirection, xmvCameraUp) *
+		DirectX::XMMatrixPerspectiveFovLH(fFovRadian, fAspectRatio, fNearZ, fFarZ);
 }
 
 DirectX::XMMATRIX MathematicalHelper::MakeViewProjMatrix(
@@ -28,8 +26,8 @@ DirectX::XMMATRIX MathematicalHelper::MakeViewProjMatrix(
 	const float& fNearZ, const float& fFarZ
 )
 {
-	return XMMatrixLookToLH(xmvCameraPosition, xmvCameraDirection, xmvCameraUp) *
-		XMMatrixPerspectiveFovLH(fFovRadian, fAspectRatio, fNearZ, fFarZ);
+	return DirectX::XMMatrixLookToLH(xmvCameraPosition, xmvCameraDirection, xmvCameraUp) *
+		DirectX::XMMatrixPerspectiveFovLH(fFovRadian, fAspectRatio, fNearZ, fFarZ);
 }
 
 
@@ -39,9 +37,9 @@ DirectX::XMMATRIX MathematicalHelper::MakeAffineTransformation(
 	const float& fXTranslation, const float& fYTranslation, const float& fZTranslation
 ) 
 {
-	XMMATRIX xmmScale = XMMatrixScaling(fXScale, fYScale, fZScale);
-	XMMATRIX xmmRotation = XMMatrixRotationRollPitchYaw(fPitchDeg, fYawDeg, fRollDeg);
-	XMMATRIX xmmTranslation = XMMatrixTranslation(fXTranslation, fYTranslation, fZTranslation);
+	DirectX::XMMATRIX xmmScale = DirectX::XMMatrixScaling(fXScale, fYScale, fZScale);
+	DirectX::XMMATRIX xmmRotation = DirectX::XMMatrixRotationRollPitchYaw(fPitchDeg, fYawDeg, fRollDeg);
+	DirectX::XMMATRIX xmmTranslation = DirectX::XMMatrixTranslation(fXTranslation, fYTranslation, fZTranslation);
 
 	return xmmScale * xmmRotation * xmmTranslation;
 }

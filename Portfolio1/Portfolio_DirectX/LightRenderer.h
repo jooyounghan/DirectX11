@@ -1,10 +1,6 @@
 #pragma once
 #include "IRenderer.h"
 
-#include <vector>
-#include <unordered_map>
-#include <memory>
-
 class LightRenderer : public IRenderer
 {
 	friend class APBRStaticMesh;
@@ -17,12 +13,12 @@ public:
 	virtual ~LightRenderer();
 
 private:
-	const std::unordered_map<uint32_t, class AStaticMesh*>* pModelSet;
+	const std::unordered_map<uint32_t, std::shared_ptr<class AStaticMesh>>* pModelSet;
 	std::shared_ptr<class ILight> spSelectedLight;
 
 public:
 	void UpdateLightMap(
-		const std::unordered_map<uint32_t, class AStaticMesh*>& vStaticMeshes,
+		const std::unordered_map<uint32_t, std::shared_ptr<class AStaticMesh>>& vStaticMeshes,
 		const std::vector<std::shared_ptr<class ILight>>& vLights
 	);
 

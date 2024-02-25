@@ -16,8 +16,9 @@ void Shaders::Init(ID3D11Device* pDeviceIn)
 	// Vertex Shader √ ±‚»≠	
 	std::vector<D3D11_INPUT_ELEMENT_DESC> vInputElemDesc{
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20, D3D11_INPUT_PER_VERTEX_DATA, 0}
+		{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 1, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 2, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 3, 0, D3D11_INPUT_PER_VERTEX_DATA, 0}
 	};
 	ID3D11Helper::CreateVSInputLayOut(pDeviceIn, L"BaseVS.hlsl", vInputElemDesc, vVertexShaders[BaseVS].GetAddressOf(), vInputLayOuts[0].GetAddressOf());
 	ID3D11Helper::CreateVS(pDeviceIn, L"NormalVectorVS.hlsl", vVertexShaders[NormalVectorVS].GetAddressOf());

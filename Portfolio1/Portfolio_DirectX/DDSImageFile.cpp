@@ -7,21 +7,19 @@
 
 #include <directxtk/DDSTextureLoader.h>
 
-using namespace DirectX;
-
 DDSImageFile::DDSImageFile(
 	const std::string& strFilePathIn, 
 	const std::string& strFileNameIn,
 	const bool& bIsTextureCube
 )
-	: IImageFile(strFileNameIn),
+	: IImageFile(strFilePathIn, strFileNameIn),
 	IRectangle(0, 0)
 {
-	HRESULT hResult = CreateDDSTextureFromFileEx(
-		DirectXDevice::pDevice, FileLoader::ConvertUTF8ToUniCode(strFilePathIn).c_str(), (size_t)0,
+	HRESULT hResult = DirectX::CreateDDSTextureFromFileEx(
+		DirectXDevice::pDevice, FileLoader::ConvertUTF8ToUniCode(strFilePath).c_str(), (size_t)0,
 		D3D11_USAGE_IMMUTABLE, D3D11_BIND_SHADER_RESOURCE, NULL,
 		bIsTextureCube ? D3D11_RESOURCE_MISC_TEXTURECUBE : NULL,
-		DDS_LOADER_DEFAULT, (ID3D11Resource**)cpTexture2D.GetAddressOf(), GetAddressOfSRV()
+		DirectX::DDS_LOADER_DEFAULT, (ID3D11Resource**)cpTexture2D.GetAddressOf(), GetAddressOfSRV()
 	);
 
 	if (FAILED(hResult))

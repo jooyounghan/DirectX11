@@ -47,9 +47,14 @@ public:
 	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn) override;
 	virtual void Resolve() override;
 
-protected:
+public:
 	virtual void AcceptCameraList(class CameraManipulator* pCameraManipulator) override;
 	virtual void AcceptCameraInformation(class CameraManipulator* pCameraManipulator) override;
+	virtual void AcceptLButtonDown(
+		class CameraManipulator* pCameraManipulator,
+		const int& xPosIn,
+		const int& yPosIn
+	) override;
 
 public:
 	void AddBlurState();

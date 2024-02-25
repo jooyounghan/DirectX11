@@ -1,22 +1,48 @@
 #include "ModelManipulator.h"
-#include "AStaticMesh.h"
+
 #include "APBRStaticMesh.h"
 #include "NormalImageFile.h"
 
 #include "AIBLModel.h"
 #include "DDSImageFile.h"
 
+#include "CubeModel.h"
+#include "CubeMapModel.h"
+
+
 using namespace std;
 using namespace ImGui;
 
 ModelManipulator::ModelManipulator()
-	: ppSelectedStaticMesh(nullptr), bIsDrawingNormal(false)
+	: bIsDrawingNormal(false)
 {
+	AddModel(make_shared<CubeModel>(-5.f, 0.f, 0.f, 1.f, false, 8));
+	AddModel(make_shared<CubeModel>(5.f, 0.f, 0.f, 1.f, false, 8));
+	AddModel(make_shared<CubeModel>(0.f, -5.f, 0.f, 1.f, false, 8));
+	AddModel(make_shared<CubeModel>(0.f, 5.f, 0.f, 1.f, false, 8));
+	AddModel(make_shared<CubeModel>(0.f, 0.f, 5.f, 1.f, false, 8));
+	AddModel(make_shared<CubeModel>(0.f, 0.f, -5.f, 1.f, false, 8));
+	AddModel(make_shared<CubeModel>(0.f, 0.f, -5.f, 1.f, false, 8));
+
+	spIBLModel = make_shared<CubeMapModel>(500.f, 15);
+	AddModel(spIBLModel);
 }
 
 ModelManipulator::~ModelManipulator()
 {
 }
+
+void ModelManipulator::SetSelctedMesh(const uint32_t selected_id)
+{
+	if (pModels.find(selected_id) != pModels.end())
+	{
+		spSelectedMesh = pModels[selected_id];
+	}
+	else
+	{
+		spSelectedMesh = nullptr;
+	}
+};
 
 void ModelManipulator::PopAsDialog()
 {
@@ -28,11 +54,22 @@ void ModelManipulator::PopAsDialog()
 
 	Checkbox("Drawing Normal Vector", &bIsDrawingNormal);
 
-	if (ppSelectedStaticMesh != nullptr)
+	ListUpModel();
+
+	if (spSelectedMesh != nullptr)
 	{
-		(*ppSelectedStaticMesh)->AcceptModelManipulating(this);
+		spSelectedMesh->AcceptModelManipulating(this);
 	}
 	End();
+}
+
+void ModelManipulator::ListUpModel()
+{
+}
+
+void ModelManipulator::AddModel(shared_ptr<AStaticMesh> spMesh)
+{
+	pModels.emplace(spMesh->sModelData.uiModelID, spMesh);
 }
 
 void ModelManipulator::ManipulateModel(AStaticMesh& staticMesh)
@@ -71,7 +108,7 @@ void ModelManipulator::DrawPBRTexture(APBRStaticMesh* pPBRStaticMesh)
 	{
 		DragFloat3("Fresnel Reflectance", pPBRStaticMesh->sPBRConstant.fFresnelConstant, 0.005f, 0.f, 1.f, "%.3f");
 
-		if (pPBRStaticMesh->pModelTexture[APBRStaticMesh::HEIGHT_TEXTURE_MAP])
+		if (pPBRStaticMesh->pModelTexture[HEIGHT_TEXTURE_MAP])
 		{
 			DragFloat("Height Factor", &pPBRStaticMesh->sPBRConstant.fHeightFactor, 0.005f, 0.f, 1.f, "%.3f");
 		}
@@ -83,7 +120,7 @@ void ModelManipulator::DrawPBRTexture(APBRStaticMesh* pPBRStaticMesh)
 			EndDisabled();
 		}
 
-		for (WORD idx = 0; idx < APBRStaticMesh::TEXTURE_MAP_NUM; ++idx)
+		for (WORD idx = 0; idx < TEXTURE_MAP_NUM; ++idx)
 		{
 			SetTextureDragAndDrop(
 				APBRStaticMesh::unmapTextureNames[idx].c_str(), 
@@ -153,7 +190,7 @@ void ModelManipulator::SetTextureDragAndDrop(
 	if (spFile != nullptr)
 	{
 		SameLine();
-		Text(spFile->strFileName.c_str());
+		Text(spFile->GetFileName().c_str());
 	}
 	else
 	{

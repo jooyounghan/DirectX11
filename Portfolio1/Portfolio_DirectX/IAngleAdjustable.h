@@ -1,5 +1,5 @@
 #pragma once
-#include <directxmath/DirectXMath.h>
+#include <DirectXMath.h>
 
 class IAngleAdjustable
 {

@@ -3,7 +3,7 @@
 #include <d3dcompiler.h>
 #include <windows.h>
 #include <wrl/client.h>
-#include <directxmath/DirectXMath.h>
+#include <DirectXMath.h>
 
 class IMovable
 {

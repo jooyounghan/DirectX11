@@ -2,9 +2,10 @@
 #include "FileManipulator.h"
 
 IImageFile::IImageFile(
+	const std::string& strFilePathIn,
 	const std::string& strFileNameIn
 )
-	: IFile(strFileNameIn),
+	: IFile(strFilePathIn, strFileNameIn),
 	ShaderResource(
 		1, 1, 1, 0,
 		NULL, NULL, NULL,
@@ -18,9 +19,10 @@ IImageFile::IImageFile(
 	const UINT& uiMiscFlagIn,
 	DXGI_FORMAT eFormatIn,
 	uint8_t* pImageSource,
+	const std::string& strFilePathIn,
 	const std::string& strFileNameIn
 )
-	: IFile(strFileNameIn), 
+	: IFile(strFilePathIn, strFileNameIn),
 	ShaderResource(
 		uiWidthIn, uiHeightIn,
 		D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET, NULL,
