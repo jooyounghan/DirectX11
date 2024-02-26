@@ -1,7 +1,5 @@
 #include "ModelFile.h"
-#include <assimp\Importer.hpp>
-#include <assimp\postprocess.h>
-#include <assimp\scene.h>
+#include "FileManipulator.h"
 
 #include <filesystem>
 #include <iostream>
@@ -16,54 +14,44 @@ MeshData::~MeshData()
 {
 }
 
+void MeshData::UpdateTangents()
+{
+	if (
+		spIndices != nullptr &&
+		spVertices != nullptr &&
+		spNormals != nullptr &&
+		spTangents != nullptr
+		)
+	{
+		HRESULT hResult = DirectX::ComputeTangentFrame(
+			spIndices->data(),
+			spIndices->size() / 3,
+			spVertices->data(),
+			spNormals->data(),
+			spTexcoords->data(),
+			spVertices->size(),
+			spTangents->data(),
+			nullptr
+		);
+
+		if (FAILED(hResult)) { cout << "Computing Tangent Frame Failed" << endl; }
+	};
+}
+
 
 ModelFile::ModelFile(
 	const std::string& strFilePathIn,
-	const std::string& strFileNameIn
+	const std::string& strFileNameIn,
+	const bool& bIsGltfIn
 )
-	: IFile(strFilePathIn, strFileNameIn)
+	: IFile(strFilePathIn, strFileNameIn), bIsGltf(bIsGltfIn)
 {
-	string extenstion = filesystem::path(strFileName).extension().string();
-	transform(extenstion.begin(), extenstion.end(), extenstion.begin(), ::tolower);
-	extenstion == ".gltf" ? bIsGltf = true : bIsGltf = false;
 
-	Assimp::Importer importer;
-
-	const aiScene* pScene = importer.ReadFile(
-		strFilePath + strFileName, 
-		aiProcess_Triangulate | aiProcess_ConvertToLeftHanded
-	);
-
-	if (pScene)
-	{
-		DirectX::XMMATRIX xmmTransform;
-        ProcessNode(pScene->mRootNode, pScene, xmmTransform);
-        UpdateTangents();
-    }
-    else {
-        //std::cout << "Failed to read file: " << m_basePath + filename
-        //    << std::endl;
-        //auto errorDescription = importer.GetErrorString();
-        //std::cout << "Assimp error: " << errorDescription << endl;
-    }
 }
 
 ModelFile::~ModelFile() {}
 
-void ModelFile::ProcessNode(aiNode* pNode, const aiScene* pScene, DirectX::XMMATRIX& xmMatrix)
+void ModelFile::AcceptFileAsList(FileManipulator* pFileManipulator, std::shared_ptr<IFile>& spFile)
 {
+	pFileManipulator->ShowAsList(*this, spFile);
 }
-
-MeshData ModelFile::ProcessMesh(aiNode* pNode, const aiScene* pScene)
-{
-    return MeshData();
-}
-
-void ModelFile::UpdateTangents()
-{
-	for (auto& mesh : vMeshData)
-	{
-
-	}
-}
-

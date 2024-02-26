@@ -27,7 +27,7 @@ NormalImageFile::~NormalImageFile()
 {
 }
 
-void NormalImageFile::AcceptFileManipulator(FileManipulator* pFileManipulator, std::shared_ptr<IFile>& spFile)
+void NormalImageFile::AcceptFileAsList(FileManipulator* pFileManipulator, std::shared_ptr<IFile>& spFile)
 {
-	pFileManipulator->VisitFile(*this, spFile);
+	pFileManipulator->ShowAsList(*this, spFile);
 }

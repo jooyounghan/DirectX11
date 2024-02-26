@@ -14,6 +14,6 @@ public:
 
 
 public:
-	virtual void AcceptFileManipulator(class FileManipulator* pFileManipulator, std::shared_ptr<IFile>& spFile);
+	virtual void AcceptFileAsList(class FileManipulator* pFileManipulator, std::shared_ptr<IFile>& spFile);
 };
 

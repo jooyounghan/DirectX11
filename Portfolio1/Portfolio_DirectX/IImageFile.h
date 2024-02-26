@@ -25,7 +25,7 @@ public:
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>	cpThumbnailSRV;
 
 public:
-	virtual void AcceptFileManipulator(class FileManipulator* pFileManipulator, std::shared_ptr<IFile>& spFile) = 0;
+	virtual void AcceptFileAsList(class FileManipulator* pFileManipulator, std::shared_ptr<IFile>& spFile) = 0;
 
 private:
 	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn) override final {};

@@ -2,7 +2,7 @@
 
 #include "IFile.h"
 #include "NormalImageFile.h"
-#include <DirectXMath.h>
+#include <DirectXMesh.h>
 #include <vector>
 
 class MeshData
@@ -19,7 +19,10 @@ public:
 	std::shared_ptr<std::vector<uint32_t>> spIndices;
 
 public:
-	string strModelTexture[TEXTURE_MAP_NUM];
+	void UpdateTangents();
+
+public:
+	std::shared_ptr<IFile> spModelTexture[TEXTURE_MAP_NUM];
 };
 
 
@@ -28,28 +31,21 @@ class ModelFile : public IFile
 public:
 	ModelFile(
 		const std::string& strFilePathIn,
-		const std::string& strFileNameIn
+		const std::string& strFileNameIn,
+		const bool&			bIsGltfIn
 	);
 	virtual ~ModelFile();
 
-public:
+protected:
 	std::vector<MeshData> vMeshData;
-
-public:
 	bool bIsGltf;
 
-private:
-	void ProcessNode(
-		struct aiNode* pNode,
-		const struct aiScene* pScene,
-		DirectX::XMMATRIX& xmMatrix
-	);
+public:
+	virtual void AcceptFileAsList(class FileManipulator* pFileManipulator, std::shared_ptr<IFile>& spFile);
 
-	MeshData ProcessMesh(
-		struct aiNode* pNode,
-		const struct aiScene* pScene
-	);
-
-private:
-	void UpdateTangents();
+public:
+	inline std::vector<MeshData>& GetMeshDataRef() { return vMeshData; }
+	inline void SetMeshData(const std::vector<MeshData>& vMeshDataIn) { vMeshData = vMeshDataIn; }
+	inline const bool& IsGLTF() { return bIsGltf; }
+	inline void SetIsGLTF(const bool& bIsGltfIn) { bIsGltf = bIsGltfIn; }
 };

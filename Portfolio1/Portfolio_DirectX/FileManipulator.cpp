@@ -1,6 +1,5 @@
 #include "FileManipulator.h"
 #include "ImGuiFileDialog.h"
-#include "FileLoader.h"
 #include "IFile.h"
 
 #include "DDSImageFile.h"
@@ -53,6 +52,7 @@ void FileManipulator::ChooseFiles()
         // action if OK
         if (ImGuiFileDialog::Instance()->IsOk())
         {
+
             std::string strUTF8FilePath = ImGuiFileDialog::Instance()->GetCurrentPath();
             if (strCurrentPath != strUTF8FilePath)
             {
@@ -74,7 +74,7 @@ void FileManipulator::DisplayFiles()
     for (auto& loadedFile : vLoadedFiles)
     {
         Separator();
-        loadedFile->AcceptFileManipulator(this, loadedFile);
+        loadedFile->AcceptFileAsList(this, loadedFile);
     }
     ImGui::EndChild();
 }
@@ -84,82 +84,43 @@ void FileManipulator::LoadFiles(const std::wstring& wstrFilePathIn)
     filesystem::path texturePath(wstrFilePathIn);
     if (filesystem::exists(texturePath) && filesystem::is_directory(texturePath))
     {
-        for (auto& loadedFile : vLoadedFiles)
-        {
-            if (loadedFile.use_count() > 1)
-            {
-                const string& fileName = loadedFile->GetFileName();
-                if (mapNameToFiles.find(fileName) == mapNameToFiles.end())
-                {
-                    mapNameToFiles.emplace(fileName, loadedFile);
-                }
-            }
-        }
         vLoadedFiles.clear();
 
         filesystem::directory_iterator dirIter(texturePath);
         for (auto& entry : dirIter)
         {
-            string sExtensionName = entry.path().extension().string();
-
             UINT uiWidth, uiHeight, uiChannel;
 
             const string strFileName = entry.path().filename().string();
             const string strExtention = entry.path().extension().string();
-            const string strFilePathIn = entry.path().string();
-
+            const string strFilePathIn = entry.path().parent_path().string();
+            
             bool isImage = false;
-            FileLoader::IsStrSame(&isImage, sExtensionName, ".jpg", ".png", ".exr", ".dds");
-
+            FileLoader::IsStrSame(&isImage, strExtention, ".jpg", ".png", ".exr", ".dds");
+            shared_ptr<IFile> spFileInterface;
             if (isImage)
             {
                 bool isNeedLoad = false;
                 uint8_t* ucImageRawData = nullptr;
-                shared_ptr<IFile> spFileInterface;
+                spFileInterface = fileLoader.LoadImageFile(
+                    strExtention, strFilePathIn, strFileName, &uiWidth, &uiHeight, &uiChannel
+                );
 
-                if (mapNameToFiles.find(strFileName) == mapNameToFiles.end())
-                {
-                    isNeedLoad = true;
-                }
-                else
-                {
-                    if (!mapNameToFiles[strFileName].expired())
-                    {
-                        spFileInterface = mapNameToFiles[strFileName].lock();
-                    }
-                    else
-                    {
-                        mapNameToFiles.erase(strFileName);
-                        isNeedLoad = true;
-                    }
-                }
-
-                if (isNeedLoad)
-                {
-                    if (strExtention == ".exr")
-                    {
-                        ucImageRawData = FileLoader::LoadFileWithOpenEXR(strFilePathIn.c_str(), &uiWidth, &uiHeight, &uiChannel);
-                        spFileInterface = make_shared<NormalImageFile>(uiWidth, uiHeight, DXGI_FORMAT_R16G16B16A16_FLOAT, ucImageRawData, strFilePathIn, strFileName);
-                    }
-                    else if (strExtention == ".dds")
-                    {
-                        spFileInterface = make_shared<DDSImageFile>(strFilePathIn, strFileName, strFilePathIn.find("Brdf") == string::npos);
-                    }
-                    else
-                    {
-                        ucImageRawData = FileLoader::LoadFileWithStbi(strFilePathIn.c_str(), &uiWidth, &uiHeight, &uiChannel);
-                        spFileInterface = make_shared<NormalImageFile>(uiWidth, uiHeight, DXGI_FORMAT_R8G8B8A8_UNORM, ucImageRawData, strFilePathIn, strFileName);
-                    }
-                    FileLoader::FreeLoadedFileData(ucImageRawData);
-                }
- 
-                vLoadedFiles.emplace_back(spFileInterface);
             }
+            bool isObject = false;
+            FileLoader::IsStrSame(&isObject, strExtention, ".fbx", ".gltf");
+            if(isObject)
+            {
+                spFileInterface = fileLoader.LoadModelFile(strExtention, strFilePathIn, strFileName);
+            }
+
+            if (spFileInterface.get() != nullptr)
+                vLoadedFiles.emplace_back(spFileInterface);
         }
     }
 }
 
-void FileManipulator::VisitFile(NormalImageFile& imageFile, shared_ptr<IFile>& spFile)
+void FileManipulator::ShowAsList(NormalImageFile& imageFile, shared_ptr<IFile>& spFile)
 {
     ID3D11ShaderResourceView* pIndexedSRV = imageFile.cpThumbnailSRV.Get();
 
@@ -180,7 +141,7 @@ void FileManipulator::VisitFile(NormalImageFile& imageFile, shared_ptr<IFile>& s
     }
 }
 
-void FileManipulator::VisitFile(DDSImageFile& imageFile, shared_ptr<IFile>& spFile)
+void FileManipulator::ShowAsList(DDSImageFile& imageFile, shared_ptr<IFile>& spFile)
 {
     ID3D11ShaderResourceView* pIndexedSRV = imageFile.cpThumbnailSRV.Get();
 
@@ -209,4 +170,8 @@ void FileManipulator::VisitFile(DDSImageFile& imageFile, shared_ptr<IFile>& spFi
             }
         }
     }
+}
+
+void FileManipulator::ShowAsList(ModelFile& modelFile, std::shared_ptr<class IFile>& spFile)
+{
 }

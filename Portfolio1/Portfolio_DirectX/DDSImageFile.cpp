@@ -16,7 +16,7 @@ DDSImageFile::DDSImageFile(
 	IRectangle(0, 0)
 {
 	HRESULT hResult = DirectX::CreateDDSTextureFromFileEx(
-		DirectXDevice::pDevice, FileLoader::ConvertUTF8ToUniCode(strFilePath).c_str(), (size_t)0,
+		DirectXDevice::pDevice, FileLoader::ConvertUTF8ToUniCode(strFilePath + "\\" + strFileName).c_str(), (size_t)0,
 		D3D11_USAGE_IMMUTABLE, D3D11_BIND_SHADER_RESOURCE, NULL,
 		bIsTextureCube ? D3D11_RESOURCE_MISC_TEXTURECUBE : NULL,
 		DirectX::DDS_LOADER_DEFAULT, (ID3D11Resource**)cpTexture2D.GetAddressOf(), GetAddressOfSRV()
@@ -58,7 +58,7 @@ DDSImageFile::~DDSImageFile()
 {
 }
 
-void DDSImageFile::AcceptFileManipulator(FileManipulator* pFileManipulator, std::shared_ptr<IFile>& spFile)
+void DDSImageFile::AcceptFileAsList(FileManipulator* pFileManipulator, std::shared_ptr<IFile>& spFile)
 {
-	pFileManipulator->VisitFile(*this, spFile);
+	pFileManipulator->ShowAsList(*this, spFile);
 }

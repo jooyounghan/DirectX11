@@ -12,7 +12,7 @@ public:
 	~IFile();
 
 public:
-	virtual void AcceptFileManipulator(class FileManipulator* pFileManipulator, std::shared_ptr<IFile>& spFile) = 0;
+	virtual void AcceptFileAsList(class FileManipulator* pFileManipulator, std::shared_ptr<IFile>& spFile) = 0;
 
 protected:
 	std::string strFilePath;
