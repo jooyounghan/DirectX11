@@ -171,7 +171,7 @@ void ModelManipulator::SetTextureDragAndDrop(
 	Text(pDescription);
 	if (spFile != nullptr)
 	{
-		Image(spFile->cpThumbnailSRV.Get(), ImVec2(60.f, 60.f));
+		Image(spFile->GetSRV(), ImVec2(60.f, 60.f));
 	}
 	else
 	{

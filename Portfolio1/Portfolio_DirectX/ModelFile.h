@@ -1,7 +1,6 @@
 #pragma once
 
 #include "IFile.h"
-#include "NormalImageFile.h"
 #include <DirectXMesh.h>
 #include <vector>
 
@@ -37,15 +36,23 @@ public:
 	virtual ~ModelFile();
 
 protected:
+	std::shared_ptr<IFile> thumbNailFile;
+
+protected:
 	std::vector<MeshData> vMeshData;
 	bool bIsGltf;
 
 public:
-	virtual void AcceptFileAsList(class FileManipulator* pFileManipulator, std::shared_ptr<IFile>& spFile);
+	inline std::vector<MeshData>& GetMeshDataRef() { return vMeshData; }
 
 public:
-	inline std::vector<MeshData>& GetMeshDataRef() { return vMeshData; }
-	inline void SetMeshData(const std::vector<MeshData>& vMeshDataIn) { vMeshData = vMeshDataIn; }
 	inline const bool& IsGLTF() { return bIsGltf; }
 	inline void SetIsGLTF(const bool& bIsGltfIn) { bIsGltf = bIsGltfIn; }
+
+public:
+	inline void SetThumbNailFile(const std::shared_ptr<IFile>& thumbNailFileIn) { thumbNailFile = thumbNailFileIn; }
+
+public:
+	virtual void AcceptFileAsList(class FileManipulator* pFileManipulator, std::shared_ptr<IFile>& spFile) override;
+	virtual ID3D11ShaderResourceView* GetThumbNailSRV() override;
 };

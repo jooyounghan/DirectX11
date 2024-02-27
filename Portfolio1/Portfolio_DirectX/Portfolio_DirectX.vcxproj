@@ -134,6 +134,7 @@
     <ClInclude Include="BlurFilter.h" />
     <ClInclude Include="CameraManipulator.h" />
     <ClInclude Include="CubeMapModel.h" />
+    <ClInclude Include="ImageFile.h" />
     <ClInclude Include="IRenderer.h" />
     <ClInclude Include="FileManipulator.h" />
     <ClInclude Include="FilteredCamera.h" />
@@ -167,7 +168,6 @@
     <ClInclude Include="ID3D11Helper.h" />
     <ClInclude Include="IFile.h" />
     <ClInclude Include="AFilter.h" />
-    <ClInclude Include="IImageFile.h" />
     <ClInclude Include="ILight.h" />
     <ClInclude Include="IModel.h" />
     <ClInclude Include="IMovable.h" />
@@ -195,6 +195,7 @@
     <ClCompile Include="BlurFilter.cpp" />
     <ClCompile Include="CameraManipulator.cpp" />
     <ClCompile Include="CubeMapModel.cpp" />
+    <ClCompile Include="ImageFile.cpp" />
     <ClCompile Include="IRenderer.cpp" />
     <ClCompile Include="FileManipulator.cpp" />
     <ClCompile Include="FilteredCamera.cpp" />
@@ -224,7 +225,6 @@
     <ClCompile Include="ID3D11Helper.cpp" />
     <ClCompile Include="IFile.cpp" />
     <ClCompile Include="AFilter.cpp" />
-    <ClCompile Include="IImageFile.cpp" />
     <ClCompile Include="ILight.cpp" />
     <ClCompile Include="IModel.cpp" />
     <ClCompile Include="IMovable.cpp" />

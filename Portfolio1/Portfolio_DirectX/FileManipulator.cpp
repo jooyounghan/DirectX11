@@ -4,6 +4,7 @@
 
 #include "DDSImageFile.h"
 #include "NormalImageFile.h"
+#include "ModelFile.h"
 
 #include "DirectXDevice.h"
 
@@ -91,9 +92,9 @@ void FileManipulator::LoadFiles(const std::wstring& wstrFilePathIn)
         {
             UINT uiWidth, uiHeight, uiChannel;
 
-            const string strFileName = entry.path().filename().string();
-            const string strExtention = entry.path().extension().string();
             const string strFilePathIn = entry.path().parent_path().string();
+            const string strFileName = entry.path().filename().stem().string();
+            const string strExtention = entry.path().extension().string();
             
             bool isImage = false;
             FileLoader::IsStrSame(&isImage, strExtention, ".jpg", ".png", ".exr", ".dds");
@@ -103,7 +104,7 @@ void FileManipulator::LoadFiles(const std::wstring& wstrFilePathIn)
                 bool isNeedLoad = false;
                 uint8_t* ucImageRawData = nullptr;
                 spFileInterface = fileLoader.LoadImageFile(
-                    strExtention, strFilePathIn, strFileName, &uiWidth, &uiHeight, &uiChannel
+                    strFilePathIn, strFileName, strExtention, &uiWidth, &uiHeight, &uiChannel
                 );
 
             }
@@ -111,7 +112,9 @@ void FileManipulator::LoadFiles(const std::wstring& wstrFilePathIn)
             FileLoader::IsStrSame(&isObject, strExtention, ".fbx", ".gltf");
             if(isObject)
             {
-                spFileInterface = fileLoader.LoadModelFile(strExtention, strFilePathIn, strFileName);
+                spFileInterface = fileLoader.LoadModelFile(
+                    strFilePathIn, strFileName, strExtention
+                );
             }
 
             if (spFileInterface.get() != nullptr)
@@ -122,7 +125,7 @@ void FileManipulator::LoadFiles(const std::wstring& wstrFilePathIn)
 
 void FileManipulator::ShowAsList(NormalImageFile& imageFile, shared_ptr<IFile>& spFile)
 {
-    ID3D11ShaderResourceView* pIndexedSRV = imageFile.cpThumbnailSRV.Get();
+    ID3D11ShaderResourceView* pIndexedSRV = imageFile.GetThumbNailSRV();
 
     if (pIndexedSRV != nullptr)
     {
@@ -143,7 +146,7 @@ void FileManipulator::ShowAsList(NormalImageFile& imageFile, shared_ptr<IFile>& 
 
 void FileManipulator::ShowAsList(DDSImageFile& imageFile, shared_ptr<IFile>& spFile)
 {
-    ID3D11ShaderResourceView* pIndexedSRV = imageFile.cpThumbnailSRV.Get();
+    ID3D11ShaderResourceView* pIndexedSRV = imageFile.GetThumbNailSRV();
 
     if (pIndexedSRV != nullptr)
     {
@@ -174,4 +177,20 @@ void FileManipulator::ShowAsList(DDSImageFile& imageFile, shared_ptr<IFile>& spF
 
 void FileManipulator::ShowAsList(ModelFile& modelFile, std::shared_ptr<class IFile>& spFile)
 {
+    ID3D11ShaderResourceView* pIndexedSRV = modelFile.GetThumbNailSRV();
+
+    if (pIndexedSRV != nullptr)
+    {
+        BeginGroup();
+        Image(pIndexedSRV, ImVec2(60.f, 60.f));
+        SameLine();
+        TextEx(modelFile.GetFileName().c_str(), (const char*)0, ImGuiTextFlags_::ImGuiTextFlags_NoWidthForLargeClippedText);
+        EndGroup();
+
+        if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
+        {
+            ImGui::SetDragDropPayload("ModelFile", &spFile, sizeof(shared_ptr<ModelFile>));
+            ImGui::EndDragDropSource();
+        }
+    }
 }

@@ -21,20 +21,20 @@ public:
 	uint8_t* LoadFileWithOpenEXR(const wchar_t* pFileName, UINT* x, UINT* y, UINT* comp);
 
 private:
-	static void AddUsingFile(const std::string& strFileName, std::shared_ptr<IFile> spFile);
-	static std::shared_ptr<IFile> GetUsingFile(const std::string& strFileName);
+	static void AddUsingFile(const std::string& strFileNameWithExt, std::shared_ptr<IFile> spFile);
+	static std::shared_ptr<IFile> GetUsingFile(const std::string& strFileNameWithExt);
 
 public:
 	std::shared_ptr<class IFile> LoadImageFile(
-		const std::string& strExtension, 
 		const std::string& strFilePath,
 		const std::string& strFileName, 
+		const std::string& strExtension, 
 		UINT* x, UINT* y, UINT* comp
 	);
 	std::shared_ptr<class IFile> LoadModelFile(
-		const std::string& strExtension,
 		const std::string& strFilePath,
-		const std::string& strFileName
+		const std::string& strFileName,
+		const std::string& strExtension
 	);
 
 private:

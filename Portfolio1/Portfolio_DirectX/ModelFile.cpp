@@ -55,3 +55,8 @@ void ModelFile::AcceptFileAsList(FileManipulator* pFileManipulator, std::shared_
 {
 	pFileManipulator->ShowAsList(*this, spFile);
 }
+
+ID3D11ShaderResourceView* ModelFile::GetThumbNailSRV()
+{
+	return thumbNailFile->GetThumbNailSRV();
+}

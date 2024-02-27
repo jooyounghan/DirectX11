@@ -5,6 +5,9 @@
 #include "FileLoader.h"
 #include "Console.h"
 
+#include "ID3D11Helper.h"
+#include "DirectXDevice.h"
+
 #include "NormalImageFile.h"
 #include "DDSImageFile.h"
 #include "ModelFile.h"
@@ -32,10 +35,16 @@ uint8_t* FileLoader::LoadFileWithStbi(const char* sFilename, UINT* x, UINT* y, U
 {
     FILE* f;
     fopen_s(&f, sFilename, "rb");
-    uint8_t* result;
-    if (!f) return stbi__errpuc("can't fopen", "Unable to open file");
-    result = stbi_load_from_file(f, (int*)x, (int*)y, (int*)comp, 4);
-    fclose(f);
+    uint8_t* result = nullptr;
+    if (!f)
+    {
+        result = stbi__errpuc("can't fopen", "Unable to open file");
+    }
+    else
+    {
+        result = stbi_load_from_file(f, (int*)x, (int*)y, (int*)comp, 4);
+        fclose(f);
+    }
     return result;
 }
 
@@ -44,9 +53,15 @@ uint8_t* FileLoader::LoadFileWithStbi(const wchar_t* wFilename, UINT* x, UINT* y
     FILE* f;
     _wfopen_s(&f, wFilename, L"rb");
     uint8_t* result;
-    if (!f) return stbi__errpuc("can't fopen", "Unable to open file");
-    result = stbi_load_from_file(f, (int*)x, (int*)y, (int*)comp, 4);
-    fclose(f);
+    if (!f) 
+    {
+        result = stbi__errpuc("can't fopen", "Unable to open file");
+    }
+    else
+    {
+        result = stbi_load_from_file(f, (int*)x, (int*)y, (int*)comp, 4);
+        fclose(f);
+    }
     return result;
 }
 
@@ -90,29 +105,29 @@ uint8_t* FileLoader::LoadFileWithOpenEXR(const wchar_t* pFileName, UINT* x, UINT
     return result;
 }
 
-void FileLoader::AddUsingFile(const string& strFileName, std::shared_ptr<IFile> spFile)
+void FileLoader::AddUsingFile(const string& strFileNameWithExt, std::shared_ptr<IFile> spFile)
 {
-    if (FileLoader::mapUsingFiles.find(strFileName) == FileLoader::mapUsingFiles.end())
+    if (FileLoader::mapUsingFiles.find(strFileNameWithExt) == FileLoader::mapUsingFiles.end())
     {
-        FileLoader::mapUsingFiles.emplace(strFileName, spFile);
+        FileLoader::mapUsingFiles.emplace(strFileNameWithExt, spFile);
     }
     else
     {
-        FileLoader::mapUsingFiles[strFileName] = spFile;
+        FileLoader::mapUsingFiles[strFileNameWithExt] = spFile;
     }
 }
 
-std::shared_ptr<IFile> FileLoader::GetUsingFile(const string& strFileName) {
+std::shared_ptr<IFile> FileLoader::GetUsingFile(const string& strFileNameWithExt) {
     std::shared_ptr<IFile> result = nullptr;
-    if (FileLoader::mapUsingFiles.find(strFileName) != FileLoader::mapUsingFiles.end())
+    if (FileLoader::mapUsingFiles.find(strFileNameWithExt) != FileLoader::mapUsingFiles.end())
     {
-        if (!FileLoader::mapUsingFiles[strFileName].expired())
+        if (!FileLoader::mapUsingFiles[strFileNameWithExt].expired())
         {
-            result = FileLoader::mapUsingFiles[strFileName].lock();
+            result = FileLoader::mapUsingFiles[strFileNameWithExt].lock();
         }
         else
         {
-            FileLoader::mapUsingFiles.erase(strFileName);
+            FileLoader::mapUsingFiles.erase(strFileNameWithExt);
         }
     }
     else
@@ -123,56 +138,71 @@ std::shared_ptr<IFile> FileLoader::GetUsingFile(const string& strFileName) {
 }
 
 std::shared_ptr<IFile> FileLoader::LoadImageFile(
-    const string& strExtension, 
     const string& strFilePath,
     const string& strFileName,
+    const string& strExtension, 
     UINT* x, UINT* y, UINT* comp
 )
 {
-    std::shared_ptr<IFile> result = FileLoader::GetUsingFile(strFileName);
+    const string fileNameWithExt = strFileName + strExtension;
+    const string fullPath = strFilePath + "\\" + fileNameWithExt;
+
+    std::shared_ptr<IFile> result = FileLoader::GetUsingFile(fileNameWithExt);
+
     uint8_t* ucImageRawData = nullptr;
     if (result.get() == nullptr)
     {
+        cout << fullPath << " 파일을 읽습니다..." << endl;
         if (strExtension == ".exr")
         {
-            ucImageRawData = FileLoader::LoadFileWithOpenEXR((strFilePath + "\\" + strFileName).c_str(), x, y, comp);
-            result = make_shared<NormalImageFile>(*x, *y, DXGI_FORMAT_R16G16B16A16_FLOAT, ucImageRawData, strFilePath, strFileName);
+            ucImageRawData = FileLoader::LoadFileWithOpenEXR(fullPath.c_str(), x, y, comp);
+            result = make_shared<NormalImageFile>(*x, *y, DXGI_FORMAT_R16G16B16A16_FLOAT, ucImageRawData, strFilePath, fileNameWithExt);
         }
         else if (strExtension == ".dds")
         {
-            result = make_shared<DDSImageFile>(strFilePath, strFileName, strFilePath.find("Brdf") == string::npos);
+            result = make_shared<DDSImageFile>(strFilePath, fileNameWithExt, strFilePath.find("Brdf") == string::npos);
         }
         else
         {
-            ucImageRawData = FileLoader::LoadFileWithStbi((strFilePath + "\\" + strFileName).c_str(), x, y, comp);
-            result = make_shared<NormalImageFile>(*x, *y, DXGI_FORMAT_R8G8B8A8_UNORM, ucImageRawData, strFilePath, strFileName);
+            ucImageRawData = FileLoader::LoadFileWithStbi(fullPath.c_str(), x, y, comp);
+            result = make_shared<NormalImageFile>(*x, *y, DXGI_FORMAT_R8G8B8A8_UNORM, ucImageRawData, strFilePath, fileNameWithExt);
         }
-        FileLoader::AddUsingFile(strFileName, result);
+        FileLoader::AddUsingFile(fileNameWithExt, result);
     }
     FileLoader::FreeLoadedFileData(ucImageRawData);
     return result;
 }
 
 std::shared_ptr<class IFile> FileLoader::LoadModelFile(
-    const std::string& strExtension, 
     const std::string& strFilePath, 
-    const std::string& strFileName
+    const std::string& strFileName,
+    const std::string& strExtension
 )
 {
-    std::shared_ptr<IFile> result = FileLoader::GetUsingFile(strFileName);
+    const string fileNameWithExt = strFileName + strExtension;
+    const string fullPath = strFilePath + "\\" + fileNameWithExt;
+
+    std::shared_ptr<IFile> result = FileLoader::GetUsingFile(fileNameWithExt);
     if (result.get() == nullptr)
     {
+        cout << fullPath << " 파일을 읽습니다..." << endl;
         strModelFilePath = strFilePath;
         bool bIsGltf = false;
         strExtension == ".gltf" ? bIsGltf = true : bIsGltf = false;
 
-        std::shared_ptr<ModelFile> modelFile = std::make_shared<ModelFile>(strFilePath, strFileName, bIsGltf);
+        std::shared_ptr<ModelFile> modelFile = std::make_shared<ModelFile>(strFilePath, fileNameWithExt, bIsGltf);
 
+        const string thumbNailPath = strFilePath + "\\" + strFileName + ".png";
+
+        UINT thumbNailX, thumbNailY, thumbNailComp;
+        modelFile->SetThumbNailFile(LoadImageFile(strFilePath, strFileName, ".png", &thumbNailX, &thumbNailY, &thumbNailComp));
+
+        // 모델 읽기
         Assimp::Importer importer;
         std::vector<MeshData>& vTempMeshes = modelFile->GetMeshDataRef();
 
         const aiScene* pScene = importer.ReadFile(
-            strFilePath + "\\" + strFileName,
+            fullPath,
             aiProcess_Triangulate | aiProcess_ConvertToLeftHanded
         );
 
@@ -181,15 +211,14 @@ std::shared_ptr<class IFile> FileLoader::LoadModelFile(
             DirectX::XMMATRIX xmmTransform;
             ProcessNode(bIsGltf, pScene->mRootNode, pScene, xmmTransform, vTempMeshes);
         }
-        else {
-            //std::cout << "Failed to read file: " << m_basePath + filename
-            //    << std::endl;
-            //auto errorDescription = importer.GetErrorString();
-            //std::cout << "Assimp error: " << errorDescription << endl;
+        else 
+        {
+            cout << fullPath << "를 불러오는데 실패하였습니다." << endl;
+            cout << "오류 코드 : " << importer.GetErrorString() << endl;
         }
         strModelFilePath.clear();
         result = modelFile;
-        FileLoader::AddUsingFile(strFileName, result);
+        FileLoader::AddUsingFile(fileNameWithExt, result);
     }
     return result;
 }
@@ -267,29 +296,33 @@ MeshData FileLoader::ProcessMesh(
             meshData.spIndices->emplace_back(face.mIndices[j]);
     }
 
-    if (pMesh->mMaterialIndex >= 0) {
+    if (pMesh->mMaterialIndex >= 0) 
+    {
+        const aiTextureType aiTextureTypes[TEXTURE_MAP_NUM] = { 
+            aiTextureType_AMBIENT_OCCLUSION, 
+            aiTextureType_BASE_COLOR, 
+            aiTextureType_METALNESS, 
+            aiTextureType_DIFFUSE_ROUGHNESS, 
+            aiTextureType_EMISSIVE, 
+            aiTextureType_NORMALS, 
+            aiTextureType_HEIGHT
+        };
 
         aiMaterial* material = pScene->mMaterials[pMesh->mMaterialIndex];
-        string test = ReadTextureFileName(pScene, material, aiTextureType_BASE_COLOR);
 
-        //newMesh.albedoTextureFilename =
-        //    ReadTextureFilename(scene, material, aiTextureType_BASE_COLOR);
-        //if (newMesh.albedoTextureFilename.empty()) {
-        //    newMesh.albedoTextureFilename =
-        //        ReadTextureFilename(scene, material, aiTextureType_DIFFUSE);
-        //}
-        //newMesh.emissiveTextureFilename =
-        //    ReadTextureFilename(scene, material, aiTextureType_EMISSIVE);
-        //newMesh.heightTextureFilename =
-        //    ReadTextureFilename(scene, material, aiTextureType_HEIGHT);
-        //newMesh.normalTextureFilename =
-        //    ReadTextureFilename(scene, material, aiTextureType_NORMALS);
-        //newMesh.metallicTextureFilename =
-        //    ReadTextureFilename(scene, material, aiTextureType_METALNESS);
-        //newMesh.roughnessTextureFilename = ReadTextureFilename(
-        //    scene, material, aiTextureType_DIFFUSE_ROUGHNESS);
-        //newMesh.aoTextureFilename = ReadTextureFilename(
-        //    scene, material, aiTextureType_AMBIENT_OCCLUSION);
+        for (size_t idx = 0; idx < TEXTURE_MAP_NUM; ++idx)
+        {
+            string textureFileName = ReadTextureFileName(pScene, material, aiTextureTypes[idx]);
+            if (!textureFileName.empty())
+            {
+                filesystem::path texturePath(textureFileName);
+                const string strFilePathIn = texturePath.parent_path().string();
+                const string strFileName = texturePath.filename().stem().string();
+                const string strExtention = texturePath.extension().string();
+                UINT x, y, comp;
+                meshData.spModelTexture[idx] = this->LoadImageFile(strFilePathIn, strFileName, strExtention, &x, &y, &comp);
+            }
+        }
     }
 
     return meshData;
@@ -304,14 +337,16 @@ std::string FileLoader::ReadTextureFileName(
 {
     string fullPath;
     if (pMaterial->GetTextureCount(eType) > 0) {
-        aiString filepath;
-        pMaterial->GetTexture(eType, 0, &filepath);
-        fullPath = strModelFilePath + "\\" + filepath.C_Str();
+        aiString fileName;
+        pMaterial->GetTexture(eType, 0, &fileName);
+        fullPath = strModelFilePath + "\\" + fileName.C_Str();
 
-        if (!filesystem::exists(fullPath)) {
+        if (!filesystem::exists(fullPath)) 
+        {
             const aiTexture* texture =
-                pScene->GetEmbeddedTexture(filepath.C_Str());
-            if (texture) {
+                pScene->GetEmbeddedTexture(fileName.C_Str());
+            if (texture) 
+            {
                 if (string(texture->achFormatHint).find("png") !=
                     string::npos) {
                     ofstream fs(fullPath.c_str(), ios::binary | ios::out);
@@ -319,6 +354,10 @@ std::string FileLoader::ReadTextureFileName(
                     fs.close();
                 }
             }
+        }
+        else 
+        {
+            cout << "모델에 연동된 텍스쳐 파일이 없습니다. (" << fullPath << ")" << endl;
         }
     }
     return fullPath;

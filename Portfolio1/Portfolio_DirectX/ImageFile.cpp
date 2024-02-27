@@ -1,4 +1,4 @@
-#include "IImageFile.h"
+#include "ImageFile.h"
 #include "FileManipulator.h"
 
 IImageFile::IImageFile(
@@ -15,7 +15,7 @@ IImageFile::IImageFile(
 }
 
 IImageFile::IImageFile(
-	const UINT& uiWidthIn, const UINT& uiHeightIn, 
+	const UINT& uiWidthIn, const UINT& uiHeightIn,
 	const UINT& uiMiscFlagIn,
 	DXGI_FORMAT eFormatIn,
 	uint8_t* pImageSource,

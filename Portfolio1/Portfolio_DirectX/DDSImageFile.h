@@ -1,5 +1,5 @@
 #pragma once
-#include "IImageFile.h"
+#include "ImageFile.h"
 
 class DDSImageFile : public IImageFile
 {
@@ -11,9 +11,13 @@ public:
 	);
 	virtual ~DDSImageFile();
 
+protected:
+	Microsoft::WRL::ComPtr<ID3D11Texture2D> cpThumbnailTexture2D;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> cpThumbnailSRV;
 
 
 public:
-	virtual void AcceptFileAsList(class FileManipulator* pFileManipulator, std::shared_ptr<IFile>& spFile);
+	virtual void AcceptFileAsList(class FileManipulator* pFileManipulator, std::shared_ptr<IFile>& spFile) override;
+	virtual ID3D11ShaderResourceView* GetThumbNailSRV() override;
 };
 

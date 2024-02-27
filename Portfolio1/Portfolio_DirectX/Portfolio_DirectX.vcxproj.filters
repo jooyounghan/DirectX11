@@ -189,9 +189,6 @@
     <ClInclude Include="FileLoader.h">
       <Filter>헤더 파일\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="IImageFile.h">
-      <Filter>헤더 파일\File</Filter>
-    </ClInclude>
     <ClInclude Include="PickableCamera.h">
       <Filter>헤더 파일\Viewable\Camera\Extended</Filter>
     </ClInclude>
@@ -330,6 +327,9 @@
     <ClInclude Include="ModelFile.h">
       <Filter>헤더 파일\File\Extended</Filter>
     </ClInclude>
+    <ClInclude Include="ImageFile.h">
+      <Filter>헤더 파일\File</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseApp.cpp">
@@ -364,9 +364,6 @@
     </ClCompile>
     <ClCompile Include="FileLoader.cpp">
       <Filter>소스 파일\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="IImageFile.cpp">
-      <Filter>소스 파일\File</Filter>
     </ClCompile>
     <ClCompile Include="IModel.cpp">
       <Filter>소스 파일\Model</Filter>
@@ -499,6 +496,9 @@
     </ClCompile>
     <ClCompile Include="ModelFile.cpp">
       <Filter>소스 파일\File\Extended</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageFile.cpp">
+      <Filter>소스 파일\File</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

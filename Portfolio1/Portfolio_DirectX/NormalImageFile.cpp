@@ -18,13 +18,15 @@ NormalImageFile::NormalImageFile(
 	IRectangle(uiWidthIn, uiHeightIn)
 {
 	DirectXDevice::pDeviceContext->GenerateMips(GetSRV());
-
-	cpThumbnailTexture2D = cpTexture2D;
-	cpThumbnailSRV = cpSRV;
 }
 
 NormalImageFile::~NormalImageFile()
 {
+}
+
+ID3D11ShaderResourceView* NormalImageFile::GetThumbNailSRV()
+{
+	return cpSRV.Get();
 }
 
 void NormalImageFile::AcceptFileAsList(FileManipulator* pFileManipulator, std::shared_ptr<IFile>& spFile)

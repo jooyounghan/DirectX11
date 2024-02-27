@@ -58,6 +58,11 @@ DDSImageFile::~DDSImageFile()
 {
 }
 
+ID3D11ShaderResourceView* DDSImageFile::GetThumbNailSRV()
+{
+	return cpThumbnailSRV.Get();
+}
+
 void DDSImageFile::AcceptFileAsList(FileManipulator* pFileManipulator, std::shared_ptr<IFile>& spFile)
 {
 	pFileManipulator->ShowAsList(*this, spFile);
