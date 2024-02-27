@@ -18,10 +18,13 @@ public:
 	inline bool GetIsDrawingNormal() { return bIsDrawingNormal; }
 
 private:
-	std::shared_ptr<class AIBLModel> spIBLModel;
 	std::unordered_map<uint32_t, std::shared_ptr<class AStaticMesh>> pModels;
 
 private:
+	std::vector<std::shared_ptr<AStaticMesh>> vModels;
+
+private:
+	std::shared_ptr<class AIBLModel> spIBLModel;
 	std::shared_ptr<AStaticMesh> spSelectedMesh;
 
 public:
@@ -36,6 +39,7 @@ public:
 
 private:
 	void ListUpModel();
+	void SetModelAsList(class AStaticMesh& staticMesh);
 
 
 

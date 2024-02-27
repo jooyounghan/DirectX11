@@ -46,7 +46,7 @@ private:
 		struct aiNode* pNode,
 		const struct aiScene* pScene,
 		DirectX::XMMATRIX& xmMatrix,
-		std::vector<class MeshData>& vMeshes 
+		struct NodeData& parentNode 
 	);
 
 	class MeshData ProcessMesh(

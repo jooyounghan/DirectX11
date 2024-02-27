@@ -4,6 +4,12 @@
 #include <DirectXMesh.h>
 #include <vector>
 
+struct NodeData
+{
+	std::vector<NodeData> vChildrenNodes;
+	std::vector<class MeshData> vChildrenMeshes;
+};
+
 class MeshData
 {
 public:
@@ -22,6 +28,9 @@ public:
 
 public:
 	std::shared_ptr<IFile> spModelTexture[TEXTURE_MAP_NUM];
+
+public:
+	std::string				strMeshName;
 };
 
 
@@ -39,11 +48,11 @@ protected:
 	std::shared_ptr<IFile> thumbNailFile;
 
 protected:
-	std::vector<MeshData> vMeshData;
+	NodeData rootNode;
 	bool bIsGltf;
 
 public:
-	inline std::vector<MeshData>& GetMeshDataRef() { return vMeshData; }
+	inline NodeData& GetRootNode() { return rootNode; }
 
 public:
 	inline const bool& IsGLTF() { return bIsGltf; }

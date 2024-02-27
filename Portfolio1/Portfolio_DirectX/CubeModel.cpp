@@ -1,7 +1,9 @@
 #include "CubeModel.h"
 #include "ID3D11Helper.h"
 #include "DirectXDevice.h"
-
+//TODO : Áö¿ö
+#include <string>
+using namespace std;
 
 CubeModel::CubeModel(
 	const float& fCenterX,
@@ -29,6 +31,8 @@ CubeModel::CubeModel(
 	ID3D11Helper::CreateBuffer(DirectXDevice::pDevice, spNormals, D3D11_USAGE_IMMUTABLE, D3D11_BIND_VERTEX_BUFFER, NULL, NULL, cpNormalsBuffer.GetAddressOf());
 	ID3D11Helper::CreateBuffer(DirectXDevice::pDevice, spTangents, D3D11_USAGE_IMMUTABLE, D3D11_BIND_VERTEX_BUFFER, NULL, NULL, cpTangentsBuffer.GetAddressOf());
 	ID3D11Helper::CreateBuffer(DirectXDevice::pDevice, spIndicesData, D3D11_USAGE_IMMUTABLE, D3D11_BIND_INDEX_BUFFER, NULL, NULL, cpIndexBuffer.GetAddressOf());
+
+	SetMeshName("Cube Model" + to_string(sModelData.uiModelID));
 }
 
 CubeModel::~CubeModel()

@@ -199,7 +199,7 @@ std::shared_ptr<class IFile> FileLoader::LoadModelFile(
 
         // ¸ðµ¨ ÀÐ±â
         Assimp::Importer importer;
-        std::vector<MeshData>& vTempMeshes = modelFile->GetMeshDataRef();
+        NodeData& rootNode = modelFile->GetRootNode();
 
         const aiScene* pScene = importer.ReadFile(
             fullPath,
@@ -209,7 +209,7 @@ std::shared_ptr<class IFile> FileLoader::LoadModelFile(
         if (pScene)
         {
             DirectX::XMMATRIX xmmTransform;
-            ProcessNode(bIsGltf, pScene->mRootNode, pScene, xmmTransform, vTempMeshes);
+            ProcessNode(bIsGltf, pScene->mRootNode, pScene, xmmTransform, rootNode);
         }
         else 
         {
@@ -228,7 +228,7 @@ void FileLoader::ProcessNode(
     aiNode* pNode, 
     const aiScene* pScene, 
     DirectX::XMMATRIX& xmMatrix,
-    vector<MeshData>& vMeshes
+    NodeData& parentNode
 )
 {
     DirectX::XMMATRIX m(&pNode->mTransformation.a1);
@@ -246,11 +246,14 @@ void FileLoader::ProcessNode(
             f4Vector = DirectX::XMVector4Transform(f4Vector, m);
             memcpy(&v, f4Vector.m128_f32, sizeof(v));
         }
-        vMeshes.push_back(newMesh);
+        parentNode.vChildrenMeshes.push_back(newMesh);
     }
 
-    for (UINT i = 0; i < pNode->mNumChildren; i++) {
-        ProcessNode(bIsGltf, pNode->mChildren[i], pScene, m, vMeshes);
+    for (UINT i = 0; i < pNode->mNumChildren; i++) 
+    {
+        parentNode.vChildrenNodes.emplace_back();
+        NodeData& nextNode = parentNode.vChildrenNodes[parentNode.vChildrenNodes.size() - 1];
+        ProcessNode(bIsGltf, pNode->mChildren[i], pScene, m, nextNode);
     }
 }
 
@@ -267,7 +270,8 @@ MeshData FileLoader::ProcessMesh(
     meshData.spTangents = make_shared<vector<DirectX::XMFLOAT3>>();
     meshData.spIndices = make_shared<vector<uint32_t>>();
 
-    // Walk through each of the mesh's vertices
+    meshData.strMeshName = pMesh->mName.C_Str();
+
     for (UINT i = 0; i < pMesh->mNumVertices; i++) 
     {   
         meshData.spVertices->emplace_back(

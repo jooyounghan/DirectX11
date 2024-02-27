@@ -65,11 +65,55 @@ void ModelManipulator::PopAsDialog()
 
 void ModelManipulator::ListUpModel()
 {
+	Separator();
+	if (CollapsingHeader("Model List", ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		static int selection_mask = (1 << 2);
+		int node_clicked = -1;
+
+		for (auto& model : vModels)
+		{
+			SetModelAsList(*model.get());
+		}
+	}
+	Separator();
+}
+
+void ModelManipulator::SetModelAsList(AStaticMesh& staticMesh)
+{
+	const vector<shared_ptr<AStaticMesh>>& childrenMeshes = staticMesh.GetChildren();
+
+	int treeNodeStyle = ImGuiTreeNodeFlags_OpenOnDoubleClick & ImGuiTreeNodeFlags_SpanAvailWidth;
+	if (childrenMeshes.size() > 0)
+	{
+		treeNodeStyle = treeNodeStyle & ImGuiTreeNodeFlags_OpenOnArrow;
+	}
+
+	bool node_open = ImGui::TreeNodeEx(
+		(void*)(intptr_t)staticMesh.sModelData.uiModelID,
+		treeNodeStyle,
+		staticMesh.GetMeshName().c_str()
+	);
+
+	if (node_open)
+	{
+		for (auto& child : childrenMeshes)
+		{
+			SetModelAsList(*child.get());
+		}
+		ImGui::TreePop();
+	}
 }
 
 void ModelManipulator::AddModel(shared_ptr<AStaticMesh> spMesh)
 {
 	pModels.emplace(spMesh->sModelData.uiModelID, spMesh);
+	for (auto& model : spMesh->GetChildren())
+	{
+		pModels.emplace(spMesh->sModelData.uiModelID, spMesh);
+	}
+
+	vModels.push_back(spMesh);
 }
 
 void ModelManipulator::ManipulateModel(AStaticMesh& staticMesh)

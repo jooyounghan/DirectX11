@@ -5,6 +5,8 @@
 #include <wrl/client.h>
 #include <vector>
 #include <tuple>
+#include <memory>
+
 #include "IModel.h"
 #include "ATransformerable.h"
 
@@ -13,6 +15,9 @@ class AStaticMesh : public IModel, public ATransformerable
 public:
 	AStaticMesh();
 	virtual ~AStaticMesh();
+
+protected:
+	std::string strMeshName;
 
 protected:
 	std::vector<DirectX::XMFLOAT3>	spVertices;
@@ -30,6 +35,17 @@ protected:
 
 public:
 	std::tuple<std::vector<UINT>, std::vector<UINT>, std::vector<ID3D11Buffer*>> GetInputInfo();
+
+private:
+	std::vector<std::shared_ptr<AStaticMesh>> pChildrenStaticMeshes;
+
+public:
+	inline void SetMeshName(const std::string& strMeshNameIn) { strMeshName = strMeshNameIn; }
+	inline const std::string& GetMeshName() { return strMeshName; }
+
+public:
+	inline void AddChildren(std::shared_ptr<AStaticMesh> spStaticMesh) { pChildrenStaticMeshes.push_back(spStaticMesh); }
+	inline const std::vector<std::shared_ptr<AStaticMesh>>& GetChildren() { return pChildrenStaticMeshes; }
 
 public:
 	virtual void Load(const std::string& path) = 0;
