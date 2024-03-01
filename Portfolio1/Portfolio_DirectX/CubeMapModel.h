@@ -5,8 +5,7 @@ class CubeMapModel : public AIBLModel
 {
 public:
 	CubeMapModel(
-		const float& fRadius,
-		const uint32_t& usLevel
+		const float& fRadius
 	);
 	virtual ~CubeMapModel();
 };

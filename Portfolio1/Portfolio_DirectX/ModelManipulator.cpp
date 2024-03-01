@@ -1,11 +1,14 @@
 #include "ModelManipulator.h"
 
+#include "DefineVar.h"
+
 #include "APBRStaticMesh.h"
 #include "NormalImageFile.h"
 
 #include "AIBLModel.h"
 #include "DDSImageFile.h"
 
+#include "ModelFile.h"
 #include "CubeModel.h"
 #include "CubeMapModel.h"
 
@@ -16,15 +19,15 @@ using namespace ImGui;
 ModelManipulator::ModelManipulator()
 	: bIsDrawingNormal(false)
 {
-	AddModel(make_shared<CubeModel>(-5.f, 0.f, 0.f, 1.f, false, 8));
-	AddModel(make_shared<CubeModel>(5.f, 0.f, 0.f, 1.f, false, 8));
-	AddModel(make_shared<CubeModel>(0.f, -5.f, 0.f, 1.f, false, 8));
-	AddModel(make_shared<CubeModel>(0.f, 5.f, 0.f, 1.f, false, 8));
-	AddModel(make_shared<CubeModel>(0.f, 0.f, 5.f, 1.f, false, 8));
-	AddModel(make_shared<CubeModel>(0.f, 0.f, -5.f, 1.f, false, 8));
-	AddModel(make_shared<CubeModel>(0.f, 0.f, -5.f, 1.f, false, 8));
+	AddModel(make_shared<CubeModel>(-5.f, 0.f, 0.f, 1.f, false));
+	AddModel(make_shared<CubeModel>(5.f, 0.f, 0.f, 1.f, false));
+	AddModel(make_shared<CubeModel>(0.f, -5.f, 0.f, 1.f, false));
+	AddModel(make_shared<CubeModel>(0.f, 5.f, 0.f, 1.f, false));
+	AddModel(make_shared<CubeModel>(0.f, 0.f, 5.f, 1.f, false));
+	AddModel(make_shared<CubeModel>(0.f, 0.f, -5.f, 1.f, false));
+	AddModel(make_shared<CubeModel>(0.f, 0.f, -5.f, 1.f, false));
 
-	spIBLModel = make_shared<CubeMapModel>(500.f, 15);
+	spIBLModel = make_shared<CubeMapModel>(500.f);
 	AddModel(spIBLModel);
 }
 
@@ -68,15 +71,32 @@ void ModelManipulator::ListUpModel()
 	Separator();
 	if (CollapsingHeader("Model List", ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_DefaultOpen))
 	{
-		static int selection_mask = (1 << 2);
-		int node_clicked = -1;
-
-		for (auto& model : vModels)
+		ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 10.0f);
+		if (BeginListBox("Model List", ImVec2(0.f, GetTextLineHeight() * 10.f)))
 		{
-			SetModelAsList(*model.get());
+			for (auto& model : vModels)
+			{
+				SetModelAsList(*model.get());
+				Separator();
+			}
+			EndListBox();
+		}
+		ImGui::PopStyleVar();
+
+		if (BeginDragDropTarget())
+		{
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DRAG_DROP_MESH_KEY))
+			{
+				ModelFile* tmpPtr = (ModelFile*)payload->Data;
+				shared_ptr<ModelFile> modelFile = tmpPtr->shared_from_this();
+				
+				// Static Mesh·Î º¯È¯!
+
+			}
+			ImGui::EndDragDropTarget();
 		}
 	}
-	Separator();
+
 }
 
 void ModelManipulator::SetModelAsList(AStaticMesh& staticMesh)
@@ -84,25 +104,35 @@ void ModelManipulator::SetModelAsList(AStaticMesh& staticMesh)
 	const vector<shared_ptr<AStaticMesh>>& childrenMeshes = staticMesh.GetChildren();
 
 	int treeNodeStyle = ImGuiTreeNodeFlags_OpenOnDoubleClick & ImGuiTreeNodeFlags_SpanAvailWidth;
+	bool bIsTree = false;
+
 	if (childrenMeshes.size() > 0)
 	{
-		treeNodeStyle = treeNodeStyle & ImGuiTreeNodeFlags_OpenOnArrow;
+		bIsTree = true;
 	}
-
-	bool node_open = ImGui::TreeNodeEx(
-		(void*)(intptr_t)staticMesh.sModelData.uiModelID,
-		treeNodeStyle,
-		staticMesh.GetMeshName().c_str()
-	);
-
-	if (node_open)
+	
+	if (bIsTree)
 	{
-		for (auto& child : childrenMeshes)
+		bool node_open = TreeNodeEx(
+			(void*)(intptr_t)staticMesh.sModelData.uiModelID,
+			treeNodeStyle,
+			staticMesh.GetMeshName().c_str()
+		);
+
+		if (node_open)
 		{
-			SetModelAsList(*child.get());
+			for (auto& child : childrenMeshes)
+			{
+				SetModelAsList(*child.get());
+			}
+			TreePop();
 		}
-		ImGui::TreePop();
 	}
+	else
+	{
+		Selectable(staticMesh.GetMeshName().c_str());
+	}
+
 }
 
 void ModelManipulator::AddModel(shared_ptr<AStaticMesh> spMesh)
@@ -169,7 +199,7 @@ void ModelManipulator::DrawPBRTexture(APBRStaticMesh* pPBRStaticMesh)
 			SetTextureDragAndDrop(
 				APBRStaticMesh::unmapTextureNames[idx].c_str(), 
 				pPBRStaticMesh->pModelTexture[idx], 
-				"Texture2D"
+				DRAG_DROP_TEXTURE_KEY
 			);
 		}
 	}
@@ -189,25 +219,24 @@ void ModelManipulator::DrawIBLTexture(AIBLModel* pIBLModel)
 		SetTextureDragAndDrop(
 			"Specular IBL Texture",
 			pIBLModel->spEnvSpecularTextureFile,
-			"CubeMap"
+			DRAG_DROP_IBL_KEY
 		);
 		SetTextureDragAndDrop(
 			"Diffuse IBL Texture",
 			pIBLModel->spEnvDiffuseTextureFile,
-			"CubeMap"
+			DRAG_DROP_IBL_KEY
 		);
 		SetTextureDragAndDrop(
 			"BRDF LUT Texture",
 			pIBLModel->spEnvBrdfTextureFile,
-			"Texture2D"
+			DRAG_DROP_TEXTURE_KEY
 		);
 	}
 }
 
-template<typename T>
 void ModelManipulator::SetTextureDragAndDrop(
 	const char* pDescription, 
-	std::shared_ptr<T>& spFile, 
+	std::shared_ptr<IImageFile>& spFile, 
 	const char* pDragDropLabel
 )
 {
@@ -215,7 +244,7 @@ void ModelManipulator::SetTextureDragAndDrop(
 	Text(pDescription);
 	if (spFile != nullptr)
 	{
-		Image(spFile->GetSRV(), ImVec2(60.f, 60.f));
+		Image(spFile->GetThumbNailSRV(), ImVec2(60.f, 60.f));
 	}
 	else
 	{
@@ -226,7 +255,8 @@ void ModelManipulator::SetTextureDragAndDrop(
 	{
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(pDragDropLabel))
 		{
-			spFile = *(shared_ptr<T>*)payload->Data;
+			IImageFile* imagePtr = (IImageFile*)payload->Data;
+			spFile = imagePtr->shared_from_this();
 		}
 		ImGui::EndDragDropTarget();
 	}

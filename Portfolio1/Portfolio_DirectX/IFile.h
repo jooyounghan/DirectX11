@@ -2,7 +2,6 @@
 
 #include <string>
 #include <memory>
-
 #include "ShaderResource.h"
 
 enum EModelTextures : size_t
@@ -16,6 +15,7 @@ enum EModelTextures : size_t
 	HEIGHT_TEXTURE_MAP,
 	TEXTURE_MAP_NUM
 };
+
 
 class IFile
 {
@@ -35,7 +35,7 @@ public:
 	inline const std::string& GetFileName() { return strFileName; }
 
 public:
-	virtual void AcceptFileAsList(class FileManipulator* pFileManipulator, std::shared_ptr<IFile>& spFile) = 0;
+	virtual void AcceptFileAsList(class FileManipulator* pFileManipulator) = 0;
 	virtual ID3D11ShaderResourceView* GetThumbNailSRV() = 0;
 };
 

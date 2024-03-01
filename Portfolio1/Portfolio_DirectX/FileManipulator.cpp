@@ -2,6 +2,7 @@
 #include "ImGuiFileDialog.h"
 #include "IFile.h"
 
+#include "DefineVar.h"
 #include "DDSImageFile.h"
 #include "NormalImageFile.h"
 #include "ModelFile.h"
@@ -10,13 +11,14 @@
 
 #include <filesystem>
 #include <locale.h>
+#include <iostream>
 
 using namespace std;
 using namespace ImGui;
 
 FileManipulator::FileManipulator()
 {
-    std::setlocale(LC_ALL, ".UTF8");
+    std::setlocale(LC_ALL, "ko_KR.utf8");
 }
 
 FileManipulator::~FileManipulator()
@@ -75,7 +77,7 @@ void FileManipulator::DisplayFiles()
     for (auto& loadedFile : vLoadedFiles)
     {
         Separator();
-        loadedFile->AcceptFileAsList(this, loadedFile);
+        loadedFile->AcceptFileAsList(this);
     }
     ImGui::EndChild();
 }
@@ -103,27 +105,29 @@ void FileManipulator::LoadFiles(const std::wstring& wstrFilePathIn)
             {
                 bool isNeedLoad = false;
                 uint8_t* ucImageRawData = nullptr;
-                spFileInterface = fileLoader.LoadImageFile(
+                spFileInterface = FileLoader::LoadImageFile(
                     strFilePathIn, strFileName, strExtention, &uiWidth, &uiHeight, &uiChannel
                 );
-
             }
-            bool isObject = false;
-            FileLoader::IsStrSame(&isObject, strExtention, ".fbx", ".gltf");
-            if(isObject)
+            else
             {
-                spFileInterface = fileLoader.LoadModelFile(
-                    strFilePathIn, strFileName, strExtention
-                );
-            }
+                bool isObject = false;
+                FileLoader::IsStrSame(&isObject, strExtention, ".fbx", ".gltf");
+                if (isObject)
+                {
+                    spFileInterface = FileLoader::LoadModelFile(
+                        strFilePathIn, strFileName, strExtention
+                    );
+                }
 
+            }
             if (spFileInterface.get() != nullptr)
                 vLoadedFiles.emplace_back(spFileInterface);
         }
     }
 }
 
-void FileManipulator::ShowAsList(NormalImageFile& imageFile, shared_ptr<IFile>& spFile)
+void FileManipulator::ShowAsList(NormalImageFile& imageFile)
 {
     ID3D11ShaderResourceView* pIndexedSRV = imageFile.GetThumbNailSRV();
 
@@ -137,14 +141,14 @@ void FileManipulator::ShowAsList(NormalImageFile& imageFile, shared_ptr<IFile>& 
 
         if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
         {
-            ImGui::SetDragDropPayload("Texture2D", &spFile, sizeof(shared_ptr<NormalImageFile>));
+            ImGui::SetDragDropPayload(DRAG_DROP_TEXTURE_KEY, &imageFile, sizeof(NormalImageFile));
             ImGui::EndDragDropSource();
         }
 
     }
 }
 
-void FileManipulator::ShowAsList(DDSImageFile& imageFile, shared_ptr<IFile>& spFile)
+void FileManipulator::ShowAsList(DDSImageFile& imageFile)
 {
     ID3D11ShaderResourceView* pIndexedSRV = imageFile.GetThumbNailSRV();
 
@@ -163,19 +167,19 @@ void FileManipulator::ShowAsList(DDSImageFile& imageFile, shared_ptr<IFile>& spF
 
             if (desc.MiscFlags & D3D11_RESOURCE_MISC_TEXTURECUBE)
             {
-                ImGui::SetDragDropPayload("CubeMap", &spFile, sizeof(shared_ptr<DDSImageFile>));
+                ImGui::SetDragDropPayload(DRAG_DROP_IBL_KEY, &imageFile, sizeof(DDSImageFile));
                 ImGui::EndDragDropSource();
             }
             else
             {
-                ImGui::SetDragDropPayload("Texture2D", &spFile, sizeof(shared_ptr<DDSImageFile>));
+                ImGui::SetDragDropPayload(DRAG_DROP_TEXTURE_KEY, &imageFile, sizeof(DDSImageFile));
                 ImGui::EndDragDropSource();
             }
         }
     }
 }
 
-void FileManipulator::ShowAsList(ModelFile& modelFile, std::shared_ptr<class IFile>& spFile)
+void FileManipulator::ShowAsList(ModelFile& modelFile)
 {
     ID3D11ShaderResourceView* pIndexedSRV = modelFile.GetThumbNailSRV();
 
@@ -189,7 +193,7 @@ void FileManipulator::ShowAsList(ModelFile& modelFile, std::shared_ptr<class IFi
 
         if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
         {
-            ImGui::SetDragDropPayload("ModelFile", &spFile, sizeof(shared_ptr<ModelFile>));
+            ImGui::SetDragDropPayload(DRAG_DROP_MESH_KEY, &modelFile, sizeof(ModelFile));
             ImGui::EndDragDropSource();
         }
     }

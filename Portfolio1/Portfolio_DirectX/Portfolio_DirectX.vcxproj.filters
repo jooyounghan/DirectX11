@@ -330,6 +330,9 @@
     <ClInclude Include="ImageFile.h">
       <Filter>헤더 파일\File</Filter>
     </ClInclude>
+    <ClInclude Include="MeshFile.h">
+      <Filter>헤더 파일\File\Extended</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseApp.cpp">
@@ -455,9 +458,6 @@
     <ClCompile Include="FileManipulator.cpp">
       <Filter>소스 파일\GUI\Extended</Filter>
     </ClCompile>
-    <ClCompile Include="CubeModel.cpp">
-      <Filter>소스 파일\Model\PBR\Extended</Filter>
-    </ClCompile>
     <ClCompile Include="CubeMapModel.cpp">
       <Filter>소스 파일\Model\PBR</Filter>
     </ClCompile>
@@ -499,6 +499,12 @@
     </ClCompile>
     <ClCompile Include="ImageFile.cpp">
       <Filter>소스 파일\File</Filter>
+    </ClCompile>
+    <ClCompile Include="CubeModel.cpp">
+      <Filter>소스 파일\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshFile.cpp">
+      <Filter>소스 파일\File\Extended</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

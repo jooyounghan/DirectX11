@@ -9,6 +9,7 @@
 
 #include "IModel.h"
 #include "ATransformerable.h"
+#include "MeshFile.h"
 
 class AStaticMesh : public IModel, public ATransformerable
 {
@@ -20,18 +21,7 @@ protected:
 	std::string strMeshName;
 
 protected:
-	std::vector<DirectX::XMFLOAT3>	spVertices;
-	std::vector<DirectX::XMFLOAT2>	spTexcoords;
-	std::vector<DirectX::XMFLOAT3>	spNormals;
-	std::vector<DirectX::XMFLOAT3>	spTangents;
-	std::vector<uint32_t>			spIndicesData;
-
-protected:
-	Microsoft::WRL::ComPtr<ID3D11Buffer> cpVerticesBuffer;
-	Microsoft::WRL::ComPtr<ID3D11Buffer> cpTexcoordsBuffer;
-	Microsoft::WRL::ComPtr<ID3D11Buffer> cpNormalsBuffer;
-	Microsoft::WRL::ComPtr<ID3D11Buffer> cpTangentsBuffer;
-	Microsoft::WRL::ComPtr<ID3D11Buffer> cpIndexBuffer;
+	std::shared_ptr<MeshFile> spMeshFile;
 
 public:
 	std::tuple<std::vector<UINT>, std::vector<UINT>, std::vector<ID3D11Buffer*>> GetInputInfo();
@@ -60,17 +50,5 @@ public:
 
 public:
 	virtual void ScaleUp(const float& fXup, const float& fYUp, const float& fZUp) override final;
-
-public:
-	static void CreateCubeModel(
-		std::vector<DirectX::XMFLOAT3>&	inputVerticesIn,
-		std::vector<DirectX::XMFLOAT2>&	inputTexcoordsIn,
-		std::vector<DirectX::XMFLOAT3>&	inputNormalsIn,
-		std::vector<DirectX::XMFLOAT3>&	inputTangentsIn,
-		std::vector<uint32_t>& indexData, 
-		const float& fRadius,
-		const bool& bReverse,
-		const uint32_t& usLevel
-	);
 };
 

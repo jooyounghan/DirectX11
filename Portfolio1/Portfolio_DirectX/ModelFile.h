@@ -1,40 +1,23 @@
 #pragma once
-
-#include "IFile.h"
 #include <DirectXMesh.h>
 #include <vector>
 
+#include "MeshFile.h"
+#include "ImageFile.h"
+
+struct PBRModelTextureSet
+{
+	std::shared_ptr<IImageFile>			spModelTexture[TEXTURE_MAP_NUM];
+};
+
 struct NodeData
 {
-	std::vector<NodeData> vChildrenNodes;
-	std::vector<class MeshData> vChildrenMeshes;
+	std::vector<NodeData>							vChildrenNodes;
+	std::vector<std::shared_ptr<class MeshFile>>	vChildrenMeshes;
+	std::vector<PBRModelTextureSet>					vChildrenTextureSets;
 };
 
-class MeshData
-{
-public:
-	MeshData();
-	~MeshData();
-
-public:
-	std::shared_ptr<std::vector<DirectX::XMFLOAT3>>	spVertices;
-	std::shared_ptr<std::vector<DirectX::XMFLOAT2>>	spTexcoords;
-	std::shared_ptr<std::vector<DirectX::XMFLOAT3>>	spNormals;
-	std::shared_ptr<std::vector<DirectX::XMFLOAT3>>	spTangents;
-	std::shared_ptr<std::vector<uint32_t>> spIndices;
-
-public:
-	void UpdateTangents();
-
-public:
-	std::shared_ptr<IFile> spModelTexture[TEXTURE_MAP_NUM];
-
-public:
-	std::string				strMeshName;
-};
-
-
-class ModelFile : public IFile
+class ModelFile : public IFile, public std::enable_shared_from_this<ModelFile>
 {
 public:
 	ModelFile(
@@ -45,7 +28,7 @@ public:
 	virtual ~ModelFile();
 
 protected:
-	std::shared_ptr<IFile> thumbNailFile;
+	std::shared_ptr<IImageFile> thumbNailFile;
 
 protected:
 	NodeData rootNode;
@@ -59,9 +42,9 @@ public:
 	inline void SetIsGLTF(const bool& bIsGltfIn) { bIsGltf = bIsGltfIn; }
 
 public:
-	inline void SetThumbNailFile(const std::shared_ptr<IFile>& thumbNailFileIn) { thumbNailFile = thumbNailFileIn; }
+	inline void SetThumbNailFile(const std::shared_ptr<IImageFile>& thumbNailFileIn) { thumbNailFile = thumbNailFileIn; }
 
 public:
-	virtual void AcceptFileAsList(class FileManipulator* pFileManipulator, std::shared_ptr<IFile>& spFile) override;
+	virtual void AcceptFileAsList(class FileManipulator* pFileManipulator) override;
 	virtual ID3D11ShaderResourceView* GetThumbNailSRV() override;
 };

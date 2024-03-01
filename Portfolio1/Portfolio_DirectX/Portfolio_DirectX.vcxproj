@@ -147,6 +147,7 @@
     <ClInclude Include="ImGuiFileDialogConfig.h" />
     <ClInclude Include="LightManipulator.h" />
     <ClInclude Include="LightRenderer.h" />
+    <ClInclude Include="MeshFile.h" />
     <ClInclude Include="ModelFile.h" />
     <ClInclude Include="ModelManipulator.h" />
     <ClInclude Include="ModelRenderer.h" />
@@ -206,6 +207,7 @@
     <ClCompile Include="ImGuiFileDialog.cpp" />
     <ClCompile Include="LightManipulator.cpp" />
     <ClCompile Include="LightRenderer.cpp" />
+    <ClCompile Include="MeshFile.cpp" />
     <ClCompile Include="ModelFile.cpp" />
     <ClCompile Include="ModelManipulator.cpp" />
     <ClCompile Include="ModelRenderer.cpp" />

@@ -1,8 +1,9 @@
 #pragma once
-#include "AStaticMesh.h"
-#include "NormalImageFile.h"
-
 #include <unordered_map>
+
+#include "AStaticMesh.h"
+#include "ImageFile.h"
+
 
 class APBRStaticMesh : public AStaticMesh
 {
@@ -18,7 +19,7 @@ public:
 	virtual ~APBRStaticMesh();
 
 public:
-	std::shared_ptr<NormalImageFile> pModelTexture[TEXTURE_MAP_NUM];
+	std::shared_ptr<IImageFile> pModelTexture[TEXTURE_MAP_NUM];
 
 public:
 	struct

@@ -29,7 +29,7 @@ ID3D11ShaderResourceView* NormalImageFile::GetThumbNailSRV()
 	return cpSRV.Get();
 }
 
-void NormalImageFile::AcceptFileAsList(FileManipulator* pFileManipulator, std::shared_ptr<IFile>& spFile)
+void NormalImageFile::AcceptFileAsList(FileManipulator* pFileManipulator)
 {
-	pFileManipulator->ShowAsList(*this, spFile);
+	pFileManipulator->ShowAsList(*this);
 }

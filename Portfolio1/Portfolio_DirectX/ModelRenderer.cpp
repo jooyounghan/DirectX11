@@ -83,7 +83,7 @@ void ModelRenderer::RenderModel(APBRStaticMesh& pbrStaticMesh)
 	DirectXDevice::pDeviceContext->IASetVertexBuffers(0, 4, vertexBuffers.data(), uiStrides.data(), uiOffsets.data());
 	
 	DirectXDevice::pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
-	DirectXDevice::pDeviceContext->IASetIndexBuffer(pbrStaticMesh.cpIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+	DirectXDevice::pDeviceContext->IASetIndexBuffer(pbrStaticMesh.spMeshFile->cpInicesBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 
 	DirectXDevice::pDeviceContext->VSSetConstantBuffers(0, 1, pbrStaticMesh.cpTransformationBuffer.GetAddressOf());
 	DirectXDevice::pDeviceContext->VSSetConstantBuffers(1, 1, pCamera->cpViewProjBuffer.GetAddressOf());
@@ -250,7 +250,7 @@ void ModelRenderer::RenderModel(AIBLModel& iblMesh)
 	DirectXDevice::pDeviceContext->IASetVertexBuffers(0, 4, vertexBuffers.data(), uiStrides.data(), uiOffsets.data());
 
 	DirectXDevice::pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	DirectXDevice::pDeviceContext->IASetIndexBuffer(iblMesh.cpIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+	DirectXDevice::pDeviceContext->IASetIndexBuffer(iblMesh.spMeshFile->cpInicesBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 
 	vector<ID3D11ShaderResourceView*> SRVs{
 		iblMesh.spEnvSpecularTextureFile != nullptr ? iblMesh.spEnvSpecularTextureFile->GetSRV() : nullptr,

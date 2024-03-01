@@ -2,7 +2,7 @@
 #include "IFile.h"
 #include "ShaderResource.h"
 
-class IImageFile : public IFile, public ShaderResource
+class IImageFile : public IFile, public ShaderResource, public std::enable_shared_from_this<IImageFile>
 {
 public:
 	IImageFile(

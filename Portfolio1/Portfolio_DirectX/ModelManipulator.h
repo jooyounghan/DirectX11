@@ -59,10 +59,9 @@ protected:
 	void DrawIBLTexture(AIBLModel* pIBLModel);
 
 private:
-	template<typename T>
 	void SetTextureDragAndDrop(
 		const char* pDescription, 
-		std::shared_ptr<T>& spFile,
+		std::shared_ptr<class IImageFile>& spFile,
 		const char* pDragDropLabel
 	);
 };

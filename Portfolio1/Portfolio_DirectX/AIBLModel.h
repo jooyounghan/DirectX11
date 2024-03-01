@@ -1,7 +1,6 @@
 #pragma once
 #include "AStaticMesh.h"
-#include "DDSImageFile.h"
-#include "NormalImageFile.h"
+#include "ImageFile.h"
 
 #include <memory>
 
@@ -24,9 +23,9 @@ public:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> cpIBLDataBuffer;
 
 public:
-	std::shared_ptr<class DDSImageFile>		spEnvSpecularTextureFile;
-	std::shared_ptr<class DDSImageFile>		spEnvDiffuseTextureFile;
-	std::shared_ptr<class NormalImageFile>	spEnvBrdfTextureFile;
+	std::shared_ptr<class IImageFile>		spEnvSpecularTextureFile;
+	std::shared_ptr<class IImageFile>		spEnvDiffuseTextureFile;
+	std::shared_ptr<class IImageFile>	spEnvBrdfTextureFile;
 
 private:
 	virtual void Load(const std::string& path) override {};

@@ -15,7 +15,7 @@ public:
 	virtual ~NormalImageFile();
 
 public:
-	virtual void AcceptFileAsList(class FileManipulator* pFileManipulator, std::shared_ptr<IFile>& spFile) override;
+	virtual void AcceptFileAsList(class FileManipulator* pFileManipulator) override;
 	virtual ID3D11ShaderResourceView* GetThumbNailSRV() override;
 };
 

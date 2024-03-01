@@ -15,9 +15,6 @@ public:
 	virtual void PopAsDialog() override;
 	virtual bool IsGuiAvailable() override;
 
-private:
-	FileLoader fileLoader;
-
 protected:
 	void ChooseFiles();
 	void DisplayFiles();
@@ -26,9 +23,9 @@ protected:
 	void LoadFiles(const std::wstring& wstrFilePathIn);
 
 public:
-	void ShowAsList(class NormalImageFile& imageFile, std::shared_ptr<class IFile>& spFile);
-	void ShowAsList(class DDSImageFile& imageFile, std::shared_ptr<class IFile>& spFile);
-	void ShowAsList(class ModelFile& modelFile, std::shared_ptr<class IFile>& spFile);
+	void ShowAsList(class NormalImageFile& imageFile);
+	void ShowAsList(class DDSImageFile& imageFile);
+	void ShowAsList(class ModelFile& modelFile);
 
 private:
 	std::string strCurrentPath;

@@ -6,3 +6,9 @@
 
 #define NOT_SELECTED -1
 #define NEAR_CLOSE 0.00001f;
+
+#define DEFAULT_CUBE_LEVEL		15.f
+
+#define DRAG_DROP_IBL_KEY		"CubeMap"
+#define DRAG_DROP_TEXTURE_KEY	"Texture2D"
+#define DRAG_DROP_MESH_KEY		"ModelFile"
