@@ -17,36 +17,6 @@ MeshFile::~MeshFile()
 {
 }
 
-void MeshFile::Normalize()
-{
-    DirectX::XMFLOAT3 vmin(1000, 1000, 1000);
-    DirectX::XMFLOAT3 vmax(-1000, -1000, -1000);
-
-    for (auto& v : vVertices) 
-    {
-        vmin.x = DirectX::XMMin(vmin.x, v.x);
-        vmin.y = DirectX::XMMin(vmin.y, v.y);
-        vmin.z = DirectX::XMMin(vmin.z, v.z);
-        vmax.x = DirectX::XMMax(vmax.x, v.x);
-        vmax.y = DirectX::XMMax(vmax.y, v.y);
-        vmax.z = DirectX::XMMax(vmax.z, v.z);
-    }
-
-    float dx = vmax.x - vmin.x, dy = vmax.y - vmin.y, dz = vmax.z - vmin.z;
-    float scale = 1.f / DirectX::XMMax(DirectX::XMMax(dx, dy), dz);
-
-    DirectX::XMFLOAT3 translation;
-    translation.x = -(vmin.x + vmax.x) * 0.5f;
-    translation.y = -(vmin.y + vmax.y) * 0.5f;
-    translation.z = -(vmin.z + vmax.z) * 0.5f;
-
-    for (auto& v : vVertices) {
-        v.x = (v.x + translation.x) * scale;
-        v.y = (v.y + translation.y) * scale;
-        v.z = (v.z + translation.z) * scale;
-    }
-}
-
 void MeshFile::CreateBuffers()
 {
 	ID3D11Helper::CreateBuffer(DirectXDevice::pDevice, vVertices, D3D11_USAGE_IMMUTABLE, D3D11_BIND_VERTEX_BUFFER, NULL, NULL, cpVerticesBuffer.GetAddressOf());

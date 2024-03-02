@@ -25,6 +25,8 @@ PBRStaticMesh::PBRStaticMesh()
 	: AStaticMesh()
 {
 	AutoZeroMemory(sPBRConstant);
+	AutoZeroMemory(sPBRTextureFlag);
+
 	ID3D11Helper::CreateBuffer(
 		DirectXDevice::pDevice, sPBRConstant, D3D11_USAGE_DYNAMIC,
 		D3D11_BIND_CONSTANT_BUFFER, D3D11_CPU_ACCESS_WRITE, NULL,
@@ -49,6 +51,10 @@ PBRStaticMesh::PBRStaticMesh(const struct MeshFileSet& meshFileSetIn)
 	}
 
 	AutoZeroMemory(sPBRConstant);
+	AutoZeroMemory(sPBRTextureFlag);
+
+	sPBRTextureFlag.bIsGLTF = meshFileSetIn.spMeshFile->IsGLTF();
+
 	ID3D11Helper::CreateBuffer(
 		DirectXDevice::pDevice, sPBRConstant, D3D11_USAGE_DYNAMIC,
 		D3D11_BIND_CONSTANT_BUFFER, D3D11_CPU_ACCESS_WRITE, NULL,

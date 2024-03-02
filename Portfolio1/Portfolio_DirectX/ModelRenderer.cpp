@@ -135,7 +135,8 @@ void ModelRenderer::RenderModel(PBRStaticMesh& pbrStaticMesh)
 	DirectXDevice::pDeviceContext->PSSetConstantBuffers(2, 1, pbrStaticMesh.cpPBRConstantBuffer.GetAddressOf());
 	DirectXDevice::pDeviceContext->PSSetConstantBuffers(3, 1, pbrStaticMesh.cpPBRTextureFlagBuffer.GetAddressOf());
 
-	DirectXDevice::pDeviceContext->PSSetSamplers(0, 1, DirectXDevice::ppClampSampler);
+	DirectXDevice::pDeviceContext->PSSetSamplers(0, 1, DirectXDevice::ppWrapSampler);
+	DirectXDevice::pDeviceContext->PSSetSamplers(1, 1, DirectXDevice::ppClampSampler);
 #pragma endregion
 
 	pbrStaticMesh.Draw();
@@ -160,6 +161,7 @@ void ModelRenderer::RenderModel(PBRStaticMesh& pbrStaticMesh)
 	DirectXDevice::pDeviceContext->PSSetConstantBuffers(3, 1, &pNullBuffer);
 
 	DirectXDevice::pDeviceContext->PSSetSamplers(0, 1, &pNullSampler);
+	DirectXDevice::pDeviceContext->PSSetSamplers(1, 1, &pNullSampler);
 #pragma endregion
 	DirectXDevice::pDeviceContext->OMSetBlendState(DirectXDevice::pAddingBlendState, NULL, UINT(0xFFFFFFFF));
 	DirectXDevice::pDeviceContext->OMSetDepthStencilState(DirectXDevice::pDrawLessEqualDSS, 0);
@@ -188,8 +190,9 @@ void ModelRenderer::RenderModel(PBRStaticMesh& pbrStaticMesh)
 		DirectXDevice::pDeviceContext->PSSetConstantBuffers(5, 1, pbrStaticMesh.cpPBRTextureFlagBuffer.GetAddressOf());
 		DirectXDevice::pDeviceContext->PSSetConstantBuffers(6, 1, pCamera->cpPositionBuffer.GetAddressOf());
 		
-		DirectXDevice::pDeviceContext->PSSetSamplers(0, 1, DirectXDevice::ppClampSampler);
-		DirectXDevice::pDeviceContext->PSSetSamplers(1, 1, DirectXDevice::ppCompareBorderSampler);
+		DirectXDevice::pDeviceContext->PSSetSamplers(0, 1, DirectXDevice::ppWrapSampler);
+		DirectXDevice::pDeviceContext->PSSetSamplers(1, 1, DirectXDevice::ppClampSampler);
+		DirectXDevice::pDeviceContext->PSSetSamplers(2, 1, DirectXDevice::ppCompareBorderSampler);
 #pragma endregion
 
 		pbrStaticMesh.Draw();
@@ -209,6 +212,7 @@ void ModelRenderer::RenderModel(PBRStaticMesh& pbrStaticMesh)
 
 		DirectXDevice::pDeviceContext->PSSetSamplers(0, 1, &pNullSampler);
 		DirectXDevice::pDeviceContext->PSSetSamplers(1, 1, &pNullSampler);
+		DirectXDevice::pDeviceContext->PSSetSamplers(2, 1, &pNullSampler);
 #pragma endregion
 	}
 

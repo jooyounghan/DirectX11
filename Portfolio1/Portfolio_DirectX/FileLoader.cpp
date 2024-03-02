@@ -205,7 +205,10 @@ shared_ptr<ModelFile> FileLoader::LoadModelFile(
         const string thumbNailPath = strFilePath + "\\" + strFileName + ".png";
 
         UINT thumbNailX, thumbNailY, thumbNailComp;
-        result->SetThumbNailFile(LoadImageFile(strFilePath, strFileName, ".png", &thumbNailX, &thumbNailY, &thumbNailComp));
+        if (filesystem::exists(thumbNailPath))
+        {
+            result->SetThumbNailFile(LoadImageFile(strFilePath, strFileName, ".png", &thumbNailX, &thumbNailY, &thumbNailComp));
+        }
 
         // 모델 읽기
         Assimp::Importer importer;
@@ -219,6 +222,7 @@ shared_ptr<ModelFile> FileLoader::LoadModelFile(
         {
             DirectX::XMMATRIX xmmTransform = DirectX::XMMatrixIdentity();
             ProcessNode(strFilePath, strFileName, strExtension, bIsGltf, pScene->mRootNode, pScene, xmmTransform, result.get());
+            result->Initialize();
         }
         else 
         {
@@ -246,7 +250,6 @@ void FileLoader::ProcessNode(
 )
 {
     DirectX::XMMATRIX m(&pNode->mTransformation.a1);
-
     m = DirectX::XMMatrixTranspose(m) * xmMatrix;
 
     for (UINT idx = 0; idx < pNode->mNumMeshes; ++idx)
@@ -281,6 +284,8 @@ MeshFileSet FileLoader::ProcessMesh(
         cout << "Loading " << strFileWithExtMesh << "..." << endl;
 
         result.spMeshFile = make_shared<MeshFile>(strFilePath, strFileWithExtMesh);
+        result.spMeshFile->SetIsGLTF(bIsGltf);
+
         for (UINT i = 0; i < pMesh->mNumVertices; i++)
         {
             result.spMeshFile->vVertices.emplace_back(
@@ -297,7 +302,7 @@ MeshFileSet FileLoader::ProcessMesh(
             }
 
             bIsGltf ? result.spMeshFile->vNormals.emplace_back(
-                pMesh->mNormals[i].x, pMesh->mNormals[i].z, -pMesh->mNormals[i].y
+                pMesh->mNormals[i].x, -pMesh->mNormals[i].z, pMesh->mNormals[i].y
             ) : result.spMeshFile->vNormals.emplace_back(
                 pMesh->mNormals[i].x, pMesh->mNormals[i].y, pMesh->mNormals[i].z
             );
@@ -314,24 +319,18 @@ MeshFileSet FileLoader::ProcessMesh(
 
         vector<DirectX::XMFLOAT3>& vertices = result.spMeshFile->vVertices;
 
-        // 3번 이렇게 해주어야 정상적인 변환이 일어나는데 왜???
-        for (size_t idx = 0; idx < 3; ++idx)
+        for (DirectX::XMFLOAT3& v : vertices)
         {
-            for (DirectX::XMFLOAT3& v : vertices)
-            {
-                DirectX::XMVECTOR f4Vector = DirectX::XMVectorSet(v.x, v.y, v.z, 0.f);
-                f4Vector = DirectX::XMVector4Transform(f4Vector, xmMatrix);
-                memcpy(&v, f4Vector.m128_f32, sizeof(v));
-            }
-
+            DirectX::XMVECTOR f4Vector = DirectX::XMVectorSet(v.x, v.y, v.z, 0.f);
+            f4Vector = DirectX::XMVector3TransformCoord(f4Vector, xmMatrix);
+            memcpy(&v, f4Vector.m128_f32, sizeof(v));
         }
-        result.spMeshFile->Normalize();
-        result.spMeshFile->CreateBuffers();
-
+        result.bIsInitialized = false;
         AddUsingFile(strFileWithExtMesh, result.spMeshFile);
     }
     else
     {
+        result.bIsInitialized = true;
         result.spMeshFile = pMeshFile->shared_from_this();
     }
 

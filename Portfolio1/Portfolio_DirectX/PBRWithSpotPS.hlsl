@@ -51,7 +51,7 @@ cbuffer IsPBRTextureOn : register(b5)
     bool bIsEmissionOn;
     bool bIsNormalOn;
     bool bIsHeightOn;
-    bool bDummy;
+    bool bIsGLTF;
 };
 
 cbuffer CameraPos : register(b6)
@@ -65,19 +65,31 @@ cbuffer LightViewProj : register(b7)
     matrix mLightViewProjInvTranspose;
 };
 
-SamplerState ClampSampler : register(s0);
-SamplerComparisonState CmopareBorderToOne : register(s1);
+SamplerState WrapSampler : register(s0);
+SamplerState ClampSampler : register(s1);
+SamplerComparisonState CompareBorderToOne : register(s2);
 
 PixelOutput main(DomainOutput input)
 {
     PixelOutput result;
     
-    float fRoughness = RoughnessTexture.Sample(ClampSampler, input.f2TexCoord).x;
-    float fMetallic = MetalnessTexture.Sample(ClampSampler, input.f2TexCoord).x;
-    float3 f3Color = ColorTexture.Sample(ClampSampler, input.f2TexCoord).xyz;
+    float fRoughness;
+    float fMetallic;
+    if (bIsGLTF)
+    {
+        fRoughness = RoughnessTexture.Sample(WrapSampler, input.f2TexCoord).y;
+        fMetallic = MetalnessTexture.Sample(WrapSampler, input.f2TexCoord).z;
+    }
+    else
+    {
+        fRoughness = RoughnessTexture.Sample(WrapSampler, input.f2TexCoord).x;
+        fMetallic = MetalnessTexture.Sample(WrapSampler, input.f2TexCoord).x;
+    }
+    
+    float3 f3Color = ColorTexture.Sample(WrapSampler, input.f2TexCoord).xyz;
 
     float3 f3NormalVector = GetNormalFromTexture(
-        bIsNormalOn, NormalTexture, ClampSampler, input.f2TexCoord, input.f3ModelTangent, input.f3ModelBiTangent, input.f3ModelNormal
+        bIsNormalOn, NormalTexture, WrapSampler, input.f2TexCoord, input.f3ModelTangent, input.f3ModelBiTangent, input.f3ModelNormal
     );
     
     float3 toEyes = normalize(f4CameraPos.xyz - input.f4ModelPos.xyz);
@@ -113,7 +125,7 @@ PixelOutput main(DomainOutput input)
     float3 diffuseBrdf = (float3(1, 1, 1) - F) * f3DiffuseColor;
     float3 specularBrdf = (F * D * G) / (max(1e-6, 4.0 * NDotL * NDotE));
 
-    float fDepthFactor = ShadowMap.SampleCmpLevelZero(CmopareBorderToOne, f2LightTex, f4LightProjPos.z - 1E-6).x;
+    float fDepthFactor = ShadowMap.SampleCmpLevelZero(CompareBorderToOne, f2LightTex, f4LightProjPos.z - 1E-6).x;
     float3 fDirectColor = (diffuseBrdf + specularBrdf) * NDotL * f3LightColor * fLightPowerSaturated * fDepthFactor;
            
     result.pixelColor = float4(fDirectColor, 1.f);

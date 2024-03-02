@@ -7,6 +7,7 @@
 
 struct MeshFileSet
 {
+	bool bIsInitialized;
 	std::shared_ptr<class MeshFile>		spMeshFile;
 	std::shared_ptr<IImageFile>			spModelTexture[TEXTURE_MAP_NUM];
 };
@@ -27,16 +28,12 @@ protected:
 protected:
 	std::vector<MeshFileSet>	vMeshFileSets;
 
-protected:
-	bool bIsGltf;
-
 public:
 	inline void AddMeshFileSet(const MeshFileSet& meshFileSet) { vMeshFileSets.push_back(meshFileSet); }
 	inline const std::vector<MeshFileSet>& GetMeshFileSet() { return vMeshFileSets; }
 
 public:
-	inline const bool& IsGLTF() { return bIsGltf; }
-	inline void SetIsGLTF(const bool& bIsGltfIn) { bIsGltf = bIsGltfIn; }
+	void Initialize();
 
 public:
 	inline void SetThumbNailFile(const std::shared_ptr<IImageFile>& thumbNailFileIn) { thumbNailFile = thumbNailFileIn; }

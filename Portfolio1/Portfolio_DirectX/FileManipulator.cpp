@@ -183,18 +183,15 @@ void FileManipulator::ShowAsList(ModelFile& modelFile)
 {
     ID3D11ShaderResourceView* pIndexedSRV = modelFile.GetThumbNailSRV();
 
-    if (pIndexedSRV != nullptr)
-    {
-        BeginGroup();
-        Image(pIndexedSRV, ImVec2(60.f, 60.f));
-        SameLine();
-        TextEx(modelFile.GetFileName().c_str(), (const char*)0, ImGuiTextFlags_::ImGuiTextFlags_NoWidthForLargeClippedText);
-        EndGroup();
+    BeginGroup();
+    Image(pIndexedSRV, ImVec2(60.f, 60.f));
+    SameLine();
+    TextEx(modelFile.GetFileName().c_str(), (const char*)0, ImGuiTextFlags_::ImGuiTextFlags_NoWidthForLargeClippedText);
+    EndGroup();
 
-        if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
-        {
-            ImGui::SetDragDropPayload(DRAG_DROP_MESH_KEY, &modelFile, sizeof(ModelFile));
-            ImGui::EndDragDropSource();
-        }
+    if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
+    {
+        ImGui::SetDragDropPayload(DRAG_DROP_MESH_KEY, &modelFile, sizeof(ModelFile));
+        ImGui::EndDragDropSource();
     }
 }

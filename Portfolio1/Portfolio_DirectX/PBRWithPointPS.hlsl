@@ -45,7 +45,7 @@ cbuffer IsPBRTextureOn : register(b5)
     bool bIsEmissionOn;
     bool bIsNormalOn;
     bool bIsHeightOn;
-    bool bDummy;
+    bool bIsGLTF;
 };
 
 cbuffer CameraPos : register(b6)
@@ -89,21 +89,32 @@ cbuffer LightViewProj : register(b12)
     matrix mNZLightViewProjInvTranspose;
 };
 
-
-SamplerState ClampSampler : register(s0);
-SamplerComparisonState CmopareBorderToOne : register(s1);
-SamplerComparisonState CompareClampSampler : register(s2);
+SamplerState WrapSampler : register(s0);
+SamplerState ClampSampler : register(s1);
+SamplerComparisonState CmopareBorderToOne : register(s2);
+SamplerComparisonState CompareClampSampler : register(s3);
 
 PixelOutput main(DomainOutput input)
 {
     PixelOutput result;
     
-    float fRoughness = RoughnessTexture.Sample(ClampSampler, input.f2TexCoord).x;
-    float fMetallic = MetalnessTexture.Sample(ClampSampler, input.f2TexCoord).x;
-    float3 f3Color = ColorTexture.Sample(ClampSampler, input.f2TexCoord).xyz;
+    float fRoughness;
+    float fMetallic;
+    if (bIsGLTF)
+    {
+        fRoughness = RoughnessTexture.Sample(WrapSampler, input.f2TexCoord).y;
+        fMetallic = MetalnessTexture.Sample(WrapSampler, input.f2TexCoord).z;
+    }
+    else
+    {
+        fRoughness = RoughnessTexture.Sample(WrapSampler, input.f2TexCoord).x;
+        fMetallic = MetalnessTexture.Sample(WrapSampler, input.f2TexCoord).x;
+    }
+    
+    float3 f3Color = ColorTexture.Sample(WrapSampler, input.f2TexCoord).xyz;
 
     float3 f3NormalVector = GetNormalFromTexture(
-        bIsNormalOn, NormalTexture, ClampSampler, input.f2TexCoord, input.f3ModelTangent, input.f3ModelBiTangent, input.f3ModelNormal
+        bIsNormalOn, NormalTexture, WrapSampler, input.f2TexCoord, input.f3ModelTangent, input.f3ModelBiTangent, input.f3ModelNormal
     );
     
     float3 toEyes = normalize(f4CameraPos.xyz - input.f4ModelPos.xyz);

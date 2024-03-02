@@ -33,7 +33,7 @@ public:
 	struct
 	{
 		BOOL bIsTextureOn[TEXTURE_MAP_NUM];
-		BOOL bDummy;
+		BOOL bIsGLTF;
 	} sPBRTextureFlag;
 	Microsoft::WRL::ComPtr<ID3D11Buffer> cpPBRTextureFlagBuffer;
 

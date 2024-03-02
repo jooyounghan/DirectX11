@@ -26,8 +26,13 @@ public:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> cpTangentsBuffer;
 	Microsoft::WRL::ComPtr<ID3D11Buffer> cpInicesBuffer;
 
+
+protected:
+	bool bIsGltf;
+
 public:
-	void Normalize();
+	inline const bool& IsGLTF() { return bIsGltf; }
+	inline void SetIsGLTF(const bool& bIsGltfIn) { bIsGltf = bIsGltfIn; }
 
 public:
 	void CreateBuffers();

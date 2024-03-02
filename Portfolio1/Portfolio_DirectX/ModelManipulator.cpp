@@ -19,13 +19,12 @@ using namespace ImGui;
 ModelManipulator::ModelManipulator()
 	: bIsDrawingNormal(false)
 {
-	AddModel(make_shared<CubeModel>(-5.f, 0.f, 0.f, 1.f, false));
-	AddModel(make_shared<CubeModel>(5.f, 0.f, 0.f, 1.f, false));
-	AddModel(make_shared<CubeModel>(0.f, -5.f, 0.f, 1.f, false));
-	AddModel(make_shared<CubeModel>(0.f, 5.f, 0.f, 1.f, false));
-	AddModel(make_shared<CubeModel>(0.f, 0.f, 5.f, 1.f, false));
-	AddModel(make_shared<CubeModel>(0.f, 0.f, -5.f, 1.f, false));
-	AddModel(make_shared<CubeModel>(0.f, 0.f, -5.f, 1.f, false));
+	//AddModel(make_shared<CubeModel>(-5.f, 0.f, 0.f, 1.f, false));
+	//AddModel(make_shared<CubeModel>(5.f, 0.f, 0.f, 1.f, false));
+	//AddModel(make_shared<CubeModel>(0.f, -5.f, 0.f, 1.f, false));
+	//AddModel(make_shared<CubeModel>(0.f, 5.f, 0.f, 1.f, false));
+	//AddModel(make_shared<CubeModel>(0.f, 0.f, 5.f, 1.f, false));
+	//AddModel(make_shared<CubeModel>(0.f, 0.f, -5.f, 1.f, false));
 
 	spIBLModel = make_shared<CubeMapModel>(500.f);
 	AddModel(spIBLModel);
