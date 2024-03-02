@@ -7,7 +7,7 @@
 #include "PointLight.h"
 #include "SpotLight.h"
 
-#include "APBRStaticMesh.h"
+#include "PBRStaticMesh.h"
 #include "AIBLModel.h"
 
 #include "DirectXDevice.h"
@@ -136,7 +136,7 @@ void LightRenderer::RenderLightMap(SpotLight& spotLight)
 	DirectXDevice::pDeviceContext->DSSetConstantBuffers(1, 1, &pNullBuffer);
 }
 
-void LightRenderer::SetModelSettingForLightMap(APBRStaticMesh& pbrStaticMesh)
+void LightRenderer::SetModelSettingForLightMap(PBRStaticMesh& pbrStaticMesh)
 {
 	ID3D11Buffer* pNullBuffer = nullptr;
 	ID3D11ShaderResourceView* pNullSRV = nullptr;

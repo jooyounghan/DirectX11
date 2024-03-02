@@ -1,4 +1,4 @@
-#include "APBRStaticMesh.h"
+#include "PBRStaticMesh.h"
 #include "ID3D11Helper.h"
 #include "DirectXDevice.h"
 
@@ -7,7 +7,9 @@
 #include "LightRenderer.h"
 #include "NormalVectorRenderer.h"
 
-std::unordered_map<WORD, std::string> APBRStaticMesh::unmapTextureNames
+using namespace std;
+
+std::unordered_map<WORD, std::string> PBRStaticMesh::unmapTextureNames
 {
 	 {AO_TEXUTRE_MAP, "Ambient Occulusion Map"},
 	 { COLOR_TEXTURE_MAP, "Color Map" },
@@ -19,7 +21,7 @@ std::unordered_map<WORD, std::string> APBRStaticMesh::unmapTextureNames
 };
 
 
-APBRStaticMesh::APBRStaticMesh()
+PBRStaticMesh::PBRStaticMesh()
 	: AStaticMesh()
 {
 	AutoZeroMemory(sPBRConstant);
@@ -36,11 +38,35 @@ APBRStaticMesh::APBRStaticMesh()
 	);
 }
 
-APBRStaticMesh::~APBRStaticMesh()
+PBRStaticMesh::PBRStaticMesh(const struct MeshFileSet& meshFileSetIn)
+	: AStaticMesh()
+{
+	SetMeshName(meshFileSetIn.spMeshFile->GetFileName() + to_string(sModelData.uiModelID));
+	spMeshFile = meshFileSetIn.spMeshFile;
+	for (size_t idx = 0; idx < TEXTURE_MAP_NUM; ++idx)
+	{
+		pModelTexture[idx] = meshFileSetIn.spModelTexture[idx];
+	}
+
+	AutoZeroMemory(sPBRConstant);
+	ID3D11Helper::CreateBuffer(
+		DirectXDevice::pDevice, sPBRConstant, D3D11_USAGE_DYNAMIC,
+		D3D11_BIND_CONSTANT_BUFFER, D3D11_CPU_ACCESS_WRITE, NULL,
+		cpPBRConstantBuffer.GetAddressOf()
+	);
+
+	ID3D11Helper::CreateBuffer(
+		DirectXDevice::pDevice, sPBRTextureFlag, D3D11_USAGE_DYNAMIC,
+		D3D11_BIND_CONSTANT_BUFFER, D3D11_CPU_ACCESS_WRITE, NULL,
+		cpPBRTextureFlagBuffer.GetAddressOf()
+	);
+}
+
+PBRStaticMesh::~PBRStaticMesh()
 {
 }
 
-void APBRStaticMesh::UpdateModel(const float& fDelta)
+void PBRStaticMesh::UpdateModel(const float& fDelta)
 {
 	AStaticMesh::UpdateModel(fDelta);
 	ID3D11Helper::UpdateBuffer(
@@ -61,22 +87,22 @@ void APBRStaticMesh::UpdateModel(const float& fDelta)
 	);
 }
 
-void APBRStaticMesh::AcceptModelManipulating(ModelManipulator* pModelManipulator)
+void PBRStaticMesh::AcceptModelManipulating(ModelManipulator* pModelManipulator)
 {
 	pModelManipulator->ManipulateModel(*this);
 }
 
-void APBRStaticMesh::AcceptModelRendering(ModelRenderer* pModelRenderer)
+void PBRStaticMesh::AcceptModelRendering(ModelRenderer* pModelRenderer)
 {
 	pModelRenderer->RenderModel(*this);
 }
 
-void APBRStaticMesh::AcceptNormalVectorRendering(NormalVectorRenderer* pNormalVectorRenderer)
+void PBRStaticMesh::AcceptNormalVectorRendering(NormalVectorRenderer* pNormalVectorRenderer)
 {
 	pNormalVectorRenderer->RenderNormal(*this);
 }
 
-void APBRStaticMesh::AcceptLightMapUpdating(LightRenderer* pLightRnederer)
+void PBRStaticMesh::AcceptLightMapUpdating(LightRenderer* pLightRnederer)
 {
 	pLightRnederer->SetModelSettingForLightMap(*this);
 }

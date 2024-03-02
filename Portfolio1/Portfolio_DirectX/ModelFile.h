@@ -5,16 +5,10 @@
 #include "MeshFile.h"
 #include "ImageFile.h"
 
-struct PBRModelTextureSet
+struct MeshFileSet
 {
+	std::shared_ptr<class MeshFile>		spMeshFile;
 	std::shared_ptr<IImageFile>			spModelTexture[TEXTURE_MAP_NUM];
-};
-
-struct NodeData
-{
-	std::vector<NodeData>							vChildrenNodes;
-	std::vector<std::shared_ptr<class MeshFile>>	vChildrenMeshes;
-	std::vector<PBRModelTextureSet>					vChildrenTextureSets;
 };
 
 class ModelFile : public IFile, public std::enable_shared_from_this<ModelFile>
@@ -31,11 +25,14 @@ protected:
 	std::shared_ptr<IImageFile> thumbNailFile;
 
 protected:
-	NodeData rootNode;
+	std::vector<MeshFileSet>	vMeshFileSets;
+
+protected:
 	bool bIsGltf;
 
 public:
-	inline NodeData& GetRootNode() { return rootNode; }
+	inline void AddMeshFileSet(const MeshFileSet& meshFileSet) { vMeshFileSets.push_back(meshFileSet); }
+	inline const std::vector<MeshFileSet>& GetMeshFileSet() { return vMeshFileSets; }
 
 public:
 	inline const bool& IsGLTF() { return bIsGltf; }

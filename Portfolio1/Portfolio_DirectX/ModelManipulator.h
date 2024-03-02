@@ -48,14 +48,14 @@ private:
 
 public:
 	void ManipulateModel(class AStaticMesh& staticMesh);
-	void ManipulateModel(class APBRStaticMesh& pbrStaticMesh);
+	void ManipulateModel(class PBRStaticMesh& pbrStaticMesh);
 	void ManipulateModel(class AIBLModel& iblModel);
 
 protected:
 	void DrawTransformation(AStaticMesh* pStaticMesh);
 
 protected:
-	void DrawPBRTexture(APBRStaticMesh* pPBRStaticMesh);
+	void DrawPBRTexture(PBRStaticMesh* pPBRStaticMesh);
 	void DrawIBLTexture(AIBLModel* pIBLModel);
 
 private:

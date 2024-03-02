@@ -14,7 +14,7 @@ CubeModel::CubeModel(
 	const float& fRadius,
 	const bool& bReverse
 )
-	: APBRStaticMesh()
+	: PBRStaticMesh()
 {
 	xmvPosition.m128_f32[0] = fCenterX;
 	xmvPosition.m128_f32[1] = fCenterY;

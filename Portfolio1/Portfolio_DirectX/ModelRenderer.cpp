@@ -1,7 +1,7 @@
 #include "ModelRenderer.h"
 
 #include "AStaticMesh.h"
-#include "APBRStaticMesh.h"
+#include "PBRStaticMesh.h"
 #include "AIBLModel.h"
 
 #include "ACamera.h"
@@ -66,7 +66,7 @@ void ModelRenderer::RenderObjects(
 }
 
 
-void ModelRenderer::RenderModel(APBRStaticMesh& pbrStaticMesh)
+void ModelRenderer::RenderModel(PBRStaticMesh& pbrStaticMesh)
 {
 #pragma region Preset
 	ID3D11Buffer* pNullBuffer = nullptr;

@@ -3,7 +3,7 @@
 
 class ModelRenderer : public IRenderer
 {
-	friend class APBRStaticMesh;
+	friend class PBRStaticMesh;
 	friend class AIBLModel;
 	friend class PointLight;
 	friend class SpotLight;
@@ -27,7 +27,7 @@ public:
 	);
 
 private:
-	void RenderModel(class APBRStaticMesh& pbrStaticMesh);
+	void RenderModel(class PBRStaticMesh& pbrStaticMesh);
 	void RenderModel(class AIBLModel& iblMesh);
 
 private:

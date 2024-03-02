@@ -209,7 +209,6 @@ shared_ptr<ModelFile> FileLoader::LoadModelFile(
 
         // 모델 읽기
         Assimp::Importer importer;
-        NodeData& rootNode = result->GetRootNode();
 
         const aiScene* pScene = importer.ReadFile(
             fullPath,
@@ -218,8 +217,8 @@ shared_ptr<ModelFile> FileLoader::LoadModelFile(
 
         if (pScene)
         {
-            DirectX::XMMATRIX xmmTransform;
-            ProcessNode(strFilePath, strFileName, strExtension, bIsGltf, pScene->mRootNode, pScene, xmmTransform, rootNode);
+            DirectX::XMMATRIX xmmTransform = DirectX::XMMatrixIdentity();
+            ProcessNode(strFilePath, strFileName, strExtension, bIsGltf, pScene->mRootNode, pScene, xmmTransform, result.get());
         }
         else 
         {
@@ -243,74 +242,63 @@ void FileLoader::ProcessNode(
     aiNode* pNode, 
     const aiScene* pScene, 
     DirectX::XMMATRIX& xmMatrix,
-    NodeData& parentNode
+    ModelFile* pModelFile
 )
 {
     DirectX::XMMATRIX m(&pNode->mTransformation.a1);
+
     m = DirectX::XMMatrixTranspose(m) * xmMatrix;
 
     for (UINT idx = 0; idx < pNode->mNumMeshes; ++idx)
     {
         aiMesh* pMesh = pScene->mMeshes[pNode->mMeshes[idx]];
-        shared_ptr<MeshFile> newMesh = ProcessMesh(strFilePath, strFileName, strExtension, bIsGltf, pMesh, pScene, parentNode);
-
-        vector<DirectX::XMFLOAT3>& vertices = newMesh->vVertices;
-        for (DirectX::XMFLOAT3& v : vertices)
-        {
-            DirectX::XMVECTOR f4Vector = DirectX::XMVectorSet(v.x, v.y, v.z, 0.f);
-            f4Vector = DirectX::XMVector4Transform(f4Vector, m);
-            memcpy(&v, f4Vector.m128_f32, sizeof(v));
-        }
-        newMesh->CreateBuffers();
-        parentNode.vChildrenMeshes.push_back(newMesh);
+        MeshFileSet newMesh = ProcessMesh(strFilePath, strFileName, strExtension, bIsGltf, pMesh, m, pScene);
+        pModelFile->AddMeshFileSet(newMesh);
     }
 
     for (UINT i = 0; i < pNode->mNumChildren; i++) 
     {
-        parentNode.vChildrenNodes.emplace_back();
-        NodeData& nextNode = parentNode.vChildrenNodes[parentNode.vChildrenNodes.size() - 1];
-        ProcessNode(strFilePath, strFileName, strExtension, bIsGltf, pNode->mChildren[i], pScene, m, nextNode);
+        ProcessNode(strFilePath, strFileName, strExtension, bIsGltf, pNode->mChildren[i], pScene, m, pModelFile);
     }
 }
 
-shared_ptr<MeshFile> FileLoader::ProcessMesh(
+MeshFileSet FileLoader::ProcessMesh(
     const std::string& strFilePath,
     const std::string& strFileName,
     const std::string& strExtension,
     const bool& bIsGltf,
     aiMesh* pMesh, 
-    const aiScene* pScene,
-    NodeData& parentNode
+    DirectX::XMMATRIX& xmMatrix,
+    const aiScene* pScene
 )
 {
-    shared_ptr<MeshFile> meshData;
-    string strFileWithExtMesh = strFileName + "_" + +pMesh->mName.C_Str() + strExtension;
-
+    MeshFileSet result;
+    string strFileWithExtMesh = strFileName + strExtension + " / " + +pMesh->mName.C_Str() + " Mesh";
     MeshFile* pMeshFile = (MeshFile*)GetUsingFile(strFileWithExtMesh).get();
 
     if (pMeshFile == nullptr)
     {
         cout << "Loading " << strFileWithExtMesh << "..." << endl;
 
-        meshData = make_shared<MeshFile>(strFilePath, strFileWithExtMesh);
+        result.spMeshFile = make_shared<MeshFile>(strFilePath, strFileWithExtMesh);
         for (UINT i = 0; i < pMesh->mNumVertices; i++)
         {
-            meshData->vVertices.emplace_back(
+            result.spMeshFile->vVertices.emplace_back(
                 pMesh->mVertices[i].x,
                 pMesh->mVertices[i].y,
                 pMesh->mVertices[i].z
             );
 
             if (pMesh->mTextureCoords[0]) {
-                meshData->vTexcoords.emplace_back(
+                result.spMeshFile->vTexcoords.emplace_back(
                     (float)pMesh->mTextureCoords[0][i].x,
                     (float)pMesh->mTextureCoords[0][i].y
                 );
             }
 
-            bIsGltf ? meshData->vNormals.emplace_back(
+            bIsGltf ? result.spMeshFile->vNormals.emplace_back(
                 pMesh->mNormals[i].x, pMesh->mNormals[i].z, -pMesh->mNormals[i].y
-            ) : meshData->vNormals.emplace_back(
+            ) : result.spMeshFile->vNormals.emplace_back(
                 pMesh->mNormals[i].x, pMesh->mNormals[i].y, pMesh->mNormals[i].z
             );
         }
@@ -318,52 +306,65 @@ shared_ptr<MeshFile> FileLoader::ProcessMesh(
         for (UINT i = 0; i < pMesh->mNumFaces; i++) {
             aiFace face = pMesh->mFaces[i];
             for (UINT j = 0; j < face.mNumIndices; j++)
-                meshData->vIndices.emplace_back(face.mIndices[j]);
+                result.spMeshFile->vIndices.emplace_back(face.mIndices[j]);
         }
 
-        meshData->vTangents.resize(meshData->vNormals.size());
-        meshData->UpdateTangents();
+        result.spMeshFile->vTangents.resize(result.spMeshFile->vNormals.size());
+        result.spMeshFile->UpdateTangents();
 
-        if (pMesh->mMaterialIndex >= 0)
+        vector<DirectX::XMFLOAT3>& vertices = result.spMeshFile->vVertices;
+
+        // 3번 이렇게 해주어야 정상적인 변환이 일어나는데 왜???
+        for (size_t idx = 0; idx < 3; ++idx)
         {
-            vector<PBRModelTextureSet>& vTextureSets = parentNode.vChildrenTextureSets;
-            vTextureSets.emplace_back();
-
-            const aiTextureType aiTextureTypes[TEXTURE_MAP_NUM] = {
-                aiTextureType_AMBIENT_OCCLUSION,
-                aiTextureType_BASE_COLOR,
-                aiTextureType_METALNESS,
-                aiTextureType_DIFFUSE_ROUGHNESS,
-                aiTextureType_EMISSIVE,
-                aiTextureType_NORMALS,
-                aiTextureType_HEIGHT
-            };
-
-            aiMaterial* material = pScene->mMaterials[pMesh->mMaterialIndex];
-
-            for (size_t idx = 0; idx < TEXTURE_MAP_NUM; ++idx)
+            for (DirectX::XMFLOAT3& v : vertices)
             {
-                string textureFileName = ReadTextureFileName(strFilePath, pScene, material, aiTextureTypes[idx]);
-                if (!textureFileName.empty())
-                {
-                    filesystem::path texturePath(textureFileName);
-                    const string strFilePathIn = texturePath.parent_path().string();
-                    const string strFileName = texturePath.filename().stem().string();
-                    const string strExtention = texturePath.extension().string();
-                    UINT x, y, comp;
-                    vTextureSets[vTextureSets.size() - 1].spModelTexture[idx] = LoadImageFile(strFilePathIn, strFileName, strExtention, &x, &y, &comp);
-                }
+                DirectX::XMVECTOR f4Vector = DirectX::XMVectorSet(v.x, v.y, v.z, 0.f);
+                f4Vector = DirectX::XMVector4Transform(f4Vector, xmMatrix);
+                memcpy(&v, f4Vector.m128_f32, sizeof(v));
             }
-        }
 
-        AddUsingFile(strFileWithExtMesh, meshData);
+        }
+        result.spMeshFile->Normalize();
+        result.spMeshFile->CreateBuffers();
+
+        AddUsingFile(strFileWithExtMesh, result.spMeshFile);
     }
     else
     {
-        meshData = pMeshFile->shared_from_this();
+        result.spMeshFile = pMeshFile->shared_from_this();
     }
 
-    return meshData;
+    if (pMesh->mMaterialIndex >= 0)
+    {
+        const aiTextureType aiTextureTypes[TEXTURE_MAP_NUM] = {
+            aiTextureType_AMBIENT_OCCLUSION,
+            aiTextureType_BASE_COLOR,
+            aiTextureType_METALNESS,
+            aiTextureType_DIFFUSE_ROUGHNESS,
+            aiTextureType_EMISSIVE,
+            aiTextureType_NORMALS,
+            aiTextureType_HEIGHT
+        };
+
+        aiMaterial* material = pScene->mMaterials[pMesh->mMaterialIndex];
+
+        for (size_t idx = 0; idx < TEXTURE_MAP_NUM; ++idx)
+        {
+            string textureFileName = ReadTextureFileName(strFilePath, pScene, material, aiTextureTypes[idx]);
+            if (!textureFileName.empty())
+            {
+                filesystem::path texturePath(textureFileName);
+                const string strFilePathIn = texturePath.parent_path().string();
+                const string strFileName = texturePath.filename().stem().string();
+                const string strExtention = texturePath.extension().string();
+                UINT x, y, comp;
+                result.spModelTexture[idx] = LoadImageFile(strFilePathIn, strFileName, strExtention, &x, &y, &comp);
+            }
+        }
+    }
+
+    return result;
 
 }
 

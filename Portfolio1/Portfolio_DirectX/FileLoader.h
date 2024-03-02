@@ -46,17 +46,17 @@ private:
 		struct aiNode* pNode,
 		const struct aiScene* pScene,
 		DirectX::XMMATRIX& xmMatrix,
-		struct NodeData& parentNode 
+		class ModelFile* pModelFile
 	);
 
-	static std::shared_ptr<class MeshFile> ProcessMesh(
+	static struct MeshFileSet ProcessMesh(
 		const std::string& strFilePath,
 		const std::string& strFileName,
 		const std::string& strExtension,
 		const bool& bIsGltf,
 		struct aiMesh* pMesh,
-		const struct aiScene* pScene,
-		NodeData& parentNode
+		DirectX::XMMATRIX& xmMatrix,
+		const struct aiScene* pScene
 	);
 
 public:
@@ -75,7 +75,7 @@ public:
 	static std::string ConvertUniCodeToUTF8(const std::wstring& wStr);
 
 public:
-	static std::shared_ptr<MeshFile> LoadDefaultCubeMesh(
+	static std::shared_ptr<class MeshFile> LoadDefaultCubeMesh(
 		const bool& bReverse
 	);
 

@@ -2,7 +2,7 @@
 
 #include "DefineVar.h"
 
-#include "APBRStaticMesh.h"
+#include "PBRStaticMesh.h"
 #include "NormalImageFile.h"
 
 #include "AIBLModel.h"
@@ -89,9 +89,13 @@ void ModelManipulator::ListUpModel()
 			{
 				ModelFile* tmpPtr = (ModelFile*)payload->Data;
 				shared_ptr<ModelFile> modelFile = tmpPtr->shared_from_this();
-				
-				// Static Mesh·Î º¯È¯!
 
+				const vector<MeshFileSet>& vMeshFileSets = modelFile->GetMeshFileSet();
+				for (auto& meshFile : vMeshFileSets)
+				{
+					shared_ptr<PBRStaticMesh> spPBRMesh = make_shared<PBRStaticMesh>(meshFile);
+					AddModel(spPBRMesh);
+				}
 			}
 			ImGui::EndDragDropTarget();
 		}
@@ -101,48 +105,12 @@ void ModelManipulator::ListUpModel()
 
 void ModelManipulator::SetModelAsList(AStaticMesh& staticMesh)
 {
-	const vector<shared_ptr<AStaticMesh>>& childrenMeshes = staticMesh.GetChildren();
-
-	int treeNodeStyle = ImGuiTreeNodeFlags_OpenOnDoubleClick & ImGuiTreeNodeFlags_SpanAvailWidth;
-	bool bIsTree = false;
-
-	if (childrenMeshes.size() > 0)
-	{
-		bIsTree = true;
-	}
-	
-	if (bIsTree)
-	{
-		bool node_open = TreeNodeEx(
-			(void*)(intptr_t)staticMesh.sModelData.uiModelID,
-			treeNodeStyle,
-			staticMesh.GetMeshName().c_str()
-		);
-
-		if (node_open)
-		{
-			for (auto& child : childrenMeshes)
-			{
-				SetModelAsList(*child.get());
-			}
-			TreePop();
-		}
-	}
-	else
-	{
-		Selectable(staticMesh.GetMeshName().c_str());
-	}
-
+	Selectable(staticMesh.GetMeshName().c_str());
 }
 
 void ModelManipulator::AddModel(shared_ptr<AStaticMesh> spMesh)
 {
 	pModels.emplace(spMesh->sModelData.uiModelID, spMesh);
-	for (auto& model : spMesh->GetChildren())
-	{
-		pModels.emplace(spMesh->sModelData.uiModelID, spMesh);
-	}
-
 	vModels.push_back(spMesh);
 }
 
@@ -151,7 +119,7 @@ void ModelManipulator::ManipulateModel(AStaticMesh& staticMesh)
 	DrawTransformation(&staticMesh);
 }
 
-void ModelManipulator::ManipulateModel(APBRStaticMesh& pbrStaticMesh)
+void ModelManipulator::ManipulateModel(PBRStaticMesh& pbrStaticMesh)
 {
 	DrawTransformation((AStaticMesh*)(&pbrStaticMesh));
 	Separator();
@@ -176,7 +144,7 @@ void ModelManipulator::DrawTransformation(AStaticMesh* pStaticMesh)
 	}
 }
 
-void ModelManipulator::DrawPBRTexture(APBRStaticMesh* pPBRStaticMesh)
+void ModelManipulator::DrawPBRTexture(PBRStaticMesh* pPBRStaticMesh)
 {
 	if (CollapsingHeader("PBR Model Textures"))
 	{
@@ -197,7 +165,7 @@ void ModelManipulator::DrawPBRTexture(APBRStaticMesh* pPBRStaticMesh)
 		for (WORD idx = 0; idx < TEXTURE_MAP_NUM; ++idx)
 		{
 			SetTextureDragAndDrop(
-				APBRStaticMesh::unmapTextureNames[idx].c_str(), 
+				PBRStaticMesh::unmapTextureNames[idx].c_str(), 
 				pPBRStaticMesh->pModelTexture[idx], 
 				DRAG_DROP_TEXTURE_KEY
 			);

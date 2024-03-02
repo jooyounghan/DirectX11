@@ -27,9 +27,6 @@ public:
 	std::shared_ptr<class IImageFile>		spEnvDiffuseTextureFile;
 	std::shared_ptr<class IImageFile>	spEnvBrdfTextureFile;
 
-private:
-	virtual void Load(const std::string& path) override {};
-
 public:
 	virtual void UpdateModel(const float& fDelta) override;
 

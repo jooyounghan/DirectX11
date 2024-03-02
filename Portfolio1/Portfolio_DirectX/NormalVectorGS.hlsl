@@ -41,9 +41,9 @@ void main(
         NormalVectorGSOutput element;
 
         float3 f3ModelBiTangent = normalize(cross(input[i].f3ModelNormal.xyz, input[i].f3ModelTangent.xyz));
-        float3 f3ModelNormal = GetNormalFromTexture(
+        float3 f3ModelNormal = normalize(GetNormalFromTexture(
             bIsNormalOn, NormalTexture, ClampSampler, input[i].f2TexCoord, input[i].f3ModelTangent, f3ModelBiTangent, input[i].f3ModelNormal
-        );
+        ));
 
         float4 f4ModelPos = GetHeightedModelPos(
             bIsHeightOn, HeightTexture, ClampSampler, input[i].f2TexCoord, fHeightFactor, f3ModelNormal, input[i].f4ModelPos
@@ -51,7 +51,7 @@ void main(
        
         for (uint j = 0; j < 2; j++)
         {
-            element.f4ProjPos = mul(f4ModelPos + float4(f3ModelNormal, 0.f) * j, mViewProj);
+            element.f4ProjPos = mul(f4ModelPos + 0.1f * float4(f3ModelNormal, 0.f) * j, mViewProj);
             element.f2TexCoord = float2(j, 0);
             output.Append(element);
         }

@@ -3,7 +3,7 @@
 
 class LightRenderer : public IRenderer
 {
-	friend class APBRStaticMesh;
+	friend class PBRStaticMesh;
 	friend class AIBLModel;
 	friend class PointLight;
 	friend class SpotLight;
@@ -27,7 +27,7 @@ private:
 	void RenderLightMap(class SpotLight& spotLight);
 
 private:
-	void SetModelSettingForLightMap(class APBRStaticMesh& pbrStaticMesh);
+	void SetModelSettingForLightMap(class PBRStaticMesh& pbrStaticMesh);
 	void SetModelSettingForLightMap(class AIBLModel& iblMesh);
 };
 

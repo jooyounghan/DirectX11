@@ -1177,7 +1177,7 @@ IGFD_API void IGFD::FilterManager::SetFileStyle(FileStyle::FileStyleFunctor vFun
     }
 }
 
-// todo : refactor this fucking function
+// todo : refactor this function
 IGFD_API bool IGFD::FilterManager::GetFileStyle(const IGFD_FileStyleFlags& vFlags,
     const std::string& vCriteria,
     ImVec4* vOutColor,

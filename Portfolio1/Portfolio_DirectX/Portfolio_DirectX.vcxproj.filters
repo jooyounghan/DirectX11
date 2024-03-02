@@ -282,14 +282,11 @@
     <ClInclude Include="FileManipulator.h">
       <Filter>헤더 파일\GUI\Extended</Filter>
     </ClInclude>
-    <ClInclude Include="APBRStaticMesh.h">
+    <ClInclude Include="PBRStaticMesh.h">
       <Filter>헤더 파일\Model\PBR</Filter>
     </ClInclude>
     <ClInclude Include="CubeModel.h">
       <Filter>헤더 파일\Model\PBR\Extended</Filter>
-    </ClInclude>
-    <ClInclude Include="CubeMapModel.h">
-      <Filter>헤더 파일\Model\PBR</Filter>
     </ClInclude>
     <ClInclude Include="AIBLModel.h">
       <Filter>헤더 파일\Model\PBR</Filter>
@@ -332,6 +329,9 @@
     </ClInclude>
     <ClInclude Include="MeshFile.h">
       <Filter>헤더 파일\File\Extended</Filter>
+    </ClInclude>
+    <ClInclude Include="CubeMapModel.h">
+      <Filter>헤더 파일\Model\PBR\Extended</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -428,7 +428,7 @@
     <ClCompile Include="Viewable.cpp">
       <Filter>소스 파일\Viewable</Filter>
     </ClCompile>
-    <ClCompile Include="APBRStaticMesh.cpp">
+    <ClCompile Include="PBRStaticMesh.cpp">
       <Filter>소스 파일\Model\PBR</Filter>
     </ClCompile>
     <ClCompile Include="IDepthStencil.cpp">
@@ -457,9 +457,6 @@
     </ClCompile>
     <ClCompile Include="FileManipulator.cpp">
       <Filter>소스 파일\GUI\Extended</Filter>
-    </ClCompile>
-    <ClCompile Include="CubeMapModel.cpp">
-      <Filter>소스 파일\Model\PBR</Filter>
     </ClCompile>
     <ClCompile Include="AIBLModel.cpp">
       <Filter>소스 파일\Model\PBR</Filter>
@@ -500,11 +497,14 @@
     <ClCompile Include="ImageFile.cpp">
       <Filter>소스 파일\File</Filter>
     </ClCompile>
-    <ClCompile Include="CubeModel.cpp">
-      <Filter>소스 파일\Model</Filter>
-    </ClCompile>
     <ClCompile Include="MeshFile.cpp">
       <Filter>소스 파일\File\Extended</Filter>
+    </ClCompile>
+    <ClCompile Include="CubeModel.cpp">
+      <Filter>소스 파일\Model\PBR\Extended</Filter>
+    </ClCompile>
+    <ClCompile Include="CubeMapModel.cpp">
+      <Filter>소스 파일\Model\PBR\Extended</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

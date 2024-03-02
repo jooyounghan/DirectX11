@@ -2,10 +2,10 @@
 #include <unordered_map>
 
 #include "AStaticMesh.h"
+#include "ModelFile.h"
 #include "ImageFile.h"
 
-
-class APBRStaticMesh : public AStaticMesh
+class PBRStaticMesh : public AStaticMesh
 {
 	friend class ModelRenderer;
 	friend class LightRenderer;
@@ -15,8 +15,9 @@ public:
 	static std::unordered_map<WORD, std::string> unmapTextureNames;
 
 public:
-	APBRStaticMesh();
-	virtual ~APBRStaticMesh();
+	PBRStaticMesh();
+	PBRStaticMesh(const struct MeshFileSet& meshFileSetIn);
+	virtual ~PBRStaticMesh();
 
 public:
 	std::shared_ptr<IImageFile> pModelTexture[TEXTURE_MAP_NUM];
@@ -37,7 +38,6 @@ public:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> cpPBRTextureFlagBuffer;
 
 public:
-	virtual void Load(const std::string& path) = 0;
 	virtual void UpdateModel(const float& fDelta) override;
 
 private:

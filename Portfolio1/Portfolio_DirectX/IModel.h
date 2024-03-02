@@ -25,7 +25,6 @@ public:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> cpIdBuffer;
 
 public:
-	virtual void Load(const std::string& path) = 0;
 	virtual void Draw() = 0;
 	virtual void UpdateModel(const float& fDelta) = 0;
 

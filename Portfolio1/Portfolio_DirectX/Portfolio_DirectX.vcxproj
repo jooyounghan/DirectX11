@@ -172,7 +172,7 @@
     <ClInclude Include="ILight.h" />
     <ClInclude Include="IModel.h" />
     <ClInclude Include="IMovable.h" />
-    <ClInclude Include="APBRStaticMesh.h" />
+    <ClInclude Include="PBRStaticMesh.h" />
     <ClInclude Include="IRectangle.h" />
     <ClInclude Include="RenderTarget.h" />
     <ClInclude Include="IScalable.h" />
@@ -230,7 +230,7 @@
     <ClCompile Include="ILight.cpp" />
     <ClCompile Include="IModel.cpp" />
     <ClCompile Include="IMovable.cpp" />
-    <ClCompile Include="APBRStaticMesh.cpp" />
+    <ClCompile Include="PBRStaticMesh.cpp" />
     <ClCompile Include="IRectangle.cpp" />
     <ClCompile Include="RenderTarget.cpp" />
     <ClCompile Include="IScalable.cpp" />

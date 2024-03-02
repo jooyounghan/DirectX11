@@ -27,6 +27,9 @@ public:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> cpInicesBuffer;
 
 public:
+	void Normalize();
+
+public:
 	void CreateBuffers();
 	void UpdateTangents();
 

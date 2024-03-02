@@ -1,7 +1,7 @@
 #pragma once
-#include "APBRStaticMesh.h"
+#include "PBRStaticMesh.h"
 
-class CubeModel : public APBRStaticMesh
+class CubeModel : public PBRStaticMesh
 {
 public:
 	CubeModel(
@@ -12,8 +12,5 @@ public:
 		const bool& bReverse
 	);
 	virtual ~CubeModel();
-
-private:
-	virtual void Load(const std::string& path) override {};
 };
 

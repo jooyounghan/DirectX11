@@ -4,7 +4,7 @@
 #include "DirectXDevice.h"
 
 #include "ACamera.h"
-#include "APBRStaticMesh.h"
+#include "PBRStaticMesh.h"
 #include "AIBLModel.h"
 
 #include <vector>
@@ -61,7 +61,7 @@ void NormalVectorRenderer::RenderNormalVector(
 	DirectXDevice::ApplyDebugMessageFilter();
 }
 
-void NormalVectorRenderer::RenderNormal(APBRStaticMesh& pbrStaticMesh)
+void NormalVectorRenderer::RenderNormal(PBRStaticMesh& pbrStaticMesh)
 {
 	ID3D11Buffer* pNullBuffer = nullptr;
 	ID3D11ShaderResourceView* pNullSRV = nullptr;

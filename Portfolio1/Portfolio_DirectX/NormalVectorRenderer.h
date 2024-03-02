@@ -3,7 +3,7 @@
 
 class NormalVectorRenderer : public IRenderer
 {
-	friend class APBRStaticMesh;
+	friend class PBRStaticMesh;
 	friend class AIBLModel;
 
 public:
@@ -20,7 +20,7 @@ public:
 	);
 
 private:
-	void RenderNormal(class APBRStaticMesh& pbrStaticMesh);
+	void RenderNormal(class PBRStaticMesh& pbrStaticMesh);
 	void RenderNormal(class AIBLModel& iblMesh);
 };
 
