@@ -1,4 +1,5 @@
 #include "CameraManipulator.h"
+#include "ModelManipulator.h"
 
 #include "DefineVar.h"
 #include "PickableCamera.h"
@@ -16,7 +17,8 @@ const char* CameraManipulator::cameraKind[] = { "Filtered Camera(No Model Pickin
 
 CameraManipulator::CameraManipulator(
 	UINT& uiWidthIn, 
-	UINT& uiHeightIn
+	UINT& uiHeightIn,
+	ModelManipulator* pModelManipulatorIn
 )
 	:
 	uiWidth(uiWidthIn),
@@ -27,7 +29,7 @@ CameraManipulator::CameraManipulator(
 	iCameraSelectedIdx(NOT_SELECTED),
 	iFilterSelectedIdx(NOT_SELECTED),
 	ullCameraListCheckIdx(0),
-	ullSelectedModelID(0)
+	pModelManipulator(pModelManipulatorIn)
 {
 	InitCameraVariable();
 	AutoZeroMemory(fCameraPos);
@@ -366,5 +368,5 @@ void CameraManipulator::VisitLButtonDown(
 )
 {
 	pickable.SetMousePos(xPosIn, yPosIn);
-	ullSelectedModelID = pickable.GetPickedID();
+	pModelManipulator->SetSelctedModel(pickable.GetPickedID());
 }

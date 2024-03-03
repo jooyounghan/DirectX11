@@ -27,11 +27,17 @@ private:
 	bool bIsDrawingNormal;
 
 public:
-	void SetSelctedMesh(const uint32_t selected_id);
+	void SetSelctedModel(const uint32_t& selected_id);
+	const uint32_t& GetSelectedModelID() { return uiSelectedModelIdx; }
+
+public:
 	inline bool GetIsDrawingNormal() { return bIsDrawingNormal; }
 
 private:
 	std::unordered_map<uint32_t, std::shared_ptr<IMesh>> pModels;
+
+private:
+	uint32_t uiSelectedModelIdx;
 
 private:
 	std::shared_ptr<AIBLMesh> spIBLModel;

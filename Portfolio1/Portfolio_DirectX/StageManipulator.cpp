@@ -1,5 +1,5 @@
 #include "StageManipulator.h"
-
+#include "ModelManipulator.h"
 
 #include "ACamera.h"
 #include "ILight.h"
@@ -8,9 +8,10 @@ using namespace ImGui;
 
 StageManipulator::StageManipulator(
 	UINT& uiWidthIn,
-	UINT& uiHeightIn
+	UINT& uiHeightIn,
+	ModelManipulator* pModelManipulatorIn
 )
-	: upCameraManipulator(std::make_unique<CameraManipulator>(uiWidthIn, uiHeightIn)),
+	: upCameraManipulator(std::make_unique<CameraManipulator>(uiWidthIn, uiHeightIn, pModelManipulatorIn)),
 	upLightManipulator(std::make_unique<LightManipulator>())
 {
 }

@@ -19,13 +19,13 @@ using namespace std;
 using namespace ImGui;
 
 ModelManipulator::ModelManipulator()
-	: bIsDrawingNormal(false)
+	: bIsDrawingNormal(false), uiSelectedModelIdx(0)
 {
 	//AddModel(make_shared<CubeModel>(-5.f, 0.f, 0.f, 1.f, false));
 	//AddModel(make_shared<CubeModel>(5.f, 0.f, 0.f, 1.f, false));
 	//AddModel(make_shared<CubeModel>(0.f, -5.f, 0.f, 1.f, false));
-	//AddModel(make_shared<CubeModel>(0.f, 5.f, 0.f, 1.f, false));
-	//AddModel(make_shared<CubeModel>(0.f, 0.f, 5.f, 1.f, false));
+	AddModel(make_shared<CubeModel>(0.f, 5.f, 0.f, 1.f, false));
+	AddModel(make_shared<CubeModel>(0.f, 0.f, 5.f, 1.f, false));
 	//AddModel(make_shared<CubeModel>(0.f, 0.f, -5.f, 1.f, false));
 
 	spIBLModel = make_shared<CubeMapModel>(500.f);
@@ -34,10 +34,12 @@ ModelManipulator::ModelManipulator()
 
 ModelManipulator::~ModelManipulator()
 {
+
 }
 
-void ModelManipulator::SetSelctedMesh(const uint32_t selected_id)
+void ModelManipulator::SetSelctedModel(const uint32_t& selected_id)
 {
+	uiSelectedModelIdx = selected_id;
 	if (pModels.find(selected_id) != pModels.end())
 	{
 		spSelectedMesh = pModels[selected_id];
@@ -90,13 +92,8 @@ void ModelManipulator::ListUpModel()
 			{
 				ModelFile* tmpPtr = (ModelFile*)payload->Data;
 				shared_ptr<ModelFile> modelFile = tmpPtr->shared_from_this();
-
-				const vector<MeshFileSet>& vMeshFileSets = modelFile->GetMeshFileSet();
-				for (auto& meshFile : vMeshFileSets)
-				{
-					shared_ptr<PBRStaticMesh> spPBRMesh = make_shared<PBRStaticMesh>(meshFile);
-					AddModel(spPBRMesh);
-				}
+				shared_ptr<GroupPBRModel> groupModel = make_shared<GroupPBRModel>(modelFile);
+				AddModel(groupModel);
 			}
 			ImGui::EndDragDropTarget();
 		}
@@ -106,14 +103,20 @@ void ModelManipulator::ListUpModel()
 
 void ModelManipulator::SetModelAsList(SinglePBRModel& singlePBRModel)
 {
-	Selectable(singlePBRModel.GetMeshName().c_str());
+	if (Selectable(singlePBRModel.GetMeshName().c_str(), singlePBRModel.GetMeshID() == uiSelectedModelIdx))
+	{
+		SetSelctedModel(singlePBRModel.GetMeshID());
+	}
 }
 
 void ModelManipulator::SetModelAsList(GroupPBRModel& groupPBRModel)
 {
 	const vector<PBRStaticMesh>& vPBRMeshes = groupPBRModel.GetChildrenMeshes();
 
-	int treeNodeStyle = ImGuiTreeNodeFlags_OpenOnDoubleClick & ImGuiTreeNodeFlags_SpanAvailWidth;
+	int treeNodeStyle = ImGuiTreeNodeFlags_OpenOnArrow | 
+		ImGuiTreeNodeFlags_OpenOnDoubleClick | 
+		ImGuiTreeNodeFlags_SpanAvailWidth;
+	uiSelectedModelIdx == groupPBRModel.GetMeshID() ? treeNodeStyle |= ImGuiTreeNodeFlags_Selected : false;
 
 	bool node_open = ImGui::TreeNodeEx(
 		(void*)(intptr_t)groupPBRModel.GetMeshID(),
@@ -121,21 +124,27 @@ void ModelManipulator::SetModelAsList(GroupPBRModel& groupPBRModel)
 		groupPBRModel.GetMeshName().c_str()
 	);
 
+	if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
+	{
+		SetSelctedModel(groupPBRModel.GetMeshID());
+	}
+
 	if (node_open)
 	{
 		for (auto& pbrMesh : vPBRMeshes)
 		{
-			Selectable(pbrMesh.GetMeshName().c_str());
+			BulletText(pbrMesh.GetMeshName().c_str());
 		}
 		ImGui::TreePop();
 	}
-
-	Selectable(groupPBRModel.GetMeshName().c_str());
 }
 
 void ModelManipulator::SetModelAsList(AIBLMesh& iblMesh)
 {
-	Selectable(iblMesh.GetMeshName().c_str());
+	if (Selectable(iblMesh.GetMeshName().c_str(), iblMesh.GetMeshID() == uiSelectedModelIdx))
+	{
+		SetSelctedModel(iblMesh.GetMeshID());
+	}
 }
 
 void ModelManipulator::AddModel(shared_ptr<IMesh> spMesh)
@@ -146,6 +155,7 @@ void ModelManipulator::AddModel(shared_ptr<IMesh> spMesh)
 void ModelManipulator::ManipulateModel(SinglePBRModel& singlePBRModel)
 {
 	DrawTransformation(&singlePBRModel);
+	DrawPBRTexture(&singlePBRModel);
 }
 
 void ModelManipulator::ManipulateModel(GroupPBRModel& groupPBRModel)
@@ -156,7 +166,6 @@ void ModelManipulator::ManipulateModel(GroupPBRModel& groupPBRModel)
 	for (auto& pbrMesh : vPBRMeshes)
 	{
 		Separator();
-		Text(pbrMesh.GetMeshName().c_str());
 		DrawPBRTexture(&pbrMesh);
 	}
 }
@@ -181,7 +190,7 @@ void ModelManipulator::DrawTransformation(ATransformerable* pTransformable)
 
 void ModelManipulator::DrawPBRTexture(PBRStaticMesh* pPBRStaticMesh)
 {
-	if (CollapsingHeader("PBR Model Textures"))
+	if (CollapsingHeader(("PBR Model Textures " + pPBRStaticMesh->GetMeshName()).c_str()))
 	{
 		DragFloat3("Fresnel Reflectance", pPBRStaticMesh->GetFresnelConstantAddress(), 0.005f, 0.f, 1.f, "%.3f");
 

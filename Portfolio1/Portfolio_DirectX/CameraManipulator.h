@@ -14,7 +14,8 @@ class CameraManipulator
 public:
 	CameraManipulator(
 		UINT& uiWidthIn,
-		UINT& uiHeightIn
+		UINT& uiHeightIn,
+		class ModelManipulator* pModelManipulatorIn
 	);
 	~CameraManipulator();
 
@@ -61,10 +62,7 @@ private:
 	size_t ullFilterListCheckIdx;
 
 private:
-	uint32_t ullSelectedModelID;
-
-public:
-	inline const uint32_t& GetSelecetedModelID() { return ullSelectedModelID; }
+	class ModelManipulator* pModelManipulator;
 
 private:
 	void InitCameraVariable();

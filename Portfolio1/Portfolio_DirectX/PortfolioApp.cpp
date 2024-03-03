@@ -39,8 +39,8 @@ void PortfolioApp::Init()
 
 	upModelManipulator = make_unique<ModelManipulator>();
 	upFileManipulator = make_unique<FileManipulator>();
-	upStageManipulator = make_unique<StageManipulator>(uiWidth, uiHeight);
-
+	const uint32_t& selectedModelID = upModelManipulator->GetSelectedModelID();
+	upStageManipulator = make_unique<StageManipulator>(uiWidth, uiHeight, upModelManipulator.get());
 	InitImGUI();
 }
 
@@ -193,8 +193,6 @@ LRESULT __stdcall PortfolioApp::AppProc(HWND hWnd, UINT msg, WPARAM wParam, LPAR
 	LightManipulator* const pLightManipulator = upStageManipulator->GetLightManipulator();
 
 	pCameraManipulator->ProcWindowMsg(msg, wParam, lParam);
-
-	upModelManipulator->SetSelctedMesh(pCameraManipulator->GetSelecetedModelID());
 
 	switch (msg) {
 	case WM_EXITSIZEMOVE:

@@ -21,7 +21,7 @@ std::unordered_map<WORD, std::string> PBRStaticMesh::unmapTextureNames
 	 { HEIGHT_TEXTURE_MAP, "Height Map" }
 };
 
-ID3D11Buffer* const PBRStaticMesh::pNullBuffer = nullptr;
+ID3D11Buffer* const PBRStaticMesh::pNullBuffer[4] = { nullptr, nullptr, nullptr, nullptr };
 UINT PBRStaticMesh::pNull[4] = { NULL, NULL, NULL, NULL };
 const std::vector<UINT> PBRStaticMesh::uiStrides = { sizeof(DirectX::XMFLOAT3), sizeof(DirectX::XMFLOAT2),sizeof(DirectX::XMFLOAT3),sizeof(DirectX::XMFLOAT3) };
 const std::vector<UINT> PBRStaticMesh::uiOffsets = { 0, 0, 0, 0 };
@@ -49,6 +49,7 @@ PBRStaticMesh::PBRStaticMesh(const MeshFileSet& meshFileSet)
 {
 	sMeshFileSet = meshFileSet;
 	InitPBRStaticMesh();
+	SetMeshName(meshFileSet.spMeshFile->GetFileName());
 }
 
 PBRStaticMesh::~PBRStaticMesh()
@@ -84,8 +85,8 @@ void PBRStaticMesh::Draw()
 	DirectXDevice::pDeviceContext->IASetVertexBuffers(0, 4, vertexBuffers.data(), uiStrides.data(), uiOffsets.data());
 	DirectXDevice::pDeviceContext->IASetIndexBuffer(sMeshFileSet.spMeshFile->cpInicesBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 	DirectXDevice::pDeviceContext->DrawIndexed((UINT)sMeshFileSet.spMeshFile->vIndices.size(), NULL, NULL);
-	DirectXDevice::pDeviceContext->IASetIndexBuffer(pNullBuffer, DXGI_FORMAT_R32_UINT, 0);
-	DirectXDevice::pDeviceContext->IASetVertexBuffers(0, 4, &pNullBuffer, pNull, pNull);
+	DirectXDevice::pDeviceContext->IASetIndexBuffer(pNullBuffer[0], DXGI_FORMAT_R32_UINT, 0);
+	DirectXDevice::pDeviceContext->IASetVertexBuffers(0, 4, pNullBuffer, pNull, pNull);
 }
 
 void PBRStaticMesh::UpdateModel(const float& fDelta)

@@ -8,7 +8,8 @@ class StageManipulator : public IGuiMenu
 public:
 	StageManipulator(
 		UINT& uiWidthIn,
-		UINT& uiHeightIn
+		UINT& uiHeightIn,
+		class ModelManipulator* pModelManipulatorIn
 	);
 	virtual ~StageManipulator();
 

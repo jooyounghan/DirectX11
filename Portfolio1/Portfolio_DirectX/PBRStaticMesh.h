@@ -58,7 +58,7 @@ public:
 	inline ID3D11Buffer* const* GetPBRTextureFlagBuffer() { return cpPBRTextureFlagBuffer.GetAddressOf(); }
 
 private:
-	static ID3D11Buffer* const pNullBuffer;
+	static ID3D11Buffer* const pNullBuffer[4];
 	static UINT pNull[4];
 	static const std::vector<UINT> uiStrides;
 	static const std::vector<UINT> uiOffsets;

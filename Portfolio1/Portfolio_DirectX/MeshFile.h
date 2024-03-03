@@ -26,7 +26,6 @@ public:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> cpTangentsBuffer;
 	Microsoft::WRL::ComPtr<ID3D11Buffer> cpInicesBuffer;
 
-
 protected:
 	bool bIsGltf;
 

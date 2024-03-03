@@ -22,7 +22,7 @@ GroupPBRModel::GroupPBRModel(
 		vChildrenMeshes.emplace_back(meshFileSet);
 	}
 	
-	SetMeshName(spModelFile->GetFileName());
+	SetMeshName(spModelFile->GetFileName() + to_string(uiGroupPBRModelIdx));
 	uiGroupPBRModelIdx++;
 }
 
@@ -37,6 +37,11 @@ void GroupPBRModel::UpdateModel(const float& fDelta)
 	{
 		pbrStaicMesh.UpdateModel(fDelta);
 	}
+}
+
+void GroupPBRModel::AcceptModelAsList(ModelManipulator* pModelManipulator)
+{
+	pModelManipulator->SetModelAsList(*this);
 }
 
 void GroupPBRModel::AcceptModelManipulating(ModelManipulator* pModelManipulator)

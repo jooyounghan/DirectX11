@@ -36,6 +36,12 @@ public:
 	inline std::shared_ptr<IImageFile>& GetDiffuseTextureFileRef() { return spEnvDiffuseTextureFile; }
 	inline std::shared_ptr<IImageFile>& GetBRDFTextureFileRef() { return spEnvBrdfTextureFile; }
 
+private:
+	static ID3D11Buffer* const pNullBuffer[4];
+	static UINT pNull[4];
+	static const std::vector<UINT> uiStrides;
+	static const std::vector<UINT> uiOffsets;
+
 public:
 	virtual void Draw() override;
 	virtual void UpdateModel(const float& fDelta) override;
