@@ -25,6 +25,13 @@ IMovable::~IMovable()
 {
 }
 
+void IMovable::SetPosition(const float& x, const float& y, const float& z)
+{
+	xmvPosition.m128_f32[0] = x;
+	xmvPosition.m128_f32[1] = y;
+	xmvPosition.m128_f32[2] = z;
+}
+
 void IMovable::UpdatePosition()
 {
 	ID3D11Helper::UpdateBuffer(DirectXDevice::pDeviceContext, xmvPosition, D3D11_MAP_WRITE_DISCARD, cpPositionBuffer.Get());

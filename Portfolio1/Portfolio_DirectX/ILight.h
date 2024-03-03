@@ -4,7 +4,7 @@
 
 class ILight : virtual public IMovable
 {
-protected:
+public:
 	static constexpr float gLightFovDeg = 90.f;
 	static constexpr float gLightNearZ = 0.001f;
 	static constexpr UINT gShadowMapWidth = 1000;
@@ -24,7 +24,7 @@ public:
 	);
 	virtual ~ILight();
 
-public:
+protected:
 	struct
 	{
 		float fLightColor[3];
@@ -33,8 +33,14 @@ public:
 		float fLightPower;
 		float fDummy[2];
 	} sBaseLightData;
-protected:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> cpBaseLightBuffer;
+
+public:
+	inline float* GetLightColor() { return sBaseLightData.fLightColor; }
+	inline float* GetLightFallOffStart() { return &sBaseLightData.fFallOffStart; }
+	inline float* GetLightFallOffEnd() { return &sBaseLightData.fFallOffEnd; }
+	inline float* GetLightPower() { return &sBaseLightData.fLightPower; }
+	inline ID3D11Buffer* const* GetBaseLightBuffer() { return cpBaseLightBuffer.GetAddressOf(); }
 
 public:
 	virtual size_t GetLightID() = 0;

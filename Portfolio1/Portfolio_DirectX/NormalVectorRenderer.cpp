@@ -4,10 +4,11 @@
 #include "DirectXDevice.h"
 
 #include "ACamera.h"
-#include "PBRStaticMesh.h"
-#include "AIBLModel.h"
+#include "SinglePBRModel.h"
+#include "GroupPBRModel.h"
+#include "AIBLMesh.h"
 
-#include <vector>
+using namespace std;
 
 NormalVectorRenderer::NormalVectorRenderer()
 	: pCamera(nullptr)
@@ -20,7 +21,7 @@ NormalVectorRenderer::~NormalVectorRenderer()
 
 void NormalVectorRenderer::RenderNormalVector(
 	ACamera* pCameraIn, 
-	const std::unordered_map<uint32_t, std::shared_ptr<AStaticMesh>>& vStaticMeshesIn
+	const unordered_map<uint32_t, shared_ptr<IMesh>>& vMeshesIn
 )
 {
 	DirectXDevice::AddIgnoringMessageFilter(D3D11_MESSAGE_ID_DEVICE_DRAW_SHADERRESOURCEVIEW_NOT_SET);
@@ -41,14 +42,14 @@ void NormalVectorRenderer::RenderNormalVector(
 
 	pCamera = pCameraIn;
 
-	for (auto& staticMesh : vStaticMeshesIn)
+	for (auto& staticMesh : vMeshesIn)
 	{
 		staticMesh.second->AcceptNormalVectorRendering(this);
 	}
 
 	pCamera = nullptr;
 
-	std::vector<ID3D11RenderTargetView*> vNullRTVs;
+	vector<ID3D11RenderTargetView*> vNullRTVs;
 	vNullRTVs.resize(rtvCnt, nullptr);
 	DirectXDevice::pDeviceContext->OMSetRenderTargets(rtvCnt, vNullRTVs.data(), nullptr);
 
@@ -61,33 +62,31 @@ void NormalVectorRenderer::RenderNormalVector(
 	DirectXDevice::ApplyDebugMessageFilter();
 }
 
-void NormalVectorRenderer::RenderNormal(PBRStaticMesh& pbrStaticMesh)
+void NormalVectorRenderer::RenderNormal(SinglePBRModel& singlePBRMesh)
 {
 	ID3D11Buffer* pNullBuffer = nullptr;
 	ID3D11ShaderResourceView* pNullSRV = nullptr;
 	ID3D11SamplerState* pNullSampler = nullptr;
 	
-	auto [uiStrides, uiOffsets, vertexBuffers] = pbrStaticMesh.GetInputInfo();
-	DirectXDevice::pDeviceContext->IASetVertexBuffers(0, 4, vertexBuffers.data(), uiStrides.data(), uiOffsets.data());
+	DirectXDevice::pDeviceContext->VSSetConstantBuffers(0, 1, singlePBRMesh.GetTransformationBuffer());
 
-	DirectXDevice::pDeviceContext->IASetIndexBuffer(pbrStaticMesh.spMeshFile->cpInicesBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+	DirectXDevice::pDeviceContext->GSSetConstantBuffers(0, 1, singlePBRMesh.GetPBRConstantBuffer());
+	DirectXDevice::pDeviceContext->GSSetConstantBuffers(1, 1, pCamera->GetViewProjBuffer());
+	DirectXDevice::pDeviceContext->GSSetConstantBuffers(2, 1, singlePBRMesh.GetPBRTextureFlagBuffer());
 
-	DirectXDevice::pDeviceContext->VSSetConstantBuffers(0, 1, pbrStaticMesh.cpTransformationBuffer.GetAddressOf());
-
-	DirectXDevice::pDeviceContext->GSSetConstantBuffers(0, 1, pbrStaticMesh.cpPBRConstantBuffer.GetAddressOf());
-	DirectXDevice::pDeviceContext->GSSetConstantBuffers(1, 1, pCamera->cpViewProjBuffer.GetAddressOf());
-	DirectXDevice::pDeviceContext->GSSetConstantBuffers(2, 1, pbrStaticMesh.cpPBRTextureFlagBuffer.GetAddressOf());
+	shared_ptr<IImageFile>& normalImage = singlePBRMesh.GetTextureImageFileRef(NORMAL_TEXTURE_MAP);
+	shared_ptr<IImageFile>& heightImage = singlePBRMesh.GetTextureImageFileRef(HEIGHT_TEXTURE_MAP);
 
 	DirectXDevice::pDeviceContext->GSSetShaderResources(0, 1, 
-		pbrStaticMesh.pModelTexture[NORMAL_TEXTURE_MAP] != nullptr ? 
-		pbrStaticMesh.pModelTexture[NORMAL_TEXTURE_MAP]->GetAddressOfSRV() : &pNullSRV);
+		normalImage.get() != nullptr ?
+		normalImage->GetAddressOfSRV() : &pNullSRV);
 	DirectXDevice::pDeviceContext->GSSetShaderResources(1, 1,
-		pbrStaticMesh.pModelTexture[HEIGHT_TEXTURE_MAP] != nullptr ?
-		pbrStaticMesh.pModelTexture[HEIGHT_TEXTURE_MAP]->GetAddressOfSRV() : &pNullSRV);
+		heightImage.get() != nullptr ?
+		heightImage->GetAddressOfSRV() : &pNullSRV);
 
 	DirectXDevice::pDeviceContext->GSSetSamplers(0, 1, DirectXDevice::ppClampSampler);
 
-	pbrStaticMesh.Draw();
+	singlePBRMesh.Draw();
 
 	DirectXDevice::pDeviceContext->VSSetConstantBuffers(0, 1, &pNullBuffer);
 
@@ -99,9 +98,50 @@ void NormalVectorRenderer::RenderNormal(PBRStaticMesh& pbrStaticMesh)
 	DirectXDevice::pDeviceContext->GSSetShaderResources(1, 1, &pNullSRV);
 
 	DirectXDevice::pDeviceContext->GSSetSamplers(0, 1, &pNullSampler);
-
 }
 
-void NormalVectorRenderer::RenderNormal(AIBLModel& iblMesh)
+void NormalVectorRenderer::RenderNormal(GroupPBRModel& groupPBRMesh)
 {
+	ID3D11Buffer* pNullBuffer = nullptr;
+	ID3D11ShaderResourceView* pNullSRV = nullptr;
+	ID3D11SamplerState* pNullSampler = nullptr;
+
+	vector<PBRStaticMesh>& vPBRMeshes = groupPBRMesh.GetChildrenMeshesRef();
+
+	DirectXDevice::pDeviceContext->VSSetConstantBuffers(0, 1, groupPBRMesh.GetTransformationBuffer());
+	DirectXDevice::pDeviceContext->GSSetConstantBuffers(1, 1, pCamera->GetViewProjBuffer());
+	DirectXDevice::pDeviceContext->GSSetSamplers(0, 1, DirectXDevice::ppClampSampler);
+
+	for (PBRStaticMesh& pbrMesh : vPBRMeshes)
+	{
+		DirectXDevice::pDeviceContext->GSSetConstantBuffers(0, 1, pbrMesh.GetPBRConstantBuffer());
+		DirectXDevice::pDeviceContext->GSSetConstantBuffers(2, 1, pbrMesh.GetPBRTextureFlagBuffer());
+
+		shared_ptr<IImageFile>& normalImage = pbrMesh.GetTextureImageFileRef(NORMAL_TEXTURE_MAP);
+		shared_ptr<IImageFile>& heightImage = pbrMesh.GetTextureImageFileRef(HEIGHT_TEXTURE_MAP);
+
+		DirectXDevice::pDeviceContext->GSSetShaderResources(0, 1,
+			normalImage.get() != nullptr ?
+			normalImage->GetAddressOfSRV() : &pNullSRV);
+		DirectXDevice::pDeviceContext->GSSetShaderResources(1, 1,
+			heightImage.get() != nullptr ?
+			heightImage->GetAddressOfSRV() : &pNullSRV);
+
+		pbrMesh.Draw();
+
+		DirectXDevice::pDeviceContext->GSSetConstantBuffers(0, 1, &pNullBuffer);
+		DirectXDevice::pDeviceContext->GSSetConstantBuffers(2, 1, &pNullBuffer);
+
+		DirectXDevice::pDeviceContext->GSSetShaderResources(0, 1, &pNullSRV);
+		DirectXDevice::pDeviceContext->GSSetShaderResources(1, 1, &pNullSRV);
+
+	}
+	DirectXDevice::pDeviceContext->VSSetConstantBuffers(0, 1, &pNullBuffer);
+	DirectXDevice::pDeviceContext->GSSetConstantBuffers(1, 1, &pNullBuffer);
+	DirectXDevice::pDeviceContext->GSSetSamplers(0, 1, &pNullSampler);
+}
+
+void NormalVectorRenderer::RenderNormal(AIBLMesh& iblMesh)
+{
+	// Do Nothing
 }

@@ -32,5 +32,7 @@ void ATransformerable::UpdateTranformationMatrix()
 
 	sTransformation.xmmInvTransformation = XMMatrixInverse(nullptr, sTransformation.xmmTransformation);
 	sTransformation.xmmTransformation = XMMatrixTranspose(sTransformation.xmmTransformation);
+
+	ID3D11Helper::UpdateBuffer(DirectXDevice::pDeviceContext, sTransformation, D3D11_MAP_WRITE_DISCARD, cpTransformationBuffer.Get());
 }
 

@@ -3,9 +3,9 @@
 #include "DirectXDevice.h"
 #include "FileLoader.h"
 
-//TODO : Áö¿ö
-#include <string>
 using namespace std;
+
+uint32_t CubeModel::uiCubeModelIdx = 1;
 
 CubeModel::CubeModel(
 	const float& fCenterX,
@@ -14,15 +14,15 @@ CubeModel::CubeModel(
 	const float& fRadius,
 	const bool& bReverse
 )
-	: PBRStaticMesh()
+	: SinglePBRModel()
 {
-	xmvPosition.m128_f32[0] = fCenterX;
-	xmvPosition.m128_f32[1] = fCenterY;
-	xmvPosition.m128_f32[2] = fCenterZ;
+	sMeshFileSet.spMeshFile = FileLoader::LoadDefaultCubeMesh(bReverse);
+	SetPosition(fCenterX, fCenterY, fCenterZ);
 	ScaleUp(fRadius - 1.f, fRadius - 1.f, fRadius - 1.f);
+	UpdateTranformationMatrix();
 
-	spMeshFile = FileLoader::LoadDefaultCubeMesh(bReverse);
-	SetMeshName("Cube Model " + to_string(sModelData.uiModelID));
+	SetMeshName("Cube Model " + to_string(uiCubeModelIdx));
+	uiCubeModelIdx++;
 }
 
 CubeModel::~CubeModel()

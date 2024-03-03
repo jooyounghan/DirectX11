@@ -16,10 +16,6 @@ enum EPointDirections : size_t
 
 class PointLight : public ILight, public CubeRenderTargets
 {
-	friend class LightRenderer;
-	friend class ModelRenderer;
-	friend class LightManipulator;
-
 public:
 	PointLight(
 		const float& fXPos,
@@ -40,6 +36,9 @@ private:
 
 protected:
 	Viewable viewable[PointDirectionNum];
+
+public:
+	inline Viewable& GetViewable(const EPointDirections& eDirection) { return viewable[eDirection]; }
 
 public:
 	virtual size_t GetLightID();

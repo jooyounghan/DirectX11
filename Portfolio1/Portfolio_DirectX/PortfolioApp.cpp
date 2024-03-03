@@ -7,10 +7,9 @@
 #include <imgui_impl_win32.h>
 #include <imgui_internal.h>
 
-#include "ModelRenderer.h"
+#include "IMesh.h"
 
 #include "ID3D11Helper.h"
-#include "AStaticMesh.h"
 #include "ACamera.h"
 #include "ILight.h"
 
@@ -83,8 +82,8 @@ void PortfolioApp::Render()
 
 		const std::vector<std::shared_ptr<ILight>>& pLights = pLightManipulator->GetLights();
 
-		const shared_ptr<AIBLModel>& spIBLModel = upModelManipulator->GetIBLModel();
-		const unordered_map<uint32_t, std::shared_ptr<AStaticMesh>>& pModels = upModelManipulator->GetModels();
+		const shared_ptr<AIBLMesh>& spIBLModel = upModelManipulator->GetIBLModel();
+		const unordered_map<uint32_t, std::shared_ptr<IMesh>>& pModels = upModelManipulator->GetModels();
 
 		lightRenderer.UpdateLightMap(pModels, pLights);
 

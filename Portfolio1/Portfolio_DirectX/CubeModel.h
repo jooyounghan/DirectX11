@@ -1,7 +1,7 @@
 #pragma once
-#include "PBRStaticMesh.h"
+#include "SinglePBRModel.h"
 
-class CubeModel : public PBRStaticMesh
+class CubeModel : public SinglePBRModel
 {
 public:
 	CubeModel(
@@ -12,5 +12,8 @@ public:
 		const bool& bReverse
 	);
 	virtual ~CubeModel();
+
+protected:
+	static uint32_t uiCubeModelIdx;
 };
 

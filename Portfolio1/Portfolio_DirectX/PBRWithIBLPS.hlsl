@@ -15,7 +15,7 @@ Texture2D NormalTexture : register(t8);
 
 cbuffer ModelID : register(b0)
 {
-    uint uiModelId;
+    uint uIMeshId;
     uint uiDummy[3];
 };
 
@@ -89,6 +89,6 @@ PixelOutput main(DomainOutput input)
     float3 fAmbientColor = (diffuseIBL + specularIBL) * f3AmbientOcclusion;
  
     result.pixelColor = float4(fAmbientColor, 1.f);
-    result.modelID = uiModelId;
+    result.modelID = uIMeshId;
     return result;
 }

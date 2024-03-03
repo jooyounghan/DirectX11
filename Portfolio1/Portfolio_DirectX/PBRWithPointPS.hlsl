@@ -12,7 +12,7 @@ TextureCube ShadowMap : register(t5);
 
 cbuffer ModelIDBuffer : register(b0)
 {
-    uint uiModelId;
+    uint uIMeshId;
     uint uiDummy[3];
 };
 
@@ -185,6 +185,6 @@ PixelOutput main(DomainOutput input)
     float3 fDirectColor = (diffuseBrdf + specularBrdf) * NDotL * f3LightColor * fLightPowerSaturated * fDepthFactor;
            
     result.pixelColor = float4(fDirectColor, 1.f);
-    result.modelID = uiModelId;
+    result.modelID = uIMeshId;
     return result;
 }

@@ -22,12 +22,20 @@ protected:
 
 protected:
 	DirectX::XMVECTOR						xmvPosition;
-
-public:
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	cpPositionBuffer;
 
 public:
 	inline DirectX::XMVECTOR& GetPosition() { return xmvPosition; }
+	inline ID3D11Buffer* const* GetPositionBuffer() { return cpPositionBuffer.GetAddressOf(); }
+
+public:
+	void SetPosition(
+		const float& x,
+		const float& y,
+		const float& z
+	);
+
+public:
 	void UpdatePosition();
 };
 

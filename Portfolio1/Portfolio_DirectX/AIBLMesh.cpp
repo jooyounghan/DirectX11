@@ -1,4 +1,4 @@
-#include "AIBLModel.h"
+#include "AIBLMesh.h"
 #include "ID3D11Helper.h"
 #include "DirectXDevice.h"
 
@@ -7,8 +7,8 @@
 #include "NormalVectorRenderer.h"
 #include "LightRenderer.h"
 
-AIBLModel::AIBLModel()
-	: AStaticMesh()
+AIBLMesh::AIBLMesh()
+	: IMesh(), ATransformerable()
 {
 	AutoZeroMemory(sIBLData);
 	ID3D11Helper::CreateBuffer(
@@ -20,13 +20,17 @@ AIBLModel::AIBLModel()
 	);
 }
 
-AIBLModel::~AIBLModel()
+AIBLMesh::~AIBLMesh()
 {
 }
 
-void AIBLModel::UpdateModel(const float& fDelta)
+void AIBLMesh::Draw()
 {
-	AStaticMesh::UpdateModel(fDelta);
+}
+
+void AIBLMesh::UpdateModel(const float& fDelta)
+{
+	UpdateTranformationMatrix();
 	ID3D11Helper::UpdateBuffer(
 		DirectXDevice::pDeviceContext, 
 		sIBLData, D3D11_MAP_WRITE_DISCARD, 
@@ -34,22 +38,27 @@ void AIBLModel::UpdateModel(const float& fDelta)
 	);
 }
 
-void AIBLModel::AcceptModelManipulating(ModelManipulator* pModelManipulator)
+void AIBLMesh::AcceptModelAsList(ModelManipulator* pModelManipulator)
+{
+	pModelManipulator->SetModelAsList(*this);
+}
+
+void AIBLMesh::AcceptModelManipulating(ModelManipulator* pModelManipulator)
 {
 	pModelManipulator->ManipulateModel(*this);
 }
 
-void AIBLModel::AcceptModelRendering(ModelRenderer* pModelRenderer)
+void AIBLMesh::AcceptModelRendering(ModelRenderer* pModelRenderer)
 {
 	pModelRenderer->RenderModel(*this);
 }
 
-void AIBLModel::AcceptNormalVectorRendering(NormalVectorRenderer* pNormalVectorRenderer)
+void AIBLMesh::AcceptNormalVectorRendering(NormalVectorRenderer* pNormalVectorRenderer)
 {
 	pNormalVectorRenderer->RenderNormal(*this);
 }
 
-void AIBLModel::AcceptLightMapUpdating(LightRenderer* pLightRnederer)
+void AIBLMesh::AcceptLightMapUpdateSetting(LightRenderer* pLightRnederer)
 {
 	pLightRnederer->SetModelSettingForLightMap(*this);
 }

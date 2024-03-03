@@ -5,7 +5,7 @@ public:
 	IScalable();
 	~IScalable();
 
-public:
+protected:
 	struct
 	{
 		float fScaleX;
@@ -13,6 +13,8 @@ public:
 		float fScaleZ;
 	} sScales;
 
-	virtual void ScaleUp(const float& fXup, const float& fYUp, const float& fZUp) = 0;
+public:
+	inline float* GetScale() { return &sScales.fScaleX; }
+	void ScaleUp(const float& fXup, const float& fYUp, const float& fZUp);
 };
 

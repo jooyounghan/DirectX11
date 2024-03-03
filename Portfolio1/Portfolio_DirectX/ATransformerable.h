@@ -15,12 +15,10 @@ protected:
 		DirectX::XMMATRIX xmmTransformation;
 		DirectX::XMMATRIX xmmInvTransformation;
 	} sTransformation;
-
-public:
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	cpTransformationBuffer;
 
 public:
-	virtual void UpdateModel(const float& fDelta) = 0;
+	inline ID3D11Buffer* const* GetTransformationBuffer() { return cpTransformationBuffer.GetAddressOf(); }
 
 public:
 	void UpdateTranformationMatrix();

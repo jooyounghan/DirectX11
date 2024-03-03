@@ -1,11 +1,24 @@
 #pragma once
 #include "IGuiMenu.h"
+
 #include <vector>
 #include <memory>
 #include <unordered_map>
 
+class IMesh;
+class AIBLMesh;
+class PBRStaticMesh;
+class ATransformerable;
+class SinglePBRModel;
+class GroupPBRModel;
+class AIBLMesh;
+
 class ModelManipulator : public IGuiMenu
 {
+	friend SinglePBRModel;
+	friend GroupPBRModel;
+	friend AIBLMesh;
+
 public:
 	ModelManipulator();
 	virtual ~ModelManipulator();
@@ -18,20 +31,18 @@ public:
 	inline bool GetIsDrawingNormal() { return bIsDrawingNormal; }
 
 private:
-	std::unordered_map<uint32_t, std::shared_ptr<class AStaticMesh>> pModels;
+	std::unordered_map<uint32_t, std::shared_ptr<IMesh>> pModels;
 
 private:
-	std::vector<std::shared_ptr<AStaticMesh>> vModels;
-
-private:
-	std::shared_ptr<class AIBLModel> spIBLModel;
-	std::shared_ptr<AStaticMesh> spSelectedMesh;
+	std::shared_ptr<AIBLMesh> spIBLModel;
+	std::shared_ptr<IMesh> spSelectedMesh;
 
 public:
-	inline const std::unordered_map<uint32_t, std::shared_ptr<AStaticMesh>>& GetModels() { return pModels; }
-	inline const std::shared_ptr<AIBLModel>& GetIBLModel() { return spIBLModel; }
+	inline const std::unordered_map<uint32_t, std::shared_ptr<IMesh>>& GetModels() { return pModels; }
+	inline const std::shared_ptr<AIBLMesh>& GetIBLModel() { return spIBLModel; }
+
 public:
-	void AddModel(std::shared_ptr<AStaticMesh> spMesh);
+	void AddModel(std::shared_ptr<IMesh> spMesh);
 
 public:
 	virtual void PopAsDialog() override;
@@ -39,24 +50,23 @@ public:
 
 private:
 	void ListUpModel();
-	void SetModelAsList(class AStaticMesh& staticMesh);
 
+private:
+	void SetModelAsList(SinglePBRModel& singlePBRModel);
+	void SetModelAsList(GroupPBRModel& groupPBRModel);
+	void SetModelAsList(AIBLMesh& iblMesh);
 
+private:
+	void ManipulateModel(SinglePBRModel& singlePBRModel);
+	void ManipulateModel(GroupPBRModel& groupPBRModel);
+	void ManipulateModel(AIBLMesh& iblMesh);
 
+private:
+	void DrawTransformation(ATransformerable* pTransformable);
 
-
-
-public:
-	void ManipulateModel(class AStaticMesh& staticMesh);
-	void ManipulateModel(class PBRStaticMesh& pbrStaticMesh);
-	void ManipulateModel(class AIBLModel& iblModel);
-
-protected:
-	void DrawTransformation(AStaticMesh* pStaticMesh);
-
-protected:
+private:
 	void DrawPBRTexture(PBRStaticMesh* pPBRStaticMesh);
-	void DrawIBLTexture(AIBLModel* pIBLModel);
+	void DrawIBLTexture(AIBLMesh* pIBLModel);
 
 private:
 	void SetTextureDragAndDrop(

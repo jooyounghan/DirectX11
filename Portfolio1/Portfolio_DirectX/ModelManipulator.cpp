@@ -2,13 +2,15 @@
 
 #include "DefineVar.h"
 
-#include "PBRStaticMesh.h"
-#include "NormalImageFile.h"
-
-#include "AIBLModel.h"
-#include "DDSImageFile.h"
+#include "SinglePBRModel.h"
+#include "GroupPBRModel.h"
+#include "AIBLMesh.h"
 
 #include "ModelFile.h"
+#include "NormalImageFile.h"
+#include "DDSImageFile.h"
+
+// TODO : Áö¿ì±â
 #include "CubeModel.h"
 #include "CubeMapModel.h"
 
@@ -73,9 +75,9 @@ void ModelManipulator::ListUpModel()
 		ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 10.0f);
 		if (BeginListBox("Model List", ImVec2(0.f, GetTextLineHeight() * 10.f)))
 		{
-			for (auto& model : vModels)
+			for (auto& model : pModels)
 			{
-				SetModelAsList(*model.get());
+				model.second->AcceptModelAsList(this);
 				Separator();
 			}
 			EndListBox();
@@ -102,44 +104,78 @@ void ModelManipulator::ListUpModel()
 
 }
 
-void ModelManipulator::SetModelAsList(AStaticMesh& staticMesh)
+void ModelManipulator::SetModelAsList(SinglePBRModel& singlePBRModel)
 {
-	Selectable(staticMesh.GetMeshName().c_str());
+	Selectable(singlePBRModel.GetMeshName().c_str());
 }
 
-void ModelManipulator::AddModel(shared_ptr<AStaticMesh> spMesh)
+void ModelManipulator::SetModelAsList(GroupPBRModel& groupPBRModel)
 {
-	pModels.emplace(spMesh->sModelData.uiModelID, spMesh);
-	vModels.push_back(spMesh);
+	const vector<PBRStaticMesh>& vPBRMeshes = groupPBRModel.GetChildrenMeshes();
+
+	int treeNodeStyle = ImGuiTreeNodeFlags_OpenOnDoubleClick & ImGuiTreeNodeFlags_SpanAvailWidth;
+
+	bool node_open = ImGui::TreeNodeEx(
+		(void*)(intptr_t)groupPBRModel.GetMeshID(),
+		treeNodeStyle,
+		groupPBRModel.GetMeshName().c_str()
+	);
+
+	if (node_open)
+	{
+		for (auto& pbrMesh : vPBRMeshes)
+		{
+			Selectable(pbrMesh.GetMeshName().c_str());
+		}
+		ImGui::TreePop();
+	}
+
+	Selectable(groupPBRModel.GetMeshName().c_str());
 }
 
-void ModelManipulator::ManipulateModel(AStaticMesh& staticMesh)
+void ModelManipulator::SetModelAsList(AIBLMesh& iblMesh)
 {
-	DrawTransformation(&staticMesh);
+	Selectable(iblMesh.GetMeshName().c_str());
 }
 
-void ModelManipulator::ManipulateModel(PBRStaticMesh& pbrStaticMesh)
+void ModelManipulator::AddModel(shared_ptr<IMesh> spMesh)
 {
-	DrawTransformation((AStaticMesh*)(&pbrStaticMesh));
+	pModels.emplace(spMesh->GetMeshID(), spMesh);
+}
+
+void ModelManipulator::ManipulateModel(SinglePBRModel& singlePBRModel)
+{
+	DrawTransformation(&singlePBRModel);
+}
+
+void ModelManipulator::ManipulateModel(GroupPBRModel& groupPBRModel)
+{
+	DrawTransformation((&groupPBRModel));
 	Separator();
-	DrawPBRTexture(&pbrStaticMesh);
+	vector<PBRStaticMesh>& vPBRMeshes = groupPBRModel.GetChildrenMeshesRef();
+	for (auto& pbrMesh : vPBRMeshes)
+	{
+		Separator();
+		Text(pbrMesh.GetMeshName().c_str());
+		DrawPBRTexture(&pbrMesh);
+	}
 }
 
-void ModelManipulator::ManipulateModel(AIBLModel& iblModel)
+void ModelManipulator::ManipulateModel(AIBLMesh& iblModel)
 {
-	DrawTransformation((AStaticMesh*)(&iblModel));
+	DrawTransformation((&iblModel));
 	Separator();
 	DrawIBLTexture(&iblModel);
 }
 
-void ModelManipulator::DrawTransformation(AStaticMesh* pStaticMesh)
+void ModelManipulator::DrawTransformation(ATransformerable* pTransformable)
 {
 	if (CollapsingHeader("Transformation", ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		Separator();
-		DragFloat3("Translation", pStaticMesh->GetPosition().m128_f32, 1.f, -1000000.f, 1000000.f, "%.2f");
-		DragFloat3("Rotaion", &pStaticMesh->sAnglesDegree.fPitchDeg, 1.f, 0.f, 360.f, "%.2f");
-		DragFloat3("Scale", &pStaticMesh->sScales.fScaleX, 0.005f, -1000000.f, 1000000.f, "%.2f");
+		DragFloat3("Translation", pTransformable->GetPosition().m128_f32, 1.f, -1000000.f, 1000000.f, "%.2f");
+		DragFloat3("Rotaion", pTransformable->GetAngles(), 1.f, 0.f, 360.f, "%.2f");
+		DragFloat3("Scale", pTransformable->GetScale(), 0.005f, -1000000.f, 1000000.f, "%.2f");
 	}
 }
 
@@ -147,55 +183,55 @@ void ModelManipulator::DrawPBRTexture(PBRStaticMesh* pPBRStaticMesh)
 {
 	if (CollapsingHeader("PBR Model Textures"))
 	{
-		DragFloat3("Fresnel Reflectance", pPBRStaticMesh->sPBRConstant.fFresnelConstant, 0.005f, 0.f, 1.f, "%.3f");
+		DragFloat3("Fresnel Reflectance", pPBRStaticMesh->GetFresnelConstantAddress(), 0.005f, 0.f, 1.f, "%.3f");
 
-		if (pPBRStaticMesh->pModelTexture[HEIGHT_TEXTURE_MAP])
+		if (pPBRStaticMesh->GetTextureImageFileRef(HEIGHT_TEXTURE_MAP).get())
 		{
-			DragFloat("Height Factor", &pPBRStaticMesh->sPBRConstant.fHeightFactor, 0.005f, 0.f, 1.f, "%.3f");
+			DragFloat("Height Factor", pPBRStaticMesh->GetHeightFactorAddress(), 0.005f, 0.f, 1.f, "%.3f");
 		}
 		else
 		{
 			BeginDisabled();
-			pPBRStaticMesh->sPBRConstant.fHeightFactor = 0.f;
-			DragFloat("Height Factor", &pPBRStaticMesh->sPBRConstant.fHeightFactor, 0.005f, 0.f, 1.f, "%.3f");
+			pPBRStaticMesh->SetHeightFactor(0.f);
+			DragFloat("Height Factor", pPBRStaticMesh->GetHeightFactorAddress(), 0.005f, 0.f, 1.f, "%.3f");
 			EndDisabled();
 		}
 
 		for (WORD idx = 0; idx < TEXTURE_MAP_NUM; ++idx)
 		{
 			SetTextureDragAndDrop(
-				PBRStaticMesh::unmapTextureNames[idx].c_str(), 
-				pPBRStaticMesh->pModelTexture[idx], 
+				PBRStaticMesh::GetTextureName(idx).c_str(), 
+				pPBRStaticMesh->GetTextureImageFileRef((EModelTextures)idx), 
 				DRAG_DROP_TEXTURE_KEY
 			);
 		}
 	}
 }
 
-void ModelManipulator::DrawIBLTexture(AIBLModel* pIBLModel)
+void ModelManipulator::DrawIBLTexture(AIBLMesh* pIBLModel)
 {
 	if (CollapsingHeader("IBL Model Textures"))
 	{
 		DragFloat(
 			"Diffuse Rate",
-			&pIBLModel->sIBLData.DiffuseRate,
+			pIBLModel->GetDiffuseRateAddress(),
 			0.005f,
 			0.f, 1.f, "%.4f"
 		);
 
 		SetTextureDragAndDrop(
 			"Specular IBL Texture",
-			pIBLModel->spEnvSpecularTextureFile,
+			pIBLModel->GetSpecularTextureFileRef(),
 			DRAG_DROP_IBL_KEY
 		);
 		SetTextureDragAndDrop(
 			"Diffuse IBL Texture",
-			pIBLModel->spEnvDiffuseTextureFile,
+			pIBLModel->GetDiffuseTextureFileRef(),
 			DRAG_DROP_IBL_KEY
 		);
 		SetTextureDragAndDrop(
 			"BRDF LUT Texture",
-			pIBLModel->spEnvBrdfTextureFile,
+			pIBLModel->GetBRDFTextureFileRef(),
 			DRAG_DROP_TEXTURE_KEY
 		);
 	}

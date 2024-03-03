@@ -3,22 +3,22 @@
 #include "DirectXDevice.h"
 #include "FileLoader.h"
 
-#include <string>
 using namespace std;
+
+uint32_t CubeMapModel::uiCubeMapModelIdx = 1;
 
 CubeMapModel::CubeMapModel(
 	const float& fRadius
 )
-	: AIBLModel()
+	: AIBLMesh()
 {
-	xmvPosition.m128_f32[0] = 0.f;
-	xmvPosition.m128_f32[1] = 0.f;
-	xmvPosition.m128_f32[2] = 0.f;
-	ScaleUp(fRadius - 1.f, fRadius - 1.f, fRadius - 1.f);
-
 	spMeshFile = FileLoader::LoadDefaultCubeMesh(true);
-
-	SetMeshName("IBL Cube Map Model" + to_string(sModelData.uiModelID));
+	SetPosition(0.f, 0.f, 0.f);
+	ScaleUp(fRadius - 1.f, fRadius - 1.f, fRadius - 1.f);
+	UpdateTranformationMatrix();
+	
+	SetMeshName("IBL Cube Map Model" + to_string(uiCubeMapModelIdx));
+	uiCubeMapModelIdx++;
 }
 
 CubeMapModel::~CubeMapModel()

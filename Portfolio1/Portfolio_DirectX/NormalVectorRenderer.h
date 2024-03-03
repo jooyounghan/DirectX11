@@ -1,26 +1,34 @@
 #pragma once
 #include "IRenderer.h"
 
+class IMesh;
+class ACamera;
+class SinglePBRModel;
+class GroupPBRModel;
+class AIBLMesh;
+
 class NormalVectorRenderer : public IRenderer
 {
-	friend class PBRStaticMesh;
-	friend class AIBLModel;
+	friend SinglePBRModel;
+	friend GroupPBRModel;
+	friend AIBLMesh;
 
 public:
 	NormalVectorRenderer();
 	virtual ~NormalVectorRenderer();
 
 private:
-	class ACamera* pCamera;
+	ACamera* pCamera;
 
 public:
 	void RenderNormalVector(
-		class ACamera* pCameraIn,
-		const std::unordered_map<uint32_t, std::shared_ptr<class AStaticMesh>>& vStaticMeshesIn
+		ACamera* pCameraIn,
+		const std::unordered_map<uint32_t, std::shared_ptr<IMesh>>& vMeshesIn
 	);
 
 private:
-	void RenderNormal(class PBRStaticMesh& pbrStaticMesh);
-	void RenderNormal(class AIBLModel& iblMesh);
+	void RenderNormal(SinglePBRModel& singlePBRMesh);
+	void RenderNormal(GroupPBRModel& groupPBRMesh);
+	void RenderNormal(AIBLMesh& iblMesh);
 };
 

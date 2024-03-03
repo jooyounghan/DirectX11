@@ -2,7 +2,7 @@
 
 cbuffer ModelIDBuffer : register(b0)
 {
-    uint uiModelId;
+    uint uIMeshId;
     uint uiDummy[3];
 };
 
@@ -23,6 +23,6 @@ PixelOutput main(VertexOutput input)
     result.pixelColor = 
     (1.f - DiffuseRate) * SpecularIBLTexture.Sample(ClampSampler, input.f4ModelPos.xyz)
     + DiffuseRate * DiffuseIBLTexture.Sample(ClampSampler, input.f4ModelPos.xyz);
-    result.modelID = uiModelId;
+    result.modelID = uIMeshId;
     return result;
 }

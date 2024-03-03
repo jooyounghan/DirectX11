@@ -243,12 +243,12 @@ void LightManipulator::VisitLightSetting(SpotLight& spotLight)
 {
 	ShowLightSpotSetting(
 		spotLight.GetPosition().m128_f32,
-		(float*)&spotLight.sAnglesDegree,
-		spotLight.sBaseLightData.fLightColor,
-		&spotLight.sBaseLightData.fFallOffStart,
-		&spotLight.sBaseLightData.fFallOffEnd,
-		&spotLight.sBaseLightData.fLightPower,
-		&spotLight.sSpotLightData.fSpotPower
+		spotLight.GetAngles(),
+		spotLight.GetLightColor(),
+		spotLight.GetLightFallOffStart(),
+		spotLight.GetLightFallOffEnd(),
+		spotLight.GetLightPower(),
+		spotLight.GetSpotPower()
 	);
 }
 
@@ -256,9 +256,9 @@ void LightManipulator::VisitLightSetting(PointLight& pointLight)
 {
 	ShowLightPointSetting(
 		pointLight.GetPosition().m128_f32,
-		pointLight.sBaseLightData.fLightColor,
-		&pointLight.sBaseLightData.fFallOffStart,
-		&pointLight.sBaseLightData.fFallOffEnd,
-		&pointLight.sBaseLightData.fLightPower
+		pointLight.GetLightColor(),
+		pointLight.GetLightFallOffStart(),
+		pointLight.GetLightFallOffEnd(),
+		pointLight.GetLightPower()
 	);
 }

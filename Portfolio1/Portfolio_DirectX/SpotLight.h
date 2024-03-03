@@ -2,12 +2,8 @@
 #include "ILight.h"
 #include "ViewableDepthOnly.h"
 
-class SpotLight : public ILight, protected ViewableDepthOnly
+class SpotLight : public ILight, public ViewableDepthOnly
 {
-	friend class LightRenderer;
-	friend class ModelRenderer;
-	friend class LightManipulator;
-
 public:
 	SpotLight(
 		const float& fXPos,
@@ -30,14 +26,17 @@ private:
 	static size_t ullSpotLightCnt;
 	size_t ullSpotLightId;
 
-public:
+protected:
 	struct
 	{
 		float fSpotPower;
 		float fDummy[3];
 	} sSpotLightData;
-protected:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> cpSpotLightBuffer;
+
+public:
+	inline float* GetSpotPower() { return &sSpotLightData.fSpotPower; }
+	inline ID3D11Buffer* const* GetSpotLightBuffer() { return cpSpotLightBuffer.GetAddressOf(); }
 
 public:
 	virtual size_t GetLightID();

@@ -159,10 +159,7 @@
     <ClInclude Include="PortfolioApp.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="IModel.h">
-      <Filter>헤더 파일\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="AStaticMesh.h">
+    <ClInclude Include="IMesh.h">
       <Filter>헤더 파일\Model</Filter>
     </ClInclude>
     <ClInclude Include="APossessable.h">
@@ -288,7 +285,7 @@
     <ClInclude Include="CubeModel.h">
       <Filter>헤더 파일\Model\PBR\Extended</Filter>
     </ClInclude>
-    <ClInclude Include="AIBLModel.h">
+    <ClInclude Include="AIBLMesh.h">
       <Filter>헤더 파일\Model\PBR</Filter>
     </ClInclude>
     <ClInclude Include="IRenderer.h">
@@ -333,6 +330,12 @@
     <ClInclude Include="CubeMapModel.h">
       <Filter>헤더 파일\Model\PBR\Extended</Filter>
     </ClInclude>
+    <ClInclude Include="SinglePBRModel.h">
+      <Filter>헤더 파일\Model\PBR</Filter>
+    </ClInclude>
+    <ClInclude Include="GroupPBRModel.h">
+      <Filter>헤더 파일\Model\PBR</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseApp.cpp">
@@ -343,9 +346,6 @@
     </ClCompile>
     <ClCompile Include="PortfolioApp.cpp">
       <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="AStaticMesh.cpp">
-      <Filter>소스 파일\Model</Filter>
     </ClCompile>
     <ClCompile Include="APossessable.cpp">
       <Filter>소스 파일\Base</Filter>
@@ -368,7 +368,7 @@
     <ClCompile Include="FileLoader.cpp">
       <Filter>소스 파일\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="IModel.cpp">
+    <ClCompile Include="IMesh.cpp">
       <Filter>소스 파일\Model</Filter>
     </ClCompile>
     <ClCompile Include="DDSImageFile.cpp">
@@ -458,7 +458,7 @@
     <ClCompile Include="FileManipulator.cpp">
       <Filter>소스 파일\GUI\Extended</Filter>
     </ClCompile>
-    <ClCompile Include="AIBLModel.cpp">
+    <ClCompile Include="AIBLMesh.cpp">
       <Filter>소스 파일\Model\PBR</Filter>
     </ClCompile>
     <ClCompile Include="IRenderer.cpp">
@@ -505,6 +505,12 @@
     </ClCompile>
     <ClCompile Include="CubeMapModel.cpp">
       <Filter>소스 파일\Model\PBR\Extended</Filter>
+    </ClCompile>
+    <ClCompile Include="GroupPBRModel.cpp">
+      <Filter>소스 파일\Model\PBR</Filter>
+    </ClCompile>
+    <ClCompile Include="SinglePBRModel.cpp">
+      <Filter>소스 파일\Model\PBR</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -11,13 +11,16 @@ public:
 	);
 	~IAngleAdjustable();
 
-public:
+protected:
 	struct
 	{
 		float fPitchDeg;
 		float fYawDeg;
 		float fRollDeg;
 	} sAnglesDegree;
+
+public:
+	inline float* GetAngles() { return &sAnglesDegree.fPitchDeg; }
 
 public:
 	DirectX::XMMATRIX GetTransformedMatrix();

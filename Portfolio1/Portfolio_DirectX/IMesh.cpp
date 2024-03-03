@@ -1,13 +1,13 @@
-#include "IModel.h"
+#include "IMesh.h"
 #include "ID3D11Helper.h"
 #include "DirectXDevice.h"
 
-uint32_t IModel::uiGlobalModelID = 1;
+uint32_t IMesh::uiGlobalModelID = 1;
 
-IModel::IModel() 
+IMesh::IMesh() 
 {
 	AutoZeroMemory(sModelData);
-	sModelData.uiModelID = IModel::uiGlobalModelID++;
+	sModelData.uIMeshID = IMesh::uiGlobalModelID++;
 
 	ID3D11Helper::CreateBuffer(
 		DirectXDevice::pDevice, sModelData,
@@ -16,4 +16,4 @@ IModel::IModel()
 	);
 }
 
-IModel::~IModel() {}
+IMesh::~IMesh() {}

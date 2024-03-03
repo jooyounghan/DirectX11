@@ -35,14 +35,13 @@ protected:
 		DirectX::XMMATRIX xmmViewProjMat;
 		DirectX::XMMATRIX xmmInvViewProjMat;
 	} sViewProjs;
-
-public:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> cpViewProjBuffer;
 
 public:
-	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn);
+	inline ID3D11Buffer* const* GetViewProjBuffer() { return cpViewProjBuffer.GetAddressOf(); }
 
 public:
+	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn);
 	virtual void UpdateView();
 };
 

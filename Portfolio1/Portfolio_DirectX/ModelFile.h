@@ -1,6 +1,5 @@
 #pragma once
 #include <DirectXMesh.h>
-#include <vector>
 
 #include "MeshFile.h"
 #include "ImageFile.h"

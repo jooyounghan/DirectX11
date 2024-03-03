@@ -1,39 +1,50 @@
 #pragma once
 #include "IRenderer.h"
 
+class IMesh;
+class ILight;
+class ACamera;
+class SinglePBRModel;
+class GroupPBRModel;
+class AIBLMesh;
+class PointLight;
+class SpotLight;
+
 class ModelRenderer : public IRenderer
 {
-	friend class PBRStaticMesh;
-	friend class AIBLModel;
-	friend class PointLight;
-	friend class SpotLight;
+	friend SinglePBRModel;
+	friend GroupPBRModel;
+	friend AIBLMesh;
+	friend PointLight;
+	friend SpotLight;
 
 public:
 	ModelRenderer();
 	virtual ~ModelRenderer();
 
 private:
-	class ACamera* pCamera;
-	class std::shared_ptr<class AIBLModel> spIBLModel;
-	const std::vector<std::shared_ptr<class ILight>>* pLights;
+	ACamera* pCamera;
+	std::shared_ptr<AIBLMesh> spIBLModel;
+	const std::vector<std::shared_ptr<ILight>>* pLights;
 
 public:
 	void RenderObjects(
-		class ACamera* pCameraIn,
-		std::shared_ptr<class AIBLModel> spIBLModelIn,
-		const std::unordered_map<uint32_t, std::shared_ptr<class AStaticMesh>>& vStaticMeshesIn,
-		const std::vector<std::shared_ptr<class ILight>>& vLightsIn
+		ACamera* pCameraIn,
+		std::shared_ptr<AIBLMesh> spIBLModelIn,
+		const std::unordered_map<uint32_t, std::shared_ptr<IMesh>>& vMeshes,
+		const std::vector<std::shared_ptr<ILight>>& vLightsIn
 		= std::vector<std::shared_ptr<ILight>>()
 	);
 
 private:
-	void RenderModel(class PBRStaticMesh& pbrStaticMesh);
-	void RenderModel(class AIBLModel& iblMesh);
+	void RenderModel(SinglePBRModel& singlePBRMesh);
+	void RenderModel(GroupPBRModel& groupPBRMesh);
+	void RenderModel(AIBLMesh& iblMesh);
 
 private:
-	void SetLight(class PointLight& pointLight);
-	void SetLight(class SpotLight& spotLight);
-	void ResetLight(class PointLight& pointLight);
-	void ResetLight(class SpotLight& pointLight);
+	void SetLight(PointLight& pointLight);
+	void SetLight(SpotLight& spotLight);
+	void ResetLight(PointLight& pointLight);
+	void ResetLight(SpotLight& pointLight);
 };
 

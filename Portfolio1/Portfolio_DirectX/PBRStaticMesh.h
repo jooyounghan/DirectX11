@@ -1,51 +1,76 @@
 #pragma once
 #include <unordered_map>
 
-#include "AStaticMesh.h"
+#include "IMesh.h"
 #include "ModelFile.h"
 #include "ImageFile.h"
 
-class PBRStaticMesh : public AStaticMesh
+class PBRStaticMesh : public IMesh
 {
-	friend class ModelRenderer;
-	friend class LightRenderer;
-	friend class NormalVectorRenderer;
+protected:
+	static std::string								strDefaultTextureName;
+	static std::unordered_map<WORD, std::string>	unmapTextureNames;
 
 public:
-	static std::unordered_map<WORD, std::string> unmapTextureNames;
+	static const std::string& GetTextureName(const WORD& iTextureID);
 
 public:
 	PBRStaticMesh();
-	PBRStaticMesh(const struct MeshFileSet& meshFileSetIn);
+	PBRStaticMesh(const MeshFileSet& meshFileSet);
 	virtual ~PBRStaticMesh();
 
-public:
-	std::shared_ptr<IImageFile> pModelTexture[TEXTURE_MAP_NUM];
+private:
+	void InitPBRStaticMesh();
+
+protected:
+	MeshFileSet		sMeshFileSet;
 
 public:
+	inline const bool& IsMeshFileInitailized() { return sMeshFileSet.bIsInitialized; }
+	inline std::shared_ptr<MeshFile>& GetMeshFileRef() { return sMeshFileSet.spMeshFile; }
+	inline std::shared_ptr<IImageFile>& GetTextureImageFileRef(const EModelTextures& eModelTexture) { return sMeshFileSet.spModelTexture[eModelTexture]; }
+
+protected:
 	struct
 	{
 		float fFresnelConstant[3];
 		float fHeightFactor;
 	} sPBRConstant;
-	Microsoft::WRL::ComPtr<ID3D11Buffer> cpPBRConstantBuffer;
-
 	struct
 	{
 		BOOL bIsTextureOn[TEXTURE_MAP_NUM];
 		BOOL bIsGLTF;
 	} sPBRTextureFlag;
+
+protected:
+	Microsoft::WRL::ComPtr<ID3D11Buffer> cpPBRConstantBuffer;
 	Microsoft::WRL::ComPtr<ID3D11Buffer> cpPBRTextureFlagBuffer;
 
 public:
+	inline float* GetFresnelConstantAddress() { return sPBRConstant.fFresnelConstant; }
+	inline float* GetHeightFactorAddress() { return &sPBRConstant.fHeightFactor; }
+
+public:
+	inline void SetHeightFactor(const float& fFactor) { sPBRConstant.fHeightFactor = fFactor; }
+
+public:
+	inline ID3D11Buffer* const* GetPBRConstantBuffer() { return cpPBRConstantBuffer.GetAddressOf(); }
+	inline ID3D11Buffer* const* GetPBRTextureFlagBuffer() { return cpPBRTextureFlagBuffer.GetAddressOf(); }
+
+private:
+	static ID3D11Buffer* const pNullBuffer;
+	static UINT pNull[4];
+	static const std::vector<UINT> uiStrides;
+	static const std::vector<UINT> uiOffsets;
+
+public:
+	virtual void Draw() override;
 	virtual void UpdateModel(const float& fDelta) override;
 
-private:
-	virtual void AcceptModelManipulating(class ModelManipulator* pModelManipulator) override;
-	virtual void AcceptModelRendering(class ModelRenderer* pModelRenderer) override;
-
-private:
-	virtual void AcceptNormalVectorRendering(class NormalVectorRenderer* pNormalVectorRenderer) override;
-	virtual void AcceptLightMapUpdating(class LightRenderer* pLightRnederer) override;
+protected:
+	virtual void AcceptModelAsList(ModelManipulator* pModelManipulator) override {};
+	virtual void AcceptModelManipulating(class ModelManipulator* pModelManipulator) override {};
+	virtual void AcceptModelRendering(class ModelRenderer* pModelRenderer) override {};
+	virtual void AcceptNormalVectorRendering(class NormalVectorRenderer* pNormalVectorRenderer) override {};
+	virtual void AcceptLightMapUpdateSetting(class LightRenderer* pLightRnederer) override {};
 };
-
