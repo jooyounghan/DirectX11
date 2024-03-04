@@ -32,12 +32,12 @@ protected:
 protected:
 	std::vector<std::unique_ptr<class AFilter>> upFilters;
 
+private:
+	static ID3D11RenderTargetView* pNullRTV;
+
 public:
-	inline virtual std::tuple<UINT, std::vector<ID3D11RenderTargetView*>, ID3D11DepthStencilView*> GetRTVs() {
-		return std::make_tuple<UINT, std::vector<ID3D11RenderTargetView*>>(
-			1, std::vector<ID3D11RenderTargetView*>{ cpRTV.Get() }, cpDSV.Get()
-		);
-	};
+	virtual void SetCameraAsRenderTarget() override;
+	virtual void ResetCameraAsRenderTarget() override;
 
 public:
 	inline const std::vector<std::unique_ptr<class AFilter>>& GetFilters() { return upFilters; }

@@ -40,8 +40,8 @@ public:
 	std::unique_ptr<StageManipulator> upStageManipulator;
 
 public:
-	ModelRenderer modelRenderer;
-	LightRenderer lightRenderer;
-	NormalVectorRenderer normalVectorRenderer;
+	std::unique_ptr<ModelRenderer> upModelRenderer;
+	std::unique_ptr<LightRenderer> upLightRenderer;
+	std::unique_ptr<NormalVectorRenderer> upNormalVectorRenderer;
 };
 

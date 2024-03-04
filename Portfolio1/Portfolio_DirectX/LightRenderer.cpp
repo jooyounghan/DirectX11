@@ -20,6 +20,14 @@ LightRenderer::~LightRenderer()
 {
 }
 
+void LightRenderer::SetMessageFilter()
+{
+}
+
+void LightRenderer::ResetMessageFilter()
+{
+}
+
 void LightRenderer::UpdateLightMap(
 	const unordered_map<uint32_t, shared_ptr<IMesh>>& vMeshes,
 	const vector<shared_ptr<ILight>>& vLights

@@ -6,6 +6,7 @@
 #include "BlurFilter.h"
 
 size_t FilteredCamera::ullFiltertedCamaraCnt = 0;
+ID3D11RenderTargetView* FilteredCamera::pNullRTV = nullptr;
 
 FilteredCamera::FilteredCamera(
 	const float& fXPos,
@@ -47,6 +48,18 @@ FilteredCamera::FilteredCamera(
 FilteredCamera::~FilteredCamera()
 {
 
+}
+
+void FilteredCamera::SetCameraAsRenderTarget()
+{
+	DirectXDevice::pDeviceContext->OMSetRenderTargets(1, cpRTV.GetAddressOf(), cpDSV.Get());
+	DirectXDevice::pDeviceContext->RSSetViewports(1, &sViewPort);
+}
+
+void FilteredCamera::ResetCameraAsRenderTarget()
+{
+	DirectXDevice::pDeviceContext->OMSetRenderTargets(1, &pNullRTV, nullptr);
+	DirectXDevice::pDeviceContext->RSSetViewports(1, &nullViewPort);
 }
 
 void FilteredCamera::Resize(const UINT& uiWidthIn, const UINT& uiHeightIn)

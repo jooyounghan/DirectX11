@@ -26,6 +26,10 @@ private:
 	std::shared_ptr<ILight> spSelectedLight;
 
 public:
+	virtual void SetMessageFilter() override;
+	virtual void ResetMessageFilter() override;
+
+public:
 	void UpdateLightMap(
 		const std::unordered_map<uint32_t, std::shared_ptr<IMesh>>& vMeshes,
 		const std::vector<std::shared_ptr<ILight>>& vLights

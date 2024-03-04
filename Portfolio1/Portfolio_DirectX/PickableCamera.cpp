@@ -8,6 +8,7 @@
 using namespace std;
 
 size_t PickableCamera::ullPickableCamaraCnt = 0;
+vector<ID3D11RenderTargetView*> PickableCamera::pNullRTV = { nullptr, nullptr };
 
 PickableCamera::PickableCamera(
 	const float& fXPos,
@@ -58,6 +59,22 @@ PickableCamera::PickableCamera(
 
 PickableCamera::~PickableCamera()
 {
+}
+
+void PickableCamera::SetCameraAsRenderTarget()
+{
+	std::vector<ID3D11RenderTargetView*> vRTVs = {
+		RenderTarget::cpRTV.Get(),
+		IDPickableRenderTarget::cpRTV.Get()
+	};
+	DirectXDevice::pDeviceContext->OMSetRenderTargets(2, vRTVs.data(), cpDSV.Get());
+	DirectXDevice::pDeviceContext->RSSetViewports(1, &sViewPort);
+}
+
+void PickableCamera::ResetCameraAsRenderTarget()
+{
+	DirectXDevice::pDeviceContext->OMSetRenderTargets(1, pNullRTV.data(), nullptr);
+	DirectXDevice::pDeviceContext->RSSetViewports(1, &nullViewPort);
 }
 
 void PickableCamera::ClearRTV()

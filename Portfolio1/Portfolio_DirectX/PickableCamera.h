@@ -29,16 +29,11 @@ protected:
 	size_t ullPickableCamaraIdx;
 
 public:
-	inline virtual std::tuple<UINT, std::vector<ID3D11RenderTargetView*>, ID3D11DepthStencilView*> GetRTVs() {
-		return std::make_tuple<UINT, std::vector<ID3D11RenderTargetView*>>(
-			2, 
-			std::vector<ID3D11RenderTargetView*> { 
-				RenderTarget::cpRTV.Get(),
-				IDPickableRenderTarget::cpRTV.Get()
-			},
-			cpDSV.Get()
-		);
-	};
+	virtual void SetCameraAsRenderTarget() override;
+	virtual void ResetCameraAsRenderTarget() override;
+
+private:
+	static std::vector<ID3D11RenderTargetView*> pNullRTV;
 
 public:
 	virtual size_t GetCameraID() override { return ullPickableCamaraIdx; };

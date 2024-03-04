@@ -24,6 +24,14 @@ ModelRenderer::~ModelRenderer()
 {
 }
 
+void ModelRenderer::SetMessageFilter()
+{
+}
+
+void ModelRenderer::ResetMessageFilter()
+{
+}
+
 void ModelRenderer::RenderObjects(
 	class ACamera* pCameraIn,
 	shared_ptr<AIBLMesh> spIBLModelIn,
@@ -40,9 +48,7 @@ void ModelRenderer::RenderObjects(
 	spIBLModel = spIBLModelIn;
 	pLights = &vLightsIn;
 
-	auto [rtvCnt, vRTVs, pDSV] = pCamera->GetRTVs();
-	DirectXDevice::pDeviceContext->OMSetRenderTargets(rtvCnt, vRTVs.data(), pDSV);
-	DirectXDevice::pDeviceContext->RSSetViewports(1, &pCamera->sViewPort);
+	pCamera->SetCameraAsRenderTarget();
 
 	for (auto meshes : vMeshes)
 	{
@@ -53,9 +59,7 @@ void ModelRenderer::RenderObjects(
 	spIBLModelIn = nullptr;
 	pCamera = nullptr;
 
-	vector<ID3D11RenderTargetView*> vNullRTVs;
-	vNullRTVs.resize(rtvCnt, nullptr);
-	DirectXDevice::pDeviceContext->OMSetRenderTargets(rtvCnt, vNullRTVs.data(), nullptr);
+	pCamera->ResetCameraAsRenderTarget();
 
 	DirectXDevice::RemoveIgnoringMessageFilter(D3D11_MESSAGE_ID_DEVICE_DRAW_RENDERTARGETVIEW_NOT_SET);
 	DirectXDevice::RemoveIgnoringMessageFilter(D3D11_MESSAGE_ID_DEVICE_IASETPRIMITIVETOPOLOGY_TOPOLOGY_UNDEFINED);

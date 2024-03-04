@@ -35,12 +35,16 @@ public:
 protected:
 	bool isLinkedWithBackBuffer;
 
+protected:
+	static D3D11_VIEWPORT nullViewPort;
+
 public:
 	virtual size_t GetCameraID() = 0;
 	virtual void Resolve() = 0;
 
 public:
-	virtual std::tuple<UINT, std::vector<ID3D11RenderTargetView*>, ID3D11DepthStencilView*> GetRTVs() = 0;
+	virtual void SetCameraAsRenderTarget() = 0;
+	virtual void ResetCameraAsRenderTarget() = 0;
 
 public:
 	virtual void ManageKeyBoardInput(const float& fDelay);

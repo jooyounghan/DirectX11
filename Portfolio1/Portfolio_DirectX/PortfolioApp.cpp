@@ -39,8 +39,12 @@ void PortfolioApp::Init()
 
 	upModelManipulator = make_unique<ModelManipulator>();
 	upFileManipulator = make_unique<FileManipulator>();
-	const uint32_t& selectedModelID = upModelManipulator->GetSelectedModelID();
 	upStageManipulator = make_unique<StageManipulator>(uiWidth, uiHeight, upModelManipulator.get());
+
+	upModelRenderer = make_unique<ModelRenderer>();
+	upLightRenderer = make_unique<LightRenderer>();
+	upNormalVectorRenderer = make_unique<NormalVectorRenderer>();
+
 	InitImGUI();
 }
 
@@ -85,14 +89,14 @@ void PortfolioApp::Render()
 		const shared_ptr<AIBLMesh>& spIBLModel = upModelManipulator->GetIBLModel();
 		const unordered_map<uint32_t, std::shared_ptr<IMesh>>& pModels = upModelManipulator->GetModels();
 
-		lightRenderer.UpdateLightMap(pModels, pLights);
+		//upLightRenderer->UpdateLightMap(pModels, pLights);
 
 		if (upModelManipulator->GetIsDrawingNormal())
 		{
-			normalVectorRenderer.RenderNormalVector(pCamera, pModels);
+			upNormalVectorRenderer->RenderNormalVector(pCamera, pModels);
 		}
 
-		modelRenderer.RenderObjects(pCamera, spIBLModel, pModels, pLights);
+		//upModelRenderer->RenderObjects(pCamera, spIBLModel, pModels, pLights);
 
 		pCamera->Resolve();
 	}

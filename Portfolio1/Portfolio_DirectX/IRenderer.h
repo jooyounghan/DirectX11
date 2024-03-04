@@ -8,4 +8,8 @@ class IRenderer
 public:
 	IRenderer();
 	~IRenderer();
+
+public:
+	virtual void SetMessageFilter() = 0;
+	virtual void ResetMessageFilter() = 0;
 };

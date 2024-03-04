@@ -151,6 +151,36 @@
     <Filter Include="소스 파일\Texture2D\Filter\Extended">
       <UniqueIdentifier>{c29f0bb3-8718-44dd-9535-10e8aebc69c7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Shader">
+      <UniqueIdentifier>{b25ef745-bcdb-4c80-850a-bf6196c5f5c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Shader">
+      <UniqueIdentifier>{ffb9fe0d-a1b0-4688-8234-0983ba84fe79}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Shader\Extended">
+      <UniqueIdentifier>{12931a71-69ce-4f2a-9dde-d43ffb81aaa1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Shader\Extended\Geometry">
+      <UniqueIdentifier>{c6689add-5b20-4d01-86d4-1987d98ce6e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Shader\Extended\Pixel">
+      <UniqueIdentifier>{a8a133df-0924-4a70-9d59-6e921cb79b50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Shader\Extended">
+      <UniqueIdentifier>{0550780d-070d-48a1-a561-99b7c52980ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Shader\Extended\Vertex">
+      <UniqueIdentifier>{458dadd7-140d-4a29-a6db-3ebc0eea387e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Shader\Extended\Pixel">
+      <UniqueIdentifier>{b7a8b9d7-cb62-4a3c-b5db-b01cb85f44ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Shader\Extended\Geometry">
+      <UniqueIdentifier>{895457cb-e3db-4805-abe5-6cd86c667622}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Shader\Extended\Vertex">
+      <UniqueIdentifier>{81687c77-1a41-40b7-b39c-854c68da6919}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseApp.h">
@@ -336,6 +366,27 @@
     <ClInclude Include="GroupPBRModel.h">
       <Filter>헤더 파일\Model\PBR</Filter>
     </ClInclude>
+    <ClInclude Include="IShader.h">
+      <Filter>헤더 파일\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="IGeometryShader.h">
+      <Filter>헤더 파일\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="IPixelShader.h">
+      <Filter>헤더 파일\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="IVertexShader.h">
+      <Filter>헤더 파일\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="NormalVectorVertexShader.h">
+      <Filter>헤더 파일\Shader\Extended\Vertex</Filter>
+    </ClInclude>
+    <ClInclude Include="NormalVectorGeometryShader.h">
+      <Filter>헤더 파일\Shader\Extended\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="NormalVectorPixelShader.h">
+      <Filter>헤더 파일\Shader\Extended\Pixel</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseApp.cpp">
@@ -512,6 +563,27 @@
     <ClCompile Include="SinglePBRModel.cpp">
       <Filter>소스 파일\Model\PBR</Filter>
     </ClCompile>
+    <ClCompile Include="IShader.cpp">
+      <Filter>소스 파일\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="NormalVectorVertexShader.cpp">
+      <Filter>소스 파일\Shader\Extended\Vertex</Filter>
+    </ClCompile>
+    <ClCompile Include="IGeometryShader.cpp">
+      <Filter>소스 파일\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="IPixelShader.cpp">
+      <Filter>소스 파일\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="IVertexShader.cpp">
+      <Filter>소스 파일\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="NormalVectorGeometryShader.cpp">
+      <Filter>소스 파일\Shader\Extended\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="NormalVectorPixelShader.cpp">
+      <Filter>소스 파일\Shader\Extended\Pixel</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="MS16ToSS8CS.hlsl">
@@ -567,9 +639,6 @@
     <None Include="CommonFilterArgs.hlsli">
       <Filter>Shader\Filter</Filter>
     </None>
-    <None Include="NormalVector.hlsli">
-      <Filter>Shader\DebugHelper</Filter>
-    </None>
     <None Include="BrdfHelper.hlsli">
       <Filter>Shader\Include</Filter>
     </None>
@@ -577,6 +646,9 @@
       <Filter>Shader\Include</Filter>
     </None>
     <None Include="MathematicalHelper.hlsli">
+      <Filter>Shader\Include</Filter>
+    </None>
+    <None Include="NormalVector.hlsli">
       <Filter>Shader\Include</Filter>
     </None>
   </ItemGroup>
