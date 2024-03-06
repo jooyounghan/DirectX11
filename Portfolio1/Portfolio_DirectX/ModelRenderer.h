@@ -28,10 +28,6 @@ private:
 	const std::vector<std::shared_ptr<ILight>>* pLights;
 
 public:
-	virtual void SetMessageFilter() override;
-	virtual void ResetMessageFilter() override;
-
-public:
 	void RenderObjects(
 		ACamera* pCameraIn,
 		std::shared_ptr<AIBLMesh> spIBLModelIn,

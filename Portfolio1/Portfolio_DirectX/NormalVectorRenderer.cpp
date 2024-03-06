@@ -1,6 +1,5 @@
 #include "NormalVectorRenderer.h"
 
-#include "Shaders.h"
 #include "DirectXDevice.h"
 
 #include "ACamera.h"
@@ -19,26 +18,11 @@ NormalVectorRenderer::~NormalVectorRenderer()
 {
 }
 
-void NormalVectorRenderer::SetMessageFilter()
-{
-	DirectXDevice::AddIgnoringMessageFilter(D3D11_MESSAGE_ID_DEVICE_DRAW_SHADERRESOURCEVIEW_NOT_SET);
-	DirectXDevice::AddIgnoringMessageFilter(D3D11_MESSAGE_ID_DEVICE_IASETPRIMITIVETOPOLOGY_TOPOLOGY_UNDEFINED);
-	DirectXDevice::ApplyDebugMessageFilter();
-}
-
-void NormalVectorRenderer::ResetMessageFilter()
-{
-	DirectXDevice::RemoveIgnoringMessageFilter(D3D11_MESSAGE_ID_DEVICE_IASETPRIMITIVETOPOLOGY_TOPOLOGY_UNDEFINED);
-	DirectXDevice::RemoveIgnoringMessageFilter(D3D11_MESSAGE_ID_DEVICE_DRAW_SHADERRESOURCEVIEW_NOT_SET);
-	DirectXDevice::ApplyDebugMessageFilter();
-}
-
 void NormalVectorRenderer::RenderNormalVector(
 	ACamera* pCameraIn, 
 	const unordered_map<uint32_t, shared_ptr<IMesh>>& vMeshesIn
 )
 {
-	SetMessageFilter();
 	pCameraIn->SetCameraAsRenderTarget();
 
 	normalVectorVS.ApplyShader();
@@ -52,7 +36,6 @@ void NormalVectorRenderer::RenderNormalVector(
 	}
 	pCamera = nullptr;
 
-	ResetMessageFilter();
 	pCameraIn->ResetCameraAsRenderTarget();
 
 	normalVectorVS.DisapplyShader();

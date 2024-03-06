@@ -1,0 +1,22 @@
+#pragma once
+
+#include "IHullShader.h"
+
+class ModelRenderHullShader : public IHullShader
+{
+public:
+	ModelRenderHullShader();
+	virtual ~ModelRenderHullShader();
+
+private:
+	static ID3D11Buffer* const pNullBuffer;
+
+public:
+	virtual void ApplyShader() override;
+	virtual void DisapplyShader() override;
+
+public:
+	void SetShader(class IMovable& viewPosition);
+	void ResetShader();
+};
+

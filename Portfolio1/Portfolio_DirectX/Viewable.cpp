@@ -3,6 +3,8 @@
 #include "MathematicalHelper.h"
 #include "DirectXDevice.h"
 
+D3D11_VIEWPORT Viewable::nullViewPort;
+
 Viewable::Viewable(
 	const float& fXPos,
 	const float& fYPos,

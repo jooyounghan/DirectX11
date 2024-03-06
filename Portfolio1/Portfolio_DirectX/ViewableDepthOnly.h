@@ -23,6 +23,13 @@ public:
 public:
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> cpDSV;
 
+protected:
+	static ID3D11RenderTargetView* pNullRTV;
+
+public:
+	void SetDepthOnlyRenderTarget();
+	void ResetDepthOnlyRenderTarget();
+
 public:
 	virtual void ClearDSV();
 	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn);

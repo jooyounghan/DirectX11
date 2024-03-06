@@ -2,6 +2,8 @@
 #include "ID3D11Helper.h"
 #include "DirectXDevice.h"
 
+ID3D11RenderTargetView* ViewableDepthOnly::pNullRTV = nullptr;
+
 ViewableDepthOnly::ViewableDepthOnly(
 	const float& fXPos,
 	const float& fYPos,
@@ -43,6 +45,19 @@ ViewableDepthOnly::ViewableDepthOnly(
 
 ViewableDepthOnly::~ViewableDepthOnly()
 {
+}
+
+void ViewableDepthOnly::SetDepthOnlyRenderTarget()
+{
+	DirectXDevice::pDeviceContext->OMSetRenderTargets(1, &pNullRTV, cpDSV.Get());
+	DirectXDevice::pDeviceContext->RSSetViewports(1, &sViewPort);
+	ClearDSV();
+}
+
+void ViewableDepthOnly::ResetDepthOnlyRenderTarget()
+{
+	DirectXDevice::pDeviceContext->OMSetRenderTargets(1, &pNullRTV, nullptr);
+	DirectXDevice::pDeviceContext->RSSetViewports(1, &nullViewPort);
 }
 
 void ViewableDepthOnly::ClearDSV()

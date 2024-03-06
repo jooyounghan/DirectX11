@@ -1,20 +1,17 @@
 #pragma once
 #include "ShaderResource.h"
 
-class CubeRenderTargets : public ShaderResource
+class CubeDepthStencilView : public ShaderResource
 {
 public:
-	CubeRenderTargets(
+	CubeDepthStencilView(
 		const UINT& uiWidthIn,
 		const UINT& uiHeightIn,
 		const UINT& uiNumQualityLevelsIn
 	);
-	virtual ~CubeRenderTargets();
+	virtual ~CubeDepthStencilView();
 
 protected:
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView>	cpDSVs[6];
-
-public:
-	ID3D11DepthStencilView* GetDSVAddress(const size_t& idx);
 };
 

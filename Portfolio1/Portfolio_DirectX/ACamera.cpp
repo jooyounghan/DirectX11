@@ -6,8 +6,6 @@
 
 #include <algorithm>
 
-D3D11_VIEWPORT ACamera::nullViewPort;
-
 ACamera::ACamera(
 	const float& fXPos,
 	const float& fYPos,

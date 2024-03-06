@@ -22,16 +22,12 @@ public:
 	virtual ~NormalVectorRenderer();
 
 private:
-	NormalVectorVertexShader	normalVectorVS;
-	NormalVectorGeometryShader	normalVectorGS;
-	NormalVectorPixelShader		normalVectorPS;
-
-private:
 	ACamera* pCamera;
 
-public:
-	virtual void SetMessageFilter() override;
-	virtual void ResetMessageFilter() override;
+private:
+	NormalVectorVertexShader normalVectorVS;
+	NormalVectorGeometryShader normalVectorGS;
+	NormalVectorPixelShader normalVectorPS;
 
 public:
 	void RenderNormalVector(

@@ -30,6 +30,12 @@ public:
 	float fFarZ;
 
 protected:
+	static D3D11_VIEWPORT nullViewPort;
+
+public:
+	inline static const D3D11_VIEWPORT& GetNullViewPort() { return nullViewPort; };
+
+protected:
 	struct 
 	{
 		DirectX::XMMATRIX xmmViewProjMat;

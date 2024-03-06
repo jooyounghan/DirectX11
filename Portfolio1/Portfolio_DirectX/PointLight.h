@@ -14,7 +14,7 @@ enum EPointDirections : size_t
 	PointDirectionNum
 };
 
-class PointLight : public ILight, public CubeRenderTargets
+class PointLight : public ILight, public CubeDepthStencilView
 {
 public:
 	PointLight(
@@ -34,6 +34,9 @@ private:
 	static size_t ullPointLightCnt;
 	size_t ullPointLightId;
 
+private:
+	static ID3D11RenderTargetView* pNullRTV;
+
 protected:
 	Viewable viewable[PointDirectionNum];
 
@@ -43,6 +46,10 @@ public:
 public:
 	virtual size_t GetLightID();
 	virtual void UpdateLight() override;
+
+public:
+	void SetDepthOnlyRenderTarget(const size_t& idx);
+	void ResetDepthOnlyRenderTarget();
 
 public:
 	virtual void AcceptLightRenderer(class LightRenderer* pLightRenderer) override;

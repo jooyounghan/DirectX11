@@ -75,6 +75,11 @@ void PortfolioApp::Update(const float& fDelta)
 
 void PortfolioApp::Render()
 {
+	DirectXDevice::AddIgnoringMessageFilter(D3D11_MESSAGE_ID_DEVICE_DRAW_RENDERTARGETVIEW_NOT_SET);
+	DirectXDevice::AddIgnoringMessageFilter(D3D11_MESSAGE_ID_DEVICE_IASETPRIMITIVETOPOLOGY_TOPOLOGY_UNDEFINED);
+	DirectXDevice::AddIgnoringMessageFilter(D3D11_MESSAGE_ID_DEVICE_DRAW_SHADERRESOURCEVIEW_NOT_SET);
+	DirectXDevice::ApplyDebugMessageFilter();
+
 	CameraManipulator* const pCameraManipulator = upStageManipulator->GetCameraManipulator();
 	LightManipulator* const pLightManipulator = upStageManipulator->GetLightManipulator();
 
@@ -89,14 +94,14 @@ void PortfolioApp::Render()
 		const shared_ptr<AIBLMesh>& spIBLModel = upModelManipulator->GetIBLModel();
 		const unordered_map<uint32_t, std::shared_ptr<IMesh>>& pModels = upModelManipulator->GetModels();
 
-		//upLightRenderer->UpdateLightMap(pModels, pLights);
+		upLightRenderer->UpdateLightMap(pModels, pLights);
 
 		if (upModelManipulator->GetIsDrawingNormal())
 		{
 			upNormalVectorRenderer->RenderNormalVector(pCamera, pModels);
 		}
 
-		//upModelRenderer->RenderObjects(pCamera, spIBLModel, pModels, pLights);
+		upModelRenderer->RenderObjects(pCamera, spIBLModel, pModels, pLights);
 
 		pCamera->Resolve();
 	}
@@ -112,6 +117,11 @@ void PortfolioApp::Render()
 	}
 
 	RenderImGUI();
+
+	DirectXDevice::RemoveIgnoringMessageFilter(D3D11_MESSAGE_ID_DEVICE_DRAW_RENDERTARGETVIEW_NOT_SET);
+	DirectXDevice::RemoveIgnoringMessageFilter(D3D11_MESSAGE_ID_DEVICE_IASETPRIMITIVETOPOLOGY_TOPOLOGY_UNDEFINED);
+	DirectXDevice::RemoveIgnoringMessageFilter(D3D11_MESSAGE_ID_DEVICE_DRAW_SHADERRESOURCEVIEW_NOT_SET);
+	DirectXDevice::ApplyDebugMessageFilter();
 }
 
 void PortfolioApp::Run()

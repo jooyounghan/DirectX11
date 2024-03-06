@@ -163,9 +163,6 @@
     <Filter Include="헤더 파일\Shader\Extended\Geometry">
       <UniqueIdentifier>{c6689add-5b20-4d01-86d4-1987d98ce6e4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="헤더 파일\Shader\Extended\Pixel">
-      <UniqueIdentifier>{a8a133df-0924-4a70-9d59-6e921cb79b50}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\Shader\Extended">
       <UniqueIdentifier>{0550780d-070d-48a1-a561-99b7c52980ee}</UniqueIdentifier>
     </Filter>
@@ -180,6 +177,21 @@
     </Filter>
     <Filter Include="헤더 파일\Shader\Extended\Vertex">
       <UniqueIdentifier>{81687c77-1a41-40b7-b39c-854c68da6919}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Shader\Extended\Domain">
+      <UniqueIdentifier>{ad56993b-147e-434a-838e-722e4c6cfb4a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Shader\Extended\Hull">
+      <UniqueIdentifier>{82e28cb9-8a61-47c2-afee-ffe6923ecbbf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Shader\Extended\Pixel">
+      <UniqueIdentifier>{a8a133df-0924-4a70-9d59-6e921cb79b50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Shader\Extended\Domain">
+      <UniqueIdentifier>{cbc0f798-8c1c-4fb1-b2a8-cf195b6f9e8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Shader\Extended\Hull">
+      <UniqueIdentifier>{b71972af-2380-435b-bfc1-8dc8d68c2d05}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -387,6 +399,36 @@
     <ClInclude Include="NormalVectorPixelShader.h">
       <Filter>헤더 파일\Shader\Extended\Pixel</Filter>
     </ClInclude>
+    <ClInclude Include="ModelRenderVertexShader.h">
+      <Filter>헤더 파일\Shader\Extended\Vertex</Filter>
+    </ClInclude>
+    <ClInclude Include="DepthOnlyPixelShader.h">
+      <Filter>헤더 파일\Shader\Extended\Pixel</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelRenderHullShader.h">
+      <Filter>헤더 파일\Shader\Extended\Hull</Filter>
+    </ClInclude>
+    <ClInclude Include="IHullShader.h">
+      <Filter>헤더 파일\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="IDomainShader.h">
+      <Filter>헤더 파일\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelRendererDomainShader.h">
+      <Filter>헤더 파일\Shader\Extended\Domain</Filter>
+    </ClInclude>
+    <ClInclude Include="IBLRenderingPixelShader.h">
+      <Filter>헤더 파일\Shader\Extended\Pixel</Filter>
+    </ClInclude>
+    <ClInclude Include="PBRIBLLightPixelShader.h">
+      <Filter>헤더 파일\Shader\Extended\Pixel</Filter>
+    </ClInclude>
+    <ClInclude Include="PBRPointLightPixelShader.h">
+      <Filter>헤더 파일\Shader\Extended\Pixel</Filter>
+    </ClInclude>
+    <ClInclude Include="PBRSpotLightPixelShader.h">
+      <Filter>헤더 파일\Shader\Extended\Pixel</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseApp.cpp">
@@ -582,6 +624,36 @@
       <Filter>소스 파일\Shader\Extended\Geometry</Filter>
     </ClCompile>
     <ClCompile Include="NormalVectorPixelShader.cpp">
+      <Filter>소스 파일\Shader\Extended\Pixel</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelRenderVertexShader.cpp">
+      <Filter>소스 파일\Shader\Extended\Vertex</Filter>
+    </ClCompile>
+    <ClCompile Include="DepthOnlyPixelShader.cpp">
+      <Filter>소스 파일\Shader\Extended\Pixel</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelRenderHullShader.cpp">
+      <Filter>소스 파일\Shader\Extended\Hull</Filter>
+    </ClCompile>
+    <ClCompile Include="IDomainShader.cpp">
+      <Filter>소스 파일\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="IHullShader.cpp">
+      <Filter>소스 파일\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelRendererDomainShader.cpp">
+      <Filter>소스 파일\Shader\Extended\Domain</Filter>
+    </ClCompile>
+    <ClCompile Include="PBRIBLLightPixelShader.cpp">
+      <Filter>소스 파일\Shader\Extended\Pixel</Filter>
+    </ClCompile>
+    <ClCompile Include="IBLRenderingPixelShader.cpp">
+      <Filter>소스 파일\Shader\Extended\Pixel</Filter>
+    </ClCompile>
+    <ClCompile Include="PBRPointLightPixelShader.cpp">
+      <Filter>소스 파일\Shader\Extended\Pixel</Filter>
+    </ClCompile>
+    <ClCompile Include="PBRSpotLightPixelShader.cpp">
       <Filter>소스 파일\Shader\Extended\Pixel</Filter>
     </ClCompile>
   </ItemGroup>

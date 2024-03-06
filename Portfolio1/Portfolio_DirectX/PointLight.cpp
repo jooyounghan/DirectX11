@@ -7,6 +7,7 @@
 #include "LightManipulator.h"
 
 size_t PointLight::ullPointLightCnt = 0;
+ID3D11RenderTargetView* PointLight::pNullRTV = nullptr;
 
 PointLight::PointLight(
 	const float& fXPos,
@@ -28,7 +29,7 @@ PointLight::PointLight(
 		fFallOffEndIn,
 		fLightPowerIn
 	),
-	CubeRenderTargets(
+	CubeDepthStencilView(
 		gShadowMapWidth, gShadowMapHeight, 0
 	),
 	viewable{
@@ -66,6 +67,20 @@ void PointLight::UpdateLight()
 		viewable[idx].UpdatePosition();
 		viewable[idx].UpdateView();
 	}
+}
+
+void PointLight::SetDepthOnlyRenderTarget(const size_t& idx)
+{
+	ID3D11DepthStencilView* pDSV = cpDSVs[idx].Get();
+	DirectXDevice::pDeviceContext->OMSetRenderTargets(1, &pNullRTV, pDSV);
+	DirectXDevice::pDeviceContext->ClearDepthStencilView(pDSV, D3D11_CLEAR_DEPTH, 1.f, NULL);
+	DirectXDevice::pDeviceContext->RSSetViewports(1, &viewable[idx].sViewPort);
+}
+
+void PointLight::ResetDepthOnlyRenderTarget()
+{
+	DirectXDevice::pDeviceContext->OMSetRenderTargets(1, &pNullRTV, nullptr);
+	DirectXDevice::pDeviceContext->RSSetViewports(1, &Viewable::GetNullViewPort());
 }
 
 void PointLight::AcceptLightRenderer(LightRenderer* pLightRenderer)

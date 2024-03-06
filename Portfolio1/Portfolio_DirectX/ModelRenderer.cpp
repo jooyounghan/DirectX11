@@ -24,14 +24,6 @@ ModelRenderer::~ModelRenderer()
 {
 }
 
-void ModelRenderer::SetMessageFilter()
-{
-}
-
-void ModelRenderer::ResetMessageFilter()
-{
-}
-
 void ModelRenderer::RenderObjects(
 	class ACamera* pCameraIn,
 	shared_ptr<AIBLMesh> spIBLModelIn,
@@ -39,11 +31,6 @@ void ModelRenderer::RenderObjects(
 	const vector<shared_ptr<ILight>>& vLightsIn
 )
 {
-	DirectXDevice::AddIgnoringMessageFilter(D3D11_MESSAGE_ID_DEVICE_DRAW_RENDERTARGETVIEW_NOT_SET);
-	DirectXDevice::AddIgnoringMessageFilter(D3D11_MESSAGE_ID_DEVICE_IASETPRIMITIVETOPOLOGY_TOPOLOGY_UNDEFINED);
-	DirectXDevice::AddIgnoringMessageFilter(D3D11_MESSAGE_ID_DEVICE_DRAW_SHADERRESOURCEVIEW_NOT_SET);
-	DirectXDevice::ApplyDebugMessageFilter();
-
 	pCamera = pCameraIn;
 	spIBLModel = spIBLModelIn;
 	pLights = &vLightsIn;
@@ -54,22 +41,32 @@ void ModelRenderer::RenderObjects(
 	{
 		meshes.second->AcceptModelRendering(this);
 	}
+	
+	pCamera->ResetCameraAsRenderTarget();
 
 	pLights = nullptr;
 	spIBLModelIn = nullptr;
 	pCamera = nullptr;
-
-	pCamera->ResetCameraAsRenderTarget();
-
-	DirectXDevice::RemoveIgnoringMessageFilter(D3D11_MESSAGE_ID_DEVICE_DRAW_RENDERTARGETVIEW_NOT_SET);
-	DirectXDevice::RemoveIgnoringMessageFilter(D3D11_MESSAGE_ID_DEVICE_IASETPRIMITIVETOPOLOGY_TOPOLOGY_UNDEFINED);
-	DirectXDevice::RemoveIgnoringMessageFilter(D3D11_MESSAGE_ID_DEVICE_DRAW_SHADERRESOURCEVIEW_NOT_SET);
-	DirectXDevice::ApplyDebugMessageFilter();
 }
 
 
 void ModelRenderer::RenderModel(SinglePBRModel& singlePBRMesh)
 {
+	ID3D11Buffer* const pNullBuffers[4] = { nullptr, nullptr, nullptr, nullptr };
+	UINT pNulls[4] = { NULL, NULL, NULL, NULL };
+	const std::vector<UINT> uiStrides = { sizeof(DirectX::XMFLOAT3), sizeof(DirectX::XMFLOAT2),sizeof(DirectX::XMFLOAT3),sizeof(DirectX::XMFLOAT3) };
+	const std::vector<UINT> uiOffsets = { 0, 0, 0, 0 };
+
+	const std::vector<ID3D11Buffer*> vertexBuffers = {
+		singlePBRMesh.GetMeshFileRef()->cpVerticesBuffer.Get(),
+		singlePBRMesh.GetMeshFileRef()->cpTexcoordsBuffer.Get(),
+		singlePBRMesh.GetMeshFileRef()->cpNormalsBuffer.Get(),
+		singlePBRMesh.GetMeshFileRef()->cpTangentsBuffer.Get()
+	};
+
+
+
+
 #pragma region Preset
 	ID3D11Buffer* pNullBuffer = nullptr;
 	ID3D11ShaderResourceView* pNullSRV = nullptr;
@@ -149,8 +146,12 @@ void ModelRenderer::RenderModel(SinglePBRModel& singlePBRMesh)
 	DirectXDevice::pDeviceContext->PSSetSamplers(0, 1, DirectXDevice::ppWrapSampler);
 	DirectXDevice::pDeviceContext->PSSetSamplers(1, 1, DirectXDevice::ppClampSampler);
 #pragma endregion
-
+	DirectXDevice::pDeviceContext->IASetVertexBuffers(0, 4, vertexBuffers.data(), uiStrides.data(), uiOffsets.data());
+	DirectXDevice::pDeviceContext->IASetIndexBuffer(singlePBRMesh.GetMeshFileRef()->cpInicesBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+	DirectXDevice::pDeviceContext->DrawIndexed((UINT)singlePBRMesh.GetMeshFileRef()->vIndices.size(), NULL, NULL);
 	singlePBRMesh.Draw();
+	DirectXDevice::pDeviceContext->IASetIndexBuffer(pNullBuffers[0], DXGI_FORMAT_R32_UINT, 0);
+	DirectXDevice::pDeviceContext->IASetVertexBuffers(0, 4, pNullBuffers, pNulls, pNulls);
 
 #pragma region Ambient Lighting Reset
 	DirectXDevice::pDeviceContext->PSSetShader(nullptr, NULL, NULL);
@@ -176,6 +177,12 @@ void ModelRenderer::RenderModel(SinglePBRModel& singlePBRMesh)
 #pragma endregion
 	DirectXDevice::pDeviceContext->OMSetBlendState(DirectXDevice::pAddingBlendState, NULL, UINT(0xFFFFFFFF));
 	DirectXDevice::pDeviceContext->OMSetDepthStencilState(DirectXDevice::pDrawLessEqualDSS, 0);
+
+
+	
+	
+	
+	
 	for (auto& pLight : *pLights)
 	{
 #pragma region Direct Lighting Preset
@@ -206,7 +213,12 @@ void ModelRenderer::RenderModel(SinglePBRModel& singlePBRMesh)
 		DirectXDevice::pDeviceContext->PSSetSamplers(2, 1, DirectXDevice::ppCompareBorderSampler);
 #pragma endregion
 
+		DirectXDevice::pDeviceContext->IASetVertexBuffers(0, 4, vertexBuffers.data(), uiStrides.data(), uiOffsets.data());
+		DirectXDevice::pDeviceContext->IASetIndexBuffer(singlePBRMesh.GetMeshFileRef()->cpInicesBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+		DirectXDevice::pDeviceContext->DrawIndexed((UINT)singlePBRMesh.GetMeshFileRef()->vIndices.size(), NULL, NULL);
 		singlePBRMesh.Draw();
+		DirectXDevice::pDeviceContext->IASetIndexBuffer(pNullBuffers[0], DXGI_FORMAT_R32_UINT, 0);
+		DirectXDevice::pDeviceContext->IASetVertexBuffers(0, 4, pNullBuffers, pNulls, pNulls);
 
 #pragma region Direct Lighting Reset
 		pLight->AcceptResetingForDirectLighting(this);
@@ -248,6 +260,8 @@ void ModelRenderer::RenderModel(SinglePBRModel& singlePBRMesh)
 
 	DirectXDevice::pDeviceContext->DSSetSamplers(0, 1, &pNullSampler);
 #pragma endregion
+
+
 }
 
 void ModelRenderer::RenderModel(GroupPBRModel& groupPBRMesh)

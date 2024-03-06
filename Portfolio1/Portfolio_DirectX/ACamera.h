@@ -35,9 +35,6 @@ public:
 protected:
 	bool isLinkedWithBackBuffer;
 
-protected:
-	static D3D11_VIEWPORT nullViewPort;
-
 public:
 	virtual size_t GetCameraID() = 0;
 	virtual void Resolve() = 0;

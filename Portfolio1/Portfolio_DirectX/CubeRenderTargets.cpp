@@ -2,7 +2,7 @@
 #include "ID3D11Helper.h"
 #include "DirectXDevice.h"
 
-CubeRenderTargets::CubeRenderTargets(
+CubeDepthStencilView::CubeDepthStencilView(
 	const UINT& uiWidthIn,
 	const UINT& uiHeightIn,
 	const UINT& uiNumQualityLevelsIn
@@ -40,16 +40,6 @@ CubeRenderTargets::CubeRenderTargets(
 	}
 }
 
-CubeRenderTargets::~CubeRenderTargets()
+CubeDepthStencilView::~CubeDepthStencilView()
 {
-}
-
-ID3D11DepthStencilView* CubeRenderTargets::GetDSVAddress(const size_t& idx) 
-{
-	ID3D11DepthStencilView* result = nullptr;
-	if (idx < 6)
-	{
-		result = cpDSVs[idx].Get();
-	}
-	return result; 
 }
