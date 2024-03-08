@@ -7,8 +7,8 @@
 #include "NormalVectorRenderer.h"
 #include "LightRenderer.h"
 
-ID3D11Buffer* const AIBLMesh::pNullBuffer[4] = { nullptr, nullptr, nullptr, nullptr };
-UINT AIBLMesh::pNull[4] = { NULL, NULL, NULL, NULL };
+ID3D11Buffer* const AIBLMesh::pNullBuffers[4] = { nullptr, nullptr, nullptr, nullptr };
+UINT AIBLMesh::pNulls[4] = { NULL, NULL, NULL, NULL };
 const std::vector<UINT> AIBLMesh::uiStrides = { sizeof(DirectX::XMFLOAT3), sizeof(DirectX::XMFLOAT2),sizeof(DirectX::XMFLOAT3),sizeof(DirectX::XMFLOAT3) };
 const std::vector<UINT> AIBLMesh::uiOffsets = { 0, 0, 0, 0 };
 
@@ -41,9 +41,10 @@ void AIBLMesh::Draw()
 	DirectXDevice::pDeviceContext->IASetVertexBuffers(0, 4, vertexBuffers.data(), uiStrides.data(), uiOffsets.data());
 	DirectXDevice::pDeviceContext->IASetIndexBuffer(spMeshFile->cpInicesBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 	DirectXDevice::pDeviceContext->DrawIndexed((UINT)spMeshFile->vIndices.size(), NULL, NULL);
-	DirectXDevice::pDeviceContext->IASetIndexBuffer(pNullBuffer[0], DXGI_FORMAT_R32_UINT, 0);
-	DirectXDevice::pDeviceContext->IASetVertexBuffers(0, 4, pNullBuffer, pNull, pNull);
+	DirectXDevice::pDeviceContext->IASetIndexBuffer(pNullBuffers[0], DXGI_FORMAT_R32_UINT, 0);
+	DirectXDevice::pDeviceContext->IASetVertexBuffers(0, 4, pNullBuffers, pNulls, pNulls);
 }
+
 
 void AIBLMesh::UpdateModel(const float& fDelta)
 {

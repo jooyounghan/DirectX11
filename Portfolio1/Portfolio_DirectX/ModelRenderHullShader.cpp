@@ -4,8 +4,6 @@
 #include "DirectXDevice.h"
 #include "IMovable.h"
 
-ID3D11Buffer* const ModelRenderHullShader::pNullBuffer = nullptr;
-
 ModelRenderHullShader::ModelRenderHullShader()
 {
 	ID3D11Helper::CreateHS(

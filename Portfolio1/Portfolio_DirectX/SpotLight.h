@@ -49,8 +49,7 @@ private:
 	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn) {};
 
 public:
-	virtual void AcceptSettingForDirectLighting(class ModelRenderer* pModelRenderer) override;
-	virtual void AcceptResetingForDirectLighting(class ModelRenderer* pModelRenderer) override;
+	virtual void AcceptPBRDirectLighting(class ModelRenderer* pModelRenderer) override;
 
 public:
 	virtual void AcceptLightList(class LightManipulator* pLightManipulator) override;

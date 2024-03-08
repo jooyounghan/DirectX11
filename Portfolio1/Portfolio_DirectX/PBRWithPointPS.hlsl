@@ -30,13 +30,13 @@ cbuffer LightData : register(b2)
     float2 f2Dummy;
 }
 
-cbuffer PBRConstant : register(b4)
+cbuffer PBRConstant : register(b3)
 {
     float3 fFresnelConstant;
     float fHeightFactor;
 };
 
-cbuffer IsPBRTextureOn : register(b5)
+cbuffer IsPBRTextureOn : register(b4)
 {
     bool bIsAOOn;
     bool bIsColorOn;
@@ -48,42 +48,42 @@ cbuffer IsPBRTextureOn : register(b5)
     bool bIsGLTF;
 };
 
-cbuffer CameraPos : register(b6)
+cbuffer CameraPos : register(b5)
 {
     float4 f4CameraPos;
 };
 
-cbuffer LightViewProj : register(b7)
+cbuffer LightViewProj : register(b6)
 {
     matrix mXLightViewProj;
     matrix mXLightViewProjInvTranspose;
 };
 
-cbuffer LightViewProj : register(b8)
+cbuffer LightViewProj : register(b7)
 {
     matrix mNXLightViewProj;
     matrix mNXLightViewProjInvTranspose;
 };
 
-cbuffer LightViewProj : register(b9)
+cbuffer LightViewProj : register(b8)
 {
     matrix mYLightViewProj;
     matrix mYLightViewProjInvTranspose;
 };
 
-cbuffer LightViewProj : register(b10)
+cbuffer LightViewProj : register(b9)
 {
     matrix mNYLightViewProj;
     matrix mNYLightViewProjInvTranspose;
 };
 
-cbuffer LightViewProj : register(b11)
+cbuffer LightViewProj : register(b10)
 {
     matrix mZLightViewProj;
     matrix mZLightViewProjInvTranspose;
 };
 
-cbuffer LightViewProj : register(b12)
+cbuffer LightViewProj : register(b11)
 {
     matrix mNZLightViewProj;
     matrix mNZLightViewProjInvTranspose;

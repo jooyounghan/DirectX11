@@ -52,7 +52,7 @@ void LightRenderer::UpdateLightMap(
 void LightRenderer::RenderLightMap(PointLight& pointLight)
 {
 	ID3D11RenderTargetView* pNullRTV = nullptr;
-	ID3D11Buffer* pNullBuffer = nullptr;
+	ID3D11Buffer* pNullBuffers = nullptr;
 
 	for (size_t idx = 0; idx < PointDirectionNum; ++idx)
 	{
@@ -82,11 +82,13 @@ void LightRenderer::RenderLightMap(SpotLight& spotLight)
 
 void LightRenderer::SetModelSettingForLightMap(SinglePBRModel& singlePBRMesh)
 {
-	modelRenderVS.SetShader(singlePBRMesh, pViewable);
-	modelRenderDS.SetShader(singlePBRMesh, pViewable);
+	modelRenderVS.SetIAStage(singlePBRMesh);
+	modelRenderVS.SetShader(singlePBRMesh, *pViewable);
+	modelRenderDS.SetShader(singlePBRMesh, *pViewable);
 
 	singlePBRMesh.Draw();
 
+	modelRenderVS.ResetIAStage();
 	modelRenderVS.ResetShader();
 	modelRenderDS.ResetShader();
 }
@@ -97,11 +99,13 @@ void LightRenderer::SetModelSettingForLightMap(GroupPBRModel& groupPBRMesh)
 
 	for (PBRStaticMesh& pbrMesh : vPBRMeshes)
 	{
-		modelRenderVS.SetShader(groupPBRMesh, pViewable);
-		modelRenderDS.SetShader(pbrMesh, pViewable);
+		modelRenderVS.SetIAStage(pbrMesh);
+		modelRenderVS.SetShader(groupPBRMesh, *pViewable);
+		modelRenderDS.SetShader(pbrMesh, *pViewable);
 
 		pbrMesh.Draw();
 
+		modelRenderVS.ResetIAStage();
 		modelRenderVS.ResetShader();
 		modelRenderDS.ResetShader();
 	}

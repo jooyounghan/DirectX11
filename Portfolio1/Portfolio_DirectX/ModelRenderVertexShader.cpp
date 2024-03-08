@@ -4,15 +4,16 @@
 #include "DirectXDevice.h"
 
 #include "PBRStaticMesh.h"
+#include "AIBLMesh.h"
 #include "ATransformerable.h"
 #include "Viewable.h"
 
 using namespace std;
 
-ID3D11Buffer* const ModelRenderVertexShader::pNullBuffer[4] = { nullptr, nullptr, nullptr, nullptr };
-UINT ModelRenderVertexShader::pNull[4] = { NULL, NULL, NULL, NULL };
-const vector<UINT> ModelRenderVertexShader::uiStrides = { sizeof(DirectX::XMFLOAT3), sizeof(DirectX::XMFLOAT2),sizeof(DirectX::XMFLOAT3),sizeof(DirectX::XMFLOAT3) };
-const vector<UINT> ModelRenderVertexShader::uiOffsets = { 0, 0, 0, 0 };
+ID3D11Buffer* const ModelRenderVertexShader::pNullBuffers[4] = { nullptr, nullptr, nullptr, nullptr };
+const UINT ModelRenderVertexShader::pNulls[4] = { NULL, NULL, NULL, NULL };
+const UINT ModelRenderVertexShader::uiStrides[4] = { sizeof(DirectX::XMFLOAT3), sizeof(DirectX::XMFLOAT2),sizeof(DirectX::XMFLOAT3),sizeof(DirectX::XMFLOAT3) };
+const UINT ModelRenderVertexShader::uiOffsets[4] = { 0, 0, 0, 0 };
 
 ModelRenderVertexShader::ModelRenderVertexShader()
 	: IVertexShader()
@@ -41,30 +42,30 @@ void ModelRenderVertexShader::ApplyShader()
 {
 	DirectXDevice::pDeviceContext->VSSetShader(cpVertexShader.Get(), NULL, NULL);
 	DirectXDevice::pDeviceContext->IASetInputLayout(cpInputLayout.Get());
-	DirectXDevice::pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
 }
 
 void ModelRenderVertexShader::DisapplyShader()
 {
 	DirectXDevice::pDeviceContext->VSSetShader(nullptr, NULL, NULL);
 	DirectXDevice::pDeviceContext->IASetInputLayout(nullptr);
-	DirectXDevice::pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_UNDEFINED);
 }
 
-void ModelRenderVertexShader::SetShader(class ATransformerable& transformable, class Viewable* pViewable)
+void ModelRenderVertexShader::SetShader(class ATransformerable& transformable, class Viewable& viewable)
 {
 	DirectXDevice::pDeviceContext->VSSetConstantBuffers(0, 1, transformable.GetTransformationBuffer());
-	DirectXDevice::pDeviceContext->VSSetConstantBuffers(1, 1, pViewable->GetViewProjBuffer());
+	DirectXDevice::pDeviceContext->VSSetConstantBuffers(1, 1, viewable.GetViewProjBuffer());
 }
 
 void ModelRenderVertexShader::ResetShader()
 {
-	DirectXDevice::pDeviceContext->VSSetConstantBuffers(0, 1, &pNullBuffer[0]);
-	DirectXDevice::pDeviceContext->VSSetConstantBuffers(1, 1, &pNullBuffer[0]);
+	DirectXDevice::pDeviceContext->VSSetConstantBuffers(0, 1, &pNullBuffer);
+	DirectXDevice::pDeviceContext->VSSetConstantBuffers(1, 1, &pNullBuffer);
 }
 
 void ModelRenderVertexShader::SetIAStage(PBRStaticMesh& pbrStaticMesh)
 {
+	DirectXDevice::pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
+
 	const std::vector<ID3D11Buffer*> vertexBuffers = {
 		pbrStaticMesh.GetMeshFileRef()->cpVerticesBuffer.Get(),
 		pbrStaticMesh.GetMeshFileRef()->cpTexcoordsBuffer.Get(),
@@ -72,12 +73,29 @@ void ModelRenderVertexShader::SetIAStage(PBRStaticMesh& pbrStaticMesh)
 		pbrStaticMesh.GetMeshFileRef()->cpTangentsBuffer.Get()
 	};
 
-	DirectXDevice::pDeviceContext->IASetVertexBuffers(0, 4, vertexBuffers.data(), uiStrides.data(), uiOffsets.data());
+	DirectXDevice::pDeviceContext->IASetVertexBuffers(0, 4, vertexBuffers.data(), uiStrides, uiOffsets);
 	DirectXDevice::pDeviceContext->IASetIndexBuffer(pbrStaticMesh.GetMeshFileRef()->cpInicesBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+}
+
+void ModelRenderVertexShader::SetIAStage(AIBLMesh& ablMesh)
+{
+	DirectXDevice::pDeviceContext->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	const std::vector<ID3D11Buffer*> vertexBuffers = {
+		ablMesh.GetMeshFileRef()->cpVerticesBuffer.Get(),
+		ablMesh.GetMeshFileRef()->cpTexcoordsBuffer.Get(),
+		ablMesh.GetMeshFileRef()->cpNormalsBuffer.Get(),
+		ablMesh.GetMeshFileRef()->cpTangentsBuffer.Get()
+	};
+
+	DirectXDevice::pDeviceContext->IASetVertexBuffers(0, 4, vertexBuffers.data(), uiStrides, uiOffsets);
+	DirectXDevice::pDeviceContext->IASetIndexBuffer(ablMesh.GetMeshFileRef()->cpInicesBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 }
 
 void ModelRenderVertexShader::ResetIAStage()
 {
-	DirectXDevice::pDeviceContext->IASetIndexBuffer(pNullBuffer[0], DXGI_FORMAT_R32_UINT, 0);
-	DirectXDevice::pDeviceContext->IASetVertexBuffers(0, 4, pNullBuffer, pNull, pNull);
+	DirectXDevice::pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_UNDEFINED);
+
+	DirectXDevice::pDeviceContext->IASetIndexBuffer(pNullBuffer, DXGI_FORMAT_R32_UINT, 0);
+	DirectXDevice::pDeviceContext->IASetVertexBuffers(0, 4, pNullBuffers, pNulls, pNulls);
 }

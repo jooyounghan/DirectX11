@@ -94,6 +94,7 @@ void PortfolioApp::Render()
 		const shared_ptr<AIBLMesh>& spIBLModel = upModelManipulator->GetIBLModel();
 		const unordered_map<uint32_t, std::shared_ptr<IMesh>>& pModels = upModelManipulator->GetModels();
 
+
 		upLightRenderer->UpdateLightMap(pModels, pLights);
 
 		if (upModelManipulator->GetIsDrawingNormal())

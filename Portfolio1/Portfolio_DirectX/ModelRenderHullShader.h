@@ -8,9 +8,6 @@ public:
 	ModelRenderHullShader();
 	virtual ~ModelRenderHullShader();
 
-private:
-	static ID3D11Buffer* const pNullBuffer;
-
 public:
 	virtual void ApplyShader() override;
 	virtual void DisapplyShader() override;

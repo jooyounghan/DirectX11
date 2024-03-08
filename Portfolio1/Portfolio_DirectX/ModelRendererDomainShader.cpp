@@ -8,10 +8,6 @@
 
 using namespace std;
 
-ID3D11Buffer* const ModelRendererDomainShader::pNullBuffer = nullptr;
-ID3D11ShaderResourceView* const ModelRendererDomainShader::pNullSRV = nullptr;
-ID3D11SamplerState* const ModelRendererDomainShader::pNullSampler = nullptr;
-
 ModelRendererDomainShader::ModelRendererDomainShader()
 {
 	ID3D11Helper::CreateDS(
@@ -35,10 +31,10 @@ void ModelRendererDomainShader::DisapplyShader()
 	DirectXDevice::pDeviceContext->DSSetShader(nullptr, NULL, NULL);
 }
 
-void ModelRendererDomainShader::SetShader(PBRStaticMesh& pbrStaticMesh, Viewable* pViewable)
+void ModelRendererDomainShader::SetShader(PBRStaticMesh& pbrStaticMesh, Viewable& viewable)
 {
 	DirectXDevice::pDeviceContext->DSSetConstantBuffers(0, 1, pbrStaticMesh.GetPBRConstantBuffer());
-	DirectXDevice::pDeviceContext->DSSetConstantBuffers(1, 1, pViewable->GetViewProjBuffer());
+	DirectXDevice::pDeviceContext->DSSetConstantBuffers(1, 1, viewable.GetViewProjBuffer());
 	DirectXDevice::pDeviceContext->DSSetConstantBuffers(2, 1, pbrStaticMesh.GetPBRTextureFlagBuffer());
 
 	shared_ptr<IImageFile>& heightFile = pbrStaticMesh.GetTextureImageFileRef(HEIGHT_TEXTURE_MAP);

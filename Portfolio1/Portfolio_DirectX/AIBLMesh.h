@@ -14,6 +14,9 @@ public:
 protected:
 	std::shared_ptr<MeshFile> spMeshFile;
 
+public:
+	inline std::shared_ptr<MeshFile>& GetMeshFileRef() { return spMeshFile; };
+
 protected:
 	struct
 	{
@@ -37,8 +40,8 @@ public:
 	inline std::shared_ptr<IImageFile>& GetBRDFTextureFileRef() { return spEnvBrdfTextureFile; }
 
 private:
-	static ID3D11Buffer* const pNullBuffer[4];
-	static UINT pNull[4];
+	static ID3D11Buffer* const pNullBuffers[4];
+	static UINT pNulls[4];
 	static const std::vector<UINT> uiStrides;
 	static const std::vector<UINT> uiOffsets;
 

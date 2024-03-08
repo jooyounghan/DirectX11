@@ -92,14 +92,9 @@ void SpotLight::AcceptLightRenderer(LightRenderer* pLightRenderer)
 	pLightRenderer->RenderLightMap(*this);
 }
 
-void SpotLight::AcceptSettingForDirectLighting(ModelRenderer* pModelRenderer)
+void SpotLight::AcceptPBRDirectLighting(ModelRenderer* pModelRenderer)
 {
-	pModelRenderer->SetLight(*this);
-}
-
-void SpotLight::AcceptResetingForDirectLighting(ModelRenderer* pModelRenderer)
-{
-	pModelRenderer->ResetLight(*this);
+	pModelRenderer->RenderWithLight(*this);
 }
 
 void SpotLight::AcceptLightList(LightManipulator* pLightManipulator)

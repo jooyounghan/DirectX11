@@ -88,14 +88,9 @@ void PointLight::AcceptLightRenderer(LightRenderer* pLightRenderer)
 	pLightRenderer->RenderLightMap(*this);
 }
 
-void PointLight::AcceptSettingForDirectLighting(ModelRenderer* pModelRenderer)
+void PointLight::AcceptPBRDirectLighting(ModelRenderer* pModelRenderer)
 {
-	pModelRenderer->SetLight(*this);
-}
-
-void PointLight::AcceptResetingForDirectLighting(ModelRenderer* pModelRenderer)
-{
-	pModelRenderer->ResetLight(*this);
+	pModelRenderer->RenderWithLight(*this);
 }
 
 void PointLight::AcceptLightList(LightManipulator* pLightManipulator)

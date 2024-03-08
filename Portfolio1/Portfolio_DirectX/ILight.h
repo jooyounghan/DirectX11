@@ -50,8 +50,7 @@ public:
 	virtual void AcceptLightRenderer(class LightRenderer* pLightRenderer) = 0;
 
 public:
-	virtual void AcceptSettingForDirectLighting(class ModelRenderer* pModelRenderer) = 0;
-	virtual void AcceptResetingForDirectLighting(class ModelRenderer* pModelRenderer) = 0;
+	virtual void AcceptPBRDirectLighting(class ModelRenderer* pModelRenderer) = 0;
 
 public:
 	virtual void AcceptLightList(class LightManipulator* pLightManipulator) = 0;

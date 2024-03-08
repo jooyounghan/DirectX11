@@ -10,10 +10,10 @@ public:
 	virtual ~NormalVectorVertexShader();
 
 private:
-	static ID3D11Buffer* const pNullBuffer[4];
-	static UINT pNull[4];
-	static const std::vector<UINT> uiStrides;
-	static const std::vector<UINT> uiOffsets;
+	static ID3D11Buffer* const pNullBuffers[4];
+	static UINT pNulls[4];
+	static const UINT uiStrides[4];
+	static const UINT uiOffsets[4];
 
 public:
 	virtual void ApplyShader() override;

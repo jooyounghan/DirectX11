@@ -13,7 +13,7 @@ public:
 	virtual void DisapplyShader() override;
 
 public:
-	void SetShader();
+	void SetShader(class AIBLMesh& iblMesh, class Viewable& viewable);
 	void ResetShader();
 };
 

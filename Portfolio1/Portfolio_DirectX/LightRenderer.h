@@ -8,6 +8,7 @@
 
 class IMesh;
 class ILight;
+class Viewable;
 class SinglePBRModel;
 class GroupPBRModel;
 class AIBLMesh;

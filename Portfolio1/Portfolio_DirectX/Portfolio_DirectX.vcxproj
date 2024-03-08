@@ -173,6 +173,7 @@
     <ClInclude Include="SinglePBRModel.h" />
     <ClInclude Include="StageManipulator.h" />
     <ClInclude Include="CubeRenderTargets.h" />
+    <ClInclude Include="TODO.h" />
     <ClInclude Include="Viewable.h" />
     <ClInclude Include="BaseApp.h" />
     <ClInclude Include="Console.h" />

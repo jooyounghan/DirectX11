@@ -55,8 +55,7 @@ public:
 	virtual void AcceptLightRenderer(class LightRenderer* pLightRenderer) override;
 
 public:
-	virtual void AcceptSettingForDirectLighting(class ModelRenderer* pModelRenderer) override;
-	virtual void AcceptResetingForDirectLighting(class ModelRenderer* pModelRenderer) override;
+	virtual void AcceptPBRDirectLighting(class ModelRenderer* pModelRenderer) override;
 
 public:
 	virtual void AcceptLightList(class LightManipulator* pLightManipulator) override;

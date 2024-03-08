@@ -429,6 +429,9 @@
     <ClInclude Include="PBRSpotLightPixelShader.h">
       <Filter>헤더 파일\Shader\Extended\Pixel</Filter>
     </ClInclude>
+    <ClInclude Include="TODO.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseApp.cpp">

@@ -16,7 +16,7 @@
 using namespace std;
 
 ModelRenderer::ModelRenderer()
-	: IRenderer(), pCamera(nullptr), pLights(nullptr)
+	: IRenderer(), pCamera(nullptr), pLights(nullptr), pIMesh(nullptr), pPBRStaticMesh(nullptr)
 {
 }
 
@@ -52,510 +52,110 @@ void ModelRenderer::RenderObjects(
 
 void ModelRenderer::RenderModel(SinglePBRModel& singlePBRMesh)
 {
-	ID3D11Buffer* const pNullBuffers[4] = { nullptr, nullptr, nullptr, nullptr };
-	UINT pNulls[4] = { NULL, NULL, NULL, NULL };
-	const std::vector<UINT> uiStrides = { sizeof(DirectX::XMFLOAT3), sizeof(DirectX::XMFLOAT2),sizeof(DirectX::XMFLOAT3),sizeof(DirectX::XMFLOAT3) };
-	const std::vector<UINT> uiOffsets = { 0, 0, 0, 0 };
+	modelRenderVS.ApplyShader();
+	modelRenderHS.ApplyShader();
+	modelRenderDS.ApplyShader();
 
-	const std::vector<ID3D11Buffer*> vertexBuffers = {
-		singlePBRMesh.GetMeshFileRef()->cpVerticesBuffer.Get(),
-		singlePBRMesh.GetMeshFileRef()->cpTexcoordsBuffer.Get(),
-		singlePBRMesh.GetMeshFileRef()->cpNormalsBuffer.Get(),
-		singlePBRMesh.GetMeshFileRef()->cpTangentsBuffer.Get()
-	};
+	modelRenderVS.SetIAStage(singlePBRMesh);
+	modelRenderVS.SetShader(singlePBRMesh, *pCamera);
+	modelRenderHS.SetShader(*pCamera);
+	modelRenderDS.SetShader(singlePBRMesh, *pCamera);
 
+	// IBL을 활용한 렌더링
+	pbrIBLPS.ApplyShader();
+	pbrIBLPS.SetShader(*spIBLModel.get(), singlePBRMesh, *pCamera);
+	singlePBRMesh.Draw();	
+	pbrIBLPS.ResetShader();
+	pbrIBLPS.DisapplyShader();
 
-
-
-#pragma region Preset
-	ID3D11Buffer* pNullBuffer = nullptr;
-	ID3D11ShaderResourceView* pNullSRV = nullptr;
-	ID3D11SamplerState* pNullSampler = nullptr;
-
-	Shaders& shaders = Shaders::GetInstance();
-	DirectXDevice::pDeviceContext->VSSetShader(shaders.GetVertexShader(Shaders::BaseVS), NULL, NULL);
-	DirectXDevice::pDeviceContext->HSSetShader(shaders.GetHullShader(Shaders::BaseHS), NULL, NULL);
-	DirectXDevice::pDeviceContext->DSSetShader(shaders.GetDomainShader(Shaders::BaseDS), NULL, NULL);
-	DirectXDevice::pDeviceContext->IASetInputLayout(shaders.GetInputLayout(Shaders::BaseVS));
-
-	DirectXDevice::pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
-	
-	DirectXDevice::pDeviceContext->VSSetConstantBuffers(0, 1, singlePBRMesh.GetTransformationBuffer());
-	DirectXDevice::pDeviceContext->VSSetConstantBuffers(1, 1, pCamera->GetViewProjBuffer());
-
-	DirectXDevice::pDeviceContext->HSSetConstantBuffers(0, 1, pCamera->GetPositionBuffer());
-
-	DirectXDevice::pDeviceContext->DSSetConstantBuffers(0, 1, singlePBRMesh.GetPBRConstantBuffer());
-	DirectXDevice::pDeviceContext->DSSetConstantBuffers(1, 1, pCamera->GetViewProjBuffer());
-	DirectXDevice::pDeviceContext->DSSetConstantBuffers(2, 1, singlePBRMesh.GetPBRTextureFlagBuffer());
-
-	shared_ptr<IImageFile>& heightFile = singlePBRMesh.GetTextureImageFileRef(HEIGHT_TEXTURE_MAP);
-	DirectXDevice::pDeviceContext->DSSetShaderResources(0, 1,
-		heightFile.get() != nullptr ?
-		heightFile->GetAddressOfSRV() : &pNullSRV);
-
-	DirectXDevice::pDeviceContext->DSSetSamplers(0, 1, DirectXDevice::ppClampSampler);
-#pragma endregion
-
-#pragma region Ambient Lighting Preset
-	DirectXDevice::pDeviceContext->PSSetShader(shaders.GetPixelShader(Shaders::PBRWithIBLPS), NULL, NULL);
-
-	IImageFile* pSpecularFile = spIBLModel->GetSpecularTextureFileRef().get();
-	IImageFile* pDiffuseFile = spIBLModel->GetDiffuseTextureFileRef().get();
-	IImageFile* pBRDFFile = spIBLModel->GetBRDFTextureFileRef().get();
-
-
-	DirectXDevice::pDeviceContext->PSSetShaderResources(0, 1, 
-		pSpecularFile != nullptr ? pSpecularFile->GetAddressOfSRV() : &pNullSRV);
-	DirectXDevice::pDeviceContext->PSSetShaderResources(1, 1, 
-		pDiffuseFile != nullptr ? pDiffuseFile->GetAddressOfSRV() : &pNullSRV);
-	DirectXDevice::pDeviceContext->PSSetShaderResources(2, 1, 
-		pBRDFFile != nullptr ? pBRDFFile->GetAddressOfSRV() : &pNullSRV);
-
-	shared_ptr<IImageFile>& aoFile = singlePBRMesh.GetTextureImageFileRef(AO_TEXUTRE_MAP);
-	shared_ptr<IImageFile>& colorFile = singlePBRMesh.GetTextureImageFileRef(COLOR_TEXTURE_MAP);
-	shared_ptr<IImageFile>& metalnessFile = singlePBRMesh.GetTextureImageFileRef(METALNESS_TEXTURE_MAP);
-	shared_ptr<IImageFile>& roughnessFile = singlePBRMesh.GetTextureImageFileRef(ROUGHNESS_TEXTURE_MAP);
-	shared_ptr<IImageFile>& emissionFile = singlePBRMesh.GetTextureImageFileRef(EMISSION_TEXTURE_MAP);
-	shared_ptr<IImageFile>& normalFile = singlePBRMesh.GetTextureImageFileRef(NORMAL_TEXTURE_MAP);
-
-	DirectXDevice::pDeviceContext->PSSetShaderResources(3, 1,
-		aoFile.get() != nullptr ?
-		aoFile->GetAddressOfSRV() : &pNullSRV);
-	DirectXDevice::pDeviceContext->PSSetShaderResources(4, 1,
-		colorFile.get() != nullptr ?
-		colorFile->GetAddressOfSRV() : &pNullSRV);
-	DirectXDevice::pDeviceContext->PSSetShaderResources(5, 1,
-		metalnessFile.get() != nullptr ?
-		metalnessFile->GetAddressOfSRV() : &pNullSRV);
-	DirectXDevice::pDeviceContext->PSSetShaderResources(6, 1,
-		roughnessFile.get() != nullptr ?
-		roughnessFile->GetAddressOfSRV() : &pNullSRV);
-	DirectXDevice::pDeviceContext->PSSetShaderResources(7, 1,
-		emissionFile.get() != nullptr ?
-		emissionFile->GetAddressOfSRV() : &pNullSRV);
-	DirectXDevice::pDeviceContext->PSSetShaderResources(8, 1,
-		normalFile.get() != nullptr ?
-		normalFile->GetAddressOfSRV() : &pNullSRV);
-
-	DirectXDevice::pDeviceContext->PSSetConstantBuffers(0, 1, singlePBRMesh.GetIDBuffer());
-	DirectXDevice::pDeviceContext->PSSetConstantBuffers(1, 1, pCamera->GetPositionBuffer());
-	DirectXDevice::pDeviceContext->PSSetConstantBuffers(2, 1, singlePBRMesh.GetPBRConstantBuffer());
-	DirectXDevice::pDeviceContext->PSSetConstantBuffers(3, 1, singlePBRMesh.GetPBRTextureFlagBuffer());
-
-	DirectXDevice::pDeviceContext->PSSetSamplers(0, 1, DirectXDevice::ppWrapSampler);
-	DirectXDevice::pDeviceContext->PSSetSamplers(1, 1, DirectXDevice::ppClampSampler);
-#pragma endregion
-	DirectXDevice::pDeviceContext->IASetVertexBuffers(0, 4, vertexBuffers.data(), uiStrides.data(), uiOffsets.data());
-	DirectXDevice::pDeviceContext->IASetIndexBuffer(singlePBRMesh.GetMeshFileRef()->cpInicesBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
-	DirectXDevice::pDeviceContext->DrawIndexed((UINT)singlePBRMesh.GetMeshFileRef()->vIndices.size(), NULL, NULL);
-	singlePBRMesh.Draw();
-	DirectXDevice::pDeviceContext->IASetIndexBuffer(pNullBuffers[0], DXGI_FORMAT_R32_UINT, 0);
-	DirectXDevice::pDeviceContext->IASetVertexBuffers(0, 4, pNullBuffers, pNulls, pNulls);
-
-#pragma region Ambient Lighting Reset
-	DirectXDevice::pDeviceContext->PSSetShader(nullptr, NULL, NULL);
-
-	DirectXDevice::pDeviceContext->PSSetShaderResources(0, 1, &pNullSRV);
-	DirectXDevice::pDeviceContext->PSSetShaderResources(1, 1, &pNullSRV);
-	DirectXDevice::pDeviceContext->PSSetShaderResources(2, 1, &pNullSRV);
-
-	DirectXDevice::pDeviceContext->PSSetShaderResources(3, 1, &pNullSRV);
-	DirectXDevice::pDeviceContext->PSSetShaderResources(4, 1, &pNullSRV);
-	DirectXDevice::pDeviceContext->PSSetShaderResources(5, 1, &pNullSRV);
-	DirectXDevice::pDeviceContext->PSSetShaderResources(6, 1, &pNullSRV);
-	DirectXDevice::pDeviceContext->PSSetShaderResources(7, 1, &pNullSRV);
-	DirectXDevice::pDeviceContext->PSSetShaderResources(8, 1, &pNullSRV);
-
-	DirectXDevice::pDeviceContext->PSSetConstantBuffers(0, 1, &pNullBuffer);
-	DirectXDevice::pDeviceContext->PSSetConstantBuffers(1, 1, &pNullBuffer);
-	DirectXDevice::pDeviceContext->PSSetConstantBuffers(2, 1, &pNullBuffer);
-	DirectXDevice::pDeviceContext->PSSetConstantBuffers(3, 1, &pNullBuffer);
-
-	DirectXDevice::pDeviceContext->PSSetSamplers(0, 1, &pNullSampler);
-	DirectXDevice::pDeviceContext->PSSetSamplers(1, 1, &pNullSampler);
-#pragma endregion
-	DirectXDevice::pDeviceContext->OMSetBlendState(DirectXDevice::pAddingBlendState, NULL, UINT(0xFFFFFFFF));
-	DirectXDevice::pDeviceContext->OMSetDepthStencilState(DirectXDevice::pDrawLessEqualDSS, 0);
-
-
-	
-	
-	
-	
+	pIMesh = &singlePBRMesh;
+	pPBRStaticMesh = &singlePBRMesh;
 	for (auto& pLight : *pLights)
 	{
-#pragma region Direct Lighting Preset
-		pLight->AcceptSettingForDirectLighting(this);
-		DirectXDevice::pDeviceContext->PSSetShaderResources(0, 1,
-			colorFile.get() != nullptr ?
-			colorFile->GetAddressOfSRV() : &pNullSRV);
-		DirectXDevice::pDeviceContext->PSSetShaderResources(1, 1,
-			metalnessFile.get() != nullptr ?
-			metalnessFile->GetAddressOfSRV() : &pNullSRV);
-		DirectXDevice::pDeviceContext->PSSetShaderResources(2, 1,
-			roughnessFile.get() != nullptr ?
-			roughnessFile->GetAddressOfSRV() : &pNullSRV);
-		DirectXDevice::pDeviceContext->PSSetShaderResources(3, 1,
-			emissionFile.get() != nullptr ?
-			emissionFile->GetAddressOfSRV() : &pNullSRV);
-		DirectXDevice::pDeviceContext->PSSetShaderResources(4, 1,
-			normalFile.get() != nullptr ?
-			normalFile->GetAddressOfSRV() : &pNullSRV);
-
-		DirectXDevice::pDeviceContext->PSSetConstantBuffers(0, 1, singlePBRMesh.GetIDBuffer());
-		DirectXDevice::pDeviceContext->PSSetConstantBuffers(4, 1, singlePBRMesh.GetPBRConstantBuffer());
-		DirectXDevice::pDeviceContext->PSSetConstantBuffers(5, 1, singlePBRMesh.GetPBRTextureFlagBuffer());
-		DirectXDevice::pDeviceContext->PSSetConstantBuffers(6, 1, pCamera->GetPositionBuffer());
-		
-		DirectXDevice::pDeviceContext->PSSetSamplers(0, 1, DirectXDevice::ppWrapSampler);
-		DirectXDevice::pDeviceContext->PSSetSamplers(1, 1, DirectXDevice::ppClampSampler);
-		DirectXDevice::pDeviceContext->PSSetSamplers(2, 1, DirectXDevice::ppCompareBorderSampler);
-#pragma endregion
-
-		DirectXDevice::pDeviceContext->IASetVertexBuffers(0, 4, vertexBuffers.data(), uiStrides.data(), uiOffsets.data());
-		DirectXDevice::pDeviceContext->IASetIndexBuffer(singlePBRMesh.GetMeshFileRef()->cpInicesBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
-		DirectXDevice::pDeviceContext->DrawIndexed((UINT)singlePBRMesh.GetMeshFileRef()->vIndices.size(), NULL, NULL);
-		singlePBRMesh.Draw();
-		DirectXDevice::pDeviceContext->IASetIndexBuffer(pNullBuffers[0], DXGI_FORMAT_R32_UINT, 0);
-		DirectXDevice::pDeviceContext->IASetVertexBuffers(0, 4, pNullBuffers, pNulls, pNulls);
-
-#pragma region Direct Lighting Reset
-		pLight->AcceptResetingForDirectLighting(this);
-		DirectXDevice::pDeviceContext->PSSetShaderResources(0, 1, &pNullSRV);
-		DirectXDevice::pDeviceContext->PSSetShaderResources(1, 1, &pNullSRV);
-		DirectXDevice::pDeviceContext->PSSetShaderResources(2, 1, &pNullSRV);
-		DirectXDevice::pDeviceContext->PSSetShaderResources(3, 1, &pNullSRV);
-		DirectXDevice::pDeviceContext->PSSetShaderResources(4, 1, &pNullSRV);
-
-		DirectXDevice::pDeviceContext->PSSetConstantBuffers(0, 1, &pNullBuffer);
-		DirectXDevice::pDeviceContext->PSSetConstantBuffers(4, 1, &pNullBuffer);
-		DirectXDevice::pDeviceContext->PSSetConstantBuffers(5, 1, &pNullBuffer);
-		DirectXDevice::pDeviceContext->PSSetConstantBuffers(6, 1, &pNullBuffer);
-
-		DirectXDevice::pDeviceContext->PSSetSamplers(0, 1, &pNullSampler);
-		DirectXDevice::pDeviceContext->PSSetSamplers(1, 1, &pNullSampler);
-		DirectXDevice::pDeviceContext->PSSetSamplers(2, 1, &pNullSampler);
-#pragma endregion
+		pLight->AcceptPBRDirectLighting(this);
 	}
 
-	DirectXDevice::pDeviceContext->OMSetBlendState(nullptr, NULL, UINT(0xFFFFFFFF));
-	DirectXDevice::pDeviceContext->OMSetDepthStencilState(nullptr, 0);
-#pragma region Reset
-	DirectXDevice::pDeviceContext->VSSetShader(nullptr, NULL, NULL);
-	DirectXDevice::pDeviceContext->HSSetShader(nullptr, NULL, NULL);
-	DirectXDevice::pDeviceContext->DSSetShader(nullptr, NULL, NULL);
-	DirectXDevice::pDeviceContext->IASetInputLayout(nullptr);
+	modelRenderVS.ResetIAStage();
+	modelRenderVS.ResetShader();
+	modelRenderHS.ResetShader();
+	modelRenderDS.ResetShader();
 
-	DirectXDevice::pDeviceContext->VSSetConstantBuffers(0, 1, &pNullBuffer);
-	DirectXDevice::pDeviceContext->VSSetConstantBuffers(1, 1, &pNullBuffer);
-
-	DirectXDevice::pDeviceContext->HSSetConstantBuffers(0, 1, &pNullBuffer);
-
-	DirectXDevice::pDeviceContext->DSSetConstantBuffers(0, 1, &pNullBuffer);
-	DirectXDevice::pDeviceContext->DSSetConstantBuffers(1, 1, &pNullBuffer);
-	DirectXDevice::pDeviceContext->DSSetConstantBuffers(2, 1, &pNullBuffer);
-
-	DirectXDevice::pDeviceContext->DSSetShaderResources(0, 1, &pNullSRV);
-
-	DirectXDevice::pDeviceContext->DSSetSamplers(0, 1, &pNullSampler);
-#pragma endregion
-
-
+	modelRenderVS.DisapplyShader();
+	modelRenderHS.DisapplyShader();
+	modelRenderDS.DisapplyShader();
 }
 
 void ModelRenderer::RenderModel(GroupPBRModel& groupPBRMesh)
 {
-#pragma region Preset
-	ID3D11Buffer* pNullBuffer = nullptr;
-	ID3D11ShaderResourceView* pNullSRV = nullptr;
-	ID3D11SamplerState* pNullSampler = nullptr;
-
-	Shaders& shaders = Shaders::GetInstance();
-	DirectXDevice::pDeviceContext->VSSetShader(shaders.GetVertexShader(Shaders::BaseVS), NULL, NULL);
-	DirectXDevice::pDeviceContext->HSSetShader(shaders.GetHullShader(Shaders::BaseHS), NULL, NULL);
-	DirectXDevice::pDeviceContext->DSSetShader(shaders.GetDomainShader(Shaders::BaseDS), NULL, NULL);
-	DirectXDevice::pDeviceContext->IASetInputLayout(shaders.GetInputLayout(Shaders::BaseVS));
-
-	DirectXDevice::pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
-
-	DirectXDevice::pDeviceContext->VSSetConstantBuffers(0, 1, groupPBRMesh.GetTransformationBuffer());
-	DirectXDevice::pDeviceContext->VSSetConstantBuffers(1, 1, pCamera->GetViewProjBuffer());
-	DirectXDevice::pDeviceContext->HSSetConstantBuffers(0, 1, pCamera->GetPositionBuffer());
-	DirectXDevice::pDeviceContext->DSSetConstantBuffers(1, 1, pCamera->GetViewProjBuffer());
-	DirectXDevice::pDeviceContext->DSSetSamplers(0, 1, DirectXDevice::ppClampSampler);
-
-	IImageFile* pSpecularFile = spIBLModel->GetSpecularTextureFileRef().get();
-	IImageFile* pDiffuseFile = spIBLModel->GetDiffuseTextureFileRef().get();
-	IImageFile* pBRDFFile = spIBLModel->GetBRDFTextureFileRef().get();
+	modelRenderVS.ApplyShader();
+	modelRenderHS.ApplyShader();
+	modelRenderDS.ApplyShader();
 
 	vector<PBRStaticMesh>& vPBRMeshes = groupPBRMesh.GetChildrenMeshesRef();
 	for (auto& pbrMesh : vPBRMeshes)
 	{
-		DirectXDevice::pDeviceContext->DSSetConstantBuffers(0, 1, pbrMesh.GetPBRConstantBuffer());
-		DirectXDevice::pDeviceContext->DSSetConstantBuffers(2, 1, pbrMesh.GetPBRTextureFlagBuffer());
-		shared_ptr<IImageFile>& heightFile = pbrMesh.GetTextureImageFileRef(HEIGHT_TEXTURE_MAP);
-		DirectXDevice::pDeviceContext->DSSetShaderResources(0, 1,
-			heightFile.get() != nullptr ?
-			heightFile->GetAddressOfSRV() : &pNullSRV);
+		modelRenderVS.SetIAStage(pbrMesh);
+		modelRenderVS.SetShader(groupPBRMesh, *pCamera);
+		modelRenderHS.SetShader(*pCamera);
+		modelRenderDS.SetShader(pbrMesh, *pCamera);
 
-		shared_ptr<IImageFile>& aoFile = pbrMesh.GetTextureImageFileRef(AO_TEXUTRE_MAP);
-		shared_ptr<IImageFile>& colorFile = pbrMesh.GetTextureImageFileRef(COLOR_TEXTURE_MAP);
-		shared_ptr<IImageFile>& metalnessFile = pbrMesh.GetTextureImageFileRef(METALNESS_TEXTURE_MAP);
-		shared_ptr<IImageFile>& roughnessFile = pbrMesh.GetTextureImageFileRef(ROUGHNESS_TEXTURE_MAP);
-		shared_ptr<IImageFile>& emissionFile = pbrMesh.GetTextureImageFileRef(EMISSION_TEXTURE_MAP);
-		shared_ptr<IImageFile>& normalFile = pbrMesh.GetTextureImageFileRef(NORMAL_TEXTURE_MAP);
-
-		DirectXDevice::pDeviceContext->PSSetShader(shaders.GetPixelShader(Shaders::PBRWithIBLPS), NULL, NULL);
-		DirectXDevice::pDeviceContext->PSSetShaderResources(0, 1,
-			pSpecularFile != nullptr ? pSpecularFile->GetAddressOfSRV() : &pNullSRV);
-		DirectXDevice::pDeviceContext->PSSetShaderResources(1, 1,
-			pDiffuseFile != nullptr ? pDiffuseFile->GetAddressOfSRV() : &pNullSRV);
-		DirectXDevice::pDeviceContext->PSSetShaderResources(2, 1,
-			pBRDFFile != nullptr ? pBRDFFile->GetAddressOfSRV() : &pNullSRV);
-		DirectXDevice::pDeviceContext->PSSetShaderResources(3, 1,
-			aoFile.get() != nullptr ?
-			aoFile->GetAddressOfSRV() : &pNullSRV);
-		DirectXDevice::pDeviceContext->PSSetShaderResources(4, 1,
-			colorFile.get() != nullptr ?
-			colorFile->GetAddressOfSRV() : &pNullSRV);
-		DirectXDevice::pDeviceContext->PSSetShaderResources(5, 1,
-			metalnessFile.get() != nullptr ?
-			metalnessFile->GetAddressOfSRV() : &pNullSRV);
-		DirectXDevice::pDeviceContext->PSSetShaderResources(6, 1,
-			roughnessFile.get() != nullptr ?
-			roughnessFile->GetAddressOfSRV() : &pNullSRV);
-		DirectXDevice::pDeviceContext->PSSetShaderResources(7, 1,
-			emissionFile.get() != nullptr ?
-			emissionFile->GetAddressOfSRV() : &pNullSRV);
-		DirectXDevice::pDeviceContext->PSSetShaderResources(8, 1,
-			normalFile.get() != nullptr ?
-			normalFile->GetAddressOfSRV() : &pNullSRV);
-
-		DirectXDevice::pDeviceContext->PSSetConstantBuffers(0, 1, groupPBRMesh.GetIDBuffer());
-		DirectXDevice::pDeviceContext->PSSetConstantBuffers(1, 1, pCamera->GetPositionBuffer());
-		DirectXDevice::pDeviceContext->PSSetConstantBuffers(2, 1, pbrMesh.GetPBRConstantBuffer());
-		DirectXDevice::pDeviceContext->PSSetConstantBuffers(3, 1, pbrMesh.GetPBRTextureFlagBuffer());
-
-		DirectXDevice::pDeviceContext->PSSetSamplers(0, 1, DirectXDevice::ppWrapSampler);
-		DirectXDevice::pDeviceContext->PSSetSamplers(1, 1, DirectXDevice::ppClampSampler);
-
+		// IBL을 활용한 렌더링
+		pbrIBLPS.ApplyShader();
+		pbrIBLPS.SetShader(*spIBLModel.get(), pbrMesh, *pCamera);
 		pbrMesh.Draw();
+		pbrIBLPS.ResetShader();
+		pbrIBLPS.DisapplyShader();
 
-		DirectXDevice::pDeviceContext->PSSetShader(nullptr, NULL, NULL);
-
-		DirectXDevice::pDeviceContext->PSSetShaderResources(0, 1, &pNullSRV);
-		DirectXDevice::pDeviceContext->PSSetShaderResources(1, 1, &pNullSRV);
-		DirectXDevice::pDeviceContext->PSSetShaderResources(2, 1, &pNullSRV);
-		DirectXDevice::pDeviceContext->PSSetShaderResources(3, 1, &pNullSRV);
-		DirectXDevice::pDeviceContext->PSSetShaderResources(4, 1, &pNullSRV);
-		DirectXDevice::pDeviceContext->PSSetShaderResources(5, 1, &pNullSRV);
-		DirectXDevice::pDeviceContext->PSSetShaderResources(6, 1, &pNullSRV);
-		DirectXDevice::pDeviceContext->PSSetShaderResources(7, 1, &pNullSRV);
-		DirectXDevice::pDeviceContext->PSSetShaderResources(8, 1, &pNullSRV);
-
-		DirectXDevice::pDeviceContext->PSSetConstantBuffers(0, 1, &pNullBuffer);
-		DirectXDevice::pDeviceContext->PSSetConstantBuffers(1, 1, &pNullBuffer);
-		DirectXDevice::pDeviceContext->PSSetConstantBuffers(2, 1, &pNullBuffer);
-		DirectXDevice::pDeviceContext->PSSetConstantBuffers(3, 1, &pNullBuffer);
-
-		DirectXDevice::pDeviceContext->PSSetSamplers(0, 1, &pNullSampler);
-		DirectXDevice::pDeviceContext->PSSetSamplers(1, 1, &pNullSampler);
-
-		DirectXDevice::pDeviceContext->OMSetBlendState(DirectXDevice::pAddingBlendState, NULL, UINT(0xFFFFFFFF));
-		DirectXDevice::pDeviceContext->OMSetDepthStencilState(DirectXDevice::pDrawLessEqualDSS, 0);
-
-		DirectXDevice::pDeviceContext->PSSetConstantBuffers(0, 1, groupPBRMesh.GetIDBuffer());
-		DirectXDevice::pDeviceContext->PSSetConstantBuffers(4, 1, pbrMesh.GetPBRConstantBuffer());
-		DirectXDevice::pDeviceContext->PSSetConstantBuffers(5, 1, pbrMesh.GetPBRTextureFlagBuffer());
-		DirectXDevice::pDeviceContext->PSSetConstantBuffers(6, 1, pCamera->GetPositionBuffer());
-
-		DirectXDevice::pDeviceContext->PSSetSamplers(0, 1, DirectXDevice::ppWrapSampler);
-		DirectXDevice::pDeviceContext->PSSetSamplers(1, 1, DirectXDevice::ppClampSampler);
-		DirectXDevice::pDeviceContext->PSSetSamplers(2, 1, DirectXDevice::ppCompareBorderSampler);
-
+		pIMesh = &groupPBRMesh;
+		pPBRStaticMesh = &pbrMesh;
 		for (auto& pLight : *pLights)
 		{
-			pLight->AcceptSettingForDirectLighting(this);
-			DirectXDevice::pDeviceContext->PSSetShaderResources(0, 1,
-				colorFile.get() != nullptr ?
-				colorFile->GetAddressOfSRV() : &pNullSRV);
-			DirectXDevice::pDeviceContext->PSSetShaderResources(1, 1,
-				metalnessFile.get() != nullptr ?
-				metalnessFile->GetAddressOfSRV() : &pNullSRV);
-			DirectXDevice::pDeviceContext->PSSetShaderResources(2, 1,
-				roughnessFile.get() != nullptr ?
-				roughnessFile->GetAddressOfSRV() : &pNullSRV);
-			DirectXDevice::pDeviceContext->PSSetShaderResources(3, 1,
-				emissionFile.get() != nullptr ?
-				emissionFile->GetAddressOfSRV() : &pNullSRV);
-			DirectXDevice::pDeviceContext->PSSetShaderResources(4, 1,
-				normalFile.get() != nullptr ?
-				normalFile->GetAddressOfSRV() : &pNullSRV);
-
-			pbrMesh.Draw();
-
-			pLight->AcceptResetingForDirectLighting(this);
-
-			DirectXDevice::pDeviceContext->PSSetShaderResources(0, 1, &pNullSRV);
-			DirectXDevice::pDeviceContext->PSSetShaderResources(1, 1, &pNullSRV);
-			DirectXDevice::pDeviceContext->PSSetShaderResources(2, 1, &pNullSRV);
-			DirectXDevice::pDeviceContext->PSSetShaderResources(3, 1, &pNullSRV);
-			DirectXDevice::pDeviceContext->PSSetShaderResources(4, 1, &pNullSRV);
+			pLight->AcceptPBRDirectLighting(this);
 		}
 
-		DirectXDevice::pDeviceContext->PSSetConstantBuffers(0, 1, &pNullBuffer);
-		DirectXDevice::pDeviceContext->PSSetConstantBuffers(4, 1, &pNullBuffer);
-		DirectXDevice::pDeviceContext->PSSetConstantBuffers(5, 1, &pNullBuffer);
-		DirectXDevice::pDeviceContext->PSSetConstantBuffers(6, 1, &pNullBuffer);
-
-		DirectXDevice::pDeviceContext->PSSetSamplers(0, 1, &pNullSampler);
-		DirectXDevice::pDeviceContext->PSSetSamplers(1, 1, &pNullSampler);
-		DirectXDevice::pDeviceContext->PSSetSamplers(2, 1, &pNullSampler);
-
-		DirectXDevice::pDeviceContext->OMSetBlendState(nullptr, NULL, UINT(0xFFFFFFFF));
-		DirectXDevice::pDeviceContext->OMSetDepthStencilState(nullptr, 0);
-
-		DirectXDevice::pDeviceContext->DSSetConstantBuffers(0, 1, &pNullBuffer);
-		DirectXDevice::pDeviceContext->DSSetConstantBuffers(2, 1, &pNullBuffer);
-		DirectXDevice::pDeviceContext->DSSetShaderResources(0, 1, &pNullSRV);
+		modelRenderVS.ResetIAStage();
+		modelRenderVS.ResetShader();
+		modelRenderHS.ResetShader();
+		modelRenderDS.ResetShader();
 	}
-
-	DirectXDevice::pDeviceContext->VSSetShader(nullptr, NULL, NULL);
-	DirectXDevice::pDeviceContext->HSSetShader(nullptr, NULL, NULL);
-	DirectXDevice::pDeviceContext->DSSetShader(nullptr, NULL, NULL);
-	DirectXDevice::pDeviceContext->IASetInputLayout(nullptr);
-
-	DirectXDevice::pDeviceContext->VSSetConstantBuffers(0, 1, &pNullBuffer);
-	DirectXDevice::pDeviceContext->VSSetConstantBuffers(1, 1, &pNullBuffer);
-	DirectXDevice::pDeviceContext->HSSetConstantBuffers(0, 1, &pNullBuffer);
-	DirectXDevice::pDeviceContext->DSSetConstantBuffers(1, 1, &pNullBuffer);
-	DirectXDevice::pDeviceContext->DSSetSamplers(0, 1, &pNullSampler);
+	modelRenderVS.DisapplyShader();
+	modelRenderHS.DisapplyShader();
+	modelRenderDS.DisapplyShader();
 }
 
 void ModelRenderer::RenderModel(AIBLMesh& iblMesh)
 {
-	ID3D11Buffer* pNullBuffer = nullptr;
-	ID3D11SamplerState* pNullSampler = nullptr;
+	modelRenderVS.ApplyShader();
+	iblRenderPS.ApplyShader();
 
-#pragma region Preset
-	Shaders& shaders = Shaders::GetInstance();
-	DirectXDevice::pDeviceContext->VSSetShader(shaders.GetVertexShader(Shaders::BaseVS), NULL, NULL);
-	DirectXDevice::pDeviceContext->PSSetShader(shaders.GetPixelShader(Shaders::IBLModelPS), NULL, NULL);
-	DirectXDevice::pDeviceContext->IASetInputLayout(shaders.GetInputLayout(Shaders::BaseVS));
-
-	DirectXDevice::pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-	IImageFile* pSpecularFile = iblMesh.GetSpecularTextureFileRef().get();
-	IImageFile* pDiffuseFile = iblMesh.GetDiffuseTextureFileRef().get();
-
-	vector<ID3D11ShaderResourceView*> SRVs{
-		pSpecularFile != nullptr ? pSpecularFile->GetSRV() : nullptr,
-		pDiffuseFile != nullptr ? pDiffuseFile->GetSRV() : nullptr
-	};
-
-	DirectXDevice::pDeviceContext->VSSetConstantBuffers(0, 1, iblMesh.GetTransformationBuffer());
-	DirectXDevice::pDeviceContext->VSSetConstantBuffers(1, 1, pCamera->GetViewProjBuffer());
-
-	DirectXDevice::pDeviceContext->PSSetConstantBuffers(0, 1, iblMesh.GetIDBuffer());
-	DirectXDevice::pDeviceContext->PSSetConstantBuffers(1, 1, iblMesh.GetIBLDataBuffer());
-
-	DirectXDevice::pDeviceContext->PSSetShaderResources(0, (UINT)SRVs.size(), SRVs.data());
-	DirectXDevice::pDeviceContext->PSSetSamplers(0, 1, DirectXDevice::ppClampSampler);
-#pragma endregion
+	modelRenderVS.SetIAStage(iblMesh);
+	modelRenderVS.SetShader(iblMesh, *pCamera);
+	iblRenderPS.SetShader(iblMesh, *pCamera);
 
 	iblMesh.Draw();
 
-#pragma region Reset
-	DirectXDevice::pDeviceContext->VSSetShader(nullptr, NULL, NULL);
-	DirectXDevice::pDeviceContext->PSSetShader(nullptr, NULL, NULL);
-	DirectXDevice::pDeviceContext->IASetInputLayout(nullptr);
+	modelRenderVS.ResetIAStage();
+	modelRenderVS.ResetShader();
+	iblRenderPS.ResetShader();
 
-	vector<ID3D11ShaderResourceView*> vNullSRVs;
-	vNullSRVs.resize(SRVs.size(), nullptr);
-
-	DirectXDevice::pDeviceContext->VSSetConstantBuffers(0, 1, &pNullBuffer);
-	DirectXDevice::pDeviceContext->VSSetConstantBuffers(1, 1, &pNullBuffer);
-
-	DirectXDevice::pDeviceContext->PSSetConstantBuffers(0, 1, &pNullBuffer);
-	DirectXDevice::pDeviceContext->PSSetConstantBuffers(1, 1, &pNullBuffer);
-
-	DirectXDevice::pDeviceContext->PSSetShaderResources(0, (UINT)vNullSRVs.size(), vNullSRVs.data());
-	DirectXDevice::pDeviceContext->PSSetSamplers(0, 1, &pNullSampler);
-#pragma endregion
+	modelRenderVS.DisapplyShader();
+	iblRenderPS.DisapplyShader();
 }
 
-void ModelRenderer::SetLight(PointLight& pointLight)
+void ModelRenderer::RenderWithLight(PointLight& pointLight)
 {
-	Shaders& shaders = Shaders::GetInstance();
-	DirectXDevice::pDeviceContext->PSSetShader(shaders.GetPixelShader(Shaders::PBRWithPointPS), NULL, NULL);
-
-	DirectXDevice::pDeviceContext->PSSetShaderResources(5, 1, pointLight.GetAddressOfSRV());
-
-	DirectXDevice::pDeviceContext->PSSetConstantBuffers(1, 1, pointLight.GetPositionBuffer());
-	DirectXDevice::pDeviceContext->PSSetConstantBuffers(2, 1, pointLight.GetBaseLightBuffer());
-
-	DirectXDevice::pDeviceContext->PSSetConstantBuffers(7, 1, pointLight.GetViewable(PointXDirection).GetViewProjBuffer());
-	DirectXDevice::pDeviceContext->PSSetConstantBuffers(8, 1, pointLight.GetViewable(PointNegXDirection).GetViewProjBuffer());
-	DirectXDevice::pDeviceContext->PSSetConstantBuffers(9, 1, pointLight.GetViewable(PointYDirection).GetViewProjBuffer());
-	DirectXDevice::pDeviceContext->PSSetConstantBuffers(10, 1, pointLight.GetViewable(PointNegYDirection).GetViewProjBuffer());
-	DirectXDevice::pDeviceContext->PSSetConstantBuffers(11, 1, pointLight.GetViewable(PointZDirection).GetViewProjBuffer());
-	DirectXDevice::pDeviceContext->PSSetConstantBuffers(12, 1, pointLight.GetViewable(PointNegZDirection).GetViewProjBuffer());
-
-	DirectXDevice::pDeviceContext->PSSetSamplers(2, 1, DirectXDevice::ppCompareClampSampler);
+	pointLightPS.ApplyShader();
+	pointLightPS.SetShader(pointLight, *pIMesh, *pPBRStaticMesh, *pCamera);
+	pPBRStaticMesh->Draw();
+	pointLightPS.ResetShader();
+	pointLightPS.DisapplyShader();
 }
 
-void ModelRenderer::SetLight(SpotLight& spotLight)
+void ModelRenderer::RenderWithLight(SpotLight& spotLight)
 {
-	Shaders& shaders = Shaders::GetInstance();
-	DirectXDevice::pDeviceContext->PSSetShader(shaders.GetPixelShader(Shaders::PBRWithSpotPS), NULL, NULL);
-
-	DirectXDevice::pDeviceContext->PSSetShaderResources(5, 1, spotLight.GetAddressOfSRV());
-
-	DirectXDevice::pDeviceContext->PSSetConstantBuffers(1, 1, spotLight.GetPositionBuffer());
-	DirectXDevice::pDeviceContext->PSSetConstantBuffers(2, 1, spotLight.GetBaseLightBuffer());
-	DirectXDevice::pDeviceContext->PSSetConstantBuffers(3, 1, spotLight.GetSpotLightBuffer());
-
-	DirectXDevice::pDeviceContext->PSSetConstantBuffers(7, 1, spotLight.GetViewProjBuffer());
+	spotLightPS.ApplyShader();
+	spotLightPS.SetShader(spotLight, *pIMesh, *pPBRStaticMesh, *pCamera);
+	pPBRStaticMesh->Draw();
+	spotLightPS.ResetShader();
+	spotLightPS.DisapplyShader();
 }
-
-void ModelRenderer::ResetLight(PointLight& pointLight)
-{
-	ID3D11Buffer* pNullBuffer = nullptr;
-	ID3D11ShaderResourceView* pNullSRV = nullptr;
-	ID3D11SamplerState* pNullSampler = nullptr;
-	DirectXDevice::pDeviceContext->PSSetShader(nullptr, NULL, NULL);
-	DirectXDevice::pDeviceContext->PSSetShaderResources(5, 1, &pNullSRV);
-
-	DirectXDevice::pDeviceContext->PSSetConstantBuffers(1, 1, &pNullBuffer);
-	DirectXDevice::pDeviceContext->PSSetConstantBuffers(2, 1, &pNullBuffer);
-
-	DirectXDevice::pDeviceContext->PSSetConstantBuffers(7, 1, &pNullBuffer);
-	DirectXDevice::pDeviceContext->PSSetConstantBuffers(8, 1, &pNullBuffer);
-	DirectXDevice::pDeviceContext->PSSetConstantBuffers(9, 1, &pNullBuffer);
-	DirectXDevice::pDeviceContext->PSSetConstantBuffers(10, 1, &pNullBuffer);
-	DirectXDevice::pDeviceContext->PSSetConstantBuffers(11, 1, &pNullBuffer);
-	DirectXDevice::pDeviceContext->PSSetConstantBuffers(12, 1, &pNullBuffer);
-
-
-
-	DirectXDevice::pDeviceContext->PSSetSamplers(2, 1, &pNullSampler);
-}
-
-void ModelRenderer::ResetLight(SpotLight& pointLight)
-{
-	ID3D11Buffer* pNullBuffer = nullptr;
-	ID3D11ShaderResourceView* pNullSRV = nullptr;
-	ID3D11SamplerState* pNullSampler = nullptr;
-
-	DirectXDevice::pDeviceContext->PSSetShader(nullptr, NULL, NULL);
-
-	DirectXDevice::pDeviceContext->PSSetShaderResources(5, 1, &pNullSRV);
-
-	DirectXDevice::pDeviceContext->PSSetConstantBuffers(1, 1, &pNullBuffer);
-	DirectXDevice::pDeviceContext->PSSetConstantBuffers(2, 1, &pNullBuffer);
-	DirectXDevice::pDeviceContext->PSSetConstantBuffers(3, 1, &pNullBuffer);
-
-	DirectXDevice::pDeviceContext->PSSetConstantBuffers(7, 1, &pNullBuffer);
-}
-
