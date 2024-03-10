@@ -17,9 +17,9 @@ TextureCube DiffuseIBLTexture : register(t1);
 
 SamplerState ClampSampler : register(s0);
 
-PixelOutput main(VertexOutput input)
+PBRModelPixelOutput main(PBRModelVertexOutput input)
 {
-    PixelOutput result;
+    PBRModelPixelOutput result;
     result.pixelColor = 
     (1.f - DiffuseRate) * SpecularIBLTexture.Sample(ClampSampler, input.f4ModelPos.xyz)
     + DiffuseRate * DiffuseIBLTexture.Sample(ClampSampler, input.f4ModelPos.xyz);

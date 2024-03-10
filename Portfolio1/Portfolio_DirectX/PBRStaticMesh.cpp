@@ -42,7 +42,13 @@ PBRStaticMesh::PBRStaticMesh()
 PBRStaticMesh::PBRStaticMesh(const MeshFileSet& meshFileSet)
 	: IMesh()
 {
-	sMeshFileSet = meshFileSet;
+	bIsInitialized = meshFileSet.bIsInitialized;
+	spMeshFile = meshFileSet.spMeshFile;
+	for (size_t idx = 0; idx < TEXTURE_MAP_NUM; ++idx)
+	{
+		spModelTexture[idx] = meshFileSet.spModelTexture[idx];
+	}
+
 	InitPBRStaticMesh();
 	SetMeshName(meshFileSet.spMeshFile->GetFileName());
 }
@@ -71,7 +77,7 @@ void PBRStaticMesh::InitPBRStaticMesh()
 
 void PBRStaticMesh::Draw()
 {
-	DirectXDevice::pDeviceContext->DrawIndexed((UINT)sMeshFileSet.spMeshFile->vIndices.size(), NULL, NULL);
+	DirectXDevice::pDeviceContext->DrawIndexed((UINT)spMeshFile->vIndices.size(), NULL, NULL);
 }
 
 void PBRStaticMesh::UpdateModel(const float& fDelta)
@@ -84,7 +90,7 @@ void PBRStaticMesh::UpdateModel(const float& fDelta)
 
 	for (WORD idx = 0; idx < TEXTURE_MAP_NUM; ++idx)
 	{
-		sPBRTextureFlag.bIsTextureOn[idx] = (sMeshFileSet.spModelTexture[idx].get() != nullptr);
+		sPBRTextureFlag.bIsTextureOn[idx] = (spModelTexture[idx].get() != nullptr);
 	}
 
 	ID3D11Helper::UpdateBuffer(

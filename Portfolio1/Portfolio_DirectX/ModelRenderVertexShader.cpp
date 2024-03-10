@@ -5,14 +5,16 @@
 
 #include "PBRStaticMesh.h"
 #include "AIBLMesh.h"
+
 #include "ATransformerable.h"
 #include "Viewable.h"
 
 using namespace std;
+using namespace DirectX;
 
 ID3D11Buffer* const ModelRenderVertexShader::pNullBuffers[4] = { nullptr, nullptr, nullptr, nullptr };
 const UINT ModelRenderVertexShader::pNulls[4] = { NULL, NULL, NULL, NULL };
-const UINT ModelRenderVertexShader::uiStrides[4] = { sizeof(DirectX::XMFLOAT3), sizeof(DirectX::XMFLOAT2),sizeof(DirectX::XMFLOAT3),sizeof(DirectX::XMFLOAT3) };
+const UINT ModelRenderVertexShader::uiStrides[4] = { sizeof(XMFLOAT3), sizeof(XMFLOAT2),sizeof(XMFLOAT3),sizeof(XMFLOAT3) };
 const UINT ModelRenderVertexShader::uiOffsets[4] = { 0, 0, 0, 0 };
 
 ModelRenderVertexShader::ModelRenderVertexShader()
@@ -28,7 +30,7 @@ ModelRenderVertexShader::ModelRenderVertexShader()
 
 	ID3D11Helper::CreateVSInputLayOut(
 		DirectXDevice::pDevice,
-		L"BaseVS.hlsl", vInputElemDesc,
+		L"PBRModelVS.hlsl", vInputElemDesc,
 		cpVertexShader.GetAddressOf(),
 		cpInputLayout.GetAddressOf()
 	);
@@ -62,19 +64,19 @@ void ModelRenderVertexShader::ResetShader()
 	DirectXDevice::pDeviceContext->VSSetConstantBuffers(1, 1, &pNullBuffer);
 }
 
-void ModelRenderVertexShader::SetIAStage(PBRStaticMesh& pbrStaticMesh)
+void ModelRenderVertexShader::SetIAStage(IMesh& mesh)
 {
 	DirectXDevice::pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
 
 	const std::vector<ID3D11Buffer*> vertexBuffers = {
-		pbrStaticMesh.GetMeshFileRef()->cpVerticesBuffer.Get(),
-		pbrStaticMesh.GetMeshFileRef()->cpTexcoordsBuffer.Get(),
-		pbrStaticMesh.GetMeshFileRef()->cpNormalsBuffer.Get(),
-		pbrStaticMesh.GetMeshFileRef()->cpTangentsBuffer.Get()
+		mesh.GetMeshFileRef()->cpVerticesBuffer.Get(),
+		mesh.GetMeshFileRef()->cpTexcoordsBuffer.Get(),
+		mesh.GetMeshFileRef()->cpNormalsBuffer.Get(),
+		mesh.GetMeshFileRef()->cpTangentsBuffer.Get()
 	};
 
 	DirectXDevice::pDeviceContext->IASetVertexBuffers(0, 4, vertexBuffers.data(), uiStrides, uiOffsets);
-	DirectXDevice::pDeviceContext->IASetIndexBuffer(pbrStaticMesh.GetMeshFileRef()->cpInicesBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+	DirectXDevice::pDeviceContext->IASetIndexBuffer(mesh.GetMeshFileRef()->cpInicesBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 }
 
 void ModelRenderVertexShader::SetIAStage(AIBLMesh& ablMesh)

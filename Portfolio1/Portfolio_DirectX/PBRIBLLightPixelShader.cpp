@@ -35,7 +35,7 @@ void PBRIBLLightPixelShader::DisapplyShader()
 	//DirectXDevice::pDeviceContext->OMSetDepthStencilState(nullptr, 0);
 }
 
-void PBRIBLLightPixelShader::SetShader(AIBLMesh& iblMesh, PBRStaticMesh& pbrStaticMesh, Viewable& viewable)
+void PBRIBLLightPixelShader::SetShader(AIBLMesh& iblMesh, IMesh& idMesh, PBRStaticMesh& pbrStaticMesh, Viewable& viewable)
 {
 	IImageFile* pImageFile = nullptr;
 	ID3D11ShaderResourceView* pSRV = nullptr;
@@ -55,7 +55,7 @@ void PBRIBLLightPixelShader::SetShader(AIBLMesh& iblMesh, PBRStaticMesh& pbrStat
 	SetSRV(pbrStaticMesh.GetTextureImageFileRef(EMISSION_TEXTURE_MAP).get(), 7, 1);
 	SetSRV(pbrStaticMesh.GetTextureImageFileRef(NORMAL_TEXTURE_MAP).get(), 8, 1);
 
-	DirectXDevice::pDeviceContext->PSSetConstantBuffers(0, 1, pbrStaticMesh.GetIDBuffer());
+	DirectXDevice::pDeviceContext->PSSetConstantBuffers(0, 1, idMesh.GetIDBuffer());
 	DirectXDevice::pDeviceContext->PSSetConstantBuffers(1, 1, viewable.GetPositionBuffer());
 	DirectXDevice::pDeviceContext->PSSetConstantBuffers(2, 1, pbrStaticMesh.GetPBRConstantBuffer());
 	DirectXDevice::pDeviceContext->PSSetConstantBuffers(3, 1, pbrStaticMesh.GetPBRTextureFlagBuffer());

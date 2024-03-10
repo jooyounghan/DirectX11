@@ -4,7 +4,9 @@
 #include <windows.h>
 #include <wrl/client.h>
 #include <string>
+#include <memory>
 
+class MeshFile;
 class ModelManipulator;
 class ModelManipulator;
 class ModelRenderer;
@@ -21,8 +23,12 @@ private:
 	static uint32_t uiGlobalModelID;
 
 protected:
-	std::string strMeshName;
-	
+	std::string					strMeshName;
+	std::shared_ptr<MeshFile>		spMeshFile;
+
+public:
+	inline std::shared_ptr<MeshFile>& GetMeshFileRef() { return spMeshFile; };
+
 public:
 	inline void SetMeshName(const std::string& strMeshNameIn) { strMeshName = strMeshNameIn; }
 	inline const std::string& GetMeshName() const { return strMeshName; }
@@ -48,5 +54,5 @@ public:
 	virtual void AcceptModelManipulating(ModelManipulator* pModelManipulator) = 0;
 	virtual void AcceptModelRendering(ModelRenderer* pModelRenderer) = 0;
 	virtual void AcceptNormalVectorRendering(NormalVectorRenderer* pNormalVectorRenderer) = 0;
-	virtual void AcceptLightMapUpdateSetting(LightRenderer* pLightRnederer) = 0;
+	virtual void AcceptRenderingLightMap(LightRenderer* pLightRnederer) = 0;
 };

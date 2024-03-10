@@ -12,12 +12,14 @@ class ATransformerable;
 class SinglePBRModel;
 class GroupPBRModel;
 class AIBLMesh;
+class MirrorModel;
 
 class ModelManipulator : public IGuiMenu
 {
 	friend SinglePBRModel;
 	friend GroupPBRModel;
 	friend AIBLMesh;
+	friend MirrorModel;
 
 public:
 	ModelManipulator();
@@ -61,18 +63,21 @@ private:
 	void SetModelAsList(SinglePBRModel& singlePBRModel);
 	void SetModelAsList(GroupPBRModel& groupPBRModel);
 	void SetModelAsList(AIBLMesh& iblMesh);
+	void SetModelAsList(MirrorModel& mirrorModel);
 
 private:
 	void ManipulateModel(SinglePBRModel& singlePBRModel);
 	void ManipulateModel(GroupPBRModel& groupPBRModel);
 	void ManipulateModel(AIBLMesh& iblMesh);
+	void ManipulateModel(MirrorModel& mirrorModel);
 
 private:
-	void DrawTransformation(ATransformerable* pTransformable);
+	void DrawTransformation(ATransformerable& transformable);
 
 private:
-	void DrawPBRTexture(PBRStaticMesh* pPBRStaticMesh);
-	void DrawIBLTexture(AIBLMesh* pIBLModel);
+	void DrawPBRTexture(PBRStaticMesh& pBRStaticMesh);
+	void DrawIBLTexture(AIBLMesh& iBLModel);
+	void DrawMirrorProperties(MirrorModel& mirrorModel);
 
 private:
 	void SetTextureDragAndDrop(

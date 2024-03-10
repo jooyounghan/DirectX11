@@ -76,3 +76,8 @@ void NormalVectorRenderer::RenderNormal(AIBLMesh& iblMesh)
 {
 	// Do Nothing
 }
+
+void NormalVectorRenderer::RenderNormal(MirrorModel& mirrorModel)
+{
+	// Do Nothing
+}

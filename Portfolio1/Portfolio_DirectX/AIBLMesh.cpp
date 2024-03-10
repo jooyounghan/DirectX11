@@ -14,7 +14,10 @@ const std::vector<UINT> AIBLMesh::uiOffsets = { 0, 0, 0, 0 };
 
 
 AIBLMesh::AIBLMesh()
-	: IMesh(), ATransformerable()
+	: IMesh(), ATransformerable(),
+	IMovable(0.f, 0.f, 0.f), 
+	IScalable(), 
+	IAngleAdjustable(0.f, 0.f, 0.f)
 {
 	AutoZeroMemory(sIBLData);
 	ID3D11Helper::CreateBuffer(
@@ -76,7 +79,7 @@ void AIBLMesh::AcceptNormalVectorRendering(NormalVectorRenderer* pNormalVectorRe
 	pNormalVectorRenderer->RenderNormal(*this);
 }
 
-void AIBLMesh::AcceptLightMapUpdateSetting(LightRenderer* pLightRnederer)
+void AIBLMesh::AcceptRenderingLightMap(LightRenderer* pLightRnederer)
 {
-	pLightRnederer->SetModelSettingForLightMap(*this);
+	pLightRnederer->RenderLightMap(*this);
 }

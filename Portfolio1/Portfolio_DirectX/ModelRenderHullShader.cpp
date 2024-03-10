@@ -8,7 +8,7 @@ ModelRenderHullShader::ModelRenderHullShader()
 {
 	ID3D11Helper::CreateHS(
 		DirectXDevice::pDevice, 
-		L"BaseHS.hlsl", 
+		L"PBRModelHS.hlsl", 
 		cpHullShader.GetAddressOf()
 	);
 }

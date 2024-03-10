@@ -12,9 +12,9 @@ cbuffer CameraViewProj : register(b1)
     matrix mViewProjInv;
 };
 
-VertexOutput main(VertexInput input)
+PBRModelVertexOutput main(PBRModelVertexInput input)
 {
-    VertexOutput result;
+    PBRModelVertexOutput result;
        
     result.f3ModelNormal = normalize(mul(float4(input.f3WorldNormal, 0.f), mModelInvTranspose)).xyz;
     result.f3ModelTangent = normalize(mul(float4(input.f3WorldTangent, 0.f), mModel)).xyz;

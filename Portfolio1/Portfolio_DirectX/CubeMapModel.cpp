@@ -10,7 +10,10 @@ uint32_t CubeMapModel::uiCubeMapModelIdx = 1;
 CubeMapModel::CubeMapModel(
 	const float& fRadius
 )
-	: AIBLMesh()
+	: AIBLMesh(),
+	IMovable(0.f, 0.f, 0.f),
+	IScalable(),
+	IAngleAdjustable(0.f, 0.f, 0.f)
 {
 	spMeshFile = FileLoader::LoadDefaultCubeMesh(true);
 	SetPosition(0.f, 0.f, 0.f);

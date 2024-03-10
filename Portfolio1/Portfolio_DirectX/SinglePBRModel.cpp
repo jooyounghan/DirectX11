@@ -1,6 +1,4 @@
 #include "SinglePBRModel.h"
-#include "ID3D11Helper.h"
-#include "DirectXDevice.h"
 
 #include "ModelManipulator.h"
 #include "ModelRenderer.h"
@@ -8,7 +6,10 @@
 #include "LightRenderer.h"
 
 SinglePBRModel::SinglePBRModel()
-	: PBRStaticMesh(), ATransformerable()
+	: PBRStaticMesh(), ATransformerable(),
+	IMovable(0.f, 0.f, 0.f),
+	IScalable(),
+	IAngleAdjustable(0.f, 0.f, 0.f)
 {
 
 }
@@ -43,7 +44,7 @@ void SinglePBRModel::AcceptNormalVectorRendering(NormalVectorRenderer* pNormalVe
 	pNormalVectorRenderer->RenderNormal(*this);
 }
 
-void SinglePBRModel::AcceptLightMapUpdateSetting(LightRenderer* pLightRnederer)
+void SinglePBRModel::AcceptRenderingLightMap(LightRenderer* pLightRenderer)
 {
-	pLightRnederer->SetModelSettingForLightMap(*this);
+	pLightRenderer->RenderLightMap(*this);
 }

@@ -6,7 +6,7 @@ cbuffer CameraPos : register(b0)
 };
 
 HS_CONSTANT_DATA_OUTPUT CalcHSPatchConstants(
-	InputPatch<VertexOutput, NUM_CONTROL_POINTS> ip,
+	InputPatch<PBRModelVertexOutput, NUM_CONTROL_POINTS> ip,
 	uint PatchID : SV_PrimitiveID)
 {
 	HS_CONSTANT_DATA_OUTPUT Output;
@@ -28,12 +28,12 @@ HS_CONSTANT_DATA_OUTPUT CalcHSPatchConstants(
 [outputtopology("triangle_cw")]
 [outputcontrolpoints(3)]
 [patchconstantfunc("CalcHSPatchConstants")]
-HullOutput main(
-	InputPatch<VertexOutput, NUM_CONTROL_POINTS> ip, 
+PBRModelHullOutput main(
+	InputPatch<PBRModelVertexOutput, NUM_CONTROL_POINTS> ip,
 	uint i : SV_OutputControlPointID,
 	uint PatchID : SV_PrimitiveID )
 {
-    HullOutput Output;
+    PBRModelHullOutput Output;
     Output.f4ProjPos = ip[i].f4ProjPos;
     Output.f4ModelPos = ip[i].f4ModelPos;
     Output.f2TexCoord = ip[i].f2TexCoord;

@@ -157,6 +157,9 @@
     <ClInclude Include="LightManipulator.h" />
     <ClInclude Include="LightRenderer.h" />
     <ClInclude Include="MeshFile.h" />
+    <ClInclude Include="MirrorModel.h" />
+    <ClInclude Include="MirrorModelPixelShader.h" />
+    <ClInclude Include="BasicVertexShader.h" />
     <ClInclude Include="ModelFile.h" />
     <ClInclude Include="ModelManipulator.h" />
     <ClInclude Include="ModelRenderer.h" />
@@ -170,6 +173,7 @@
     <ClInclude Include="PBRIBLLightPixelShader.h" />
     <ClInclude Include="PBRPointLightPixelShader.h" />
     <ClInclude Include="PBRSpotLightPixelShader.h" />
+    <ClInclude Include="Shaders.h" />
     <ClInclude Include="SinglePBRModel.h" />
     <ClInclude Include="StageManipulator.h" />
     <ClInclude Include="CubeRenderTargets.h" />
@@ -198,7 +202,6 @@
     <ClInclude Include="IScalable.h" />
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="ShaderResource.h" />
-    <ClInclude Include="Shaders.h" />
     <ClInclude Include="SpotLight.h" />
     <ClInclude Include="Texture2D.h" />
     <ClInclude Include="ATransformerable.h" />
@@ -236,6 +239,9 @@
     <ClCompile Include="LightManipulator.cpp" />
     <ClCompile Include="LightRenderer.cpp" />
     <ClCompile Include="MeshFile.cpp" />
+    <ClCompile Include="MirrorModel.cpp" />
+    <ClCompile Include="MirrorModelPixelShader.cpp" />
+    <ClCompile Include="BasicVertexShader.cpp" />
     <ClCompile Include="ModelFile.cpp" />
     <ClCompile Include="ModelManipulator.cpp" />
     <ClCompile Include="ModelRenderer.cpp" />
@@ -249,6 +255,7 @@
     <ClCompile Include="PBRIBLLightPixelShader.cpp" />
     <ClCompile Include="PBRPointLightPixelShader.cpp" />
     <ClCompile Include="PBRSpotLightPixelShader.cpp" />
+    <ClCompile Include="Shaders.cpp" />
     <ClCompile Include="SinglePBRModel.cpp" />
     <ClCompile Include="StageManipulator.cpp" />
     <ClCompile Include="CubeRenderTargets.cpp" />
@@ -274,7 +281,6 @@
     <ClCompile Include="IScalable.cpp" />
     <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="ShaderResource.cpp" />
-    <ClCompile Include="Shaders.cpp" />
     <ClCompile Include="SpotLight.cpp" />
     <ClCompile Include="Texture2D.cpp" />
     <ClCompile Include="ATransformerable.cpp" />
@@ -289,7 +295,7 @@
     <ClCompile Include="ViewableRenderTarget.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="BaseDS.hlsl">
+    <FxCompile Include="PBRModelDS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Domain</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Domain</ShaderType>
@@ -299,7 +305,7 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Domain</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
-    <FxCompile Include="BaseHS.hlsl">
+    <FxCompile Include="PBRModelHS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Hull</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Hull</ShaderType>
@@ -309,12 +315,11 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Hull</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
-    <FxCompile Include="BasePS.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+    <FxCompile Include="BasicVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
     <FxCompile Include="BlurCS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
@@ -333,6 +338,13 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
     <FxCompile Include="IBLModelPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="MirrorModelPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
@@ -402,7 +414,7 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
     </FxCompile>
-    <FxCompile Include="BaseVS.hlsl">
+    <FxCompile Include="PBRModelVS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>

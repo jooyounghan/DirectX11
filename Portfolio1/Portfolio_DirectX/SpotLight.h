@@ -43,7 +43,7 @@ public:
 	virtual void UpdateLight() override;
 
 public:
-	virtual void AcceptLightRenderer(class LightRenderer* pLightRenderer) override;
+	virtual void AcceptUpdatingLightMap(class LightRenderer* pLightRenderer) override;
 
 private:
 	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn) {};

@@ -4,6 +4,7 @@
 #include "DirectXDevice.h"
 
 D3D11_VIEWPORT Viewable::nullViewPort;
+ID3D11RenderTargetView* Viewable::pNullRTV = nullptr;
 
 Viewable::Viewable(
 	const float& fXPos,

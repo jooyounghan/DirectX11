@@ -27,8 +27,8 @@ protected:
 	static ID3D11RenderTargetView* pNullRTV;
 
 public:
-	void SetDepthOnlyRenderTarget();
-	void ResetDepthOnlyRenderTarget();
+	virtual void SetDepthOnlyRenderTarget();
+	virtual void ResetDepthOnlyRenderTarget();
 
 public:
 	virtual void ClearDSV();

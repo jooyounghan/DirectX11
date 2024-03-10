@@ -94,9 +94,9 @@ SamplerState ClampSampler : register(s1);
 SamplerComparisonState CmopareBorderToOne : register(s2);
 SamplerComparisonState CompareClampSampler : register(s3);
 
-PixelOutput main(DomainOutput input)
+PBRModelPixelOutput main(PBRModelDomainOutput input)
 {
-    PixelOutput result;
+    PBRModelPixelOutput result;
     
     float fRoughness;
     float fMetallic;

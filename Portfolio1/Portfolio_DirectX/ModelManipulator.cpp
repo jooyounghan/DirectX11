@@ -5,6 +5,7 @@
 #include "SinglePBRModel.h"
 #include "GroupPBRModel.h"
 #include "AIBLMesh.h"
+#include "MirrorModel.h"
 
 #include "ModelFile.h"
 #include "NormalImageFile.h"
@@ -13,7 +14,7 @@
 // TODO : Áö¿ì±â
 #include "CubeModel.h"
 #include "CubeMapModel.h"
-
+#include "MirrorModel.h"
 
 using namespace std;
 using namespace ImGui;
@@ -24,10 +25,10 @@ ModelManipulator::ModelManipulator()
 	//AddModel(make_shared<CubeModel>(-5.f, 0.f, 0.f, 1.f, false));
 	//AddModel(make_shared<CubeModel>(5.f, 0.f, 0.f, 1.f, false));
 	//AddModel(make_shared<CubeModel>(0.f, -5.f, 0.f, 1.f, false));
-	AddModel(make_shared<CubeModel>(0.f, 5.f, 0.f, 1.f, false));
-	AddModel(make_shared<CubeModel>(0.f, 0.f, 5.f, 1.f, false));
-	//AddModel(make_shared<CubeModel>(0.f, 0.f, -5.f, 1.f, false));
-
+	//AddModel(make_shared<CubeModel>(0.f, 5.f, 0.f, 1.f, false));
+	AddModel(make_shared<CubeModel>(0.f, 0.f, 0.f, 1.f, false));
+	AddModel(make_shared<MirrorModel>(2.f, 2.f, 0.f, 0.f, 3.f, 0.f, 0.f, 0.f));
+	AddModel(make_shared<MirrorModel>(2.f, 2.f, 0.f, 0.f, -3.f, 0.f, 0.f, 0.f));
 	spIBLModel = make_shared<CubeMapModel>(500.f);
 	AddModel(spIBLModel);
 }
@@ -139,6 +140,14 @@ void ModelManipulator::SetModelAsList(GroupPBRModel& groupPBRModel)
 	}
 }
 
+void ModelManipulator::SetModelAsList(MirrorModel& mirrorModel)
+{
+	if (Selectable(mirrorModel.GetMeshName().c_str(), mirrorModel.GetMeshID() == uiSelectedModelIdx))
+	{
+		SetSelctedModel(mirrorModel.GetMeshID());
+	}
+}
+
 void ModelManipulator::SetModelAsList(AIBLMesh& iblMesh)
 {
 	if (Selectable(iblMesh.GetMeshName().c_str(), iblMesh.GetMeshID() == uiSelectedModelIdx))
@@ -154,55 +163,61 @@ void ModelManipulator::AddModel(shared_ptr<IMesh> spMesh)
 
 void ModelManipulator::ManipulateModel(SinglePBRModel& singlePBRModel)
 {
-	DrawTransformation(&singlePBRModel);
-	DrawPBRTexture(&singlePBRModel);
+	DrawTransformation(singlePBRModel);
+	DrawPBRTexture(singlePBRModel);
 }
 
 void ModelManipulator::ManipulateModel(GroupPBRModel& groupPBRModel)
 {
-	DrawTransformation((&groupPBRModel));
+	DrawTransformation((groupPBRModel));
 	Separator();
 	vector<PBRStaticMesh>& vPBRMeshes = groupPBRModel.GetChildrenMeshesRef();
 	for (auto& pbrMesh : vPBRMeshes)
 	{
 		Separator();
-		DrawPBRTexture(&pbrMesh);
+		DrawPBRTexture(pbrMesh);
 	}
 }
 
 void ModelManipulator::ManipulateModel(AIBLMesh& iblModel)
 {
-	DrawTransformation((&iblModel));
+	DrawTransformation((iblModel));
 	Separator();
-	DrawIBLTexture(&iblModel);
+	DrawIBLTexture(iblModel);
 }
 
-void ModelManipulator::DrawTransformation(ATransformerable* pTransformable)
+void ModelManipulator::ManipulateModel(MirrorModel& mirrorModel)
+{
+	DrawTransformation(mirrorModel);
+	DrawMirrorProperties(mirrorModel);
+}
+
+void ModelManipulator::DrawTransformation(ATransformerable& transformable)
 {
 	if (CollapsingHeader("Transformation", ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		Separator();
-		DragFloat3("Translation", pTransformable->GetPosition().m128_f32, 1.f, -1000000.f, 1000000.f, "%.2f");
-		DragFloat3("Rotaion", pTransformable->GetAngles(), 1.f, 0.f, 360.f, "%.2f");
-		DragFloat3("Scale", pTransformable->GetScale(), 0.005f, -1000000.f, 1000000.f, "%.2f");
+		DragFloat3("Translation", transformable.GetPosition().m128_f32, 0.1f, -1000000.f, 1000000.f, "%.2f");
+		DragFloat3("Rotaion", transformable.GetAngles(), 0.1f, 0.f, 360.f, "%.2f");
+		DragFloat3("Scale", transformable.GetScale(), 0.005f, -1000000.f, 1000000.f, "%.2f");
 	}
 }
 
-void ModelManipulator::DrawPBRTexture(PBRStaticMesh* pPBRStaticMesh)
+void ModelManipulator::DrawPBRTexture(PBRStaticMesh& pBRStaticMesh)
 {
-	if (CollapsingHeader(("PBR Model Textures " + pPBRStaticMesh->GetMeshName()).c_str()))
+	if (CollapsingHeader(("PBR Model Textures " + pBRStaticMesh.GetMeshName()).c_str()))
 	{
-		DragFloat3("Fresnel Reflectance", pPBRStaticMesh->GetFresnelConstantAddress(), 0.005f, 0.f, 1.f, "%.3f");
+		DragFloat3("Fresnel Reflectance", pBRStaticMesh.GetFresnelConstantAddress(), 0.005f, 0.f, 1.f, "%.3f");
 
-		if (pPBRStaticMesh->GetTextureImageFileRef(HEIGHT_TEXTURE_MAP).get())
+		if (pBRStaticMesh.GetTextureImageFileRef(HEIGHT_TEXTURE_MAP).get())
 		{
-			DragFloat("Height Factor", pPBRStaticMesh->GetHeightFactorAddress(), 0.005f, 0.f, 1.f, "%.3f");
+			DragFloat("Height Factor", pBRStaticMesh.GetHeightFactorAddress(), 0.005f, 0.f, 1.f, "%.3f");
 		}
 		else
 		{
 			BeginDisabled();
-			pPBRStaticMesh->SetHeightFactor(0.f);
-			DragFloat("Height Factor", pPBRStaticMesh->GetHeightFactorAddress(), 0.005f, 0.f, 1.f, "%.3f");
+			pBRStaticMesh.SetHeightFactor(0.f);
+			DragFloat("Height Factor", pBRStaticMesh.GetHeightFactorAddress(), 0.005f, 0.f, 1.f, "%.3f");
 			EndDisabled();
 		}
 
@@ -210,39 +225,48 @@ void ModelManipulator::DrawPBRTexture(PBRStaticMesh* pPBRStaticMesh)
 		{
 			SetTextureDragAndDrop(
 				PBRStaticMesh::GetTextureName(idx).c_str(), 
-				pPBRStaticMesh->GetTextureImageFileRef((EModelTextures)idx), 
+				pBRStaticMesh.GetTextureImageFileRef((EModelTextures)idx),
 				DRAG_DROP_TEXTURE_KEY
 			);
 		}
 	}
 }
 
-void ModelManipulator::DrawIBLTexture(AIBLMesh* pIBLModel)
+void ModelManipulator::DrawIBLTexture(AIBLMesh& iBLModel)
 {
 	if (CollapsingHeader("IBL Model Textures"))
 	{
 		DragFloat(
 			"Diffuse Rate",
-			pIBLModel->GetDiffuseRateAddress(),
+			iBLModel.GetDiffuseRateAddress(),
 			0.005f,
 			0.f, 1.f, "%.4f"
 		);
 
 		SetTextureDragAndDrop(
 			"Specular IBL Texture",
-			pIBLModel->GetSpecularTextureFileRef(),
+			iBLModel.GetSpecularTextureFileRef(),
 			DRAG_DROP_IBL_KEY
 		);
 		SetTextureDragAndDrop(
 			"Diffuse IBL Texture",
-			pIBLModel->GetDiffuseTextureFileRef(),
+			iBLModel.GetDiffuseTextureFileRef(),
 			DRAG_DROP_IBL_KEY
 		);
 		SetTextureDragAndDrop(
 			"BRDF LUT Texture",
-			pIBLModel->GetBRDFTextureFileRef(),
+			iBLModel.GetBRDFTextureFileRef(),
 			DRAG_DROP_TEXTURE_KEY
 		);
+	}
+}
+
+void ModelManipulator::DrawMirrorProperties(MirrorModel& mirrorModel)
+{
+	if (CollapsingHeader(("Mirror Properties " + mirrorModel.GetMeshName()).c_str()))
+	{
+		/*DragFloat3("Fresnel Reflectance", pBRStaticMesh.GetFresnelConstantAddress(), 0.005f, 0.f, 1.f, "%.3f");*/
+
 	}
 }
 

@@ -12,14 +12,17 @@ class Viewable;
 class SinglePBRModel;
 class GroupPBRModel;
 class AIBLMesh;
+class MirrorModel;
 class PointLight;
 class SpotLight;
+
 
 class LightRenderer : public IRenderer
 {
 	friend SinglePBRModel;
 	friend GroupPBRModel;
 	friend AIBLMesh;
+	friend MirrorModel;
 	friend PointLight;
 	friend SpotLight;
 
@@ -47,12 +50,13 @@ public:
 	);
 
 private:
-	void RenderLightMap(PointLight& pointLight);
-	void RenderLightMap(SpotLight& spotLight);
+	void SetForUpdatingLightMap(PointLight& pointLight);
+	void SetForUpdatingLightMap(SpotLight& spotLight);
 
 private:
-	void SetModelSettingForLightMap(SinglePBRModel& singlePBRMesh);
-	void SetModelSettingForLightMap(GroupPBRModel& groupPBRMesh);
-	void SetModelSettingForLightMap(AIBLMesh& iblMesh);
+	void RenderLightMap(SinglePBRModel& singlePBRModel);
+	void RenderLightMap(GroupPBRModel& groupPBRMesh);
+	void RenderLightMap(AIBLMesh& iblMesh);
+	void RenderLightMap(MirrorModel& mirrorModel);
 };
 

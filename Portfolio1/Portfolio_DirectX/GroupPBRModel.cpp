@@ -14,7 +14,10 @@ uint32_t GroupPBRModel::uiGroupPBRModelIdx = 1;
 GroupPBRModel::GroupPBRModel(
 	const std::shared_ptr<ModelFile>& spModelFile
 )
-	: IMesh(), ATransformerable()
+	: IMesh(), ATransformerable(),
+	IMovable(0.f, 0.f, 0.f),
+	IScalable(),
+	IAngleAdjustable(0.f, 0.f, 0.f)
 {
 	const vector<MeshFileSet>& vMeshFileSets = spModelFile->GetMeshFileSet();
 	for (auto& meshFileSet : vMeshFileSets)
@@ -59,7 +62,7 @@ void GroupPBRModel::AcceptNormalVectorRendering(NormalVectorRenderer* pNormalVec
 	pNormalVectorRenderer->RenderNormal(*this);
 }
 
-void GroupPBRModel::AcceptLightMapUpdateSetting(LightRenderer* pLightRnederer)
+void GroupPBRModel::AcceptRenderingLightMap(LightRenderer* pLightRnederer)
 {
-	pLightRnederer->SetModelSettingForLightMap(*this);
+	pLightRnederer->RenderLightMap(*this);
 }

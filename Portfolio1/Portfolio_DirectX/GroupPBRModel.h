@@ -27,7 +27,7 @@ public:
 	virtual void AcceptModelManipulating(class ModelManipulator* pModelManipulator) override;
 	virtual void AcceptModelRendering(class ModelRenderer* pModelRenderer) override;
 	virtual void AcceptNormalVectorRendering(class NormalVectorRenderer* pNormalVectorRenderer) override;
-	virtual void AcceptLightMapUpdateSetting(class LightRenderer* pLightRnederer) override;
+	virtual void AcceptRenderingLightMap(class LightRenderer* pLightRnederer) override;
 
 protected:
 	static uint32_t uiGroupPBRModelIdx;

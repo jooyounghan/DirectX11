@@ -6,7 +6,6 @@
 #include "BlurFilter.h"
 
 size_t FilteredCamera::ullFiltertedCamaraCnt = 0;
-ID3D11RenderTargetView* FilteredCamera::pNullRTV = nullptr;
 
 FilteredCamera::FilteredCamera(
 	const float& fXPos,

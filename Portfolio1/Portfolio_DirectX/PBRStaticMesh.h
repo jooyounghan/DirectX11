@@ -23,12 +23,12 @@ private:
 	void InitPBRStaticMesh();
 
 protected:
-	MeshFileSet		sMeshFileSet;
+	bool bIsInitialized;
+	std::shared_ptr<IImageFile>			spModelTexture[TEXTURE_MAP_NUM];
 
 public:
-	inline const bool& IsMeshFileInitailized() { return sMeshFileSet.bIsInitialized; }
-	inline std::shared_ptr<MeshFile>& GetMeshFileRef() { return sMeshFileSet.spMeshFile; }
-	inline std::shared_ptr<IImageFile>& GetTextureImageFileRef(const EModelTextures& eModelTexture) { return sMeshFileSet.spModelTexture[eModelTexture]; }
+	inline const bool& IsMeshFileInitailized() { return bIsInitialized; }
+	inline std::shared_ptr<IImageFile>& GetTextureImageFileRef(const EModelTextures& eModelTexture) { return spModelTexture[eModelTexture]; }
 
 protected:
 	struct
@@ -66,5 +66,5 @@ protected:
 	virtual void AcceptModelManipulating(class ModelManipulator* pModelManipulator) override {};
 	virtual void AcceptModelRendering(class ModelRenderer* pModelRenderer) override {};
 	virtual void AcceptNormalVectorRendering(class NormalVectorRenderer* pNormalVectorRenderer) override {};
-	virtual void AcceptLightMapUpdateSetting(class LightRenderer* pLightRnederer) override {};
+	virtual void AcceptRenderingLightMap(class LightRenderer* pLightRnederer) override {};
 };

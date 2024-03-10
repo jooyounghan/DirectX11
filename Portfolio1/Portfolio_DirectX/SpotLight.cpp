@@ -87,9 +87,9 @@ void SpotLight::UpdateLight()
 
 }
 
-void SpotLight::AcceptLightRenderer(LightRenderer* pLightRenderer)
+void SpotLight::AcceptUpdatingLightMap(LightRenderer* pLightRenderer)
 {
-	pLightRenderer->RenderLightMap(*this);
+	pLightRenderer->SetForUpdatingLightMap(*this);
 }
 
 void SpotLight::AcceptPBRDirectLighting(ModelRenderer* pModelRenderer)

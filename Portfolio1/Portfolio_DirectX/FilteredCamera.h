@@ -32,9 +32,6 @@ protected:
 protected:
 	std::vector<std::unique_ptr<class AFilter>> upFilters;
 
-private:
-	static ID3D11RenderTargetView* pNullRTV;
-
 public:
 	virtual void SetCameraAsRenderTarget() override;
 	virtual void ResetCameraAsRenderTarget() override;

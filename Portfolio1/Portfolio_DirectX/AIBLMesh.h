@@ -11,13 +11,6 @@ public:
 	AIBLMesh();
 	virtual ~AIBLMesh();
 
-protected:
-	std::shared_ptr<MeshFile> spMeshFile;
-
-public:
-	inline std::shared_ptr<MeshFile>& GetMeshFileRef() { return spMeshFile; };
-
-protected:
 	struct
 	{
 		float DiffuseRate;
@@ -56,6 +49,6 @@ private:
 
 private:
 	virtual void AcceptNormalVectorRendering(class NormalVectorRenderer* pNormalVectorRenderer) override;
-	virtual void AcceptLightMapUpdateSetting(class LightRenderer* pLightRnederer) override;
+	virtual void AcceptRenderingLightMap(class LightRenderer* pLightRnederer) override;
 };
 

@@ -261,9 +261,6 @@
     <ClInclude Include="DepthStencilState.h">
       <Filter>헤더 파일\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="Shaders.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="ILight.h">
       <Filter>헤더 파일\Viewable\Light</Filter>
     </ClInclude>
@@ -432,6 +429,18 @@
     <ClInclude Include="TODO.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="MirrorModel.h">
+      <Filter>헤더 파일\Model\PBR</Filter>
+    </ClInclude>
+    <ClInclude Include="MirrorModelPixelShader.h">
+      <Filter>헤더 파일\Shader\Extended\Pixel</Filter>
+    </ClInclude>
+    <ClInclude Include="BasicVertexShader.h">
+      <Filter>헤더 파일\Shader\Extended\Vertex</Filter>
+    </ClInclude>
+    <ClInclude Include="Shaders.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseApp.cpp">
@@ -499,9 +508,6 @@
     </ClCompile>
     <ClCompile Include="DepthStencilState.cpp">
       <Filter>소스 파일\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="Shaders.cpp">
-      <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="ILight.cpp">
       <Filter>소스 파일\Viewable\Light</Filter>
@@ -659,6 +665,18 @@
     <ClCompile Include="PBRSpotLightPixelShader.cpp">
       <Filter>소스 파일\Shader\Extended\Pixel</Filter>
     </ClCompile>
+    <ClCompile Include="MirrorModel.cpp">
+      <Filter>소스 파일\Model\PBR</Filter>
+    </ClCompile>
+    <ClCompile Include="MirrorModelPixelShader.cpp">
+      <Filter>소스 파일\Shader\Extended\Pixel</Filter>
+    </ClCompile>
+    <ClCompile Include="BasicVertexShader.cpp">
+      <Filter>소스 파일\Shader\Extended\Vertex</Filter>
+    </ClCompile>
+    <ClCompile Include="Shaders.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="MS16ToSS8CS.hlsl">
@@ -670,9 +688,6 @@
     <FxCompile Include="DepthOnlyPathPS.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
-    <FxCompile Include="BasePS.hlsl">
-      <Filter>Shader</Filter>
-    </FxCompile>
     <FxCompile Include="PBRWithPointPS.hlsl">
       <Filter>Shader\PBRModel</Filter>
     </FxCompile>
@@ -682,13 +697,13 @@
     <FxCompile Include="IBLModelPS.hlsl">
       <Filter>Shader\IBL</Filter>
     </FxCompile>
-    <FxCompile Include="BaseVS.hlsl">
+    <FxCompile Include="PBRModelVS.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
-    <FxCompile Include="BaseDS.hlsl">
+    <FxCompile Include="PBRModelDS.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
-    <FxCompile Include="BaseHS.hlsl">
+    <FxCompile Include="PBRModelHS.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
     <FxCompile Include="PBRWithIBLPS.hlsl">
@@ -708,6 +723,12 @@
     </FxCompile>
     <FxCompile Include="TypeResolveCS.hlsl">
       <Filter>Shader\Filter</Filter>
+    </FxCompile>
+    <FxCompile Include="MirrorModelPS.hlsl">
+      <Filter>Shader\PBRModel</Filter>
+    </FxCompile>
+    <FxCompile Include="BasicVS.hlsl">
+      <Filter>Shader</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

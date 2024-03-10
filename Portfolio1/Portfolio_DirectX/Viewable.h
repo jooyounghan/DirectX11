@@ -5,7 +5,7 @@
 
 #include <tuple>
 
-class Viewable : virtual public IRectangle, virtual public IMovable, virtual public IAngleAdjustable
+class Viewable : virtual public IMovable, virtual public IRectangle, virtual public IAngleAdjustable
 {
 public:
 	Viewable(
@@ -30,6 +30,7 @@ public:
 	float fFarZ;
 
 protected:
+	static ID3D11RenderTargetView* pNullRTV;
 	static D3D11_VIEWPORT nullViewPort;
 
 public:

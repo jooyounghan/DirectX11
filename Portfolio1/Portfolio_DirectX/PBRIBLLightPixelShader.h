@@ -13,6 +13,6 @@ public:
 	virtual void DisapplyShader() override;
 
 public:
-	void SetShader(class AIBLMesh& iblMesh, class PBRStaticMesh& pbrStaticMesh, class Viewable& viewable);
+	void SetShader(class AIBLMesh& iblMesh, class IMesh& idMesh, class PBRStaticMesh& pbrStaticMesh, class Viewable& viewable);
 	void ResetShader();
 };

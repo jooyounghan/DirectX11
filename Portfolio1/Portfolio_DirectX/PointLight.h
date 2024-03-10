@@ -52,7 +52,7 @@ public:
 	void ResetDepthOnlyRenderTarget();
 
 public:
-	virtual void AcceptLightRenderer(class LightRenderer* pLightRenderer) override;
+	virtual void AcceptUpdatingLightMap(class LightRenderer* pLightRenderer) override;
 
 public:
 	virtual void AcceptPBRDirectLighting(class ModelRenderer* pModelRenderer) override;

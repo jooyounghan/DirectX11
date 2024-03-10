@@ -30,12 +30,12 @@ Texture2D HeightTexture : register(t0);
 SamplerState ClampSampler : register(s0);
 
 [domain("tri")]
-DomainOutput main(
+PBRModelDomainOutput main(
 	HS_CONSTANT_DATA_OUTPUT input,
 	float3 domain : SV_DomainLocation,
-	const OutputPatch<HullOutput, NUM_CONTROL_POINTS> patch)
+	const OutputPatch<PBRModelHullOutput, NUM_CONTROL_POINTS> patch)
 {
-    DomainOutput Output;
+    PBRModelDomainOutput Output;
     
     Output.f4ModelPos = patch[0].f4ModelPos * domain.x + patch[1].f4ModelPos * domain.y + patch[2].f4ModelPos * domain.z;
     Output.f2TexCoord = patch[0].f2TexCoord * domain.x + patch[1].f2TexCoord * domain.y + patch[2].f2TexCoord * domain.z;

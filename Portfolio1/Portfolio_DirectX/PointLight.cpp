@@ -83,9 +83,9 @@ void PointLight::ResetDepthOnlyRenderTarget()
 	DirectXDevice::pDeviceContext->RSSetViewports(1, &Viewable::GetNullViewPort());
 }
 
-void PointLight::AcceptLightRenderer(LightRenderer* pLightRenderer)
+void PointLight::AcceptUpdatingLightMap(LightRenderer* pLightRenderer)
 {
-	pLightRenderer->RenderLightMap(*this);
+	pLightRenderer->SetForUpdatingLightMap(*this);
 }
 
 void PointLight::AcceptPBRDirectLighting(ModelRenderer* pModelRenderer)

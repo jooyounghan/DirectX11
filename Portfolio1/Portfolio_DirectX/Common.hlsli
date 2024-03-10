@@ -1,7 +1,21 @@
 
 #define NUM_CONTROL_POINTS 3
 
-struct VertexInput
+struct BasicVertexInput
+{
+    float3 f3WorldPos : POSITION;
+    float2 f2TexCoord : TEXCOORD;
+    float3 f3WorldNormal : NORMAL;
+};
+
+struct BasicVertexOutput
+{
+    float4 f4ProjPos : SV_Position;
+    float2 f2TexCoord : TEXCOORD;
+    float3 f3ModelNormal : NORMAL;
+};
+
+struct PBRModelVertexInput
 {
     float3  f3WorldPos      : POSITION;
     float2  f2TexCoord      : TEXCOORD;
@@ -9,7 +23,7 @@ struct VertexInput
     float3  f3WorldTangent  : TANGENT;
 };
 
-struct VertexOutput
+struct PBRModelVertexOutput
 {
     float4  f4ProjPos       : SV_Position;
     float4  f4ModelPos      : POSITION;
@@ -18,7 +32,7 @@ struct VertexOutput
     float3  f3ModelTangent  : TANGENT;
 };
 
-struct HullOutput
+struct PBRModelHullOutput
 {
     float4 f4ProjPos : SV_Position;
     float4 f4ModelPos : POSITION;
@@ -33,7 +47,7 @@ struct HS_CONSTANT_DATA_OUTPUT
     float InsideTessFactor : SV_InsideTessFactor;
 };
 
-struct DomainOutput
+struct PBRModelDomainOutput
 {
     float4 f4ProjPos : SV_Position;
     float4 f4ModelPos : POSITION;
@@ -44,8 +58,8 @@ struct DomainOutput
 };
 
 
-struct PixelOutput
+struct PBRModelPixelOutput
 {
-    float4  pixelColor   : SV_Target0;
-    uint    modelID         : SV_Target1;
+    float4  pixelColor  : SV_Target0;
+    uint    modelID     : SV_Target1;
 };

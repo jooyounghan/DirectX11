@@ -3,11 +3,12 @@
 #include "SinglePBRModel.h"
 #include "GroupPBRModel.h"
 #include "AIBLMesh.h"
+#include "MirrorModel.h"
+
 #include "PointLight.h"
 #include "SpotLight.h"
 
 #include "DirectXDevice.h"
-#include "Shaders.h"
 
 using namespace std;
 
@@ -36,9 +37,7 @@ void LightRenderer::UpdateLightMap(
 	for (auto& spLight : vLights)
 	{
 		pLight = spLight.get();
-		modelRenderHS.SetShader(*pLight);
-		spLight->AcceptLightRenderer(this);
-		modelRenderDS.ResetShader();
+		spLight->AcceptUpdatingLightMap(this);
 	}
 	pLight = nullptr;
 	pModelSet = nullptr;
@@ -49,11 +48,8 @@ void LightRenderer::UpdateLightMap(
 	depthOnlyPS.DisapplyShader();
 }
 
-void LightRenderer::RenderLightMap(PointLight& pointLight)
+void LightRenderer::SetForUpdatingLightMap(PointLight& pointLight)
 {
-	ID3D11RenderTargetView* pNullRTV = nullptr;
-	ID3D11Buffer* pNullBuffers = nullptr;
-
 	for (size_t idx = 0; idx < PointDirectionNum; ++idx)
 	{
 		pointLight.SetDepthOnlyRenderTarget(idx);
@@ -61,39 +57,41 @@ void LightRenderer::RenderLightMap(PointLight& pointLight)
 		pViewable = &pointLight.GetViewable((EPointDirections)idx);
 		for (auto model : *pModelSet)
 		{
-			model.second->AcceptLightMapUpdateSetting(this);
+			model.second->AcceptRenderingLightMap(this);
 		}
 		pointLight.ResetDepthOnlyRenderTarget();
 	}
 	pViewable = nullptr;
 }
 
-void LightRenderer::RenderLightMap(SpotLight& spotLight)
+void LightRenderer::SetForUpdatingLightMap(SpotLight& spotLight)
 {
 	spotLight.SetDepthOnlyRenderTarget();
 	pViewable = &spotLight;
 	for (auto model : *pModelSet)
 	{
-		model.second->AcceptLightMapUpdateSetting(this);
+		model.second->AcceptRenderingLightMap(this);
 	}
 	pViewable = nullptr;
 	spotLight.ResetDepthOnlyRenderTarget();
 }
 
-void LightRenderer::SetModelSettingForLightMap(SinglePBRModel& singlePBRMesh)
+void LightRenderer::RenderLightMap(SinglePBRModel& singlePBRMesh)
 {
 	modelRenderVS.SetIAStage(singlePBRMesh);
 	modelRenderVS.SetShader(singlePBRMesh, *pViewable);
+	modelRenderHS.SetShader(*pLight);
 	modelRenderDS.SetShader(singlePBRMesh, *pViewable);
 
 	singlePBRMesh.Draw();
 
 	modelRenderVS.ResetIAStage();
 	modelRenderVS.ResetShader();
+	modelRenderHS.ResetShader();
 	modelRenderDS.ResetShader();
 }
 
-void LightRenderer::SetModelSettingForLightMap(GroupPBRModel& groupPBRMesh)
+void LightRenderer::RenderLightMap(GroupPBRModel& groupPBRMesh)
 {
 	vector<PBRStaticMesh> vPBRMeshes = groupPBRMesh.GetChildrenMeshesRef();
 
@@ -101,18 +99,35 @@ void LightRenderer::SetModelSettingForLightMap(GroupPBRModel& groupPBRMesh)
 	{
 		modelRenderVS.SetIAStage(pbrMesh);
 		modelRenderVS.SetShader(groupPBRMesh, *pViewable);
+		modelRenderHS.SetShader(*pLight);
 		modelRenderDS.SetShader(pbrMesh, *pViewable);
 
 		pbrMesh.Draw();
 
 		modelRenderVS.ResetIAStage();
 		modelRenderVS.ResetShader();
+		modelRenderHS.ResetShader();
 		modelRenderDS.ResetShader();
 	}
 }
 
-void LightRenderer::SetModelSettingForLightMap(AIBLMesh& iblMesh)
+void LightRenderer::RenderLightMap(AIBLMesh& iblMesh)
 {
 	// Do Nothing
+}
+
+void LightRenderer::RenderLightMap(MirrorModel& mirrorModel)
+{
+	//modelRenderVS.SetIAStage(mirrorModel);
+	//modelRenderVS.SetShader(mirrorModel, *pViewable);
+	//modelRenderHS.SetShader(*pLight);
+	//modelRenderDS.SetShader(mirrorModel, *pViewable);
+
+	//mirrorModel.Draw();
+
+	//modelRenderVS.ResetIAStage();
+	//modelRenderVS.ResetShader();
+	//modelRenderHS.ResetShader();
+	//modelRenderDS.ResetShader();
 }
 

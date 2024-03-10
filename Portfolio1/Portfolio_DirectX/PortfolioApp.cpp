@@ -20,6 +20,16 @@ PortfolioApp::PortfolioApp(const UINT& uiWidthIn, const UINT& uiHeightIn)
 	BaseApp(uiWidthIn, uiHeightIn)
 {
 	BaseApp::GlobalBaseApp = this;
+
+	DirectXDevice::InitDevice(
+		uiWidth, uiHeight,
+		DXGI_FORMAT_R8G8B8A8_UNORM,
+		true, hMainWindow
+	);
+
+
+	Shaders& shaders = Shaders::GetInstance();
+	shaders.Init(DirectXDevice::pDevice);
 }
 
 PortfolioApp::~PortfolioApp()
@@ -28,15 +38,6 @@ PortfolioApp::~PortfolioApp()
 
 void PortfolioApp::Init()
 {
-	DirectXDevice::InitDevice(
-		uiWidth, uiHeight, 
-		DXGI_FORMAT_R8G8B8A8_UNORM, 
-		true, hMainWindow
-	);
-
-	Shaders& shaders = Shaders::GetInstance();
-	shaders.Init(DirectXDevice::pDevice);
-
 	upModelManipulator = make_unique<ModelManipulator>();
 	upFileManipulator = make_unique<FileManipulator>();
 	upStageManipulator = make_unique<StageManipulator>(uiWidth, uiHeight, upModelManipulator.get());
@@ -93,7 +94,6 @@ void PortfolioApp::Render()
 
 		const shared_ptr<AIBLMesh>& spIBLModel = upModelManipulator->GetIBLModel();
 		const unordered_map<uint32_t, std::shared_ptr<IMesh>>& pModels = upModelManipulator->GetModels();
-
 
 		upLightRenderer->UpdateLightMap(pModels, pLights);
 
@@ -188,6 +188,7 @@ void PortfolioApp::RenderImGUI()
 
 void PortfolioApp::QuitImGUI()
 {
+
 	ImGui_ImplDX11_Shutdown();
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();

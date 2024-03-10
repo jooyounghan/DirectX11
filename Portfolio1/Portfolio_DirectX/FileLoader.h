@@ -78,6 +78,7 @@ public:
 	static std::shared_ptr<class MeshFile> LoadDefaultCubeMesh(
 		const bool& bReverse
 	);
+	static std::shared_ptr<class MeshFile> LoadDefaultPlane();
 
 public:
 	template<typename ...Args>

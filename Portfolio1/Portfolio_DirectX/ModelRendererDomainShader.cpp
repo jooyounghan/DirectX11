@@ -12,7 +12,7 @@ ModelRendererDomainShader::ModelRendererDomainShader()
 {
 	ID3D11Helper::CreateDS(
 		DirectXDevice::pDevice, 
-		L"BaseDS.hlsl", 
+		L"PBRModelDS.hlsl", 
 		cpDomainShader.GetAddressOf()
 	);
 }

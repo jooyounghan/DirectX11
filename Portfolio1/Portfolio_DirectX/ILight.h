@@ -47,7 +47,7 @@ public:
 	virtual void UpdateLight() = 0;
 
 public:
-	virtual void AcceptLightRenderer(class LightRenderer* pLightRenderer) = 0;
+	virtual void AcceptUpdatingLightMap(class LightRenderer* pLightRenderer) = 0;
 
 public:
 	virtual void AcceptPBRDirectLighting(class ModelRenderer* pModelRenderer) = 0;

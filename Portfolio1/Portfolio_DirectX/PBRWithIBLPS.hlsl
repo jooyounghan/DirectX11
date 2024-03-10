@@ -45,9 +45,9 @@ cbuffer IsPBRTextureOn : register(b3)
 SamplerState WrapSampler : register(s0);
 SamplerState ClampSampler : register(s1);
 
-PixelOutput main(DomainOutput input)
+PBRModelPixelOutput main(PBRModelDomainOutput input)
 {
-    PixelOutput result;
+    PBRModelPixelOutput result;
 
     float fRoughness;
     float fMetallic;

@@ -3,7 +3,7 @@
 #include "IScalable.h"
 #include "IAngleAdjustable.h"
 
-class ATransformerable : public IMovable, public IScalable, public IAngleAdjustable
+class ATransformerable : virtual public IMovable, virtual public IScalable, virtual public IAngleAdjustable
 {
 public:
 	ATransformerable();
