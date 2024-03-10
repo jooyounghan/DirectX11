@@ -16,28 +16,28 @@ using namespace std;
 uint32_t MirrorModel::uiMirrorModelIdx = 1;
 
 MirrorModel::MirrorModel(
-	const float& fMirrorWidth,
-	const float& fMirrorHeight,
+	const float& fMirrorWidthIn,
+	const float& fMirrorHeightIn,
 	const float& fXPos,
 	const float& fYPos,
 	const float& fZPos,
 	const float& fPitchDegIn,
 	const float& fYawDegIn,
 	const float& fRollDegIn,
-	const float& fWidthIn,
-	const float& fHeightIn,
 	const float& fFovDegreeIn,
 	const float& fNearZIn,
 	const float& fFarZIn
 )
 	: 
+	fMirrorWidth(fMirrorWidthIn),
+	fMirrorHeight(fMirrorHeightIn),
 	IMesh(),
 	ViewableRenderTarget(
 		fXPos, fYPos, fZPos,
 		fPitchDegIn, fYawDegIn, fRollDegIn,
 		fFovDegreeIn,
 		fNearZIn, fFarZIn,
-		(UINT)fWidthIn, (UINT)fHeightIn,
+		(UINT)(fMirrorWidthIn * gMirrorTextureHeight / fMirrorHeightIn) , (UINT)gMirrorTextureHeight,
 		0, DXGI_FORMAT_R8G8B8A8_UNORM
 	),
 	ViewableDepthStencil(
@@ -45,21 +45,20 @@ MirrorModel::MirrorModel(
 		fPitchDegIn, fYawDegIn, fRollDegIn,
 		fFovDegreeIn,
 		fNearZIn, fFarZIn,
-		(UINT)fWidthIn, (UINT)fHeightIn,
+		(UINT)(fMirrorWidthIn* gMirrorTextureHeight / fMirrorHeightIn), (UINT)gMirrorTextureHeight,
 		0, DXGI_FORMAT_D32_FLOAT
 	),
 	Viewable(
 		fXPos, fYPos, fZPos,
 		fPitchDegIn, fYawDegIn, fRollDegIn,
-		fWidthIn, fHeightIn,
+		(UINT)(fMirrorWidthIn* gMirrorTextureHeight / fMirrorHeightIn), (UINT)gMirrorTextureHeight,
 		fFovDegreeIn, fNearZIn, fFarZIn
 	),
-	IRectangle(fWidthIn, fHeightIn),
+	IRectangle((UINT)(fMirrorWidthIn* gMirrorTextureHeight / fMirrorHeightIn), (UINT)gMirrorTextureHeight),
 	IMovable(fXPos, fYPos, fZPos),
 	IAngleAdjustable(fPitchDegIn, fYawDegIn, fRollDegIn)
 {
-	spMeshFile = FileLoader::LoadDefaultPlane();
-	ScaleUp(fMirrorWidth - 1.f, fMirrorHeight - 1.f, 0.f);
+	spMeshFile = FileLoader::LoadPlaneMesh(fMirrorWidthIn, fMirrorHeightIn);
 
 	AutoZeroMemory(sMirrorProperties);
 	ID3D11Helper::CreateBuffer(
@@ -87,8 +86,6 @@ void MirrorModel::Draw()
 void MirrorModel::SetAsRenderTarget()
 {
 	DirectXDevice::pDeviceContext->OMSetRenderTargets(1, cpRTV.GetAddressOf(), cpDSV.Get());
-	DirectXDevice::pDeviceContext->ClearRenderTargetView(cpRTV.Get(), fClearColor);
-	DirectXDevice::pDeviceContext->ClearDepthStencilView(cpDSV.Get(), D3D11_CLEAR_DEPTH, 1.f, NULL);
 	DirectXDevice::pDeviceContext->RSSetViewports(1, &sViewPort);
 }
 
@@ -98,16 +95,10 @@ void MirrorModel::ResetAsRenderTarget()
 	DirectXDevice::pDeviceContext->RSSetViewports(1, &nullViewPort);
 }
 
-void MirrorModel::Resize(const UINT& uiWidthIn, const UINT& uiHeightIn)
-{
-	ViewableRenderTarget::Resize(uiWidthIn, uiHeightIn);
-	ViewableDepthStencil::Resize(uiWidthIn, uiHeightIn);
-}
-
 void MirrorModel::UpdateModel(const float& fDelta)
 {
 	UpdateTranformationMatrix();
-	Viewable::UpdateView();
+	Viewable::UpdateViewToPerspective();
 	ID3D11Helper::UpdateBuffer(
 		DirectXDevice::pDeviceContext,
 		sMirrorProperties, D3D11_MAP_WRITE_DISCARD,

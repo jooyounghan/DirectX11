@@ -27,8 +27,8 @@ ModelManipulator::ModelManipulator()
 	//AddModel(make_shared<CubeModel>(0.f, -5.f, 0.f, 1.f, false));
 	//AddModel(make_shared<CubeModel>(0.f, 5.f, 0.f, 1.f, false));
 	AddModel(make_shared<CubeModel>(0.f, 0.f, 0.f, 1.f, false));
-	AddModel(make_shared<MirrorModel>(2.f, 2.f, 0.f, 0.f, 3.f, 0.f, 0.f, 0.f));
-	AddModel(make_shared<MirrorModel>(2.f, 2.f, 0.f, 0.f, -3.f, 0.f, 0.f, 0.f));
+	AddModel(make_shared<MirrorModel>(3.f, 3.f, 0.f, 0.f, 3.f, 0.f, 0.f, 0.f));
+	AddModel(make_shared<MirrorModel>(3.f, 3.f, 0.f, 0.f, -3.f, 0.f, 0.f, 0.f));
 	spIBLModel = make_shared<CubeMapModel>(500.f);
 	AddModel(spIBLModel);
 }
@@ -188,7 +188,13 @@ void ModelManipulator::ManipulateModel(AIBLMesh& iblModel)
 
 void ModelManipulator::ManipulateModel(MirrorModel& mirrorModel)
 {
-	DrawTransformation(mirrorModel);
+	if (CollapsingHeader("Transformation", ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		Separator();
+		DragFloat3("Translation", mirrorModel.GetPosition().m128_f32, 0.1f, -1000000.f, 1000000.f, "%.2f");
+		DragFloat3("Rotaion", mirrorModel.GetAngles(), 0.1f, 0.f, 360.f, "%.2f");
+		DragFloat("Fov Angle(Deg)", mirrorModel.GetFovDegreeAddress(), 0.01f, 30.f, 120.f, "%.3f");
+	}
 	DrawMirrorProperties(mirrorModel);
 }
 
@@ -265,8 +271,7 @@ void ModelManipulator::DrawMirrorProperties(MirrorModel& mirrorModel)
 {
 	if (CollapsingHeader(("Mirror Properties " + mirrorModel.GetMeshName()).c_str()))
 	{
-		/*DragFloat3("Fresnel Reflectance", pBRStaticMesh.GetFresnelConstantAddress(), 0.005f, 0.f, 1.f, "%.3f");*/
-
+		DragFloat("Alpha Constant", mirrorModel.GetAlphaAddress(), 0.005f, 0.f, 1.f, "%.3f");
 	}
 }
 

@@ -17,7 +17,7 @@ using namespace std;
 
 ModelRenderer::ModelRenderer()
 	: IRenderer(), pRenderingMirror(nullptr),
-	pCamera(nullptr), pViewable(nullptr),
+	pViewableRT(nullptr),
 	pIMesh(nullptr), pPBRStaticMesh(nullptr),
 	pLights(nullptr), pMeshes(nullptr)
 {
@@ -34,24 +34,22 @@ void ModelRenderer::RenderObjects(
 	const vector<shared_ptr<ILight>>& vLightsIn
 )
 {
-	pCamera = pCameraIn;
-	pViewable = pCameraIn;
+	pViewableRT = pCameraIn;
 	spIBLModel = spIBLModelIn;
 	pLights = &vLightsIn;
 	pMeshes = &vMeshes;
 
-	pCamera->SetCameraAsRenderTarget();
+	pViewableRT->SetAsRenderTarget();
 	for (auto meshes : vMeshes)
 	{
 		meshes.second->AcceptModelRendering(this);
 	}	
-	pCamera->ResetCameraAsRenderTarget();
+	pViewableRT->ResetAsRenderTarget();
 
 	pMeshes = nullptr;
 	pLights = nullptr;
 	spIBLModelIn = nullptr;
-	pViewable = nullptr;
-	pCamera = nullptr;
+	pViewableRT = nullptr;
 }
 
 
@@ -62,13 +60,13 @@ void ModelRenderer::RenderModel(SinglePBRModel& singlePBRMesh)
 	modelRenderDS.ApplyShader();
 
 	modelRenderVS.SetIAStage(singlePBRMesh);
-	modelRenderVS.SetShader(singlePBRMesh, *pViewable);
-	modelRenderHS.SetShader(*pViewable);
-	modelRenderDS.SetShader(singlePBRMesh, *pViewable);
+	modelRenderVS.SetShader(singlePBRMesh, *pViewableRT);
+	modelRenderHS.SetShader(*pViewableRT);
+	modelRenderDS.SetShader(singlePBRMesh, *pViewableRT);
 
 	// IBL을 활용한 렌더링
 	pbrIBLPS.ApplyShader();
-	pbrIBLPS.SetShader(*spIBLModel.get(), singlePBRMesh, singlePBRMesh, *pCamera);
+	pbrIBLPS.SetShader(*spIBLModel.get(), singlePBRMesh, singlePBRMesh, *pViewableRT);
 	singlePBRMesh.Draw();	
 	pbrIBLPS.ResetShader();
 	pbrIBLPS.DisapplyShader();
@@ -100,13 +98,13 @@ void ModelRenderer::RenderModel(GroupPBRModel& groupPBRMesh)
 	for (auto& pbrMesh : vPBRMeshes)
 	{
 		modelRenderVS.SetIAStage(pbrMesh);
-		modelRenderVS.SetShader(groupPBRMesh, *pViewable);
-		modelRenderHS.SetShader(*pViewable);
-		modelRenderDS.SetShader(pbrMesh, *pViewable);
+		modelRenderVS.SetShader(groupPBRMesh, *pViewableRT);
+		modelRenderHS.SetShader(*pViewableRT);
+		modelRenderDS.SetShader(pbrMesh, *pViewableRT);
 
 		// IBL을 활용한 렌더링
 		pbrIBLPS.ApplyShader();
-		pbrIBLPS.SetShader(*spIBLModel.get(), groupPBRMesh, pbrMesh, *pViewable);
+		pbrIBLPS.SetShader(*spIBLModel.get(), groupPBRMesh, pbrMesh, *pViewableRT);
 		pbrMesh.Draw();
 		pbrIBLPS.ResetShader();
 		pbrIBLPS.DisapplyShader();
@@ -134,8 +132,8 @@ void ModelRenderer::RenderModel(AIBLMesh& iblMesh)
 	iblRenderPS.ApplyShader();
 
 	modelRenderVS.SetIAStage(iblMesh);
-	modelRenderVS.SetShader(iblMesh, *pViewable);
-	iblRenderPS.SetShader(iblMesh, *pViewable);
+	modelRenderVS.SetShader(iblMesh, *pViewableRT);
+	iblRenderPS.SetShader(iblMesh, *pViewableRT);
 
 	iblMesh.Draw();
 
@@ -149,11 +147,38 @@ void ModelRenderer::RenderModel(AIBLMesh& iblMesh)
 
 void ModelRenderer::RenderModel(MirrorModel& mirrorModel)
 {
+	// 거울의 반사된 부분을 그려야 함
+	if (pRenderingMirror == nullptr)
+	{
+		pRenderingMirror = &mirrorModel;
+		pViewableRT->ResetAsRenderTarget();
+
+		ViewableRenderTarget* tmpVRT = pViewableRT;
+		pViewableRT = &mirrorModel;
+
+		mirrorModel.ClearRTV();
+		mirrorModel.ClearDSV();
+		mirrorModel.SetAsRenderTarget();
+
+		for (auto meshes : *pMeshes)
+		{
+			if (meshes.second.get() != pRenderingMirror)
+			{
+				meshes.second->AcceptModelRendering(this);
+			}
+		}
+		mirrorModel.ResetAsRenderTarget();
+		pViewableRT = tmpVRT;
+
+		pViewableRT->SetAsRenderTarget();
+		pRenderingMirror = nullptr;
+	}
+
 	// 자기 자신을 그림
 	basicVS.ApplyShader();
 	mirrorModelPS.ApplyShader();
 	basicVS.SetIAStage(mirrorModel);
-	basicVS.SetShader(mirrorModel, *pViewable);
+	basicVS.SetShader(mirrorModel, *pViewableRT);
 	mirrorModelPS.SetShader(mirrorModel);
 
 	mirrorModel.Draw();
@@ -164,34 +189,14 @@ void ModelRenderer::RenderModel(MirrorModel& mirrorModel)
 	basicVS.ResetShader();
 	mirrorModelPS.ResetShader();
 
-	// 거울의 반사된 부분을 그려야 함
-	if (pRenderingMirror == nullptr)
-	{
-		pRenderingMirror = &mirrorModel;
-		pCamera->ResetCameraAsRenderTarget();
-		pViewable = &mirrorModel;
 
-		mirrorModel.SetAsRenderTarget();
-		for (auto meshes : *pMeshes)
-		{
-			if (meshes.second.get() != pRenderingMirror)
-			{
-				meshes.second->AcceptModelRendering(this);
-			}
-		}
-		mirrorModel.ResetAsRenderTarget();
-
-		pCamera->SetCameraAsRenderTarget();
-		pViewable = pCamera;
-		pRenderingMirror = nullptr;
-	}
 	return;
 }
 
 void ModelRenderer::RenderWithLight(PointLight& pointLight)
 {
 	pointLightPS.ApplyShader();
-	pointLightPS.SetShader(pointLight, *pIMesh, *pPBRStaticMesh, *pViewable);
+	pointLightPS.SetShader(pointLight, *pIMesh, *pPBRStaticMesh, *pViewableRT);
 	pPBRStaticMesh->Draw();
 	pointLightPS.ResetShader();
 	pointLightPS.DisapplyShader();
@@ -200,7 +205,7 @@ void ModelRenderer::RenderWithLight(PointLight& pointLight)
 void ModelRenderer::RenderWithLight(SpotLight& spotLight)
 {
 	spotLightPS.ApplyShader();
-	spotLightPS.SetShader(spotLight, *pIMesh, *pPBRStaticMesh, *pViewable);
+	spotLightPS.SetShader(spotLight, *pIMesh, *pPBRStaticMesh, *pViewableRT);
 	pPBRStaticMesh->Draw();
 	spotLightPS.ResetShader();
 	spotLightPS.DisapplyShader();

@@ -29,8 +29,8 @@ protected:
 	size_t ullPickableCamaraIdx;
 
 public:
-	virtual void SetCameraAsRenderTarget() override;
-	virtual void ResetCameraAsRenderTarget() override;
+	virtual void SetAsRenderTarget() override;
+	virtual void ResetAsRenderTarget() override;
 
 private:
 	static std::vector<ID3D11RenderTargetView*> pNullRTV;

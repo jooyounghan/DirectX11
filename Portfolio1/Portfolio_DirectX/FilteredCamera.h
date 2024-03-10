@@ -33,8 +33,8 @@ protected:
 	std::vector<std::unique_ptr<class AFilter>> upFilters;
 
 public:
-	virtual void SetCameraAsRenderTarget() override;
-	virtual void ResetCameraAsRenderTarget() override;
+	virtual void SetAsRenderTarget() override;
+	virtual void ResetAsRenderTarget() override;
 
 public:
 	inline const std::vector<std::unique_ptr<class AFilter>>& GetFilters() { return upFilters; }

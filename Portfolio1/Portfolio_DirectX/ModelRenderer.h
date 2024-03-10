@@ -18,6 +18,7 @@
 class IMesh;
 class ILight;
 class ACamera;
+class ViewableRenderTarget;
 class SinglePBRModel;
 class GroupPBRModel;
 class AIBLMesh;
@@ -43,10 +44,9 @@ private:
 	MirrorModel* pRenderingMirror;
 
 private:
-	ACamera*		pCamera;
-	Viewable*		pViewable;
-	IMesh*			pIMesh;
-	PBRStaticMesh*	pPBRStaticMesh;
+	ViewableRenderTarget*	pViewableRT;
+	IMesh*					pIMesh;
+	PBRStaticMesh*			pPBRStaticMesh;
 
 	std::shared_ptr<AIBLMesh> spIBLModel;
 	const std::vector<std::shared_ptr<ILight>>* pLights;

@@ -537,51 +537,41 @@ std::shared_ptr<MeshFile> FileLoader::LoadDefaultCubeMesh(const bool& bReverse)
     return meshData;
 }
 
-std::shared_ptr<class MeshFile> FileLoader::LoadDefaultPlane()
+std::shared_ptr<class MeshFile> FileLoader::LoadPlaneMesh(
+    const float& fMirrorWidthIn,
+    const float& fMirrorHeightIn
+)
 {
-    shared_ptr<MeshFile> meshData;
-    string strMeshFileName = "DefaultPlane";
+    shared_ptr<MeshFile> meshData = make_shared<MeshFile>("", "Plane Mesh");
 
-    MeshFile* pMeshFile = (MeshFile*)GetUsingFile(strMeshFileName).get();
-    if (pMeshFile == nullptr)
-    {
-        cout << "Loading " << strMeshFileName << "..." << endl;
+    meshData->vVertices = vector<XMFLOAT3> { 
+        XMFLOAT3(-0.5f * fMirrorWidthIn, -0.5f * fMirrorHeightIn, 0.f),
+        XMFLOAT3(-0.5f * fMirrorWidthIn, +0.5f * fMirrorHeightIn, 0.f),
+        XMFLOAT3(+0.5f * fMirrorWidthIn, +0.5f * fMirrorHeightIn, 0.f),
+        XMFLOAT3(+0.5f * fMirrorWidthIn, -0.5f * fMirrorHeightIn, 0.f)
+    };
 
-        meshData = make_shared<MeshFile>("", strMeshFileName);
+    meshData->vTexcoords = vector<XMFLOAT2>{
+        XMFLOAT2(1.f, 1.f),
+        XMFLOAT2(1.f, 0.f),
+        XMFLOAT2(0.f, 0.f),
+        XMFLOAT2(0.f, 1.f)
+    };
 
-        meshData->vVertices = vector<XMFLOAT3> { 
-            XMFLOAT3(-0.5f, -0.5f, 0.f),
-            XMFLOAT3(-0.5f, +0.5f, 0.f),
-            XMFLOAT3(+0.5f, +0.5f, 0.f),
-            XMFLOAT3(+0.5f, -0.5f, 0.f)
-        };
+    meshData->vNormals = vector<XMFLOAT3>{
+        XMFLOAT3(0.0f, 0.0f, 1.0f),
+        XMFLOAT3(0.0f, 0.0f, 1.0f),
+        XMFLOAT3(0.0f, 0.0f, 1.0f),
+        XMFLOAT3(0.0f, 0.0f, 1.0f),
+    };
 
-        meshData->vTexcoords = vector<XMFLOAT2>{
-            XMFLOAT2(1.f, 1.f),
-            XMFLOAT2(1.f, 0.f),
-            XMFLOAT2(0.f, 0.f),
-            XMFLOAT2(0.f, 1.f)
-        };
+    meshData->vIndices = vector<uint32_t>{
+        0, 2, 1, 0, 3, 2,
+    };
 
-        meshData->vNormals = vector<XMFLOAT3>{
-            XMFLOAT3(0.0f, 0.0f, 1.0f),
-            XMFLOAT3(0.0f, 0.0f, 1.0f),
-            XMFLOAT3(0.0f, 0.0f, 1.0f),
-            XMFLOAT3(0.0f, 0.0f, 1.0f),
-        };
+    meshData->vTangents.resize(meshData->vNormals.size());
+    meshData->UpdateTangents();
+    meshData->CreateBuffers();
 
-        meshData->vIndices = vector<uint32_t>{
-            0, 2, 1, 0, 3, 2,
-        };
-
-        meshData->vTangents.resize(meshData->vNormals.size());
-        meshData->UpdateTangents();
-        meshData->CreateBuffers();
-        FileLoader::AddUsingFile(strMeshFileName, meshData);
-    }
-    else
-    {
-        meshData = pMeshFile->shared_from_this();
-    }
     return meshData;
 }

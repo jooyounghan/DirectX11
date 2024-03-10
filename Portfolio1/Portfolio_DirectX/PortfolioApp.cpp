@@ -63,7 +63,7 @@ void PortfolioApp::Update(const float& fDelta)
 	if (pCamera)
 	{
 		pCamera->UpdatePosition();
-		pCamera->UpdateView();
+		pCamera->UpdateViewToPerspective();
 		pCamera->ManageKeyBoardInput(fDelta);
 	}
 
@@ -79,6 +79,7 @@ void PortfolioApp::Render()
 	DirectXDevice::AddIgnoringMessageFilter(D3D11_MESSAGE_ID_DEVICE_DRAW_RENDERTARGETVIEW_NOT_SET);
 	DirectXDevice::AddIgnoringMessageFilter(D3D11_MESSAGE_ID_DEVICE_IASETPRIMITIVETOPOLOGY_TOPOLOGY_UNDEFINED);
 	DirectXDevice::AddIgnoringMessageFilter(D3D11_MESSAGE_ID_DEVICE_DRAW_SHADERRESOURCEVIEW_NOT_SET);
+	DirectXDevice::AddIgnoringMessageFilter(D3D11_MESSAGE_ID_DEVICE_DRAW_CONSTANT_BUFFER_NOT_SET);
 	DirectXDevice::ApplyDebugMessageFilter();
 
 	CameraManipulator* const pCameraManipulator = upStageManipulator->GetCameraManipulator();
@@ -122,6 +123,7 @@ void PortfolioApp::Render()
 	DirectXDevice::RemoveIgnoringMessageFilter(D3D11_MESSAGE_ID_DEVICE_DRAW_RENDERTARGETVIEW_NOT_SET);
 	DirectXDevice::RemoveIgnoringMessageFilter(D3D11_MESSAGE_ID_DEVICE_IASETPRIMITIVETOPOLOGY_TOPOLOGY_UNDEFINED);
 	DirectXDevice::RemoveIgnoringMessageFilter(D3D11_MESSAGE_ID_DEVICE_DRAW_SHADERRESOURCEVIEW_NOT_SET);
+	DirectXDevice::RemoveIgnoringMessageFilter(D3D11_MESSAGE_ID_DEVICE_DRAW_CONSTANT_BUFFER_NOT_SET);
 	DirectXDevice::ApplyDebugMessageFilter();
 }
 

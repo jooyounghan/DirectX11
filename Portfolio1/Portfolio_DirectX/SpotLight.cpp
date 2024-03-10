@@ -71,7 +71,7 @@ void SpotLight::UpdateLight()
 {
 	fFarZ = sBaseLightData.fFallOffEnd;
 
-	ViewableDepthOnly::UpdateView();
+	ViewableDepthOnly::UpdateViewToPerspective();
 
 	ID3D11Helper::UpdateBuffer(
 		DirectXDevice::pDeviceContext,

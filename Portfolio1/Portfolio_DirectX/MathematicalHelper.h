@@ -8,7 +8,7 @@ public:
 	static DirectX::XMVECTOR MakeReflect(const DirectX::XMVECTOR& normalVec, const DirectX::XMVECTOR& inVec);
 
 public:
-	static DirectX::XMMATRIX MakeViewProjMatrix(
+	static DirectX::XMMATRIX MakePerspectiveViewProjMatrix(
 		const DirectX::XMVECTOR& xmvCameraPosition,
 		const DirectX::XMVECTOR& xmvCameraDirection,
 		const DirectX::XMVECTOR& xmvCameraUp,
@@ -18,7 +18,7 @@ public:
 		const float& fFarZ
 	);
 
-	static DirectX::XMMATRIX MakeViewProjMatrix(
+	static DirectX::XMMATRIX MakePerspectiveViewProjMatrix(
 		const DirectX::XMVECTOR& xmvCameraPosition,
 		DirectX::XMVECTOR&& xmvCameraDirection,
 		DirectX::XMVECTOR&& xmvCameraUp,

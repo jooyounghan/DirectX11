@@ -23,11 +23,18 @@ public:
 	);
 	virtual ~Viewable();
 
-public:
+protected:
 	D3D11_VIEWPORT sViewPort;
 	float fFovDegree;
 	float fNearZ;
 	float fFarZ;
+
+public:
+	inline D3D11_VIEWPORT* GetViewPortAddress() { return &sViewPort; }
+	inline float* GetFovDegreeAddress() { return &fFovDegree; }
+
+public:
+	inline void SetFarZ(const float& fFarZIn) { fFarZ = fFarZIn; }
 
 protected:
 	static ID3D11RenderTargetView* pNullRTV;
@@ -49,6 +56,6 @@ public:
 
 public:
 	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn);
-	virtual void UpdateView();
+	void UpdateViewToPerspective();
 };
 

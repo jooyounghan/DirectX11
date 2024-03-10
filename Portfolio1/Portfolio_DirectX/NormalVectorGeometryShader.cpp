@@ -36,8 +36,6 @@ void NormalVectorGeometryShader::DisapplyShader()
 
 void NormalVectorGeometryShader::SetShader(PBRStaticMesh& pbrStaticMesh, Viewable& viewableCamera)
 {
-	ID3D11ShaderResourceView* pNullSRV = nullptr;
-
 	DirectXDevice::pDeviceContext->GSSetConstantBuffers(0, 1, pbrStaticMesh.GetPBRConstantBuffer());
 	DirectXDevice::pDeviceContext->GSSetConstantBuffers(1, 1, viewableCamera.GetViewProjBuffer());
 	DirectXDevice::pDeviceContext->GSSetConstantBuffers(2, 1, pbrStaticMesh.GetPBRTextureFlagBuffer());
@@ -55,15 +53,18 @@ void NormalVectorGeometryShader::SetShader(PBRStaticMesh& pbrStaticMesh, Viewabl
 	DirectXDevice::pDeviceContext->GSSetSamplers(0, 1, DirectXDevice::ppClampSampler);
 }
 
+void NormalVectorGeometryShader::SetShader(IMesh& mesh, Viewable& viewableCamera)
+{
+	DirectXDevice::pDeviceContext->GSSetConstantBuffers(1, 1, viewableCamera.GetViewProjBuffer());
+	DirectXDevice::pDeviceContext->GSSetSamplers(0, 1, DirectXDevice::ppClampSampler);
+}
+
 void NormalVectorGeometryShader::ResetShader()
 {
-	ID3D11Buffer* pNullBuffers = nullptr;
-	ID3D11ShaderResourceView* pNullSRV = nullptr;
-	ID3D11SamplerState* pNullSampler = nullptr;
 
-	DirectXDevice::pDeviceContext->GSSetConstantBuffers(0, 1, &pNullBuffers);
-	DirectXDevice::pDeviceContext->GSSetConstantBuffers(1, 1, &pNullBuffers);
-	DirectXDevice::pDeviceContext->GSSetConstantBuffers(2, 1, &pNullBuffers);
+	DirectXDevice::pDeviceContext->GSSetConstantBuffers(0, 1, &pNullBuffer);
+	DirectXDevice::pDeviceContext->GSSetConstantBuffers(1, 1, &pNullBuffer);
+	DirectXDevice::pDeviceContext->GSSetConstantBuffers(2, 1, &pNullBuffer);
 
 	DirectXDevice::pDeviceContext->GSSetShaderResources(0, 1, &pNullSRV);
 	DirectXDevice::pDeviceContext->GSSetShaderResources(1, 1, &pNullSRV);

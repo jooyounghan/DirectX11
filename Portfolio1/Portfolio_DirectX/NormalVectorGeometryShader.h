@@ -13,6 +13,7 @@ public:
 
 public:
 	void SetShader(class PBRStaticMesh& pbrStaticMesh, class Viewable& viewableCamera);
+	void SetShader(class IMesh& mesh, class Viewable& viewableCamera);
 	void ResetShader();
 };
 

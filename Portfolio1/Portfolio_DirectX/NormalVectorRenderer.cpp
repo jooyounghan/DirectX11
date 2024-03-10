@@ -6,6 +6,7 @@
 #include "SinglePBRModel.h"
 #include "GroupPBRModel.h"
 #include "AIBLMesh.h"
+#include "MirrorModel.h"
 
 using namespace std;
 
@@ -23,7 +24,7 @@ void NormalVectorRenderer::RenderNormalVector(
 	const unordered_map<uint32_t, shared_ptr<IMesh>>& vMeshesIn
 )
 {
-	pCameraIn->SetCameraAsRenderTarget();
+	pCameraIn->SetAsRenderTarget();
 
 	normalVectorVS.ApplyShader();
 	normalVectorGS.ApplyShader();
@@ -36,7 +37,7 @@ void NormalVectorRenderer::RenderNormalVector(
 	}
 	pCamera = nullptr;
 
-	pCameraIn->ResetCameraAsRenderTarget();
+	pCameraIn->ResetAsRenderTarget();
 
 	normalVectorVS.DisapplyShader();
 	normalVectorGS.DisapplyShader();
@@ -79,5 +80,13 @@ void NormalVectorRenderer::RenderNormal(AIBLMesh& iblMesh)
 
 void NormalVectorRenderer::RenderNormal(MirrorModel& mirrorModel)
 {
-	// Do Nothing
+	normalVectorVS.SetIAStage(mirrorModel);
+	normalVectorVS.SetShader(mirrorModel);
+	normalVectorGS.SetShader(mirrorModel, *pCamera);
+
+	mirrorModel.Draw();
+
+	normalVectorVS.ResetIAStage();
+	normalVectorVS.ResetShader();
+	normalVectorGS.ResetShader();
 }

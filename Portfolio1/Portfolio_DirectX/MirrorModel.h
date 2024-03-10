@@ -4,7 +4,7 @@
 #include "ViewableDepthStencil.h"
 #include "ATransformerable.h"
 
-constexpr float gMirrorFovDeg = 90.f;
+constexpr float gMirrorFovDeg = 60.f;
 constexpr float gMirrorNearZ = 0.001f;
 constexpr float gMirrorFarZ = 1000.f;
 constexpr UINT gMirrorTextureWidth = 1000;
@@ -18,16 +18,14 @@ class MirrorModel :
 {
 public:
 	MirrorModel(
-		const float& fMirrorWidth,
-		const float& fMirrorHeight,
+		const float& fMirrorWidthIn,
+		const float& fMirrorHeightIn,
 		const float& fXPos,
 		const float& fYPos,
 		const float& fZPos,
 		const float& fPitchDegIn,
 		const float& fYawDegIn,
 		const float& fRollDegIn,
-		const float& fWidthIn = gMirrorTextureWidth,
-		const float& fHeightIn = gMirrorTextureHeight,
 		const float& fFovDegreeIn = gMirrorFovDeg,
 		const float& fNearZIn = gMirrorNearZ,
 		const float& fFarZIn =gMirrorFarZ
@@ -36,6 +34,10 @@ public:
 
 protected:
 	static uint32_t uiMirrorModelIdx;
+
+protected:
+	float fMirrorWidth;
+	float fMirrorHeight;
 
 protected:
 	struct
@@ -53,11 +55,13 @@ public:
 	virtual void Draw() override;
 
 public:
-	void SetAsRenderTarget();
-	void ResetAsRenderTarget();
+	virtual void SetAsRenderTarget() override;
+	virtual void ResetAsRenderTarget() override;
+
+private:
+	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn) override {};
 
 public:
-	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn) override;
 	virtual void UpdateModel(const float& fDelta) override;
 
 public:

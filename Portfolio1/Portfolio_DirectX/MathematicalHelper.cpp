@@ -6,7 +6,7 @@ DirectX::XMVECTOR MathematicalHelper::MakeReflect(const DirectX::XMVECTOR& norma
 	return DirectX::XMVectorAdd(inVec, DirectX::XMVectorScale(normalVec, 2.f * dotProduct.m128_f32[0]));
 }
 
-DirectX::XMMATRIX MathematicalHelper::MakeViewProjMatrix(
+DirectX::XMMATRIX MathematicalHelper::MakePerspectiveViewProjMatrix(
 	const DirectX::XMVECTOR& xmvCameraPosition, 
 	const DirectX::XMVECTOR& xmvCameraDirection, 
 	const DirectX::XMVECTOR& xmvCameraUp, 
@@ -18,7 +18,7 @@ DirectX::XMMATRIX MathematicalHelper::MakeViewProjMatrix(
 		DirectX::XMMatrixPerspectiveFovLH(fFovRadian, fAspectRatio, fNearZ, fFarZ);
 }
 
-DirectX::XMMATRIX MathematicalHelper::MakeViewProjMatrix(
+DirectX::XMMATRIX MathematicalHelper::MakePerspectiveViewProjMatrix(
 	const DirectX::XMVECTOR& xmvCameraPosition,
 	DirectX::XMVECTOR&& xmvCameraDirection,
 	DirectX::XMVECTOR&& xmvCameraUp,
@@ -29,7 +29,6 @@ DirectX::XMMATRIX MathematicalHelper::MakeViewProjMatrix(
 	return DirectX::XMMatrixLookToLH(xmvCameraPosition, xmvCameraDirection, xmvCameraUp) *
 		DirectX::XMMatrixPerspectiveFovLH(fFovRadian, fAspectRatio, fNearZ, fFarZ);
 }
-
 
 DirectX::XMMATRIX MathematicalHelper::MakeAffineTransformation(
 	const float& fXScale, const float& fYScale, const float& fZScale, 

@@ -58,19 +58,19 @@ void NormalVectorVertexShader::ResetShader()
 	DirectXDevice::pDeviceContext->VSSetConstantBuffers(0, 1, &pNullBuffers[0]);
 }
 
-void NormalVectorVertexShader::SetIAStage(PBRStaticMesh& pbrStaticMesh)
+void NormalVectorVertexShader::SetIAStage(IMesh& mesh)
 {
 	DirectXDevice::pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	const std::vector<ID3D11Buffer*> vertexBuffers = {
-		pbrStaticMesh.GetMeshFileRef()->cpVerticesBuffer.Get(),
-		pbrStaticMesh.GetMeshFileRef()->cpTexcoordsBuffer.Get(),
-		pbrStaticMesh.GetMeshFileRef()->cpNormalsBuffer.Get(),
-		pbrStaticMesh.GetMeshFileRef()->cpTangentsBuffer.Get()
+		mesh.GetMeshFileRef()->cpVerticesBuffer.Get(),
+		mesh.GetMeshFileRef()->cpTexcoordsBuffer.Get(),
+		mesh.GetMeshFileRef()->cpNormalsBuffer.Get(),
+		mesh.GetMeshFileRef()->cpTangentsBuffer.Get()
 	};
 
 	DirectXDevice::pDeviceContext->IASetVertexBuffers(0, 4, vertexBuffers.data(), uiStrides, uiOffsets);
-	DirectXDevice::pDeviceContext->IASetIndexBuffer(pbrStaticMesh.GetMeshFileRef()->cpInicesBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+	DirectXDevice::pDeviceContext->IASetIndexBuffer(mesh.GetMeshFileRef()->cpInicesBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 }
 
 void NormalVectorVertexShader::ResetIAStage()

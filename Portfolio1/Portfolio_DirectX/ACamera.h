@@ -40,12 +40,12 @@ public:
 	virtual void Resolve() = 0;
 
 public:
-	virtual void SetCameraAsRenderTarget() = 0;
-	virtual void ResetCameraAsRenderTarget() = 0;
-
-public:
 	virtual void ManageKeyBoardInput(const float& fDelay);
 	virtual void ManageMouseInput(const int& iMouseXIn, const int& iMouseYIn);
+
+public:
+	virtual void SetAsRenderTarget() = 0;
+	virtual void ResetAsRenderTarget() = 0;
 
 public:
 	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn) override;

@@ -86,7 +86,7 @@ PBRModelPixelOutput main(PBRModelDomainOutput input)
     float3 diffuseIBL = (float3(1.f, 1.f, 1.f) - F) * f3DiffuseColor * f3DiffuseSampled;
     float3 specularIBL = (F0 * IBLBrdf.x + IBLBrdf.y) * f3SpecularSampled;
 
-    float3 fAmbientColor = (diffuseIBL + specularIBL) * f3AmbientOcclusion;
+    float3 fAmbientColor = (diffuseIBL + specularIBL) * f3AmbientOcclusion * 0.1f;
  
     result.pixelColor = float4(fAmbientColor, 1.f);
     result.modelID = uIMeshId;

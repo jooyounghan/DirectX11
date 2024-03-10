@@ -54,13 +54,13 @@ void Viewable::Resize(const UINT& uiWidthIn, const UINT& uiHeightIn)
 	sViewPort.Height= (float)uiHeight;
 }
 
-void Viewable::UpdateView()
+void Viewable::UpdateViewToPerspective()
 {
 	DirectX::XMMATRIX xmRotationMat = GetTransformedMatrix();
 	DirectX::XMVECTOR xmvDirection = XMVector4Transform(xmvDefaultDirection, xmRotationMat);
 	DirectX::XMVECTOR xmvUp = XMVector4Transform(xmvDefaultUp, xmRotationMat);
 
-	sViewProjs.xmmViewProjMat = MathematicalHelper::MakeViewProjMatrix(
+	sViewProjs.xmmViewProjMat = MathematicalHelper::MakePerspectiveViewProjMatrix(
 		xmvPosition,
 		xmvDirection,
 		xmvUp,
@@ -73,3 +73,5 @@ void Viewable::UpdateView()
 
 	ID3D11Helper::UpdateBuffer(DirectXDevice::pDeviceContext, sViewProjs, D3D11_MAP_WRITE_DISCARD, cpViewProjBuffer.Get());
 }
+
+

@@ -24,7 +24,7 @@ public:
 	void ResetShader();
 
 public:
-	void SetIAStage(class PBRStaticMesh& pbrStaticMesh);
+	void SetIAStage(class IMesh& mesh);
 	void ResetIAStage();
 };
 

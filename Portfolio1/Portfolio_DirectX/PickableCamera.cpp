@@ -61,7 +61,7 @@ PickableCamera::~PickableCamera()
 {
 }
 
-void PickableCamera::SetCameraAsRenderTarget()
+void PickableCamera::SetAsRenderTarget()
 {
 	std::vector<ID3D11RenderTargetView*> vRTVs = {
 		RenderTarget::cpRTV.Get(),
@@ -71,7 +71,7 @@ void PickableCamera::SetCameraAsRenderTarget()
 	DirectXDevice::pDeviceContext->RSSetViewports(1, &sViewPort);
 }
 
-void PickableCamera::ResetCameraAsRenderTarget()
+void PickableCamera::ResetAsRenderTarget()
 {
 	DirectXDevice::pDeviceContext->OMSetRenderTargets(1, pNullRTV.data(), nullptr);
 	DirectXDevice::pDeviceContext->RSSetViewports(1, &nullViewPort);

@@ -61,11 +61,11 @@ void PointLight::UpdateLight()
 
 	for (size_t idx = 0; idx < PointDirectionNum; ++idx)
 	{
-		viewable[idx].fFarZ = sBaseLightData.fFallOffEnd;
+		viewable[idx].SetFarZ(sBaseLightData.fFallOffEnd);
 		DirectX::XMVECTOR& pos = viewable[idx].GetPosition();
 		memcpy(pos.m128_f32, xmvPosition.m128_f32, sizeof(float) * 4);
 		viewable[idx].UpdatePosition();
-		viewable[idx].UpdateView();
+		viewable[idx].UpdateViewToPerspective();
 	}
 }
 
@@ -74,7 +74,7 @@ void PointLight::SetDepthOnlyRenderTarget(const size_t& idx)
 	ID3D11DepthStencilView* pDSV = cpDSVs[idx].Get();
 	DirectXDevice::pDeviceContext->OMSetRenderTargets(1, &pNullRTV, pDSV);
 	DirectXDevice::pDeviceContext->ClearDepthStencilView(pDSV, D3D11_CLEAR_DEPTH, 1.f, NULL);
-	DirectXDevice::pDeviceContext->RSSetViewports(1, &viewable[idx].sViewPort);
+	DirectXDevice::pDeviceContext->RSSetViewports(1, viewable[idx].GetViewPortAddress());
 }
 
 void PointLight::ResetDepthOnlyRenderTarget()

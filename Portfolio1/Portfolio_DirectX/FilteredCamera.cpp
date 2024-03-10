@@ -49,13 +49,13 @@ FilteredCamera::~FilteredCamera()
 
 }
 
-void FilteredCamera::SetCameraAsRenderTarget()
+void FilteredCamera::SetAsRenderTarget()
 {
 	DirectXDevice::pDeviceContext->OMSetRenderTargets(1, cpRTV.GetAddressOf(), cpDSV.Get());
 	DirectXDevice::pDeviceContext->RSSetViewports(1, &sViewPort);
 }
 
-void FilteredCamera::ResetCameraAsRenderTarget()
+void FilteredCamera::ResetAsRenderTarget()
 {
 	DirectXDevice::pDeviceContext->OMSetRenderTargets(1, &pNullRTV, nullptr);
 	DirectXDevice::pDeviceContext->RSSetViewports(1, &nullViewPort);
