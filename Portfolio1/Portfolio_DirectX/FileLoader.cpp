@@ -277,15 +277,15 @@ MeshFileSet FileLoader::ProcessMesh(
 )
 {
     MeshFileSet result;
+
     string strFileWithExtMesh = strFileName + strExtension + " / " + +pMesh->mName.C_Str() + " Mesh";
     MeshFile* pMeshFile = (MeshFile*)GetUsingFile(strFileWithExtMesh).get();
-
     if (pMeshFile == nullptr)
     {
         cout << "Loading " << strFileWithExtMesh << "..." << endl;
 
         result.spMeshFile = make_shared<MeshFile>(strFilePath, strFileWithExtMesh);
-        result.spMeshFile->SetIsGLTF(bIsGltf);
+        result.bIsGltf = bIsGltf;
 
         for (UINT i = 0; i < pMesh->mNumVertices; i++)
         {
@@ -464,6 +464,8 @@ std::shared_ptr<MeshFile> FileLoader::LoadDefaultCubeMesh(const bool& bReverse)
     shared_ptr<MeshFile> meshData;
     string strMeshFileName = bReverse ? "DefaultReverseCube" : "DefaultCube";
 
+    const float normalFactor = bReverse ? -1.f : 1.f;
+
     MeshFile* pMeshFile = (MeshFile*)GetUsingFile(strMeshFileName).get();
     if (pMeshFile == nullptr)
     {
@@ -485,20 +487,19 @@ std::shared_ptr<MeshFile> FileLoader::LoadDefaultCubeMesh(const bool& bReverse)
                 const float& fLongitudeTextureCord = longitudeIdx / (DEFAULT_CUBE_LEVEL * 2.f);
 
                 meshData->vVertices.emplace_back(cosf(fLongitudeLow) * cosf(fLatitudeLow), sinf(fLatitudeLow), cosf(fLatitudeLow) * sinf(fLongitudeLow));
-                meshData->vTexcoords.emplace_back(fLongitudeTextureCord, 0.5f + fLatitudeLowTextureCord);
-                meshData->vNormals.emplace_back(cosf(fLongitudeLow) * cosf(fLatitudeLow), sinf(fLatitudeLow), cosf(fLatitudeLow) * sinf(fLongitudeLow));
-
                 meshData->vVertices.emplace_back(cosf(fLongitudeLow) * cosf(fLatitudeHigh), sinf(fLatitudeHigh), cosf(fLatitudeHigh) * sinf(fLongitudeLow));
-                meshData->vTexcoords.emplace_back(fLongitudeTextureCord, 0.5f + fLatitudeHighTextureCord);
-                meshData->vNormals.emplace_back(cosf(fLongitudeLow) * cosf(fLatitudeHigh), sinf(fLatitudeHigh), cosf(fLatitudeHigh) * sinf(fLongitudeLow));
-
                 meshData->vVertices.emplace_back(cosf(fLongitudeLow) * cosf(-fLatitudeLow), sinf(-fLatitudeLow), cosf(-fLatitudeLow) * sinf(fLongitudeLow));
-                meshData->vTexcoords.emplace_back(fLongitudeTextureCord, 0.5f - fLatitudeLowTextureCord);
-                meshData->vNormals.emplace_back(cosf(fLongitudeLow) * cosf(-fLatitudeLow), sinf(-fLatitudeLow), cosf(-fLatitudeLow) * sinf(fLongitudeLow));
-
                 meshData->vVertices.emplace_back(cosf(fLongitudeLow) * cosf(-fLatitudeHigh), sinf(-fLatitudeHigh), cosf(-fLatitudeHigh) * sinf(fLongitudeLow));
+
+                meshData->vTexcoords.emplace_back(fLongitudeTextureCord, 0.5f + fLatitudeLowTextureCord);
+                meshData->vTexcoords.emplace_back(fLongitudeTextureCord, 0.5f + fLatitudeHighTextureCord);
+                meshData->vTexcoords.emplace_back(fLongitudeTextureCord, 0.5f - fLatitudeLowTextureCord);
                 meshData->vTexcoords.emplace_back(fLongitudeTextureCord, 0.5f - fLatitudeHighTextureCord);
-                meshData->vNormals.emplace_back(cosf(fLongitudeLow) * cosf(-fLatitudeHigh), sinf(-fLatitudeHigh), cosf(-fLatitudeHigh) * sinf(fLongitudeLow));
+
+                meshData->vNormals.emplace_back(normalFactor * cosf(fLongitudeLow) * cosf(fLatitudeLow),   normalFactor * sinf(fLatitudeLow),     normalFactor * cosf(fLatitudeLow) * sinf(fLongitudeLow));
+                meshData->vNormals.emplace_back(normalFactor * cosf(fLongitudeLow) * cosf(fLatitudeHigh),  normalFactor * sinf(fLatitudeHigh),    normalFactor * cosf(fLatitudeHigh) * sinf(fLongitudeLow));
+                meshData->vNormals.emplace_back(normalFactor * cosf(fLongitudeLow) * cosf(-fLatitudeLow),  normalFactor * sinf(-fLatitudeLow),    normalFactor * cosf(-fLatitudeLow) * sinf(fLongitudeLow));
+                meshData->vNormals.emplace_back(normalFactor * cosf(fLongitudeLow) * cosf(-fLatitudeHigh), normalFactor * sinf(-fLatitudeHigh),   normalFactor * cosf(-fLatitudeHigh) * sinf(fLongitudeLow));
             }
 
             for (uint32_t longitudeIdx = 0; longitudeIdx < (uint32_t)DEFAULT_CUBE_LEVEL * 2; ++longitudeIdx)

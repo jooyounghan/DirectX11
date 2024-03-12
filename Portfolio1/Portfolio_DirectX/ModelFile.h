@@ -7,6 +7,7 @@
 struct MeshFileSet
 {
 	bool bIsInitialized;
+	bool bIsGltf;
 	std::shared_ptr<class MeshFile>		spMeshFile;
 	std::shared_ptr<IImageFile>			spModelTexture[TEXTURE_MAP_NUM];
 };

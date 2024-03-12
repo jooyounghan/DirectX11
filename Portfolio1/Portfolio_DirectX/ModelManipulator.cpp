@@ -26,9 +26,10 @@ ModelManipulator::ModelManipulator()
 	//AddModel(make_shared<CubeModel>(5.f, 0.f, 0.f, 1.f, false));
 	//AddModel(make_shared<CubeModel>(0.f, -5.f, 0.f, 1.f, false));
 	//AddModel(make_shared<CubeModel>(0.f, 5.f, 0.f, 1.f, false));
-	AddModel(make_shared<CubeModel>(0.f, 0.f, 0.f, 1.f, false));
-	AddModel(make_shared<MirrorModel>(3.f, 3.f, 0.f, 0.f, 3.f, 0.f, 0.f, 0.f));
-	AddModel(make_shared<MirrorModel>(3.f, 3.f, 0.f, 0.f, -3.f, 0.f, 0.f, 0.f));
+	//AddModel(make_shared<CubeModel>(0.f, 0.f, 0.f, 1.f, false));
+	//AddModel(make_shared<MirrorModel>(3.f, 3.f, 0.f, 0.f, 3.f, 0.f, 0.f, 0.f));
+	//AddModel(make_shared<MirrorModel>(3.f, 3.f, 0.f, 0.f, -3.f, 0.f, 0.f, 0.f));
+	AddModel(make_shared<CubeModel>(0.f, 0.f, 0.f, 10.f, true));
 	spIBLModel = make_shared<CubeMapModel>(500.f);
 	AddModel(spIBLModel);
 }

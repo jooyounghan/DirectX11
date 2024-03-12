@@ -17,8 +17,8 @@ const char* LightManipulator::lightKind[] = {"Spot Light", "Point Light"};
 
 LightManipulator::LightManipulator()
 	: 
-	fFallOffStart(0.f),
-	fFallOffEnd(0.f),
+	fFallOffStart(0.1f),
+	fFallOffEnd(0.1f),
 	fLightPower(1.f),
 	fSpotPower(1.f),
 	bIsAddingLight(false),
@@ -46,8 +46,8 @@ void LightManipulator::InitLightVariable()
 	fLightColor[0] = 1.f;
 	fLightColor[1] = 1.f;
 	fLightColor[2] = 1.f;
-	fFallOffStart = 0.f;
-	fFallOffEnd = 0.f;
+	fFallOffStart = 0.1f;
+	fFallOffEnd = 0.1f;
 	fLightPower = 1.f;
 	fSpotPower = 1.f;
 }

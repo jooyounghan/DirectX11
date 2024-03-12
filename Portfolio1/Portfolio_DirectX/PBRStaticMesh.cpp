@@ -51,6 +51,7 @@ PBRStaticMesh::PBRStaticMesh(const MeshFileSet& meshFileSet)
 
 	InitPBRStaticMesh();
 	SetMeshName(meshFileSet.spMeshFile->GetFileName());
+	sPBRTextureFlag.bIsGLTF = meshFileSet.bIsGltf;
 }
 
 PBRStaticMesh::~PBRStaticMesh()

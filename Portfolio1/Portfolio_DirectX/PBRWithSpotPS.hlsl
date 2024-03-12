@@ -1,6 +1,7 @@
 #include "Common.hlsli"
 #include "BrdfHelper.hlsli"
 #include "MathematicalHelper.hlsli"
+#include "ShadowHelper.hlsli"
 
 Texture2D ColorTexture : register(t0);
 Texture2D MetalnessTexture : register(t1);
@@ -126,8 +127,11 @@ PBRModelPixelOutput main(PBRModelDomainOutput input)
     float3 diffuseBrdf = (float3(1, 1, 1) - F) * f3DiffuseColor;
     float3 specularBrdf = (F * D * G) / (max(1e-6, 4.0 * NDotL * NDotE));
 
-    float fDepthFactor = ShadowMap.SampleCmpLevelZero(CompareClampSampler, f2LightTex, f4LightProjPos.z - 1E-6).x;
-    float3 fDirectColor = (diffuseBrdf + specularBrdf) * NDotL * f3LightColor * fLightPowerSaturated * fDepthFactor;
+    uint uiWidth, uiHeight, uiNumLevels;
+    ShadowMap.GetDimensions(0, uiWidth, uiHeight, uiNumLevels);
+    
+    float fShadowFactor = GetShadowFactorByPCF(ShadowMap, f2LightTex, CompareClampSampler, f4LightProjPos.z - 1E-6, 5.f / uiWidth);
+    float3 fDirectColor = (diffuseBrdf + specularBrdf) * NDotL * f3LightColor * fLightPowerSaturated * fShadowFactor;
            
     result.pixelColor = float4(fDirectColor, 1.f);
     result.modelID = uIMeshId;

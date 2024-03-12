@@ -438,6 +438,7 @@
     <None Include="CommonFilterArgs.hlsli" />
     <None Include="MathematicalHelper.hlsli" />
     <None Include="NormalVector.hlsli" />
+    <None Include="ShadowHelper.hlsli" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

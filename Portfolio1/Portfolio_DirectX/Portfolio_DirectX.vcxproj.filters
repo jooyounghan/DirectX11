@@ -747,5 +747,8 @@
     <None Include="NormalVector.hlsli">
       <Filter>Shader\Include</Filter>
     </None>
+    <None Include="ShadowHelper.hlsli">
+      <Filter>Shader\Include</Filter>
+    </None>
   </ItemGroup>
 </Project>
