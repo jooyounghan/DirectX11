@@ -4,9 +4,22 @@
 
 class ModelRendererDomainShader : public IDomainShader
 {
-public:
+private:
 	ModelRendererDomainShader();
+	ModelRendererDomainShader(const ModelRendererDomainShader&) = delete;
+	ModelRendererDomainShader& operator=(const ModelRendererDomainShader&) = delete;
 	virtual ~ModelRendererDomainShader();
+
+public:
+	static ModelRendererDomainShader* pDomainShader;
+
+public:
+	inline static ModelRendererDomainShader* GetInstance() {
+		if (pDomainShader == nullptr) {
+			pDomainShader = new ModelRendererDomainShader();
+		}
+		return pDomainShader;
+	}
 
 public:
 	virtual void ApplyShader() override;

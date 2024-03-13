@@ -5,9 +5,22 @@
 
 class NormalVectorVertexShader : public IVertexShader
 {
-public:
+private:
 	NormalVectorVertexShader();
+	NormalVectorVertexShader(const NormalVectorVertexShader&) = delete;
+	NormalVectorVertexShader& operator=(const NormalVectorVertexShader&) = delete;
 	virtual ~NormalVectorVertexShader();
+
+public:
+	static NormalVectorVertexShader* pPixelShader;
+
+public:
+	inline static NormalVectorVertexShader* GetInstance() {
+		if (pPixelShader == nullptr) {
+			pPixelShader = new NormalVectorVertexShader();
+		}
+		return pPixelShader;
+	}
 
 private:
 	static ID3D11Buffer* const pNullBuffers[4];

@@ -35,6 +35,10 @@ public:
 protected:
 	bool isLinkedWithBackBuffer;
 
+protected:
+	class TypeResolveComputeShader* pTypeResolveCS;
+	class MS16ToSS8ComputeShader* pMS16ToSS8CS;
+
 public:
 	virtual size_t GetCameraID() = 0;
 	virtual void Resolve() = 0;
@@ -53,7 +57,6 @@ public:
 
 public:
 	virtual void Apply(ID3D11ShaderResourceView** ppInputSRV) override final;
-	virtual void SetUAVBarrier() override final;
 
 public:
 	virtual void AcceptFilterList(class CameraManipulator* pCameraManipulator) override;

@@ -10,6 +10,8 @@
 
 using namespace std;
 
+BasicVertexShader* BasicVertexShader::pPixelShader = nullptr;
+
 ID3D11Buffer* const BasicVertexShader::pNullBuffers[3] = { nullptr, nullptr, nullptr };
 const UINT BasicVertexShader::pNulls[3] = { NULL, NULL, NULL };
 const UINT BasicVertexShader::uiStrides[3] = { sizeof(DirectX::XMFLOAT3), sizeof(DirectX::XMFLOAT2),sizeof(DirectX::XMFLOAT3) };
@@ -18,6 +20,8 @@ const UINT BasicVertexShader::uiOffsets[3] = { 0, 0, 0 };
 BasicVertexShader::BasicVertexShader()
 	: IVertexShader()
 {
+	Console::Print("Basic Vertex Shader Generated.");
+
 	std::vector<D3D11_INPUT_ELEMENT_DESC> vInputElemDesc
 	{
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},

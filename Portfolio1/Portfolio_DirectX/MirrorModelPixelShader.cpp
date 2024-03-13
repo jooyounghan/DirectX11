@@ -5,9 +5,12 @@
 
 #include "MirrorModel.h"
 
+MirrorModelPixelShader* MirrorModelPixelShader::pPixelShader = nullptr;
+
 MirrorModelPixelShader::MirrorModelPixelShader()
 	: IPixelShader()
 {
+	Console::Print("Mirror Model Pixel Shader Generated.");
 	ID3D11Helper::CreatePS(
 		DirectXDevice::pDevice,
 		L"MirrorModelPS.hlsl",

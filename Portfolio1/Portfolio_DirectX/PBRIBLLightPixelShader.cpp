@@ -7,9 +7,12 @@
 #include "PBRStaticMesh.h"
 #include "Viewable.h"
 
+PBRIBLLightPixelShader* PBRIBLLightPixelShader::pPixelShader = nullptr;
+
 PBRIBLLightPixelShader::PBRIBLLightPixelShader()
 	: IPixelShader()
 {
+	Console::Print("PBR IBL Light Pixel Shader Generated.");
 	ID3D11Helper::CreatePS(
 		DirectXDevice::pDevice,
 		L"PBRWithIBLPS.hlsl",

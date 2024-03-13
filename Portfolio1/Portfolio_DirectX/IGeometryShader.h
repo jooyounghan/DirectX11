@@ -3,7 +3,7 @@
 
 class IGeometryShader : public IShader
 {
-public:
+protected:
 	IGeometryShader();
 	virtual ~IGeometryShader();
 

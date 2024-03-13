@@ -1,5 +1,7 @@
 #include "IDPickableRenderTarget.h"
-#include "Shaders.h"
+
+#include "ModelIDResolveComputeShader.h"
+
 #include "ID3D11Helper.h"
 #include "DirectXDevice.h"
 
@@ -21,6 +23,8 @@ IDPickableRenderTarget::IDPickableRenderTarget(
 	),
 	IRectangle(uiWidthIn, uiHeightIn)
 {
+	pModelIDResolveCS = ModelIDResolveComputeShader::GetInstance();
+
 	ID3D11Helper::CreateTexture2D(
 		DirectXDevice::pDevice, 1, 1,
 		1, 0, NULL,
@@ -44,29 +48,16 @@ void IDPickableRenderTarget::SetMousePos(const int& iMouseXIn, const int& iMouse
 
 void IDPickableRenderTarget::Apply(ID3D11ShaderResourceView** ppInputSRV)
 {
-	Shaders& shaders = Shaders::GetInstance();
-
-	DirectXDevice::pDeviceContext->CSSetShader(shaders.GetComputeShader(Shaders::ResolveCS), NULL, NULL);
-	DirectXDevice::pDeviceContext->CSSetShaderResources(0, 1, ppInputSRV);
-	DirectXDevice::pDeviceContext->CSSetUnorderedAccessViews(0, 1, IDPickableRenderTarget::cpUAV.GetAddressOf(), nullptr);
+	pModelIDResolveCS->ApplyShader();
+	pModelIDResolveCS->SetShader(ppInputSRV, IDPickableRenderTarget::cpUAV.GetAddressOf());
 	DirectXDevice::pDeviceContext->Dispatch(
 		uiWidth % uiThreadGroupCntX ? uiWidth / uiThreadGroupCntX + 1 : uiWidth / uiThreadGroupCntX,
 		uiHeight % uiThreadGroupCntY ? uiHeight / uiThreadGroupCntY + 1 : uiHeight / uiThreadGroupCntY,
 		uiThreadGroupCntZ
 	);
-	SetUAVBarrier();
+	pModelIDResolveCS->ResetShader();
+	pModelIDResolveCS->DisapplyShader();
 }
-
-void IDPickableRenderTarget::SetUAVBarrier()
-{
-	ID3D11ShaderResourceView* pReleaseAndGetAddressOfSRV = nullptr;
-	ID3D11UnorderedAccessView* pReleaseAndGetAddressOfUAV = nullptr;
-
-	DirectXDevice::pDeviceContext->CSSetShader(nullptr, NULL, NULL);
-	DirectXDevice::pDeviceContext->CSSetShaderResources(0, 1, &pReleaseAndGetAddressOfSRV);
-	DirectXDevice::pDeviceContext->CSSetUnorderedAccessViews(0, 1, &pReleaseAndGetAddressOfUAV, nullptr);
-}
-
 
 void IDPickableRenderTarget::Resize(const UINT& uiWidthIn, const UINT& uiHeightIn)
 {

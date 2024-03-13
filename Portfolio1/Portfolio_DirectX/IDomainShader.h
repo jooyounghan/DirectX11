@@ -3,7 +3,7 @@
 
 class IDomainShader : public IShader
 {
-public:
+protected:
 	IDomainShader();
 	virtual ~IDomainShader();
 

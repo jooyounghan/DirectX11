@@ -1,10 +1,6 @@
 #pragma once
 #include "IRenderer.h"
 
-#include "NormalVectorVertexShader.h"
-#include "NormalVectorGeometryShader.h"
-#include "NormalVectorPixelShader.h"
-
 class IMesh;
 class ACamera;
 class SinglePBRModel;
@@ -27,9 +23,9 @@ private:
 	ACamera* pCamera;
 
 private:
-	NormalVectorVertexShader normalVectorVS;
-	NormalVectorGeometryShader normalVectorGS;
-	NormalVectorPixelShader normalVectorPS;
+	class NormalVectorVertexShader* normalVectorVS;
+	class NormalVectorGeometryShader* normalVectorGS;
+	class NormalVectorPixelShader* normalVectorPS;
 
 public:
 	void RenderNormalVector(

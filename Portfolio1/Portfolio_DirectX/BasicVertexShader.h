@@ -8,9 +8,24 @@ class Viewable;
 
 class BasicVertexShader : public IVertexShader
 {
-public:
+	friend IVertexShader;
+
+private:
 	BasicVertexShader();
+	BasicVertexShader(const BasicVertexShader&) = delete;
+	BasicVertexShader& operator=(const BasicVertexShader&) = delete;
 	virtual ~BasicVertexShader();
+
+public:
+	static BasicVertexShader* pPixelShader;
+
+public:
+	inline static BasicVertexShader* GetInstance() {
+		if (pPixelShader == nullptr) {
+			pPixelShader = new BasicVertexShader();
+		}
+		return pPixelShader;
+	}
 
 private:
 	static ID3D11Buffer* const pNullBuffers[3];

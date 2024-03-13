@@ -8,8 +8,11 @@
 
 using namespace std;
 
+ModelRendererDomainShader* ModelRendererDomainShader::pDomainShader = nullptr;
+
 ModelRendererDomainShader::ModelRendererDomainShader()
 {
+	Console::Print("Model Renderer Domain Shader Generated.");
 	ID3D11Helper::CreateDS(
 		DirectXDevice::pDevice, 
 		L"PBRModelDS.hlsl", 

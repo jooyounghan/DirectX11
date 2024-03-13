@@ -8,9 +8,12 @@
 #include "Viewable.h"
 #include "PointLight.h"
 
+PBRPointLightPixelShader* PBRPointLightPixelShader::pPixelShader = nullptr;
+
 PBRPointLightPixelShader::PBRPointLightPixelShader()
 	: IPixelShader()
 {
+	Console::Print("PBR Point Light Pixel Shader Generated.");
 	ID3D11Helper::CreatePS(
 		DirectXDevice::pDevice,
 		L"PBRWithPointPS.hlsl",

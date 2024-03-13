@@ -3,7 +3,7 @@
 
 class IHullShader : public IShader
 {
-public:
+protected:
 	IHullShader();
 	virtual ~IHullShader();
 

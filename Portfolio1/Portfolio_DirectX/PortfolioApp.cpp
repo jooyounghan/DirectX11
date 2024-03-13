@@ -1,6 +1,5 @@
 #include "PortfolioApp.h"
 #include "DirectXDevice.h"
-#include "Shaders.h"
 
 #include <imgui.h>
 #include <imgui_impl_dx11.h>
@@ -26,10 +25,6 @@ PortfolioApp::PortfolioApp(const UINT& uiWidthIn, const UINT& uiHeightIn)
 		DXGI_FORMAT_R8G8B8A8_UNORM,
 		true, hMainWindow
 	);
-
-
-	Shaders& shaders = Shaders::GetInstance();
-	shaders.Init(DirectXDevice::pDevice);
 }
 
 PortfolioApp::~PortfolioApp()

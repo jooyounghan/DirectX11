@@ -193,6 +193,12 @@
     <Filter Include="소스 파일\Shader\Extended\Hull">
       <UniqueIdentifier>{b71972af-2380-435b-bfc1-8dc8d68c2d05}</UniqueIdentifier>
     </Filter>
+    <Filter Include="헤더 파일\Shader\Extended\Compute">
+      <UniqueIdentifier>{e78a9fa5-6ea1-4c26-850d-138206724a94}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Shader\Extended\Compute">
+      <UniqueIdentifier>{e55f5f62-d3b4-4e88-8d7b-0053926ccd32}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseApp.h">
@@ -438,8 +444,20 @@
     <ClInclude Include="BasicVertexShader.h">
       <Filter>헤더 파일\Shader\Extended\Vertex</Filter>
     </ClInclude>
-    <ClInclude Include="Shaders.h">
-      <Filter>헤더 파일</Filter>
+    <ClInclude Include="IComputeShader.h">
+      <Filter>헤더 파일\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelIDResolveComputeShader.h">
+      <Filter>헤더 파일\Shader\Extended\Compute</Filter>
+    </ClInclude>
+    <ClInclude Include="MS16ToSS8ComputeShader.h">
+      <Filter>헤더 파일\Shader\Extended\Compute</Filter>
+    </ClInclude>
+    <ClInclude Include="BlurComputeShader.h">
+      <Filter>헤더 파일\Shader\Extended\Compute</Filter>
+    </ClInclude>
+    <ClInclude Include="TypeResolveComputeShader.h">
+      <Filter>헤더 파일\Shader\Extended\Compute</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -674,8 +692,20 @@
     <ClCompile Include="BasicVertexShader.cpp">
       <Filter>소스 파일\Shader\Extended\Vertex</Filter>
     </ClCompile>
-    <ClCompile Include="Shaders.cpp">
-      <Filter>소스 파일</Filter>
+    <ClCompile Include="IComputeShader.cpp">
+      <Filter>소스 파일\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelIDResolveComputeShader.cpp">
+      <Filter>소스 파일\Shader\Extended\Compute</Filter>
+    </ClCompile>
+    <ClCompile Include="MS16ToSS8ComputeShader.cpp">
+      <Filter>소스 파일\Shader\Extended\Compute</Filter>
+    </ClCompile>
+    <ClCompile Include="TypeResolveComputeShader.cpp">
+      <Filter>소스 파일\Shader\Extended\Compute</Filter>
+    </ClCompile>
+    <ClCompile Include="BlurComputeShader.cpp">
+      <Filter>소스 파일\Shader\Extended\Compute</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

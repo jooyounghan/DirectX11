@@ -10,9 +10,22 @@ class Viewable;
 
 class ModelRenderVertexShader : public IVertexShader
 {
-public:
+private:
 	ModelRenderVertexShader();
+	ModelRenderVertexShader(const ModelRenderVertexShader&) = delete;
+	ModelRenderVertexShader& operator=(const ModelRenderVertexShader&) = delete;
 	virtual ~ModelRenderVertexShader();
+
+public:
+	static ModelRenderVertexShader* pPixelShader;
+
+public:
+	inline static ModelRenderVertexShader* GetInstance() {
+		if (pPixelShader == nullptr) {
+			pPixelShader = new ModelRenderVertexShader();
+		}
+		return pPixelShader;
+	}
 
 private:
 	static ID3D11Buffer* const pNullBuffers[4];

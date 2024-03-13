@@ -24,6 +24,9 @@ protected:
 		uint32_t fDummy[2];
 	} sMousePosPixel;
 
+protected:
+	class ModelIDResolveComputeShader* pModelIDResolveCS;
+
 public:
 	virtual void SetMousePos(const int& iMouseX, const int& iMouseY);
 
@@ -32,7 +35,6 @@ public:
 
 public:
 	virtual void Apply(ID3D11ShaderResourceView** ppInputSRV) override;
-	virtual void SetUAVBarrier() override;
 
 public:
 	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn) override;

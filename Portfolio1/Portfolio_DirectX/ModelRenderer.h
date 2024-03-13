@@ -1,21 +1,9 @@
 #pragma once
 #include "IRenderer.h"
-
-#include "BasicVertexShader.h"
-
-#include "ModelRenderVertexShader.h"
-#include "ModelRenderHullShader.h"
-#include "ModelRendererDomainShader.h"
-
-#include "IBLRenderingPixelShader.h"
-#include "MirrorModelPixelShader.h"
-#include "PBRIBLLightPixelShader.h"
-#include "PBRPointLightPixelShader.h"
-#include "PBRSpotLightPixelShader.h"
-
 #include <stack>
 
 class IMesh;
+class PBRStaticMesh;
 class ILight;
 class ACamera;
 class ViewableRenderTarget;
@@ -53,18 +41,18 @@ private:
 	const std::unordered_map<uint32_t, std::shared_ptr<IMesh>>* pMeshes;
 
 private:
-	BasicVertexShader			basicVS;
+	class BasicVertexShader*			basicVS;
 
-	ModelRenderVertexShader		modelRenderVS;
-	ModelRenderHullShader		modelRenderHS;
-	ModelRendererDomainShader	modelRenderDS;
+	class ModelRenderVertexShader*		modelRenderVS;
+
+	class ModelRenderHullShader*		modelRenderHS;
+	class ModelRendererDomainShader*	modelRenderDS;
 	
-	IBLRenderingPixelShader		iblRenderPS;
-	MirrorModelPixelShader		mirrorModelPS;
-
-	PBRIBLLightPixelShader		pbrIBLPS;
-	PBRPointLightPixelShader	pointLightPS;
-	PBRSpotLightPixelShader		spotLightPS;
+	class IBLRenderingPixelShader*		iblRenderPS;
+	class MirrorModelPixelShader*		mirrorModelPS;
+	class PBRIBLLightPixelShader*		pbrIBLPS;
+	class PBRPointLightPixelShader*		pointLightPS;
+	class PBRSpotLightPixelShader*		spotLightPS;
 
 	
 

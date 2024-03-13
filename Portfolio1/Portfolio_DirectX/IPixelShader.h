@@ -3,7 +3,7 @@
 
 class IPixelShader : public IShader
 {
-public:
+protected:
 	IPixelShader();
 	virtual ~IPixelShader();
 

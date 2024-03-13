@@ -1,5 +1,10 @@
 #include "LightRenderer.h"
 
+#include "ModelRenderVertexShader.h"
+#include "ModelRenderHullShader.h"
+#include "ModelRendererDomainShader.h"
+#include "DepthOnlyPixelShader.h"
+
 #include "SinglePBRModel.h"
 #include "GroupPBRModel.h"
 #include "AIBLMesh.h"
@@ -15,6 +20,10 @@ using namespace std;
 LightRenderer::LightRenderer()
 	: IRenderer(), pModelSet(nullptr), pLight(nullptr), pViewable(nullptr)
 {
+	modelRenderVS = ModelRenderVertexShader::GetInstance();
+	modelRenderHS = ModelRenderHullShader::GetInstance();
+	modelRenderDS = ModelRendererDomainShader::GetInstance();
+	depthOnlyPS = DepthOnlyPixelShader::GetInstance();
 }
 
 LightRenderer::~LightRenderer()
@@ -27,10 +36,10 @@ void LightRenderer::UpdateLightMap(
 	const vector<shared_ptr<ILight>>& vLights
 )
 {
-	modelRenderVS.ApplyShader();
-	modelRenderHS.ApplyShader();
-	modelRenderDS.ApplyShader();
-	depthOnlyPS.ApplyShader();
+	modelRenderVS->ApplyShader();
+	modelRenderHS->ApplyShader();
+	modelRenderDS->ApplyShader();
+	depthOnlyPS->ApplyShader();
 
 	pModelSet = &vMeshes;
 
@@ -42,10 +51,10 @@ void LightRenderer::UpdateLightMap(
 	pLight = nullptr;
 	pModelSet = nullptr;
 
-	modelRenderVS.DisapplyShader();
-	modelRenderHS.DisapplyShader();
-	modelRenderDS.DisapplyShader();
-	depthOnlyPS.DisapplyShader();
+	modelRenderVS->DisapplyShader();
+	modelRenderHS->DisapplyShader();
+	modelRenderDS->DisapplyShader();
+	depthOnlyPS->DisapplyShader();
 }
 
 void LightRenderer::SetForUpdatingLightMap(PointLight& pointLight)
@@ -78,17 +87,17 @@ void LightRenderer::SetForUpdatingLightMap(SpotLight& spotLight)
 
 void LightRenderer::RenderLightMap(SinglePBRModel& singlePBRMesh)
 {
-	modelRenderVS.SetIAStage(singlePBRMesh);
-	modelRenderVS.SetShader(singlePBRMesh, *pViewable);
-	modelRenderHS.SetShader(*pLight);
-	modelRenderDS.SetShader(singlePBRMesh, *pViewable);
+	modelRenderVS->SetIAStage(singlePBRMesh);
+	modelRenderVS->SetShader(singlePBRMesh, *pViewable);
+	modelRenderHS->SetShader(*pLight);
+	modelRenderDS->SetShader(singlePBRMesh, *pViewable);
 
 	singlePBRMesh.Draw();
 
-	modelRenderVS.ResetIAStage();
-	modelRenderVS.ResetShader();
-	modelRenderHS.ResetShader();
-	modelRenderDS.ResetShader();
+	modelRenderVS->ResetIAStage();
+	modelRenderVS->ResetShader();
+	modelRenderHS->ResetShader();
+	modelRenderDS->ResetShader();
 }
 
 void LightRenderer::RenderLightMap(GroupPBRModel& groupPBRMesh)
@@ -97,17 +106,17 @@ void LightRenderer::RenderLightMap(GroupPBRModel& groupPBRMesh)
 
 	for (PBRStaticMesh& pbrMesh : vPBRMeshes)
 	{
-		modelRenderVS.SetIAStage(pbrMesh);
-		modelRenderVS.SetShader(groupPBRMesh, *pViewable);
-		modelRenderHS.SetShader(*pLight);
-		modelRenderDS.SetShader(pbrMesh, *pViewable);
+		modelRenderVS->SetIAStage(pbrMesh);
+		modelRenderVS->SetShader(groupPBRMesh, *pViewable);
+		modelRenderHS->SetShader(*pLight);
+		modelRenderDS->SetShader(pbrMesh, *pViewable);
 
 		pbrMesh.Draw();
 
-		modelRenderVS.ResetIAStage();
-		modelRenderVS.ResetShader();
-		modelRenderHS.ResetShader();
-		modelRenderDS.ResetShader();
+		modelRenderVS->ResetIAStage();
+		modelRenderVS->ResetShader();
+		modelRenderHS->ResetShader();
+		modelRenderDS->ResetShader();
 	}
 }
 

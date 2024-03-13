@@ -6,12 +6,14 @@
 #include "AIBLMesh.h"
 #include "Viewable.h"
 
+IBLRenderingPixelShader* IBLRenderingPixelShader::pPixelShader = nullptr;
 
 using namespace std;
 
 IBLRenderingPixelShader::IBLRenderingPixelShader()
 	: IPixelShader()
 {
+	Console::Print("IBL Rendering Pixel Shader Generated.");
 	ID3D11Helper::CreatePS(
 		DirectXDevice::pDevice,
 		L"IBLModelPS.hlsl",

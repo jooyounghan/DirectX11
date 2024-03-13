@@ -1,5 +1,9 @@
 #include "NormalVectorRenderer.h"
 
+#include "NormalVectorVertexShader.h"
+#include "NormalVectorGeometryShader.h"
+#include "NormalVectorPixelShader.h"
+
 #include "DirectXDevice.h"
 
 #include "ACamera.h"
@@ -13,6 +17,9 @@ using namespace std;
 NormalVectorRenderer::NormalVectorRenderer()
 	: pCamera(nullptr)
 {
+	normalVectorVS = NormalVectorVertexShader::GetInstance();
+	normalVectorGS = NormalVectorGeometryShader::GetInstance();
+	normalVectorPS = NormalVectorPixelShader::GetInstance();
 }
 
 NormalVectorRenderer::~NormalVectorRenderer()
@@ -26,9 +33,9 @@ void NormalVectorRenderer::RenderNormalVector(
 {
 	pCameraIn->SetAsRenderTarget();
 
-	normalVectorVS.ApplyShader();
-	normalVectorGS.ApplyShader();
-	normalVectorPS.ApplyShader();
+	normalVectorVS->ApplyShader();
+	normalVectorGS->ApplyShader();
+	normalVectorPS->ApplyShader();
 
 	pCamera = pCameraIn;
 	for (auto& staticMesh : vMeshesIn)
@@ -39,38 +46,38 @@ void NormalVectorRenderer::RenderNormalVector(
 
 	pCameraIn->ResetAsRenderTarget();
 
-	normalVectorVS.DisapplyShader();
-	normalVectorGS.DisapplyShader();
-	normalVectorPS.DisapplyShader();
+	normalVectorVS->DisapplyShader();
+	normalVectorGS->DisapplyShader();
+	normalVectorPS->DisapplyShader();
 }
 
 void NormalVectorRenderer::RenderNormal(SinglePBRModel& singlePBRMesh)
 {
-	normalVectorVS.SetIAStage(singlePBRMesh);
-	normalVectorVS.SetShader(singlePBRMesh);
-	normalVectorGS.SetShader(singlePBRMesh, *pCamera);
+	normalVectorVS->SetIAStage(singlePBRMesh);
+	normalVectorVS->SetShader(singlePBRMesh);
+	normalVectorGS->SetShader(singlePBRMesh, *pCamera);
 
 	singlePBRMesh.Draw();
 
-	normalVectorVS.ResetIAStage();
-	normalVectorVS.ResetShader();
-	normalVectorGS.ResetShader();
+	normalVectorVS->ResetIAStage();
+	normalVectorVS->ResetShader();
+	normalVectorGS->ResetShader();
 }
 
 void NormalVectorRenderer::RenderNormal(GroupPBRModel& groupPBRMesh)
 {
 	vector<PBRStaticMesh>& vPBRMeshes = groupPBRMesh.GetChildrenMeshesRef();
 
-	normalVectorVS.SetShader(groupPBRMesh);
+	normalVectorVS->SetShader(groupPBRMesh);
 	for (PBRStaticMesh& pbrMesh : vPBRMeshes)
 	{
-		normalVectorVS.SetIAStage(pbrMesh);
-		normalVectorGS.SetShader(pbrMesh, *pCamera);
+		normalVectorVS->SetIAStage(pbrMesh);
+		normalVectorGS->SetShader(pbrMesh, *pCamera);
 		pbrMesh.Draw();
-		normalVectorVS.ResetIAStage();
-		normalVectorGS.ResetShader();
+		normalVectorVS->ResetIAStage();
+		normalVectorGS->ResetShader();
 	}
-	normalVectorVS.ResetShader();
+	normalVectorVS->ResetShader();
 }
 
 void NormalVectorRenderer::RenderNormal(AIBLMesh& iblMesh)
@@ -80,13 +87,13 @@ void NormalVectorRenderer::RenderNormal(AIBLMesh& iblMesh)
 
 void NormalVectorRenderer::RenderNormal(MirrorModel& mirrorModel)
 {
-	normalVectorVS.SetIAStage(mirrorModel);
-	normalVectorVS.SetShader(mirrorModel);
-	normalVectorGS.SetShader(mirrorModel, *pCamera);
+	normalVectorVS->SetIAStage(mirrorModel);
+	normalVectorVS->SetShader(mirrorModel);
+	normalVectorGS->SetShader(mirrorModel, *pCamera);
 
 	mirrorModel.Draw();
 
-	normalVectorVS.ResetIAStage();
-	normalVectorVS.ResetShader();
-	normalVectorGS.ResetShader();
+	normalVectorVS->ResetIAStage();
+	normalVectorVS->ResetShader();
+	normalVectorGS->ResetShader();
 }

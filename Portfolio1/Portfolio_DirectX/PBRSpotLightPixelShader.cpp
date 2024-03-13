@@ -7,9 +7,12 @@
 #include "PBRStaticMesh.h"
 #include "SpotLight.h"
 
+PBRSpotLightPixelShader* PBRSpotLightPixelShader::pPixelShader = nullptr;
+
 PBRSpotLightPixelShader::PBRSpotLightPixelShader()
 	: IPixelShader()
 {
+	Console::Print("PBR Spot Light Pixel Shader Generated.");
 	ID3D11Helper::CreatePS(
 		DirectXDevice::pDevice,
 		L"PBRWithSpotPS.hlsl",

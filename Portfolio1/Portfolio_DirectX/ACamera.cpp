@@ -1,5 +1,8 @@
 #include "ACamera.h"
-#include "Shaders.h"
+
+#include "TypeResolveComputeShader.h"
+#include "MS16ToSS8ComputeShader.h"
+
 #include "ID3D11Helper.h"
 #include "DirectXDevice.h"
 #include "CameraManipulator.h"
@@ -51,6 +54,8 @@ ACamera::ACamera(
 		256, 1, 1
 	), isLinkedWithBackBuffer(false)
 {
+	pTypeResolveCS = TypeResolveComputeShader::GetInstance();
+	pMS16ToSS8CS = MS16ToSS8ComputeShader::GetInstance();
 }
 
 ACamera::~ACamera()
@@ -122,43 +127,34 @@ void ACamera::Apply(ID3D11ShaderResourceView** ppInputSRV)
 		DirectXDevice::pBackBuffer->GetDesc(&desc);
 
 		const bool bIsMSToSS = desc.SampleDesc.Quality != RenderTarget::uiNumQualityLevels;
-		const bool bIsFormatResolve = desc.Format != RenderTarget::eFormat;
-
-		Shaders& shaders = Shaders::GetInstance();
-		ID3D11ComputeShader* pComputeShader = nullptr;
-
 		if (bIsMSToSS)
 		{
-			pComputeShader = shaders.GetComputeShader(Shaders::MS16ToSS8CS);
-		}
-		else if (bIsFormatResolve)
-		{
-			pComputeShader = shaders.GetComputeShader(Shaders::TypeResolveCS);
-			DirectXDevice::pDeviceContext->CSSetSamplers(0, 1, DirectXDevice::ppClampSampler);
-		}
-
-		if (bIsMSToSS || bIsFormatResolve)
-		{
-			DirectXDevice::pDeviceContext->CSSetShader(pComputeShader, NULL, NULL);
-			DirectXDevice::pDeviceContext->CSSetShaderResources(0, 1, ppInputSRV);
-			DirectXDevice::pDeviceContext->CSSetUnorderedAccessViews(0, 1, AFilter::cpUAV.GetAddressOf(), nullptr);
+			pMS16ToSS8CS->ApplyShader();
+			pMS16ToSS8CS->SetShader(ppInputSRV, AFilter::cpUAV.GetAddressOf());
 			DirectXDevice::pDeviceContext->Dispatch(
 				uiWidth % uiThreadGroupCntX ? uiWidth / uiThreadGroupCntX + 1 : uiWidth / uiThreadGroupCntX,
 				uiHeight % uiThreadGroupCntY ? uiHeight / uiThreadGroupCntY + 1 : uiHeight / uiThreadGroupCntY,
-				uiThreadGroupCntZ);
-			SetUAVBarrier();
+				uiThreadGroupCntZ
+			);
+			pMS16ToSS8CS->ResetShader();
+			pMS16ToSS8CS->DisapplyShader();
+			ppInputSRV = AFilter::GetAddressOfSRV();
+		}
+		else
+		{
+			const bool bIsFormatResolve = desc.Format != RenderTarget::eFormat;
+			if (bIsFormatResolve)
+			{
+				pTypeResolveCS->ApplyShader();
+				pTypeResolveCS->SetShader(ppInputSRV, AFilter::cpUAV.GetAddressOf());
+				DirectXDevice::pDeviceContext->Dispatch(
+					uiWidth % uiThreadGroupCntX ? uiWidth / uiThreadGroupCntX + 1 : uiWidth / uiThreadGroupCntX,
+					uiHeight % uiThreadGroupCntY ? uiHeight / uiThreadGroupCntY + 1 : uiHeight / uiThreadGroupCntY,
+					uiThreadGroupCntZ
+				);
+				pTypeResolveCS->ResetShader();
+				pTypeResolveCS->DisapplyShader();
+			}
 		}
 	}
-}
-
-void ACamera::SetUAVBarrier()
-{
-	ID3D11ShaderResourceView* pReleaseAndGetAddressOfSRV = nullptr;
-	ID3D11UnorderedAccessView* pReleaseAndGetAddressOfUAV = nullptr;
-	ID3D11SamplerState* pSampler = nullptr;
-
-	DirectXDevice::pDeviceContext->CSSetShader(nullptr, NULL, NULL);
-	DirectXDevice::pDeviceContext->CSSetShaderResources(0, 1, &pReleaseAndGetAddressOfSRV);
-	DirectXDevice::pDeviceContext->CSSetUnorderedAccessViews(0, 1, &pReleaseAndGetAddressOfUAV, nullptr);
-	DirectXDevice::pDeviceContext->CSSetSamplers(0, 1, &pSampler);
 }

@@ -1,11 +1,6 @@
 #pragma once
 #include "IRenderer.h"
 
-#include "ModelRenderVertexShader.h"
-#include "ModelRenderHullShader.h"
-#include "ModelRendererDomainShader.h"
-#include "DepthOnlyPixelShader.h"
-
 class IMesh;
 class ILight;
 class Viewable;
@@ -37,10 +32,10 @@ private:
 	Viewable* pViewable;
 
 private:
-	ModelRenderVertexShader modelRenderVS;
-	ModelRenderHullShader modelRenderHS;
-	ModelRendererDomainShader modelRenderDS;
-	DepthOnlyPixelShader depthOnlyPS;
+	class ModelRenderVertexShader* modelRenderVS;
+	class ModelRenderHullShader* modelRenderHS;
+	class ModelRendererDomainShader* modelRenderDS;
+	class DepthOnlyPixelShader* depthOnlyPS;
 
 
 public:

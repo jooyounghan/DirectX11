@@ -1,5 +1,7 @@
 #include "BlurFilter.h"
-#include "Shaders.h"
+
+#include "BlurComputeShader.h"
+
 #include "DirectXDevice.h"
 #include "CameraManipulator.h"
 
@@ -24,6 +26,7 @@ BlurFilter::BlurFilter(
 	),
 	IRectangle(uiWidthIn, uiHeightIn)
 {
+	pBlurCS = BlurComputeShader::GetInstance();
 }
 
 BlurFilter::~BlurFilter()
@@ -37,27 +40,13 @@ void BlurFilter::AcceptFilterList(CameraManipulator* pCameraManipulator)
 
 void BlurFilter::Apply(ID3D11ShaderResourceView** ppInputSRV)
 {
-	Shaders& shaders = Shaders::GetInstance();
-	DirectXDevice::pDeviceContext->CSSetShader(shaders.GetComputeShader(Shaders::BlurCS), NULL, NULL);
-	DirectXDevice::pDeviceContext->CSSetShaderResources(0, 1, ppInputSRV);
-	DirectXDevice::pDeviceContext->CSSetUnorderedAccessViews(0, 1, cpUAV.GetAddressOf(), nullptr);
-	DirectXDevice::pDeviceContext->CSSetSamplers(0, 1, DirectXDevice::ppClampSampler);
+	pBlurCS->ApplyShader();
+	pBlurCS->SetShader(ppInputSRV, cpUAV.GetAddressOf());
 
 	DirectXDevice::pDeviceContext->Dispatch(
 		uiWidth % uiThreadGroupCntX ? uiWidth / uiThreadGroupCntX + 1 : uiWidth / uiThreadGroupCntX,
 		uiHeight % uiThreadGroupCntY ? uiHeight / uiThreadGroupCntY + 1 : uiHeight / uiThreadGroupCntY,
 		uiThreadGroupCntZ);
-	SetUAVBarrier();
-}
-
-void BlurFilter::SetUAVBarrier()
-{
-	ID3D11ShaderResourceView* pReleaseAndGetAddressOfSRV = nullptr;
-	ID3D11UnorderedAccessView* pReleaseAndGetAddressOfUAV = nullptr;
-	ID3D11SamplerState* pSampler = nullptr;
-
-	DirectXDevice::pDeviceContext->CSSetShader(nullptr, NULL, NULL);
-	DirectXDevice::pDeviceContext->CSSetShaderResources(0, 1, &pReleaseAndGetAddressOfSRV);
-	DirectXDevice::pDeviceContext->CSSetUnorderedAccessViews(0, 1, &pReleaseAndGetAddressOfUAV, nullptr);
-	DirectXDevice::pDeviceContext->CSSetSamplers(0, 1, &pSampler);
+	pBlurCS->ResetShader();
+	pBlurCS->DisapplyShader();
 }

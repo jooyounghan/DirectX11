@@ -8,6 +8,8 @@
 
 using namespace std;
 
+NormalVectorVertexShader* NormalVectorVertexShader::pPixelShader = nullptr;
+
 ID3D11Buffer* const NormalVectorVertexShader::pNullBuffers[4] = { nullptr, nullptr, nullptr, nullptr };
 UINT NormalVectorVertexShader::pNulls[4] = { NULL, NULL, NULL, NULL };
 const UINT NormalVectorVertexShader::uiStrides[4] = { sizeof(DirectX::XMFLOAT3), sizeof(DirectX::XMFLOAT2),sizeof(DirectX::XMFLOAT3),sizeof(DirectX::XMFLOAT3) };
@@ -16,6 +18,8 @@ const UINT NormalVectorVertexShader::uiOffsets[4] = { 0, 0, 0, 0 };
 NormalVectorVertexShader::NormalVectorVertexShader()
 	: IVertexShader()
 {
+	Console::Print("Normal Vector Vertex Shader Generated.");
+
 	std::vector<D3D11_INPUT_ELEMENT_DESC> vInputElemDesc
 	{
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},

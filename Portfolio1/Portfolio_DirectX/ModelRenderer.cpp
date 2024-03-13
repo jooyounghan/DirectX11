@@ -1,5 +1,17 @@
 #include "ModelRenderer.h"
 
+#include "BasicVertexShader.h"
+#include "ModelRenderVertexShader.h"
+
+#include "ModelRenderHullShader.h"
+#include "ModelRendererDomainShader.h"
+
+#include "IBLRenderingPixelShader.h"
+#include "MirrorModelPixelShader.h"
+#include "PBRIBLLightPixelShader.h"
+#include "PBRPointLightPixelShader.h"
+#include "PBRSpotLightPixelShader.h"
+
 #include "ACamera.h"
 
 #include "SinglePBRModel.h"
@@ -21,6 +33,17 @@ ModelRenderer::ModelRenderer()
 	pIMesh(nullptr), pPBRStaticMesh(nullptr),
 	pLights(nullptr), pMeshes(nullptr)
 {
+	basicVS = BasicVertexShader::GetInstance();
+	modelRenderVS = ModelRenderVertexShader::GetInstance();
+
+	modelRenderHS = ModelRenderHullShader::GetInstance();
+	modelRenderDS = ModelRendererDomainShader::GetInstance();
+
+	iblRenderPS = IBLRenderingPixelShader::GetInstance();
+	mirrorModelPS = MirrorModelPixelShader::GetInstance();
+	pbrIBLPS = PBRIBLLightPixelShader::GetInstance();
+	pointLightPS = PBRPointLightPixelShader::GetInstance();
+	spotLightPS = PBRSpotLightPixelShader::GetInstance();
 }
 
 ModelRenderer::~ModelRenderer()
@@ -55,21 +78,21 @@ void ModelRenderer::RenderObjects(
 
 void ModelRenderer::RenderModel(SinglePBRModel& singlePBRMesh)
 {
-	modelRenderVS.ApplyShader();
-	modelRenderHS.ApplyShader();
-	modelRenderDS.ApplyShader();
+	modelRenderVS->ApplyShader();
+	modelRenderHS->ApplyShader();
+	modelRenderDS->ApplyShader();
 
-	modelRenderVS.SetIAStage(singlePBRMesh);
-	modelRenderVS.SetShader(singlePBRMesh, *pViewableRT);
-	modelRenderHS.SetShader(*pViewableRT);
-	modelRenderDS.SetShader(singlePBRMesh, *pViewableRT);
+	modelRenderVS->SetIAStage(singlePBRMesh);
+	modelRenderVS->SetShader(singlePBRMesh, *pViewableRT);
+	modelRenderHS->SetShader(*pViewableRT);
+	modelRenderDS->SetShader(singlePBRMesh, *pViewableRT);
 
 	// IBL을 활용한 렌더링
-	pbrIBLPS.ApplyShader();
-	pbrIBLPS.SetShader(*spIBLModel.get(), singlePBRMesh, singlePBRMesh, *pViewableRT);
+	pbrIBLPS->ApplyShader();
+	pbrIBLPS->SetShader(*spIBLModel.get(), singlePBRMesh, singlePBRMesh, *pViewableRT);
 	singlePBRMesh.Draw();	
-	pbrIBLPS.ResetShader();
-	pbrIBLPS.DisapplyShader();
+	pbrIBLPS->ResetShader();
+	pbrIBLPS->DisapplyShader();
 
 	pIMesh = &singlePBRMesh;
 	pPBRStaticMesh = &singlePBRMesh;
@@ -78,36 +101,36 @@ void ModelRenderer::RenderModel(SinglePBRModel& singlePBRMesh)
 		pLight->AcceptPBRDirectLighting(this);
 	}
 
-	modelRenderVS.ResetIAStage();
-	modelRenderVS.ResetShader();
-	modelRenderHS.ResetShader();
-	modelRenderDS.ResetShader();
+	modelRenderVS->ResetIAStage();
+	modelRenderVS->ResetShader();
+	modelRenderHS->ResetShader();
+	modelRenderDS->ResetShader();
 
-	modelRenderVS.DisapplyShader();
-	modelRenderHS.DisapplyShader();
-	modelRenderDS.DisapplyShader();
+	modelRenderVS->DisapplyShader();
+	modelRenderHS->DisapplyShader();
+	modelRenderDS->DisapplyShader();
 }
 
 void ModelRenderer::RenderModel(GroupPBRModel& groupPBRMesh)
 {
-	modelRenderVS.ApplyShader();
-	modelRenderHS.ApplyShader();
-	modelRenderDS.ApplyShader();
+	modelRenderVS->ApplyShader();
+	modelRenderHS->ApplyShader();
+	modelRenderDS->ApplyShader();
 
 	vector<PBRStaticMesh>& vPBRMeshes = groupPBRMesh.GetChildrenMeshesRef();
 	for (auto& pbrMesh : vPBRMeshes)
 	{
-		modelRenderVS.SetIAStage(pbrMesh);
-		modelRenderVS.SetShader(groupPBRMesh, *pViewableRT);
-		modelRenderHS.SetShader(*pViewableRT);
-		modelRenderDS.SetShader(pbrMesh, *pViewableRT);
+		modelRenderVS->SetIAStage(pbrMesh);
+		modelRenderVS->SetShader(groupPBRMesh, *pViewableRT);
+		modelRenderHS->SetShader(*pViewableRT);
+		modelRenderDS->SetShader(pbrMesh, *pViewableRT);
 
 		// IBL을 활용한 렌더링
-		pbrIBLPS.ApplyShader();
-		pbrIBLPS.SetShader(*spIBLModel.get(), groupPBRMesh, pbrMesh, *pViewableRT);
+		pbrIBLPS->ApplyShader();
+		pbrIBLPS->SetShader(*spIBLModel.get(), groupPBRMesh, pbrMesh, *pViewableRT);
 		pbrMesh.Draw();
-		pbrIBLPS.ResetShader();
-		pbrIBLPS.DisapplyShader();
+		pbrIBLPS->ResetShader();
+		pbrIBLPS->DisapplyShader();
 
 		pIMesh = &groupPBRMesh;
 		pPBRStaticMesh = &pbrMesh;
@@ -116,33 +139,33 @@ void ModelRenderer::RenderModel(GroupPBRModel& groupPBRMesh)
 			pLight->AcceptPBRDirectLighting(this);
 		}
 
-		modelRenderVS.ResetIAStage();
-		modelRenderVS.ResetShader();
-		modelRenderHS.ResetShader();
-		modelRenderDS.ResetShader();
+		modelRenderVS->ResetIAStage();
+		modelRenderVS->ResetShader();
+		modelRenderHS->ResetShader();
+		modelRenderDS->ResetShader();
 	}
-	modelRenderVS.DisapplyShader();
-	modelRenderHS.DisapplyShader();
-	modelRenderDS.DisapplyShader();
+	modelRenderVS->DisapplyShader();
+	modelRenderHS->DisapplyShader();
+	modelRenderDS->DisapplyShader();
 }
 
 void ModelRenderer::RenderModel(AIBLMesh& iblMesh)
 {
-	modelRenderVS.ApplyShader();
-	iblRenderPS.ApplyShader();
+	modelRenderVS->ApplyShader();
+	iblRenderPS->ApplyShader();
 
-	modelRenderVS.SetIAStage(iblMesh);
-	modelRenderVS.SetShader(iblMesh, *pViewableRT);
-	iblRenderPS.SetShader(iblMesh, *pViewableRT);
+	modelRenderVS->SetIAStage(iblMesh);
+	modelRenderVS->SetShader(iblMesh, *pViewableRT);
+	iblRenderPS->SetShader(iblMesh, *pViewableRT);
 
 	iblMesh.Draw();
 
-	modelRenderVS.ResetIAStage();
-	modelRenderVS.ResetShader();
-	iblRenderPS.ResetShader();
+	modelRenderVS->ResetIAStage();
+	modelRenderVS->ResetShader();
+	iblRenderPS->ResetShader();
 
-	modelRenderVS.DisapplyShader();
-	iblRenderPS.DisapplyShader();
+	modelRenderVS->DisapplyShader();
+	iblRenderPS->DisapplyShader();
 }
 
 void ModelRenderer::RenderModel(MirrorModel& mirrorModel)
@@ -175,19 +198,19 @@ void ModelRenderer::RenderModel(MirrorModel& mirrorModel)
 	}
 
 	// 자기 자신을 그림
-	basicVS.ApplyShader();
-	mirrorModelPS.ApplyShader();
-	basicVS.SetIAStage(mirrorModel);
-	basicVS.SetShader(mirrorModel, *pViewableRT);
-	mirrorModelPS.SetShader(mirrorModel);
+	basicVS->ApplyShader();
+	mirrorModelPS->ApplyShader();
+	basicVS->SetIAStage(mirrorModel);
+	basicVS->SetShader(mirrorModel, *pViewableRT);
+	mirrorModelPS->SetShader(mirrorModel);
 
 	mirrorModel.Draw();
 
-	basicVS.DisapplyShader();
-	mirrorModelPS.DisapplyShader();
-	basicVS.ResetIAStage();
-	basicVS.ResetShader();
-	mirrorModelPS.ResetShader();
+	basicVS->DisapplyShader();
+	mirrorModelPS->DisapplyShader();
+	basicVS->ResetIAStage();
+	basicVS->ResetShader();
+	mirrorModelPS->ResetShader();
 
 
 	return;
@@ -195,18 +218,18 @@ void ModelRenderer::RenderModel(MirrorModel& mirrorModel)
 
 void ModelRenderer::RenderWithLight(PointLight& pointLight)
 {
-	pointLightPS.ApplyShader();
-	pointLightPS.SetShader(pointLight, *pIMesh, *pPBRStaticMesh, *pViewableRT);
+	pointLightPS->ApplyShader();
+	pointLightPS->SetShader(pointLight, *pIMesh, *pPBRStaticMesh, *pViewableRT);
 	pPBRStaticMesh->Draw();
-	pointLightPS.ResetShader();
-	pointLightPS.DisapplyShader();
+	pointLightPS->ResetShader();
+	pointLightPS->DisapplyShader();
 }
 
 void ModelRenderer::RenderWithLight(SpotLight& spotLight)
 {
-	spotLightPS.ApplyShader();
-	spotLightPS.SetShader(spotLight, *pIMesh, *pPBRStaticMesh, *pViewableRT);
+	spotLightPS->ApplyShader();
+	spotLightPS->SetShader(spotLight, *pIMesh, *pPBRStaticMesh, *pViewableRT);
 	pPBRStaticMesh->Draw();
-	spotLightPS.ResetShader();
-	spotLightPS.DisapplyShader();
+	spotLightPS->ResetShader();
+	spotLightPS->DisapplyShader();
 }

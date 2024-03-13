@@ -19,9 +19,11 @@ public:
 	);
 	virtual ~BlurFilter();
 
+protected:
+	class BlurComputeShader* pBlurCS;
+
 public:
 	virtual void AcceptFilterList(class CameraManipulator* pCameraManipulator);
 	virtual void Apply(ID3D11ShaderResourceView** ppInputSRV) override;
-	virtual void SetUAVBarrier() override;
 };
 

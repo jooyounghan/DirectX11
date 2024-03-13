@@ -4,8 +4,11 @@
 #include "DirectXDevice.h"
 #include "IMovable.h"
 
+ModelRenderHullShader* ModelRenderHullShader::pHullShader = nullptr;
+
 ModelRenderHullShader::ModelRenderHullShader()
 {
+	Console::Print("Model Render Hull Shader Generated.");
 	ID3D11Helper::CreateHS(
 		DirectXDevice::pDevice, 
 		L"PBRModelHS.hlsl", 

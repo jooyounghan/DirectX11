@@ -4,10 +4,22 @@
 
 class PBRPointLightPixelShader : public IPixelShader
 {
-public:
+private:
 	PBRPointLightPixelShader();
+	PBRPointLightPixelShader(const PBRPointLightPixelShader&) = delete;
+	PBRPointLightPixelShader& operator=(const PBRPointLightPixelShader&) = delete;
 	virtual ~PBRPointLightPixelShader();
 
+public:
+	static PBRPointLightPixelShader* pPixelShader;
+
+public:
+	inline static PBRPointLightPixelShader* GetInstance() {
+		if (pPixelShader == nullptr) {
+			pPixelShader = new PBRPointLightPixelShader();
+		}
+		return pPixelShader;
+	}
 public:
 	virtual void ApplyShader() override;
 	virtual void DisapplyShader() override;

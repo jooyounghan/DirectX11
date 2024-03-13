@@ -10,9 +10,12 @@
 
 using namespace std;
 
+NormalVectorGeometryShader* NormalVectorGeometryShader::pGeometryShader = nullptr;
+
 NormalVectorGeometryShader::NormalVectorGeometryShader()
 	: IGeometryShader()
 {
+	Console::Print("Normal Vector Geometry Shader Generated.");
 	ID3D11Helper::CreateGS(
 		DirectXDevice::pDevice, 
 		L"NormalVectorGS.hlsl", 

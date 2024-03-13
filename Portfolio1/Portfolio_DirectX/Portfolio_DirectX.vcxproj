@@ -131,12 +131,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="BlurComputeShader.h" />
     <ClInclude Include="BlurFilter.h" />
     <ClInclude Include="CameraManipulator.h" />
     <ClInclude Include="CubeMapModel.h" />
     <ClInclude Include="DepthOnlyPixelShader.h" />
     <ClInclude Include="GroupPBRModel.h" />
     <ClInclude Include="IBLRenderingPixelShader.h" />
+    <ClInclude Include="IComputeShader.h" />
     <ClInclude Include="IDomainShader.h" />
     <ClInclude Include="IGeometryShader.h" />
     <ClInclude Include="IHullShader.h" />
@@ -161,11 +163,13 @@
     <ClInclude Include="MirrorModelPixelShader.h" />
     <ClInclude Include="BasicVertexShader.h" />
     <ClInclude Include="ModelFile.h" />
+    <ClInclude Include="ModelIDResolveComputeShader.h" />
     <ClInclude Include="ModelManipulator.h" />
     <ClInclude Include="ModelRenderer.h" />
     <ClInclude Include="ModelRendererDomainShader.h" />
     <ClInclude Include="ModelRenderHullShader.h" />
     <ClInclude Include="ModelRenderVertexShader.h" />
+    <ClInclude Include="MS16ToSS8ComputeShader.h" />
     <ClInclude Include="NormalVectorGeometryShader.h" />
     <ClInclude Include="NormalVectorPixelShader.h" />
     <ClInclude Include="NormalVectorRenderer.h" />
@@ -173,11 +177,11 @@
     <ClInclude Include="PBRIBLLightPixelShader.h" />
     <ClInclude Include="PBRPointLightPixelShader.h" />
     <ClInclude Include="PBRSpotLightPixelShader.h" />
-    <ClInclude Include="Shaders.h" />
     <ClInclude Include="SinglePBRModel.h" />
     <ClInclude Include="StageManipulator.h" />
     <ClInclude Include="CubeRenderTargets.h" />
     <ClInclude Include="TODO.h" />
+    <ClInclude Include="TypeResolveComputeShader.h" />
     <ClInclude Include="Viewable.h" />
     <ClInclude Include="BaseApp.h" />
     <ClInclude Include="Console.h" />
@@ -215,12 +219,14 @@
     <ClInclude Include="ViewableRenderTarget.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BlurComputeShader.cpp" />
     <ClCompile Include="BlurFilter.cpp" />
     <ClCompile Include="CameraManipulator.cpp" />
     <ClCompile Include="CubeMapModel.cpp" />
     <ClCompile Include="DepthOnlyPixelShader.cpp" />
     <ClCompile Include="GroupPBRModel.cpp" />
     <ClCompile Include="IBLRenderingPixelShader.cpp" />
+    <ClCompile Include="IComputeShader.cpp" />
     <ClCompile Include="IDomainShader.cpp" />
     <ClCompile Include="IGeometryShader.cpp" />
     <ClCompile Include="IHullShader.cpp" />
@@ -243,11 +249,13 @@
     <ClCompile Include="MirrorModelPixelShader.cpp" />
     <ClCompile Include="BasicVertexShader.cpp" />
     <ClCompile Include="ModelFile.cpp" />
+    <ClCompile Include="ModelIDResolveComputeShader.cpp" />
     <ClCompile Include="ModelManipulator.cpp" />
     <ClCompile Include="ModelRenderer.cpp" />
     <ClCompile Include="ModelRendererDomainShader.cpp" />
     <ClCompile Include="ModelRenderHullShader.cpp" />
     <ClCompile Include="ModelRenderVertexShader.cpp" />
+    <ClCompile Include="MS16ToSS8ComputeShader.cpp" />
     <ClCompile Include="NormalVectorGeometryShader.cpp" />
     <ClCompile Include="NormalVectorPixelShader.cpp" />
     <ClCompile Include="NormalVectorRenderer.cpp" />
@@ -255,10 +263,10 @@
     <ClCompile Include="PBRIBLLightPixelShader.cpp" />
     <ClCompile Include="PBRPointLightPixelShader.cpp" />
     <ClCompile Include="PBRSpotLightPixelShader.cpp" />
-    <ClCompile Include="Shaders.cpp" />
     <ClCompile Include="SinglePBRModel.cpp" />
     <ClCompile Include="StageManipulator.cpp" />
     <ClCompile Include="CubeRenderTargets.cpp" />
+    <ClCompile Include="TypeResolveComputeShader.cpp" />
     <ClCompile Include="Viewable.cpp" />
     <ClCompile Include="BaseApp.cpp" />
     <ClCompile Include="Console.cpp" />

@@ -12,6 +12,8 @@
 using namespace std;
 using namespace DirectX;
 
+ModelRenderVertexShader* ModelRenderVertexShader::pPixelShader = nullptr;
+
 ID3D11Buffer* const ModelRenderVertexShader::pNullBuffers[4] = { nullptr, nullptr, nullptr, nullptr };
 const UINT ModelRenderVertexShader::pNulls[4] = { NULL, NULL, NULL, NULL };
 const UINT ModelRenderVertexShader::uiStrides[4] = { sizeof(XMFLOAT3), sizeof(XMFLOAT2),sizeof(XMFLOAT3),sizeof(XMFLOAT3) };
@@ -20,6 +22,8 @@ const UINT ModelRenderVertexShader::uiOffsets[4] = { 0, 0, 0, 0 };
 ModelRenderVertexShader::ModelRenderVertexShader()
 	: IVertexShader()
 {
+	Console::Print("Model Render Vertex Shader Generated.");
+
 	std::vector<D3D11_INPUT_ELEMENT_DESC> vInputElemDesc
 	{
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},

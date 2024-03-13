@@ -36,7 +36,6 @@ public:
 public:
 	virtual void AcceptFilterList(class CameraManipulator* pCameraManipulator) = 0;
 	virtual void Apply(ID3D11ShaderResourceView** ppInputSRV) = 0;
-	virtual void SetUAVBarrier() = 0;
 
 public:
 	virtual void Resize(const UINT& uiWidthIn, const UINT& uiHeightIn);

@@ -3,9 +3,9 @@
 
 class IVertexShader : public IShader
 {
-public:
-	IVertexShader();
-	virtual ~IVertexShader();
+protected:
+    IVertexShader() {};
+    virtual ~IVertexShader() {};
 
 protected:
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> cpInputLayout;

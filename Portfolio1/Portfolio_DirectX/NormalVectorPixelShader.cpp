@@ -3,9 +3,12 @@
 #include "ID3D11Helper.h"
 #include "DirectXDevice.h"
 
+NormalVectorPixelShader* NormalVectorPixelShader::pPixelShader = nullptr;
+
 NormalVectorPixelShader::NormalVectorPixelShader()
 	: IPixelShader()
 {
+	Console::Print("Normal Vector Pixel Shader Generated.");
 	ID3D11Helper::CreatePS(
 		DirectXDevice::pDevice, 
 		L"NormalVectorPS.hlsl", 
