@@ -20,7 +20,7 @@ public:
 	);
 	virtual ~ViewableDepthOnly();
 
-public:
+protected:
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> cpDSV;
 
 protected:

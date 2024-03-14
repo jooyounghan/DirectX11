@@ -131,10 +131,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="BlurComputeShader.h" />
+    <ClInclude Include="ColorBlurComputeShader.h" />
     <ClInclude Include="BlurFilter.h" />
     <ClInclude Include="CameraManipulator.h" />
     <ClInclude Include="CubeMapModel.h" />
+    <ClInclude Include="DepthBlurComputeShader.h" />
     <ClInclude Include="DepthOnlyPixelShader.h" />
     <ClInclude Include="GroupPBRModel.h" />
     <ClInclude Include="IBLRenderingPixelShader.h" />
@@ -219,10 +220,11 @@
     <ClInclude Include="ViewableRenderTarget.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="BlurComputeShader.cpp" />
+    <ClCompile Include="ColorBlurComputeShader.cpp" />
     <ClCompile Include="BlurFilter.cpp" />
     <ClCompile Include="CameraManipulator.cpp" />
     <ClCompile Include="CubeMapModel.cpp" />
+    <ClCompile Include="DepthBlurComputeShader.cpp" />
     <ClCompile Include="DepthOnlyPixelShader.cpp" />
     <ClCompile Include="GroupPBRModel.cpp" />
     <ClCompile Include="IBLRenderingPixelShader.cpp" />
@@ -303,6 +305,16 @@
     <ClCompile Include="ViewableRenderTarget.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="DepthBlurCS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+    </FxCompile>
     <FxCompile Include="PBRModelDS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Domain</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
@@ -329,7 +341,7 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
-    <FxCompile Include="BlurCS.hlsl">
+    <FxCompile Include="ColorBlurCS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>

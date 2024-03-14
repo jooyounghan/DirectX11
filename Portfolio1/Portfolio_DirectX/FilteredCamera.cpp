@@ -84,7 +84,7 @@ void FilteredCamera::Resize(const UINT& uiWidthIn, const UINT& uiHeightIn)
 		);
 		ID3D11Helper::CreateUnorderedAccessView(
 			DirectXDevice::pDevice,
-			filter->GetTexture(),
+			filter->GetTexture(), NULL,
 			filter->GetAddressOfFilterUAV()
 		);
 	}

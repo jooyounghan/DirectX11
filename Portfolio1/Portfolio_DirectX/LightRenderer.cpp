@@ -59,11 +59,11 @@ void LightRenderer::UpdateLightMap(
 
 void LightRenderer::SetForUpdatingLightMap(PointLight& pointLight)
 {
-	for (size_t idx = 0; idx < PointDirectionNum; ++idx)
+	for (size_t idx = 0; idx < EDirections::DirectionNum; ++idx)
 	{
 		pointLight.SetDepthOnlyRenderTarget(idx);
 
-		pViewable = &pointLight.GetViewable((EPointDirections)idx);
+		pViewable = &pointLight.GetViewable((EDirections)idx);
 		for (auto model : *pModelSet)
 		{
 			model.second->AcceptRenderingLightMap(this);

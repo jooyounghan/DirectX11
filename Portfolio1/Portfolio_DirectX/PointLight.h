@@ -3,17 +3,6 @@
 #include "CubeRenderTargets.h"
 #include "Viewable.h"
 
-enum EPointDirections : size_t
-{
-	PointXDirection,
-	PointNegXDirection,
-	PointYDirection,
-	PointNegYDirection,
-	PointZDirection,
-	PointNegZDirection,
-	PointDirectionNum
-};
-
 class PointLight : public ILight, public CubeDepthStencilView
 {
 public:
@@ -35,13 +24,11 @@ private:
 	size_t ullPointLightId;
 
 private:
+	class DepthBlurComputeShader* pBlurCS;
+
+private:
 	static ID3D11RenderTargetView* pNullRTV;
 
-protected:
-	Viewable viewable[PointDirectionNum];
-
-public:
-	inline Viewable& GetViewable(const EPointDirections& eDirection) { return viewable[eDirection]; }
 
 public:
 	virtual size_t GetLightID();

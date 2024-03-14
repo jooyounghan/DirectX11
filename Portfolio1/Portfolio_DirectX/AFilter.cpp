@@ -25,7 +25,7 @@ AFilter::AFilter(
 	uiThreadGroupCntY(uiThreadGroupCntYIn),
 	uiThreadGroupCntZ(uiThreadGroupCntZIn)
 {
-	ID3D11Helper::CreateUnorderedAccessView(DirectXDevice::pDevice, cpTexture2D.Get(), cpUAV.GetAddressOf());
+	ID3D11Helper::CreateUnorderedAccessView(DirectXDevice::pDevice, cpTexture2D.Get(), NULL, cpUAV.GetAddressOf());
 }
 
 AFilter::~AFilter()
@@ -37,6 +37,6 @@ void AFilter::Resize(const UINT& uiWidthIn, const UINT& uiHeightIn)
 	cpUAV.Reset();
 	ShaderResource::Resize(uiWidthIn, uiHeightIn);
 	ID3D11Helper::CreateUnorderedAccessView(
-		DirectXDevice::pDevice, cpTexture2D.Get(), cpUAV.GetAddressOf()
+		DirectXDevice::pDevice, cpTexture2D.Get(), NULL, cpUAV.GetAddressOf()
 	);
 }

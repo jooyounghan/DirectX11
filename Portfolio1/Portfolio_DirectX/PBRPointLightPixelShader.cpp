@@ -63,12 +63,12 @@ void PBRPointLightPixelShader::SetShader(PointLight& pointLight, IMesh& idMesh, 
 	DirectXDevice::pDeviceContext->PSSetConstantBuffers(4, 1, pbrStaticMesh.GetPBRTextureFlagBuffer());
 	
 	DirectXDevice::pDeviceContext->PSSetConstantBuffers(5, 1, viewable.GetPositionBuffer());
-	DirectXDevice::pDeviceContext->PSSetConstantBuffers(6, 1, pointLight.GetViewable(PointXDirection).GetViewProjBuffer());
-	DirectXDevice::pDeviceContext->PSSetConstantBuffers(7, 1, pointLight.GetViewable(PointNegXDirection).GetViewProjBuffer());
-	DirectXDevice::pDeviceContext->PSSetConstantBuffers(8, 1, pointLight.GetViewable(PointYDirection).GetViewProjBuffer());
-	DirectXDevice::pDeviceContext->PSSetConstantBuffers(9, 1, pointLight.GetViewable(PointNegYDirection).GetViewProjBuffer());
-	DirectXDevice::pDeviceContext->PSSetConstantBuffers(10, 1, pointLight.GetViewable(PointZDirection).GetViewProjBuffer());
-	DirectXDevice::pDeviceContext->PSSetConstantBuffers(11, 1, pointLight.GetViewable(PointNegZDirection).GetViewProjBuffer());
+	DirectXDevice::pDeviceContext->PSSetConstantBuffers(6, 1, pointLight.GetViewable(XDirection).GetViewProjBuffer());
+	DirectXDevice::pDeviceContext->PSSetConstantBuffers(7, 1, pointLight.GetViewable(NegXDirection).GetViewProjBuffer());
+	DirectXDevice::pDeviceContext->PSSetConstantBuffers(8, 1, pointLight.GetViewable(YDirection).GetViewProjBuffer());
+	DirectXDevice::pDeviceContext->PSSetConstantBuffers(9, 1, pointLight.GetViewable(NegYDirection).GetViewProjBuffer());
+	DirectXDevice::pDeviceContext->PSSetConstantBuffers(10, 1, pointLight.GetViewable(ZDirection).GetViewProjBuffer());
+	DirectXDevice::pDeviceContext->PSSetConstantBuffers(11, 1, pointLight.GetViewable(NegZDirection).GetViewProjBuffer());
 
 	DirectXDevice::pDeviceContext->PSSetSamplers(0, 1, DirectXDevice::ppWrapSampler);
 	DirectXDevice::pDeviceContext->PSSetSamplers(1, 1, DirectXDevice::ppClampSampler);

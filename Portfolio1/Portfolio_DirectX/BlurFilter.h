@@ -20,7 +20,7 @@ public:
 	virtual ~BlurFilter();
 
 protected:
-	class BlurComputeShader* pBlurCS;
+	class ColorBlurComputeShader* pBlurCS;
 
 public:
 	virtual void AcceptFilterList(class CameraManipulator* pCameraManipulator);

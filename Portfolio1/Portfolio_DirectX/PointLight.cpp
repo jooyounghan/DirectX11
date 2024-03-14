@@ -6,6 +6,9 @@
 #include "ModelRenderer.h"
 #include "LightManipulator.h"
 
+#include "ColorBlurComputeShader.h"
+#include "DepthBlurComputeShader.h"
+
 size_t PointLight::ullPointLightCnt = 0;
 ID3D11RenderTargetView* PointLight::pNullRTV = nullptr;
 
@@ -30,21 +33,16 @@ PointLight::PointLight(
 		fLightPowerIn
 	),
 	CubeDepthStencilView(
+		fXPos, fYPos, fZPos, fFallOffStartIn, fFallOffEndIn,
 		gShadowMapWidth, gShadowMapHeight, 0
 	),
-	viewable{
-		Viewable(fXPos, fYPos, fZPos, 0.f, 90.f, 0.f, gShadowMapWidth, gShadowMapHeight, gLightFovDeg, gLightNearZ, fFallOffEndIn),
-		Viewable(fXPos, fYPos, fZPos, 0.f, -90.f, 0.f, gShadowMapWidth, gShadowMapHeight, gLightFovDeg, gLightNearZ, fFallOffEndIn),
-		Viewable(fXPos, fYPos, fZPos, -90.f, 0.f, 0.f, gShadowMapWidth, gShadowMapHeight, gLightFovDeg, gLightNearZ, fFallOffEndIn),
-		Viewable(fXPos, fYPos, fZPos, 90.f, 0.f, 0.f, gShadowMapWidth, gShadowMapHeight, gLightFovDeg, gLightNearZ, fFallOffEndIn),
-		Viewable(fXPos, fYPos, fZPos, 0.f, 0.f, 0.f, gShadowMapWidth, gShadowMapHeight, gLightFovDeg, gLightNearZ, fFallOffEndIn),
-		Viewable(fXPos, fYPos, fZPos, 0.f, 180.f, 0.f, gShadowMapWidth, gShadowMapHeight, gLightFovDeg, gLightNearZ, fFallOffEndIn)
-	},
 	IMovable(fXPos, fYPos, fZPos),
 	IRectangle(gShadowMapWidth, gShadowMapHeight)
 {
 	ullPointLightCnt++;
 	ullPointLightId = ullPointLightCnt;
+
+	pBlurCS = DepthBlurComputeShader::GetInstance();
 }
 
 PointLight::~PointLight() {}
@@ -59,22 +57,29 @@ void PointLight::UpdateLight()
 		cpBaseLightBuffer.Get()
 	);
 
-	for (size_t idx = 0; idx < PointDirectionNum; ++idx)
+	pBlurCS->ApplyShader();
+	for (size_t idx = 0; idx < EDirections::DirectionNum; ++idx)
 	{
-		viewable[idx].SetFarZ(sBaseLightData.fFallOffEnd);
-		DirectX::XMVECTOR& pos = viewable[idx].GetPosition();
+		cubeViewParts[idx].SetFarZ(sBaseLightData.fFallOffEnd);
+		DirectX::XMVECTOR& pos = cubeViewParts[idx].GetPosition();
 		memcpy(pos.m128_f32, xmvPosition.m128_f32, sizeof(float) * 4);
-		viewable[idx].UpdatePosition();
-		viewable[idx].UpdateViewToPerspective();
+		cubeViewParts[idx].UpdatePosition();
+		cubeViewParts[idx].UpdateViewToPerspective();
+
+		pBlurCS->SetShader(cubeViewParts[idx].GetAddressOfSRV(), cpUAVs[idx].GetAddressOf());
+		DirectXDevice::pDeviceContext->Dispatch(
+			uiWidth / 200, uiHeight / 4, 1
+		);
+
+		pBlurCS->ResetShader();
 	}
+	pBlurCS->DisapplyShader();
 }
+
 
 void PointLight::SetDepthOnlyRenderTarget(const size_t& idx)
 {
-	ID3D11DepthStencilView* pDSV = cpDSVs[idx].Get();
-	DirectXDevice::pDeviceContext->OMSetRenderTargets(1, &pNullRTV, pDSV);
-	DirectXDevice::pDeviceContext->ClearDepthStencilView(pDSV, D3D11_CLEAR_DEPTH, 1.f, NULL);
-	DirectXDevice::pDeviceContext->RSSetViewports(1, viewable[idx].GetViewPortAddress());
+	cubeViewParts[idx].SetDepthOnlyRenderTarget();
 }
 
 void PointLight::ResetDepthOnlyRenderTarget()

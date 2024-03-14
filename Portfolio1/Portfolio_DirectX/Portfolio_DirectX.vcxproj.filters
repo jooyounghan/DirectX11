@@ -453,10 +453,13 @@
     <ClInclude Include="MS16ToSS8ComputeShader.h">
       <Filter>헤더 파일\Shader\Extended\Compute</Filter>
     </ClInclude>
-    <ClInclude Include="BlurComputeShader.h">
+    <ClInclude Include="ColorBlurComputeShader.h">
       <Filter>헤더 파일\Shader\Extended\Compute</Filter>
     </ClInclude>
     <ClInclude Include="TypeResolveComputeShader.h">
+      <Filter>헤더 파일\Shader\Extended\Compute</Filter>
+    </ClInclude>
+    <ClInclude Include="DepthBlurComputeShader.h">
       <Filter>헤더 파일\Shader\Extended\Compute</Filter>
     </ClInclude>
   </ItemGroup>
@@ -704,7 +707,10 @@
     <ClCompile Include="TypeResolveComputeShader.cpp">
       <Filter>소스 파일\Shader\Extended\Compute</Filter>
     </ClCompile>
-    <ClCompile Include="BlurComputeShader.cpp">
+    <ClCompile Include="ColorBlurComputeShader.cpp">
+      <Filter>소스 파일\Shader\Extended\Compute</Filter>
+    </ClCompile>
+    <ClCompile Include="DepthBlurComputeShader.cpp">
       <Filter>소스 파일\Shader\Extended\Compute</Filter>
     </ClCompile>
   </ItemGroup>
@@ -748,7 +754,7 @@
     <FxCompile Include="NormalVectorVS.hlsl">
       <Filter>Shader\DebugHelper</Filter>
     </FxCompile>
-    <FxCompile Include="BlurCS.hlsl">
+    <FxCompile Include="ColorBlurCS.hlsl">
       <Filter>Shader\Filter</Filter>
     </FxCompile>
     <FxCompile Include="TypeResolveCS.hlsl">
@@ -759,6 +765,9 @@
     </FxCompile>
     <FxCompile Include="BasicVS.hlsl">
       <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="DepthBlurCS.hlsl">
+      <Filter>Shader\Filter</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

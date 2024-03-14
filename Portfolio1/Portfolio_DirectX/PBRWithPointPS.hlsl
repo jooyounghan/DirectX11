@@ -181,8 +181,10 @@ PBRModelPixelOutput main(PBRModelDomainOutput input)
         
     float3 diffuseBrdf = (float3(1, 1, 1) - F) * f3DiffuseColor;
     float3 specularBrdf = (F * D * G) / (max(1e-6, 4.0 * NDotL * NDotE));
-  
-    float fShadowFactor = GetShadowFactorByPCF(ShadowMap, f3fromLight, CompareClampSampler, f4LightProjPos.z - 1E-6, 1.f);
+    
+    //float fShadowFactor = ShadowMap.SampleCmpLevelZero(CompareClampSampler, f3fromLight, f4LightProjPos.z - 1E-3).x;    
+    float fShadowFactor = GetShadowFactorByPCF(ShadowMap, f3fromLight, CompareClampSampler, f4LightProjPos.z - 1E-3, 1.f);
+    
     float3 fDirectColor = (diffuseBrdf + specularBrdf) * NDotL * f3LightColor * fLightPowerSaturated * fShadowFactor;
            
     result.pixelColor = float4(fDirectColor, 1.f);

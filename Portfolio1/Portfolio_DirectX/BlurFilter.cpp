@@ -1,6 +1,6 @@
 #include "BlurFilter.h"
 
-#include "BlurComputeShader.h"
+#include "ColorBlurComputeShader.h"
 
 #include "DirectXDevice.h"
 #include "CameraManipulator.h"
@@ -26,7 +26,7 @@ BlurFilter::BlurFilter(
 	),
 	IRectangle(uiWidthIn, uiHeightIn)
 {
-	pBlurCS = BlurComputeShader::GetInstance();
+	pBlurCS = ColorBlurComputeShader::GetInstance();
 }
 
 BlurFilter::~BlurFilter()

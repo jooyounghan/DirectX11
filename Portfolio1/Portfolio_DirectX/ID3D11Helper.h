@@ -131,6 +131,7 @@ public:
 	static void CreateUnorderedAccessView(
 		IN ID3D11Device* pDevice,
 		IN ID3D11Resource* pResource,
+		IN D3D11_UNORDERED_ACCESS_VIEW_DESC* sUAVDesc,
 		OUT ID3D11UnorderedAccessView** ppUnorderedAccessView
 	);
 

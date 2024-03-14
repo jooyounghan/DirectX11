@@ -362,9 +362,14 @@ void ID3D11Helper::CreateShaderResoureView(
 	}
 }
 
-void ID3D11Helper::CreateUnorderedAccessView(IN ID3D11Device* pDevice, IN ID3D11Resource* pResource, OUT ID3D11UnorderedAccessView** ppUnorderedAccessView)
+void ID3D11Helper::CreateUnorderedAccessView(
+	IN ID3D11Device* pDevice, 
+	IN ID3D11Resource* pResource,
+	IN D3D11_UNORDERED_ACCESS_VIEW_DESC* sUAVDesc,
+	OUT ID3D11UnorderedAccessView** ppUnorderedAccessView
+)
 {
-	HRESULT hResult = pDevice->CreateUnorderedAccessView(pResource, NULL, ppUnorderedAccessView);
+	HRESULT hResult = pDevice->CreateUnorderedAccessView(pResource, sUAVDesc, ppUnorderedAccessView);
 	if (FAILED(hResult))
 	{
 		Console::AssertPrint("Unordered Access View를 생성하는데 실패하였습니다.");
