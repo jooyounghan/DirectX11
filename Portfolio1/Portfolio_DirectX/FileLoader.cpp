@@ -340,6 +340,8 @@ MeshFileSet FileLoader::ProcessMesh(
         const aiTextureType aiTextureTypes[TEXTURE_MAP_NUM] = {
             aiTextureType_AMBIENT_OCCLUSION,
             aiTextureType_BASE_COLOR,
+            aiTextureType_DIFFUSE,
+            aiTextureType_SPECULAR,
             aiTextureType_METALNESS,
             aiTextureType_DIFFUSE_ROUGHNESS,
             aiTextureType_EMISSIVE,
@@ -364,8 +366,8 @@ MeshFileSet FileLoader::ProcessMesh(
         }
     }
 
-    return result;
 
+    return result;
 }
 
 string FileLoader::ReadTextureFileName(
@@ -375,21 +377,23 @@ string FileLoader::ReadTextureFileName(
     aiTextureType eType
 )
 {
-    string fullPath;
+    filesystem::path fullPath;
     if (pMaterial->GetTextureCount(eType) > 0) {
         aiString fileName;
         pMaterial->GetTexture(eType, 0, &fileName);
-        fullPath = strFilePath + "\\" + fileName.C_Str();
-
+        fullPath = fileName.C_Str();
+        fullPath = strFilePath + "\\textures\\" + fullPath.filename().string();
         if (!filesystem::exists(fullPath)) 
         {
             const aiTexture* texture =
                 pScene->GetEmbeddedTexture(fileName.C_Str());
             if (texture) 
             {
-                if (string(texture->achFormatHint).find("png") !=
-                    string::npos) {
-                    ofstream fs(fullPath.c_str(), ios::binary | ios::out);
+                if (string(texture->achFormatHint).find("png") != string::npos) 
+                {
+                    filesystem::create_directories(fullPath.parent_path());
+
+                    ofstream fs(fullPath.string(), ios::binary | ios::out);
                     fs.write((char*)texture->pcData, texture->mWidth);
                     fs.close();
                 }
@@ -404,7 +408,7 @@ string FileLoader::ReadTextureFileName(
 
         }
     }
-    return fullPath;
+    return fullPath.string();
 }
 
 wstring FileLoader::GetLastDirectoryName(const filesystem::path& filePath)

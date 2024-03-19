@@ -14,6 +14,8 @@ std::unordered_map<WORD, std::string> PBRStaticMesh::unmapTextureNames
 {
 	 {AO_TEXUTRE_MAP, "Ambient Occulusion Map"},
 	 { COLOR_TEXTURE_MAP, "Color Map" },
+	 { DIFFUSE_TEXTURE_MAP, "Diffuse Map" },
+	 { SPECULAR_TEXTURE_MAP, "Specular Map" },
 	 { METALNESS_TEXTURE_MAP, "Metalness Map" },
 	 { ROUGHNESS_TEXTURE_MAP, "Roughness Map" },
 	 { EMISSION_TEXTURE_MAP, "Emission Map" },

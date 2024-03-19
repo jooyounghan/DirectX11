@@ -40,6 +40,7 @@ protected:
 	{
 		BOOL bIsTextureOn[TEXTURE_MAP_NUM];
 		BOOL bIsGLTF;
+		BOOL bDummy[2];
 	} sPBRTextureFlag;
 
 protected:

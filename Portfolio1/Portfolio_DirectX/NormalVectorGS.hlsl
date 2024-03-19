@@ -17,12 +17,15 @@ cbuffer IsPBRTextureOn : register(b2)
 {
     bool bIsAOOn;
     bool bIsColorOn;
+    bool bIsDiffuseOn;
+    bool bIsSpecularOn;
     bool bIsMetalnessOn;
     bool bIsRoughnessOn;
     bool bIsEmissionOn;
     bool bIsNormalOn;
     bool bIsHeightOn;
-    bool bDummy;
+    bool bIsGLTF;
+    bool2 bDummys;
 };
 
 Texture2D NormalTexture : register(t0);

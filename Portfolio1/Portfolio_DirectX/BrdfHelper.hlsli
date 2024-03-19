@@ -6,9 +6,9 @@ float GetNDF(float NDotH, float fRoughness)
     return alpha2 / (PI * pow((pow(NDotH, 2) * (alpha2 - 1) + 1), 2));
 }
 
-float3 GetFresnelSchlick(float EDotH, float3 f3SpecularReflectance)
+float3 GetFresnelSchlick(float NDotE, float3 f3SpecularReflectance)
 {
-    return f3SpecularReflectance + (1 - f3SpecularReflectance) * pow(2, (-5.55473 * EDotH - 6.98316) * EDotH);
+    return f3SpecularReflectance + (1 - f3SpecularReflectance) * pow(2, (-5.55473 * NDotE - 6.98316) * NDotE);
 }
 
 float GetG1(float NDotOther, float fRoughness)

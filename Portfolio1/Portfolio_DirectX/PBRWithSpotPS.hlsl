@@ -4,12 +4,13 @@
 #include "ShadowHelper.hlsli"
 
 Texture2D ColorTexture : register(t0);
-Texture2D MetalnessTexture : register(t1);
-Texture2D RoughnessTexture : register(t2);
-Texture2D EmissionTexture : register(t3);
-Texture2D NormalTexture : register(t4);
-
-Texture2D ShadowMap : register(t5);
+Texture2D DiffuseTexture : register(t1);
+Texture2D SpecularTexture : register(t2);
+Texture2D MetalnessTexture : register(t3);
+Texture2D RoughnessTexture : register(t4);
+Texture2D EmissionTexture : register(t5);
+Texture2D NormalTexture : register(t6);
+Texture2D ShadowMap : register(t7);
 
 cbuffer ModelIDBuffer : register(b0)
 {
@@ -47,12 +48,15 @@ cbuffer IsPBRTextureOn : register(b5)
 {
     bool bIsAOOn;
     bool bIsColorOn;
+    bool bIsDiffuseOn;
+    bool bIsSpecularOn;
     bool bIsMetalnessOn;
     bool bIsRoughnessOn;
     bool bIsEmissionOn;
     bool bIsNormalOn;
     bool bIsHeightOn;
     bool bIsGLTF;
+    bool2 bDummys;
 };
 
 cbuffer CameraPos : register(b6)
@@ -79,8 +83,8 @@ PBRModelPixelOutput main(PBRModelDomainOutput input)
     float fMetallic;
     if (bIsGLTF)
     {
-        fRoughness = RoughnessTexture.Sample(WrapSampler, input.f2TexCoord).y;
-        fMetallic = MetalnessTexture.Sample(WrapSampler, input.f2TexCoord).z;
+        fRoughness = RoughnessTexture.Sample(WrapSampler, input.f2TexCoord).z;
+        fMetallic = MetalnessTexture.Sample(WrapSampler, input.f2TexCoord).y;
     }
     else
     {
@@ -88,7 +92,7 @@ PBRModelPixelOutput main(PBRModelDomainOutput input)
         fMetallic = MetalnessTexture.Sample(WrapSampler, input.f2TexCoord).x;
     }
     
-    float3 f3Color = ColorTexture.Sample(WrapSampler, input.f2TexCoord).xyz;
+    float3 f3Color = ColorTexture.SampleLevel(WrapSampler, input.f2TexCoord, 5.f * fRoughness).xyz;
 
     float3 f3NormalVector = GetNormalFromTexture(
         bIsNormalOn, NormalTexture, WrapSampler, input.f2TexCoord, input.f3ModelTangent, input.f3ModelBiTangent, input.f3ModelNormal
@@ -124,7 +128,7 @@ PBRModelPixelOutput main(PBRModelDomainOutput input)
     float G = GetGMasking(NDotL, NDotE, fRoughness);
     float D = GetNDF(NDotH, fRoughness);
         
-    float3 diffuseBrdf = (float3(1, 1, 1) - F) * f3DiffuseColor;
+    float3 diffuseBrdf = lerp(float3(1, 1, 1) - F, float3(0, 0, 0), fMetallic) * f3Color;
     float3 specularBrdf = (F * D * G) / (max(1e-6, 4.0 * NDotL * NDotE));
 
     uint uiWidth, uiHeight, uiNumLevels;

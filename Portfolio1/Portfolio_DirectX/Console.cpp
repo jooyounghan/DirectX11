@@ -13,5 +13,4 @@ void Console::AssertPrint(const std::string& str)
 {
 	std::lock_guard<std::mutex> lockGuard(mtxConsole);
 	std::cout << str << std::endl;
-	_ASSERT(false);
 }

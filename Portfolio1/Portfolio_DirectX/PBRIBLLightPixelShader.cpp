@@ -53,10 +53,12 @@ void PBRIBLLightPixelShader::SetShader(AIBLMesh& iblMesh, IMesh& idMesh, PBRStat
 
 	SetSRV(pbrStaticMesh.GetTextureImageFileRef(AO_TEXUTRE_MAP).get(), 3, 1);
 	SetSRV(pbrStaticMesh.GetTextureImageFileRef(COLOR_TEXTURE_MAP).get(), 4, 1);
-	SetSRV(pbrStaticMesh.GetTextureImageFileRef(METALNESS_TEXTURE_MAP).get(), 5, 1);
-	SetSRV(pbrStaticMesh.GetTextureImageFileRef(ROUGHNESS_TEXTURE_MAP).get(), 6, 1);
-	SetSRV(pbrStaticMesh.GetTextureImageFileRef(EMISSION_TEXTURE_MAP).get(), 7, 1);
-	SetSRV(pbrStaticMesh.GetTextureImageFileRef(NORMAL_TEXTURE_MAP).get(), 8, 1);
+	SetSRV(pbrStaticMesh.GetTextureImageFileRef(DIFFUSE_TEXTURE_MAP).get(), 5, 1);
+	SetSRV(pbrStaticMesh.GetTextureImageFileRef(SPECULAR_TEXTURE_MAP).get(), 6, 1);
+	SetSRV(pbrStaticMesh.GetTextureImageFileRef(METALNESS_TEXTURE_MAP).get(), 7, 1);
+	SetSRV(pbrStaticMesh.GetTextureImageFileRef(ROUGHNESS_TEXTURE_MAP).get(), 8, 1);
+	SetSRV(pbrStaticMesh.GetTextureImageFileRef(EMISSION_TEXTURE_MAP).get(), 9, 1);
+	SetSRV(pbrStaticMesh.GetTextureImageFileRef(NORMAL_TEXTURE_MAP).get(), 10, 1);
 
 	DirectXDevice::pDeviceContext->PSSetConstantBuffers(0, 1, idMesh.GetIDBuffer());
 	DirectXDevice::pDeviceContext->PSSetConstantBuffers(1, 1, viewable.GetPositionBuffer());
