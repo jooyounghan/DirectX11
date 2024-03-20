@@ -19,17 +19,6 @@ public:
 		const DXGI_FORMAT& eFormatIn
 	);
 
-	Texture2D(
-		const UINT& uiWidthIn,
-		const UINT& uiHeightIn,
-		const UINT& uiBindFlagIn,
-		const UINT& uiCPUAccessIn,
-		const UINT& uiMiscFlagIn,
-		const D3D11_USAGE& eUsageIn,
-		const DXGI_FORMAT& eFormatIn,
-		uint8_t* pImageSourceIn
-	);
-
 	virtual ~Texture2D();
 
 protected:

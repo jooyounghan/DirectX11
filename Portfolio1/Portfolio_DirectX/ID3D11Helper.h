@@ -175,18 +175,18 @@ public:
 		OUT ID3D11BlendState** ppBlendState
 	);
 
-	static void CreateTexture2D(
-		IN ID3D11Device*				pDevice,
-		IN const UINT&					uiWidth,
-		IN const UINT&					uiHeight,
-		IN const UINT&					uiBindFlag,
-		IN const UINT&					uiCPUAccess,
-		IN const UINT&					uiMiscFlag,
-		IN D3D11_USAGE					eUsage,
-		IN DXGI_FORMAT					eFormat,
-		IN uint8_t*						pImageRawData,
-		OUT ID3D11Texture2D**			ppTexture2D
-	);
+	//static void CreateTexture2D(
+	//	IN ID3D11Device*				pDevice,
+	//	IN const UINT&					uiWidth,
+	//	IN const UINT&					uiHeight,
+	//	IN const UINT&					uiBindFlag,
+	//	IN const UINT&					uiCPUAccess,
+	//	IN const UINT&					uiMiscFlag,
+	//	IN D3D11_USAGE					eUsage,
+	//	IN DXGI_FORMAT					eFormat,
+	//	IN uint8_t*						pImageRawData,
+	//	OUT ID3D11Texture2D**			ppTexture2D
+	//);
 
 	static void CreateTexture2D(
 		IN ID3D11Device* pDevice,

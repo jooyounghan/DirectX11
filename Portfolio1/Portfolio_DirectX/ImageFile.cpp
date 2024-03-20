@@ -1,5 +1,6 @@
 #include "ImageFile.h"
 #include "FileManipulator.h"
+#include "DirectXDevice.h"
 
 IImageFile::IImageFile(
 	const std::string& strFilePathIn,
@@ -24,14 +25,18 @@ IImageFile::IImageFile(
 )
 	: IFile(strFilePathIn, strFileNameIn),
 	ShaderResource(
-		uiWidthIn, uiHeightIn,
+		uiWidthIn, uiHeightIn, 1, 0,
 		D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET, NULL,
-		uiMiscFlagIn, D3D11_USAGE_DEFAULT,
-		eFormatIn, pImageSource
+		uiMiscFlagIn, D3D11_USAGE_DEFAULT, eFormatIn
 	)
 {
+	DirectXDevice::pDeviceContext->UpdateSubresource(
+		cpTexture2D.Get(), 0, nullptr, pImageSource,  
+		eFormat == DXGI_FORMAT_R16G16B16A16_FLOAT ? uiWidth * 8 : uiWidth * 4, 0
+	);
 }
 
 IImageFile::~IImageFile()
 {
 }
+

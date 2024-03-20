@@ -31,7 +31,7 @@ public:
 		const std::string& strExtension, 
 		UINT* x, UINT* y, UINT* comp
 	);
-	static std::shared_ptr<class ModelFile> LoadModelFile(
+	static std::vector<std::shared_ptr<class IFile>> LoadModelFile(
 		const std::string& strFilePath,
 		const std::string& strFileName,
 		const std::string& strExtension
@@ -58,6 +58,10 @@ private:
 		DirectX::XMMATRIX& xmMatrix,
 		const struct aiScene* pScene
 	);
+
+private:
+	static std::unordered_map<std::string, int> GetBoneInformation(const struct aiScene* pScene);
+
 
 public:
 	static std::string ReadTextureFileName(

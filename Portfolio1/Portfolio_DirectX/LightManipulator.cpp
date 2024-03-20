@@ -47,7 +47,7 @@ void LightManipulator::InitLightVariable()
 	fLightColor[1] = 1.f;
 	fLightColor[2] = 1.f;
 	fFallOffStart = 0.1f;
-	fFallOffEnd = 0.1f;
+	fFallOffEnd = fFallOffStart + NEAR_CLOSE;
 	fLightPower = 1.f;
 	fSpotPower = 1.f;
 }

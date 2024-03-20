@@ -131,6 +131,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AnimationFile.h" />
     <ClInclude Include="ColorBlurComputeShader.h" />
     <ClInclude Include="BlurFilter.h" />
     <ClInclude Include="CameraManipulator.h" />
@@ -220,6 +221,7 @@
     <ClInclude Include="ViewableRenderTarget.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AnimationFile.cpp" />
     <ClCompile Include="ColorBlurComputeShader.cpp" />
     <ClCompile Include="BlurFilter.cpp" />
     <ClCompile Include="CameraManipulator.cpp" />

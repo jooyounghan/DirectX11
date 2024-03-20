@@ -100,14 +100,17 @@ void FileManipulator::LoadFiles(const std::wstring& wstrFilePathIn)
             
             bool isImage = false;
             FileLoader::IsStrSame(&isImage, strExtention, ".jpg", ".png", ".exr", ".dds");
-            shared_ptr<IFile> spFileInterface;
+            
             if (isImage)
             {
                 bool isNeedLoad = false;
                 uint8_t* ucImageRawData = nullptr;
-                spFileInterface = FileLoader::LoadImageFile(
+                shared_ptr<IFile> spFileInterface = FileLoader::LoadImageFile(
                     strFilePathIn, strFileName, strExtention, &uiWidth, &uiHeight, &uiChannel
                 );
+
+                if (spFileInterface.get() != nullptr)
+                    vLoadedFiles.emplace_back(spFileInterface);
             }
             else
             {
@@ -115,14 +118,18 @@ void FileManipulator::LoadFiles(const std::wstring& wstrFilePathIn)
                 FileLoader::IsStrSame(&isObject, strExtention, ".fbx", ".gltf");
                 if (isObject)
                 {
-                    spFileInterface = FileLoader::LoadModelFile(
+                    vector<shared_ptr<IFile>> spFileInterfaces = FileLoader::LoadModelFile(
                         strFilePathIn, strFileName, strExtention
                     );
+
+                    for (auto& spFileInterface : spFileInterfaces)
+                    {
+                        vLoadedFiles.emplace_back(spFileInterface);
+                    }
                 }
 
             }
-            if (spFileInterface.get() != nullptr)
-                vLoadedFiles.emplace_back(spFileInterface);
+
         }
     }
 }

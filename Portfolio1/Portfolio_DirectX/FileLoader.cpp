@@ -182,7 +182,7 @@ shared_ptr<IImageFile> FileLoader::LoadImageFile(
     return result;
 }
 
-shared_ptr<ModelFile> FileLoader::LoadModelFile(
+vector<shared_ptr<IFile>> FileLoader::LoadModelFile(
     const string& strFilePath, 
     const string& strFileName,
     const string& strExtension
@@ -191,8 +191,8 @@ shared_ptr<ModelFile> FileLoader::LoadModelFile(
     const string fileNameWithExt = strFileName + strExtension;
     const string fullPath = strFilePath + "\\" + fileNameWithExt;
 
-    shared_ptr<ModelFile> result;
-    
+    vector<shared_ptr<IFile>> results; 
+
     ModelFile* pModel = (ModelFile*)FileLoader::GetUsingFile(fileNameWithExt).get();
 
     if (pModel == nullptr)
@@ -200,16 +200,6 @@ shared_ptr<ModelFile> FileLoader::LoadModelFile(
         cout << "Loading " << fileNameWithExt << " Set..." << endl;
         bool bIsGltf = false;
         strExtension == ".gltf" ? bIsGltf = true : bIsGltf = false;
-
-        result = make_shared<ModelFile>(strFilePath, fileNameWithExt, bIsGltf);
-
-        const string thumbNailPath = strFilePath + "\\" + strFileName + ".png";
-
-        UINT thumbNailX, thumbNailY, thumbNailComp;
-        if (filesystem::exists(thumbNailPath))
-        {
-            result->SetThumbNailFile(LoadImageFile(strFilePath, strFileName, ".png", &thumbNailX, &thumbNailY, &thumbNailComp));
-        }
 
         // 모델 읽기
         Assimp::Importer importer;
@@ -221,22 +211,53 @@ shared_ptr<ModelFile> FileLoader::LoadModelFile(
 
         if (pScene)
         {
-            DirectX::XMMATRIX xmmTransform = DirectX::XMMatrixIdentity();
-            ProcessNode(strFilePath, strFileName, strExtension, bIsGltf, pScene->mRootNode, pScene, xmmTransform, result.get());
-            result->Initialize();
+            if (pScene->mNumMeshes > 0)
+            {
+                /*
+                TODO : 언리얼 엔진에서 모델들을 불러와보고 애니메이션이 공유 가능한지 확인
+                뼈 이름을 특정 포맷으로 (뒤에 짜르고 앞에 짜르고) 변경해서 저장하는 방식으로 변경
+                */
+                std::shared_ptr<ModelFile> result;
+                unordered_map<string, int> unmap_bones = GetBoneInformation(pScene);
+                if (unmap_bones.size() > 0)
+                {
+                    bool test = true;
+                    //UpdateBoneInformation();
+                    //std::shared_ptr<SkinnedModelFile> skinnedResult = make_shared<SkinnedModelFile>(strFilePath, fileNameWithExt, bIsGltf);
+                    //result = skinnedResult;
+                    result = make_shared<ModelFile>(strFilePath, fileNameWithExt, bIsGltf);
+                }
+                else
+                {
+                    result = make_shared<ModelFile>(strFilePath, fileNameWithExt, bIsGltf);
+                }
+               
+
+                DirectX::XMMATRIX xmmTransform = DirectX::XMMatrixIdentity();
+                ProcessNode(strFilePath, strFileName, strExtension, bIsGltf, pScene->mRootNode, pScene, xmmTransform, result.get());
+                result->Initialize();
+
+                FileLoader::AddUsingFile(fileNameWithExt, result);
+                results.push_back(result);
+            }
+            
+            if (pScene->mNumAnimations > 0)
+            {
+                bool test = true;
+            }
+
         }
         else 
         {
             cout << "Loading " << fullPath << " Failed" << endl;
             cout << "Assimp Importer Error Code : " << importer.GetErrorString() << endl;
         }
-        FileLoader::AddUsingFile(fileNameWithExt, result);
     }
     else
     {
-        result = pModel->shared_from_this();
+        results.push_back(pModel->shared_from_this());
     }
-    return result;
+    return results;
 }
 
 void FileLoader::ProcessNode(
@@ -367,6 +388,29 @@ MeshFileSet FileLoader::ProcessMesh(
     }
 
 
+    return result;
+}
+
+std::unordered_map<std::string, int> FileLoader::GetBoneInformation(const aiScene* pScene)
+{
+    std::unordered_map<std::string, int> result;
+    for (size_t mesh_idx = 0; mesh_idx < pScene->mNumMeshes; ++mesh_idx) 
+    {
+        const aiMesh* mesh = pScene->mMeshes[mesh_idx];
+        if (mesh->HasBones()) 
+        {
+            for (size_t bone_idx = 0; bone_idx < mesh->mNumBones; ++bone_idx)
+            {
+                const aiBone* bone = mesh->mBones[bone_idx];
+
+                const char* pAiString = bone->mName.C_Str();
+                if (result.find(pAiString) == result.end())
+                {
+                    result.emplace(pAiString, -1);
+                }
+            }
+        }
+    }
     return result;
 }
 

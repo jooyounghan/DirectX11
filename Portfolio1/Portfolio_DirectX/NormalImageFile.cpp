@@ -17,7 +17,10 @@ NormalImageFile::NormalImageFile(
 	),
 	IRectangle(uiWidthIn, uiHeightIn)
 {
-	DirectXDevice::pDeviceContext->GenerateMips(GetSRV());
+	DirectXDevice::pDeviceContext->GenerateMips(cpSRV.Get());
+	D3D11_TEXTURE2D_DESC t;
+	cpTexture2D->GetDesc(&t);
+	bool test = true;
 }
 
 NormalImageFile::~NormalImageFile()

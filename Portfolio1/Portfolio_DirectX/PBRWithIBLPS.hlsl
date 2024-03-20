@@ -67,7 +67,7 @@ PBRModelPixelOutput main(PBRModelDomainOutput input)
         fMetallic = MetalnessTexture.Sample(WrapSampler, input.f2TexCoord).x;
     }
     
-    float3 f3Color = ColorTexture.SampleLevel(WrapSampler, input.f2TexCoord, 5.f * fRoughness).xyz;
+    float3 f3Color = ColorTexture.Sample(WrapSampler, input.f2TexCoord).xyz;
 
     float f3AmbientOcclusion = 1.f;
     

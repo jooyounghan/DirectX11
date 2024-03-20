@@ -61,29 +61,6 @@ ShaderResource::ShaderResource(
 	ID3D11Helper::CreateShaderResoureView(DirectXDevice::pDevice, cpTexture2D.Get(), GetAddressOfSRV());
 }
 
-ShaderResource::ShaderResource(
-	const UINT& uiWidthIn,
-	const UINT& uiHeightIn,
-	const UINT& uiBindFlagIn,
-	const UINT& uiCPUAccessIn,
-	const UINT& uiMiscFlagIn,
-	const D3D11_USAGE& eUsageIn,
-	const DXGI_FORMAT& eFormatIn,
-	uint8_t* pImageSourceIn
-)
-	: Texture2D(
-		uiWidthIn, uiHeightIn,
-		uiBindFlagIn | D3D11_BIND_SHADER_RESOURCE,
-		uiCPUAccessIn,
-		uiMiscFlagIn,
-		eUsageIn,
-		eFormatIn,
-		pImageSourceIn
-	),
-	IRectangle(uiWidthIn, uiHeightIn)
-{
-	ID3D11Helper::CreateShaderResoureView(DirectXDevice::pDevice, cpTexture2D.Get(), GetAddressOfSRV());
-}
 
 ShaderResource::~ShaderResource()
 {

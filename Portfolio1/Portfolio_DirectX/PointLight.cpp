@@ -58,6 +58,12 @@ void PointLight::UpdateLight()
 	);
 
 	pBlurCS->ApplyShader();
+
+	/*
+	TODO: Dispatch 하나로 묶어보기
+	블러 7x7 수행 관련해서 3x3으로바꿔보기
+	그림자 7x7 수행 관련해서 3x3 또는 5x5로 바꿔보기
+	*/ 
 	for (size_t idx = 0; idx < EDirections::DirectionNum; ++idx)
 	{
 		cubeViewParts[idx].SetFarZ(sBaseLightData.fFallOffEnd);

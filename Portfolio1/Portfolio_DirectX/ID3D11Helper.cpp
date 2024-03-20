@@ -470,55 +470,55 @@ void ID3D11Helper::CreateBlendState(IN ID3D11Device* pDevice, IN D3D11_BLEND_DES
 		Console::AssertPrint("Blend State를 생성하는데 실패하였습니다.");
 	}
 }
-
-void ID3D11Helper::CreateTexture2D(
-	IN ID3D11Device* pDevice,
-	IN const UINT& uiWidth, IN const UINT& uiHeight, 
-	IN const UINT& uiBindFlag, 
-	IN const UINT& uiCPUAccess,
-	IN const UINT& uiMiscFlag, 
-	IN D3D11_USAGE eUsage, 
-	IN DXGI_FORMAT eFormat, 
-	IN uint8_t* pImageRawData,
-	OUT ID3D11Texture2D** ppTexture2D
-)
-{
-	D3D11_TEXTURE2D_DESC sTexture2DDesc;
-	AutoZeroMemory(sTexture2DDesc);
-	sTexture2DDesc.Width = uiWidth;
-	sTexture2DDesc.Height = uiHeight;
-	sTexture2DDesc.ArraySize = 1;
-	sTexture2DDesc.MipLevels = 1;
-	sTexture2DDesc.SampleDesc.Count = 1;
-	sTexture2DDesc.SampleDesc.Quality = 0;
-	sTexture2DDesc.BindFlags = uiBindFlag;
-	sTexture2DDesc.CPUAccessFlags = uiCPUAccess;
-	sTexture2DDesc.MiscFlags = uiMiscFlag;
-	sTexture2DDesc.Usage = eUsage;
-	sTexture2DDesc.Format = eFormat;
-
-	D3D11_SUBRESOURCE_DATA pData;
-	pData.pSysMem = pImageRawData;
-
-	switch (eFormat)
-	{
-	case DXGI_FORMAT_R16G16B16A16_FLOAT:
-		pData.SysMemPitch = uiWidth * 8;
-		pData.SysMemSlicePitch = uiWidth * uiHeight * 8;
-		break;
-	case DXGI_FORMAT_R8G8B8A8_UNORM:
-	default:
-		pData.SysMemPitch = uiWidth * 4;
-		pData.SysMemSlicePitch = uiWidth * uiHeight * 4;
-		break;
-	}
-
-	HRESULT hResult = pDevice->CreateTexture2D(&sTexture2DDesc, &pData, ppTexture2D);
-	if (FAILED(hResult))
-	{
-		Console::AssertPrint("Texture2D를 생성하는데 실패하였습니다.");
-	}
-}
+//
+//void ID3D11Helper::CreateTexture2D(
+//	IN ID3D11Device* pDevice,
+//	IN const UINT& uiWidth, IN const UINT& uiHeight, 
+//	IN const UINT& uiBindFlag, 
+//	IN const UINT& uiCPUAccess,
+//	IN const UINT& uiMiscFlag, 
+//	IN D3D11_USAGE eUsage, 
+//	IN DXGI_FORMAT eFormat, 
+//	IN uint8_t* pImageRawData,
+//	OUT ID3D11Texture2D** ppTexture2D
+//)
+//{
+//	D3D11_TEXTURE2D_DESC sTexture2DDesc;
+//	AutoZeroMemory(sTexture2DDesc);
+//	sTexture2DDesc.Width = uiWidth;
+//	sTexture2DDesc.Height = uiHeight;
+//	sTexture2DDesc.ArraySize = 1;
+//	sTexture2DDesc.MipLevels = 0;
+//	sTexture2DDesc.SampleDesc.Count = 1;
+//	sTexture2DDesc.SampleDesc.Quality = 0;
+//	sTexture2DDesc.BindFlags = uiBindFlag;
+//	sTexture2DDesc.CPUAccessFlags = uiCPUAccess;
+//	sTexture2DDesc.MiscFlags = uiMiscFlag;
+//	sTexture2DDesc.Usage = eUsage;
+//	sTexture2DDesc.Format = eFormat;
+//
+//	D3D11_SUBRESOURCE_DATA pData;
+//	pData.pSysMem = pImageRawData;
+//
+//	switch (eFormat)
+//	{
+//	case DXGI_FORMAT_R16G16B16A16_FLOAT:
+//		pData.SysMemPitch = uiWidth * 8;
+//		pData.SysMemSlicePitch = uiWidth * uiHeight * 8;
+//		break;
+//	case DXGI_FORMAT_R8G8B8A8_UNORM:
+//	default:
+//		pData.SysMemPitch = uiWidth * 4;
+//		pData.SysMemSlicePitch = uiWidth * uiHeight * 4;
+//		break;
+//	}
+//
+//	HRESULT hResult = pDevice->CreateTexture2D(&sTexture2DDesc, &pData, ppTexture2D);
+//	if (FAILED(hResult))
+//	{
+//		Console::AssertPrint("Texture2D를 생성하는데 실패하였습니다.");
+//	}
+//}
 
 void ID3D11Helper::CreateTexture2D(
 	IN ID3D11Device* pDevice,
@@ -539,7 +539,12 @@ void ID3D11Helper::CreateTexture2D(
 	sTexture2DDesc.Width = uiWidth;
 	sTexture2DDesc.Height = uiHeight;
 	sTexture2DDesc.ArraySize = uiArraySize;
-	sTexture2DDesc.MipLevels = 1;
+
+	(uiMiscFlag & D3D11_RESOURCE_MISC_GENERATE_MIPS) > 0 ?
+		sTexture2DDesc.MipLevels = 0 :
+		sTexture2DDesc.MipLevels = 1;
+
+
 	if (uiNumQualityLevels > 0) {
 		sTexture2DDesc.SampleDesc.Count = 4; // how many multisamples
 		sTexture2DDesc.SampleDesc.Quality = uiNumQualityLevels - 1;

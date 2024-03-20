@@ -15,6 +15,8 @@ HS_CONSTANT_DATA_OUTPUT CalcHSPatchConstants(
     float distance = length(fAveragePos - f4CameraPos.xyz);
     float fact = max(3 * exp(-(distance / 100.f)), 1.f);
 	
+    fact = 1.f;
+	
     Output.EdgeTessFactor[0] = fact;
 	Output.EdgeTessFactor[1] = fact;
 	Output.EdgeTessFactor[2] = fact;

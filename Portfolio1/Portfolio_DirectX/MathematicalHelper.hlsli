@@ -16,7 +16,7 @@ float3 GetNormalFromTexture(bool bIsNormalOn, Texture2D NormalTexture, SamplerSt
     float3 Result = N;
     if (bIsNormalOn)
     {
-        float3 f3NormalVector = NormalTexture.SampleLevel(Sampler, f2Tex, 0.f).xyz;
+        float3 f3NormalVector = NormalTexture.SampleLevel(Sampler, f2Tex, 3.f).xyz;
         f3NormalVector = 2.f * f3NormalVector - 1.f;
 
         float3x3 TBN = float3x3(T, B, N);
