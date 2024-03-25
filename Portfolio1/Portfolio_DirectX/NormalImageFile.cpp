@@ -7,13 +7,12 @@ NormalImageFile::NormalImageFile(
 	const UINT& uiHeightIn,
 	const DXGI_FORMAT& eFormatIn,
 	uint8_t* pImageSource,
-	const std::string& strFilePathIn,
-	const std::string& strFileNameIn
+	const std::string& strFileLabelIn
 )
 	: IImageFile(
 		uiWidthIn, uiHeightIn,
 		D3D11_RESOURCE_MISC_GENERATE_MIPS, eFormatIn,
-		pImageSource, strFilePathIn, strFileNameIn
+		pImageSource, strFileLabelIn
 	),
 	IRectangle(uiWidthIn, uiHeightIn)
 {

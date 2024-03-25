@@ -23,18 +23,15 @@ class IFile
 {
 public:
 	IFile(
-		const std::string& strFilePathIn,
-		const std::string& strFileNameIn
+		const std::string& strLabelIn
 	);
 	~IFile();
 
 protected:
-	std::string strFilePath;
-	std::string strFileName;
+	std::string strFileLabel;
 
 public:
-	inline const std::string& GetFilePath() { return strFilePath; }
-	inline const std::string& GetFileName() { return strFileName; }
+	inline const std::string& GetFileLabel() { return strFileLabel; }
 
 public:
 	virtual void AcceptFileAsList(class FileManipulator* pFileManipulator) = 0;

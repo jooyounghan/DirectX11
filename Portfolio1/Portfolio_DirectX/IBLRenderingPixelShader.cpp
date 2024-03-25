@@ -37,7 +37,7 @@ void IBLRenderingPixelShader::DisapplyShader()
 
 void IBLRenderingPixelShader::SetShader(class AIBLMesh& iblMesh, class Viewable& viewable)
 {
-	DirectXDevice::pDeviceContext->PSSetConstantBuffers(0, 1, iblMesh.GetIDBuffer());
+	DirectXDevice::pDeviceContext->PSSetConstantBuffers(0, 1, iblMesh.GetObjectBuffer());
 	DirectXDevice::pDeviceContext->PSSetConstantBuffers(1, 1, iblMesh.GetIBLDataBuffer());
 
 	IImageFile* pImageFile = iblMesh.GetSpecularTextureFileRef().get();

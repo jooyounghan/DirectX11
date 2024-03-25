@@ -1,6 +1,7 @@
 #pragma once
 #include "IRenderer.h"
 
+class IObject;
 class IMesh;
 class ACamera;
 class SinglePBRModel;
@@ -30,11 +31,10 @@ private:
 public:
 	void RenderNormalVector(
 		ACamera* pCameraIn,
-		const std::unordered_map<uint32_t, std::shared_ptr<IMesh>>& vMeshesIn
+		const std::unordered_map<uint32_t, std::shared_ptr<IObject>>& vMeshesIn
 	);
 
 private:
-	void RenderNormal(SinglePBRModel& singlePBRMesh);
 	void RenderNormal(GroupPBRModel& groupPBRMesh);
 	void RenderNormal(AIBLMesh& iblMesh);
 	void RenderNormal(MirrorModel& mirrorModel);

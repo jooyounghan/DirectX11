@@ -1,10 +1,9 @@
 #include "IFile.h"
 
 IFile::IFile(
-	const std::string& strFilePathIn,
-	const std::string& strFileNameIn
+	const std::string& strLabelIn
 )
-	: strFilePath(strFilePathIn), strFileName(strFileNameIn)
+	: strFileLabel(strLabelIn)
 {
 }
 

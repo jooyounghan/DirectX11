@@ -4,41 +4,27 @@
 #include "MeshFile.h"
 #include "ImageFile.h"
 
-struct MeshFileSet
-{
-	bool bIsInitialized;
-	bool bIsGltf;
-	std::shared_ptr<class MeshFile>		spMeshFile;
-	std::shared_ptr<IImageFile>			spModelTexture[TEXTURE_MAP_NUM];
-};
-
 class ModelFile : public IFile, public std::enable_shared_from_this<ModelFile>
 {
 public:
 	ModelFile(
-		const std::string& strFilePathIn,
-		const std::string& strFileNameIn,
-		const bool&			bIsGltfIn
+		const std::string&	strFileLabelIn
 	);
 	virtual ~ModelFile();
 
 protected:
-	std::shared_ptr<IImageFile> thumbNailFile;
-
-protected:
-	std::vector<MeshFileSet>	vMeshFileSets;
+	bool bIsInitialized;
+	std::vector<std::shared_ptr<MeshFile>>	vMeshFiles;
 
 public:
-	inline void AddMeshFileSet(const MeshFileSet& meshFileSet) { vMeshFileSets.push_back(meshFileSet); }
-	inline const std::vector<MeshFileSet>& GetMeshFileSet() { return vMeshFileSets; }
+	inline void AddMeshFile(const std::shared_ptr<MeshFile>& meshFile) { vMeshFiles.push_back(meshFile); }
+	inline const std::vector<std::shared_ptr<MeshFile>>& GetMeshFileSet() { return vMeshFiles; }
 
 public:
 	void Initialize();
-
-public:
-	inline void SetThumbNailFile(const std::shared_ptr<IImageFile>& thumbNailFileIn) { thumbNailFile = thumbNailFileIn; }
+	inline void UpdateModel() { for (auto& meshFile : vMeshFiles) meshFile->UpdateMesh();}
 
 public:
 	virtual void AcceptFileAsList(class FileManipulator* pFileManipulator) override;
-	virtual ID3D11ShaderResourceView* GetThumbNailSRV() override;
+	virtual ID3D11ShaderResourceView* GetThumbNailSRV() override { return nullptr; };
 };

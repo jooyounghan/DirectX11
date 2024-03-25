@@ -11,6 +11,7 @@
 #include "NormalImageFile.h"
 #include "DDSImageFile.h"
 #include "ModelFile.h"
+#include "SkeletalFile.h"
 
 #include "DefineVar.h"
 
@@ -147,32 +148,32 @@ shared_ptr<IImageFile> FileLoader::LoadImageFile(
     UINT* x, UINT* y, UINT* comp
 )
 {
-    const string fileNameWithExt = strFileName + strExtension;
-    const string fullPath = strFilePath + "\\" + fileNameWithExt;
+    const string fullPath = strFilePath + "\\" + strFileName + strExtension;
+    const string fileLabel = GetFileNameAsLabel(strFileName, strExtension);
 
     shared_ptr<IImageFile> result;
 
-    IImageFile* pImg = (IImageFile*)FileLoader::GetUsingFile(fileNameWithExt).get();
+    IImageFile* pImg = (IImageFile*)FileLoader::GetUsingFile(fileLabel).get();
     uint8_t* ucImageRawData = nullptr;
 
     if (pImg == nullptr)
     {
-        cout << "Loading " << fileNameWithExt << "..." << endl;
+        cout << "Loading " << fileLabel << "..." << endl;
         if (strExtension == ".exr")
         {
             ucImageRawData = FileLoader::LoadFileWithOpenEXR(fullPath.c_str(), x, y, comp);
-            result = make_shared<NormalImageFile>(*x, *y, DXGI_FORMAT_R16G16B16A16_FLOAT, ucImageRawData, strFilePath, fileNameWithExt);
+            result = make_shared<NormalImageFile>(*x, *y, DXGI_FORMAT_R16G16B16A16_FLOAT, ucImageRawData, fileLabel);
         }
         else if (strExtension == ".dds")
         {
-            result = make_shared<DDSImageFile>(strFilePath, fileNameWithExt, strFilePath.find("Brdf") == string::npos);
+            result = make_shared<DDSImageFile>(fullPath, fileLabel, strFilePath.find("Brdf") == string::npos);
         }
         else
         {
             ucImageRawData = FileLoader::LoadFileWithStbi(fullPath.c_str(), x, y, comp);
-            result = make_shared<NormalImageFile>(*x, *y, DXGI_FORMAT_R8G8B8A8_UNORM, ucImageRawData, strFilePath, fileNameWithExt);
+            result = make_shared<NormalImageFile>(*x, *y, DXGI_FORMAT_R8G8B8A8_UNORM, ucImageRawData, fileLabel);
         }
-        FileLoader::AddUsingFile(fileNameWithExt, result);
+        FileLoader::AddUsingFile(fileLabel, result);
     }
     else
     {
@@ -182,92 +183,187 @@ shared_ptr<IImageFile> FileLoader::LoadImageFile(
     return result;
 }
 
+
 vector<shared_ptr<IFile>> FileLoader::LoadModelFile(
     const string& strFilePath, 
     const string& strFileName,
     const string& strExtension
 )
 {
-    const string fileNameWithExt = strFileName + strExtension;
-    const string fullPath = strFilePath + "\\" + fileNameWithExt;
+    bool bIsGltf = false;
+    strExtension == ".gltf" ? bIsGltf = true : bIsGltf = false;
 
-    vector<shared_ptr<IFile>> results; 
+    const string fullPath = strFilePath + "\\" + strFileName + strExtension;
 
-    ModelFile* pModel = (ModelFile*)FileLoader::GetUsingFile(fileNameWithExt).get();
+    // 모델 읽기
+    Assimp::Importer importer;
+    importer.SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, false);
+    const aiScene* pScene = importer.ReadFile(
+        fullPath,
+        aiProcess_Triangulate | aiProcess_ConvertToLeftHanded
+    );
 
-    if (pModel == nullptr)
+    vector<shared_ptr<IFile>> vLoadedFiles;
+
+    if (pScene)
     {
-        cout << "Loading " << fileNameWithExt << " Set..." << endl;
-        bool bIsGltf = false;
-        strExtension == ".gltf" ? bIsGltf = true : bIsGltf = false;
-
-        // 모델 읽기
-        Assimp::Importer importer;
-
-        const aiScene* pScene = importer.ReadFile(
-            fullPath,
-            aiProcess_Triangulate | aiProcess_ConvertToLeftHanded
-        );
-
-        if (pScene)
+        // Read Skeletal File
+        if (HasBones(pScene))
         {
-            if (pScene->mNumMeshes > 0)
-            {
-                /*
-                TODO : 언리얼 엔진에서 모델들을 불러와보고 애니메이션이 공유 가능한지 확인
-                뼈 이름을 특정 포맷으로 (뒤에 짜르고 앞에 짜르고) 변경해서 저장하는 방식으로 변경
-                */
-                std::shared_ptr<ModelFile> result;
-                unordered_map<string, int> unmap_bones = GetBoneInformation(pScene);
-                if (unmap_bones.size() > 0)
-                {
-                    bool test = true;
-                    //UpdateBoneInformation();
-                    //std::shared_ptr<SkinnedModelFile> skinnedResult = make_shared<SkinnedModelFile>(strFilePath, fileNameWithExt, bIsGltf);
-                    //result = skinnedResult;
-                    result = make_shared<ModelFile>(strFilePath, fileNameWithExt, bIsGltf);
-                }
-                else
-                {
-                    result = make_shared<ModelFile>(strFilePath, fileNameWithExt, bIsGltf);
-                }
-               
-
-                DirectX::XMMATRIX xmmTransform = DirectX::XMMatrixIdentity();
-                ProcessNode(strFilePath, strFileName, strExtension, bIsGltf, pScene->mRootNode, pScene, xmmTransform, result.get());
-                result->Initialize();
-
-                FileLoader::AddUsingFile(fileNameWithExt, result);
-                results.push_back(result);
-            }
-            
-            if (pScene->mNumAnimations > 0)
-            {
-                bool test = true;
-            }
-
+            vLoadedFiles.emplace_back(LoadSkeletalFile(strFileName, pScene));
         }
-        else 
+
+        // Read Material File
+        vector<shared_ptr<IFile>> vMaterials;
+        if (pScene->mNumMaterials > 0)
         {
-            cout << "Loading " << fullPath << " Failed" << endl;
-            cout << "Assimp Importer Error Code : " << importer.GetErrorString() << endl;
+            vMaterials = LoadMaterialFile(strFilePath, pScene, bIsGltf);
+            for (auto& material : vMaterials)
+            {
+                vLoadedFiles.emplace_back(material);
+            }
         }
+
+        // Read Mesh File
+        if (pScene->mNumMeshes > 0)
+        {
+            vLoadedFiles.emplace_back(LoadModelFile(strFilePath, strFileName, strExtension, bIsGltf, pScene));
+        }
+
+        if (pScene->mNumAnimations > 0)
+        {
+            bool test = true;
+        }
+
     }
     else
     {
-        results.push_back(pModel->shared_from_this());
+        cout << "Loading " << fullPath << " Failed" << endl;
+        cout << "Assimp Importer Error Code : " << importer.GetErrorString() << endl;
     }
-    return results;
+
+    return vLoadedFiles;
+}
+
+bool FileLoader::HasBones(const aiScene* pScene)
+{
+    if (pScene != nullptr)
+    {
+        for (size_t mesh_idx = 0; mesh_idx < pScene->mNumMeshes; ++mesh_idx)
+        {
+            const aiMesh* pMesh = pScene->mMeshes[mesh_idx];
+            if (pMesh->HasBones())
+            {
+                return true;
+            }
+            else
+            {
+
+            }
+        }
+    }
+    return false;
+}
+
+std::shared_ptr<IFile> FileLoader::LoadSkeletalFile(const std::string strFileName, const aiScene* pScene)
+{
+    const string skeletalLabel = GetFileNameAsSkeletalLabel(strFileName);
+    shared_ptr<IFile> spSkeletal = FileLoader::GetUsingFile(skeletalLabel);
+    if (spSkeletal.get() == nullptr)
+    {
+        cout << "Loading " << skeletalLabel << "..." << endl;
+        shared_ptr<SkeletalFile> spTempSkeletal = make_shared<SkeletalFile>(skeletalLabel);
+
+        UpdateBoneNameSet(pScene, spTempSkeletal->GetBoneInformation());
+        LoadBoneFromNode(pScene->mRootNode, spTempSkeletal.get(), spTempSkeletal->GetBoneInformation());
+
+        spSkeletal = spTempSkeletal;
+        FileLoader::AddUsingFile(skeletalLabel, spSkeletal);
+    }
+    return spSkeletal;
+}
+
+vector<shared_ptr<IFile>> FileLoader::LoadMaterialFile(
+    const string strFilePath,
+    const aiScene* pScene,
+    const bool& bIsGltfIn
+)
+{
+    const aiTextureType aiTextureTypes[TEXTURE_MAP_NUM] = {
+                aiTextureType_AMBIENT_OCCLUSION,
+                aiTextureType_BASE_COLOR,
+                aiTextureType_DIFFUSE,
+                aiTextureType_SPECULAR,
+                aiTextureType_METALNESS,
+                aiTextureType_DIFFUSE_ROUGHNESS,
+                aiTextureType_EMISSIVE,
+                aiTextureType_NORMALS,
+                aiTextureType_HEIGHT
+    };
+
+    vector<shared_ptr<IFile>> spMaterials;
+    for (size_t material_idx = 0; material_idx < pScene->mNumMaterials; ++material_idx)
+    {
+        aiMaterial* pMaterial = pScene->mMaterials[material_idx];
+        for (size_t idx = 0; idx < TEXTURE_MAP_NUM; ++idx)
+        {
+            spMaterials.emplace_back(make_shared<MaterialFile>(pMaterial->GetName().C_Str(), bIsGltfIn));
+            MaterialFile* currentMaterial = (MaterialFile*)spMaterials[spMaterials.size() - 1].get();
+            string textureFileName = ReadTextureFileName(strFilePath, pScene, pMaterial, aiTextureTypes[idx]);
+            if (!textureFileName.empty())
+            {
+                filesystem::path texturePath(textureFileName);
+                const string strFilePathIn = texturePath.parent_path().string();
+                const string strFileLabel = texturePath.filename().stem().string();
+                const string strExtention = texturePath.extension().string();
+                UINT x, y, comp;
+                currentMaterial->SetTextureImageFile((EModelTextures)idx, LoadImageFile(strFilePathIn, strFileLabel, strExtention, &x, &y, &comp));
+            }
+        }
+    }
+    return spMaterials;
+}
+
+std::shared_ptr<IFile> FileLoader::LoadModelFile(
+    const std::string& strFilePath, 
+    const std::string& strFileName, 
+    const std::string& strExtension,
+    const bool& bIsGltf,
+    const aiScene* pScene
+)
+{
+    shared_ptr<IFile> spModel;
+    const string modelLabel = GetFileNameAsLabel(strFileName, strExtension);
+    ModelFile* pModel = (ModelFile*)FileLoader::GetUsingFile(modelLabel).get();
+    if (pModel == nullptr)
+    {
+        cout << "Start Loading " << modelLabel << "====================================" << endl;
+        shared_ptr<ModelFile> spTempModel = make_shared<ModelFile>(modelLabel);
+
+        uint8_t mesh_idx = 0;
+        DirectX::XMMATRIX xmmTransform = DirectX::XMMatrixIdentity();
+        ProcessNode(strFilePath, modelLabel, mesh_idx, bIsGltf, pScene->mRootNode, pScene, xmmTransform, spTempModel.get());
+        spTempModel->Initialize();
+        cout << "Finish Loading " << modelLabel << "===================================" << endl;
+
+        spModel = spTempModel;
+        FileLoader::AddUsingFile(modelLabel, spModel);
+    }
+    else
+    {
+        spModel = pModel->shared_from_this();
+    }
+    return spModel;
 }
 
 void FileLoader::ProcessNode(
     const std::string& strFilePath,
-    const std::string& strFileName,
-    const std::string& strExtension,
+    const std::string& strFileLabel,
+    uint8_t& ucElementIdx,
     const bool& bIsGltf,
-    aiNode* pNode, 
+    const aiNode* pNode, 
     const aiScene* pScene, 
-    DirectX::XMMATRIX& xmMatrix,
+    const DirectX::XMMATRIX& xmMatrix,
     ModelFile* pModelFile
 )
 {
@@ -276,56 +372,54 @@ void FileLoader::ProcessNode(
 
     for (UINT idx = 0; idx < pNode->mNumMeshes; ++idx)
     {
+        ucElementIdx++;
         aiMesh* pMesh = pScene->mMeshes[pNode->mMeshes[idx]];
-        MeshFileSet newMesh = ProcessMesh(strFilePath, strFileName, strExtension, bIsGltf, pMesh, m, pScene);
-        pModelFile->AddMeshFileSet(newMesh);
+        pModelFile->AddMeshFile(LoadMeshFile(strFilePath, ucElementIdx, bIsGltf, pMesh, m, pScene));
     }
 
     for (UINT i = 0; i < pNode->mNumChildren; i++) 
     {
-        ProcessNode(strFilePath, strFileName, strExtension, bIsGltf, pNode->mChildren[i], pScene, m, pModelFile);
+        ProcessNode(strFilePath, strFileLabel, ucElementIdx, bIsGltf, pNode->mChildren[i], pScene, m, pModelFile);
     }
 }
 
-MeshFileSet FileLoader::ProcessMesh(
+std::shared_ptr<MeshFile> FileLoader::LoadMeshFile(
     const std::string& strFilePath,
-    const std::string& strFileName,
-    const std::string& strExtension,
+    uint8_t& ucElementIdx,
     const bool& bIsGltf,
-    aiMesh* pMesh, 
-    DirectX::XMMATRIX& xmMatrix,
+    const aiMesh* pMesh, 
+    const DirectX::XMMATRIX& xmMatrix,
     const aiScene* pScene
 )
 {
-    MeshFileSet result;
+    std::shared_ptr<MeshFile> result;
 
-    string strFileWithExtMesh = strFileName + strExtension + " / " + +pMesh->mName.C_Str() + " Mesh";
-    MeshFile* pMeshFile = (MeshFile*)GetUsingFile(strFileWithExtMesh).get();
+    const string strMeshLabelExtMesh = string(pMesh->mName.C_Str()) + to_string(ucElementIdx) + "_Mesh";
+    MeshFile* pMeshFile = (MeshFile*)GetUsingFile(strMeshLabelExtMesh).get();
     if (pMeshFile == nullptr)
     {
-        cout << "Loading " << strFileWithExtMesh << "..." << endl;
+        cout << "Loading " << strMeshLabelExtMesh << "..." << endl;
 
-        result.spMeshFile = make_shared<MeshFile>(strFilePath, strFileWithExtMesh);
-        result.bIsGltf = bIsGltf;
+        result = make_shared<MeshFile>(strMeshLabelExtMesh);
 
         for (UINT i = 0; i < pMesh->mNumVertices; i++)
         {
-            result.spMeshFile->vVertices.emplace_back(
+            result->vVertices.emplace_back(
                 pMesh->mVertices[i].x,
                 pMesh->mVertices[i].y,
                 pMesh->mVertices[i].z
             );
 
             if (pMesh->mTextureCoords[0]) {
-                result.spMeshFile->vTexcoords.emplace_back(
+                result->vTexcoords.emplace_back(
                     (float)pMesh->mTextureCoords[0][i].x,
                     (float)pMesh->mTextureCoords[0][i].y
                 );
             }
 
-            bIsGltf ? result.spMeshFile->vNormals.emplace_back(
+            bIsGltf ? result->vNormals.emplace_back(
                 pMesh->mNormals[i].x, -pMesh->mNormals[i].z, pMesh->mNormals[i].y
-            ) : result.spMeshFile->vNormals.emplace_back(
+            ) : result->vNormals.emplace_back(
                 pMesh->mNormals[i].x, pMesh->mNormals[i].y, pMesh->mNormals[i].z
             );
         }
@@ -333,13 +427,13 @@ MeshFileSet FileLoader::ProcessMesh(
         for (UINT i = 0; i < pMesh->mNumFaces; i++) {
             aiFace face = pMesh->mFaces[i];
             for (UINT j = 0; j < face.mNumIndices; j++)
-                result.spMeshFile->vIndices.emplace_back(face.mIndices[j]);
+                result->vIndices.emplace_back(face.mIndices[j]);
         }
 
-        result.spMeshFile->vTangents.resize(result.spMeshFile->vNormals.size());
-        result.spMeshFile->UpdateTangents();
+        result->vTangents.resize(result->vNormals.size());
+        result->UpdateTangents();
 
-        vector<DirectX::XMFLOAT3>& vertices = result.spMeshFile->vVertices;
+        vector<DirectX::XMFLOAT3>& vertices = result->vVertices;
 
         for (DirectX::XMFLOAT3& v : vertices)
         {
@@ -347,71 +441,54 @@ MeshFileSet FileLoader::ProcessMesh(
             f4Vector = DirectX::XMVector3TransformCoord(f4Vector, xmMatrix);
             memcpy(&v, f4Vector.m128_f32, sizeof(v));
         }
-        result.bIsInitialized = false;
-        AddUsingFile(strFileWithExtMesh, result.spMeshFile);
+        AddUsingFile(strMeshLabelExtMesh, result);
     }
     else
     {
-        result.bIsInitialized = true;
-        result.spMeshFile = pMeshFile->shared_from_this();
+        result = pMeshFile->shared_from_this();
     }
-
-    if (pMesh->mMaterialIndex >= 0)
-    {
-        const aiTextureType aiTextureTypes[TEXTURE_MAP_NUM] = {
-            aiTextureType_AMBIENT_OCCLUSION,
-            aiTextureType_BASE_COLOR,
-            aiTextureType_DIFFUSE,
-            aiTextureType_SPECULAR,
-            aiTextureType_METALNESS,
-            aiTextureType_DIFFUSE_ROUGHNESS,
-            aiTextureType_EMISSIVE,
-            aiTextureType_NORMALS,
-            aiTextureType_HEIGHT
-        };
-
-        aiMaterial* material = pScene->mMaterials[pMesh->mMaterialIndex];
-
-        for (size_t idx = 0; idx < TEXTURE_MAP_NUM; ++idx)
-        {
-            string textureFileName = ReadTextureFileName(strFilePath, pScene, material, aiTextureTypes[idx]);
-            if (!textureFileName.empty())
-            {
-                filesystem::path texturePath(textureFileName);
-                const string strFilePathIn = texturePath.parent_path().string();
-                const string strFileName = texturePath.filename().stem().string();
-                const string strExtention = texturePath.extension().string();
-                UINT x, y, comp;
-                result.spModelTexture[idx] = LoadImageFile(strFilePathIn, strFileName, strExtention, &x, &y, &comp);
-            }
-        }
-    }
-
-
     return result;
 }
 
-std::unordered_map<std::string, int> FileLoader::GetBoneInformation(const aiScene* pScene)
-{
-    std::unordered_map<std::string, int> result;
-    for (size_t mesh_idx = 0; mesh_idx < pScene->mNumMeshes; ++mesh_idx) 
-    {
-        const aiMesh* mesh = pScene->mMeshes[mesh_idx];
-        if (mesh->HasBones()) 
-        {
-            for (size_t bone_idx = 0; bone_idx < mesh->mNumBones; ++bone_idx)
-            {
-                const aiBone* bone = mesh->mBones[bone_idx];
 
-                const char* pAiString = bone->mName.C_Str();
-                if (result.find(pAiString) == result.end())
-                {
-                    result.emplace(pAiString, -1);
-                }
+void FileLoader::UpdateBoneNameSet(
+    const aiScene* pScene, 
+    set<string>& setBoneInformation
+)
+{
+    if (pScene != nullptr)
+    {
+        for (size_t mesh_idx = 0; mesh_idx < pScene->mNumMeshes; ++mesh_idx)
+        {
+            const aiMesh* pMesh = pScene->mMeshes[mesh_idx];
+            for (size_t bone_idx = 0; bone_idx < pMesh->mNumBones; ++bone_idx)
+            {
+                const aiBone* pBone = pMesh->mBones[bone_idx];
+                setBoneInformation.insert(pBone->mName.C_Str());
             }
         }
     }
-    return result;
+}
+
+void FileLoader::LoadBoneFromNode(
+    const aiNode* pNode,
+    Bone* pBoneParent,
+    const set<string>& setBoneInformation
+)
+{
+    if (pNode != nullptr && pBoneParent != nullptr)
+    {
+        for (size_t node_idx = 0; node_idx < pNode->mNumChildren; ++node_idx)
+        {
+            aiNode* pChild = pNode->mChildren[node_idx];
+            const string&& boneName = pChild->mName.C_Str();
+            if (setBoneInformation.find(boneName) != setBoneInformation.end())
+            {
+                pBoneParent->AddBoneChild(boneName);
+                LoadBoneFromNode(pChild, pBoneParent->GetLatestBoneChild(), setBoneInformation);
+            }
+        }
+    }
 }
 
 string FileLoader::ReadTextureFileName(
@@ -507,10 +584,29 @@ string FileLoader::ConvertUniCodeToUTF8(const wstring& wStr)
     return result;
 }
 
-std::shared_ptr<MeshFile> FileLoader::LoadDefaultCubeMesh(const bool& bReverse)
+std::shared_ptr<ModelFile> FileLoader::LoadDefaultCubeModel(const bool& bReverse)
+{
+    shared_ptr<ModelFile> modelData;
+    string strModelFileName = bReverse ? "DefaultReverseCube_MODEL" : "DefaultCube_MODEL";
+
+    ModelFile* pModelFile = (ModelFile*)GetUsingFile(strModelFileName).get();
+
+    if (pModelFile == nullptr)
+    {
+        modelData->AddMeshFile(LoadDefaultCubeMesh(bReverse));
+    }
+    else
+    {
+        modelData = pModelFile->shared_from_this();
+    }
+
+    return modelData;
+}
+
+std::shared_ptr<class MeshFile> FileLoader::LoadDefaultCubeMesh(const bool& bReverse)
 {
     shared_ptr<MeshFile> meshData;
-    string strMeshFileName = bReverse ? "DefaultReverseCube" : "DefaultCube";
+    string strMeshFileName = bReverse ? "DefaultReverseCube_MESH" : "DefaultCube_MESH";
 
     const float normalFactor = bReverse ? -1.f : 1.f;
 
@@ -519,7 +615,7 @@ std::shared_ptr<MeshFile> FileLoader::LoadDefaultCubeMesh(const bool& bReverse)
     {
         cout << "Loading " << strMeshFileName << "..." << endl;
 
-        meshData = make_shared<MeshFile>("", strMeshFileName);
+        meshData = make_shared<MeshFile>(strMeshFileName);
         for (uint32_t latitudeIdx = 0; latitudeIdx < DEFAULT_CUBE_LEVEL; ++latitudeIdx)
         {
             const float& fLatitudeLow = DirectX::XM_PIDIV2 / DEFAULT_CUBE_LEVEL * latitudeIdx;
@@ -544,10 +640,10 @@ std::shared_ptr<MeshFile> FileLoader::LoadDefaultCubeMesh(const bool& bReverse)
                 meshData->vTexcoords.emplace_back(fLongitudeTextureCord, 0.5f - fLatitudeLowTextureCord);
                 meshData->vTexcoords.emplace_back(fLongitudeTextureCord, 0.5f - fLatitudeHighTextureCord);
 
-                meshData->vNormals.emplace_back(normalFactor * cosf(fLongitudeLow) * cosf(fLatitudeLow),   normalFactor * sinf(fLatitudeLow),     normalFactor * cosf(fLatitudeLow) * sinf(fLongitudeLow));
-                meshData->vNormals.emplace_back(normalFactor * cosf(fLongitudeLow) * cosf(fLatitudeHigh),  normalFactor * sinf(fLatitudeHigh),    normalFactor * cosf(fLatitudeHigh) * sinf(fLongitudeLow));
-                meshData->vNormals.emplace_back(normalFactor * cosf(fLongitudeLow) * cosf(-fLatitudeLow),  normalFactor * sinf(-fLatitudeLow),    normalFactor * cosf(-fLatitudeLow) * sinf(fLongitudeLow));
-                meshData->vNormals.emplace_back(normalFactor * cosf(fLongitudeLow) * cosf(-fLatitudeHigh), normalFactor * sinf(-fLatitudeHigh),   normalFactor * cosf(-fLatitudeHigh) * sinf(fLongitudeLow));
+                meshData->vNormals.emplace_back(normalFactor * cosf(fLongitudeLow) * cosf(fLatitudeLow), normalFactor * sinf(fLatitudeLow), normalFactor * cosf(fLatitudeLow) * sinf(fLongitudeLow));
+                meshData->vNormals.emplace_back(normalFactor * cosf(fLongitudeLow) * cosf(fLatitudeHigh), normalFactor * sinf(fLatitudeHigh), normalFactor * cosf(fLatitudeHigh) * sinf(fLongitudeLow));
+                meshData->vNormals.emplace_back(normalFactor * cosf(fLongitudeLow) * cosf(-fLatitudeLow), normalFactor * sinf(-fLatitudeLow), normalFactor * cosf(-fLatitudeLow) * sinf(fLongitudeLow));
+                meshData->vNormals.emplace_back(normalFactor * cosf(fLongitudeLow) * cosf(-fLatitudeHigh), normalFactor * sinf(-fLatitudeHigh), normalFactor * cosf(-fLatitudeHigh) * sinf(fLongitudeLow));
             }
 
             for (uint32_t longitudeIdx = 0; longitudeIdx < (uint32_t)DEFAULT_CUBE_LEVEL * 2; ++longitudeIdx)
@@ -586,12 +682,12 @@ std::shared_ptr<MeshFile> FileLoader::LoadDefaultCubeMesh(const bool& bReverse)
     return meshData;
 }
 
-std::shared_ptr<class MeshFile> FileLoader::LoadPlaneMesh(
+std::shared_ptr<MeshFile> FileLoader::LoadPlaneMesh(
     const float& fMirrorWidthIn,
     const float& fMirrorHeightIn
 )
 {
-    shared_ptr<MeshFile> meshData = make_shared<MeshFile>("", "Plane Mesh");
+    shared_ptr<MeshFile> meshData = make_shared<MeshFile>("Plane_MESH");
 
     meshData->vVertices = vector<XMFLOAT3> { 
         XMFLOAT3(-0.5f * fMirrorWidthIn, -0.5f * fMirrorHeightIn, 0.f),

@@ -10,17 +10,16 @@ uint32_t CubeMapModel::uiCubeMapModelIdx = 1;
 CubeMapModel::CubeMapModel(
 	const float& fRadius
 )
-	: AIBLMesh(),
+	: AIBLMesh(FileLoader::LoadDefaultCubeMesh(true)),
 	IMovable(0.f, 0.f, 0.f),
 	IScalable(),
 	IAngleAdjustable(0.f, 0.f, 0.f)
 {
-	spMeshFile = FileLoader::LoadDefaultCubeMesh(true);
 	SetPosition(0.f, 0.f, 0.f);
 	ScaleUp(fRadius - 1.f, fRadius - 1.f, fRadius - 1.f);
 	UpdateTranformationMatrix();
 	
-	SetMeshName("IBL Cube Map Model" + to_string(uiCubeMapModelIdx));
+	SetObjectName("IBL Cube Map Model" + to_string(uiCubeMapModelIdx));
 	uiCubeMapModelIdx++;
 }
 

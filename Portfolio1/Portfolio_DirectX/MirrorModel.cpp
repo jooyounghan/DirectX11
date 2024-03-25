@@ -31,7 +31,7 @@ MirrorModel::MirrorModel(
 	: 
 	fMirrorWidth(fMirrorWidthIn),
 	fMirrorHeight(fMirrorHeightIn),
-	IMesh(),
+	IMesh(FileLoader::LoadPlaneMesh(fMirrorWidthIn, fMirrorHeightIn)),
 	ViewableRenderTarget(
 		fXPos, fYPos, fZPos,
 		fPitchDegIn, fYawDegIn, fRollDegIn,
@@ -58,8 +58,6 @@ MirrorModel::MirrorModel(
 	IMovable(fXPos, fYPos, fZPos),
 	IAngleAdjustable(fPitchDegIn, fYawDegIn, fRollDegIn)
 {
-	spMeshFile = FileLoader::LoadPlaneMesh(fMirrorWidthIn, fMirrorHeightIn);
-
 	AutoZeroMemory(sMirrorProperties);
 	ID3D11Helper::CreateBuffer(
 		DirectXDevice::pDevice,
@@ -69,7 +67,7 @@ MirrorModel::MirrorModel(
 		NULL, cpMirrorProperties.GetAddressOf()
 	);
 
-	SetMeshName("Mirror Model " + to_string(uiMirrorModelIdx));
+	SetObjectName("Mirror Model " + to_string(uiMirrorModelIdx));
 	uiMirrorModelIdx++;
 
 }

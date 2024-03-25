@@ -38,9 +38,9 @@ void ModelRendererDomainShader::SetShader(PBRStaticMesh& pbrStaticMesh, Viewable
 {
 	DirectXDevice::pDeviceContext->DSSetConstantBuffers(0, 1, pbrStaticMesh.GetPBRConstantBuffer());
 	DirectXDevice::pDeviceContext->DSSetConstantBuffers(1, 1, viewable.GetViewProjBuffer());
-	DirectXDevice::pDeviceContext->DSSetConstantBuffers(2, 1, pbrStaticMesh.GetPBRTextureFlagBuffer());
+	DirectXDevice::pDeviceContext->DSSetConstantBuffers(2, 1, pbrStaticMesh.GetMeshFileRef()->GetMaterial()->GetPBRTextureFlagBuffer());
 
-	shared_ptr<IImageFile>& heightFile = pbrStaticMesh.GetTextureImageFileRef(HEIGHT_TEXTURE_MAP);
+	shared_ptr<IImageFile>& heightFile = pbrStaticMesh.GetMeshFileRef()->GetMaterial()->GetTextureImageFileRef(HEIGHT_TEXTURE_MAP);
 
 	DirectXDevice::pDeviceContext->DSSetShaderResources(0, 1,
 		heightFile.get() != nullptr ?

@@ -1,7 +1,7 @@
 #pragma once
-#include "SinglePBRModel.h"
+#include "GroupPBRModel.h"
 
-class CubeModel : public SinglePBRModel
+class CubeModel : public GroupPBRModel
 {
 public:
 	CubeModel(

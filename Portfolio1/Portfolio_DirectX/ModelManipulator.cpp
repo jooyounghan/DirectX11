@@ -2,8 +2,7 @@
 
 #include "DefineVar.h"
 
-#include "SinglePBRModel.h"
-#include "GroupPBRModel.h"
+#include "SkeletalModel.h"
 #include "AIBLMesh.h"
 #include "MirrorModel.h"
 
@@ -25,13 +24,13 @@ ModelManipulator::ModelManipulator()
 	//AddModel(make_shared<CubeModel>(-5.f, 0.f, 0.f, 1.f, false));
 	//AddModel(make_shared<CubeModel>(5.f, 0.f, 0.f, 1.f, false));
 	//AddModel(make_shared<CubeModel>(0.f, -5.f, 0.f, 1.f, false));
-	AddModel(make_shared<CubeModel>(0.f, 5.f, 0.f, 1.f, false));
+	AddObject(make_shared<CubeModel>(0.f, 5.f, 0.f, 1.f, false));
 	//AddModel(make_shared<CubeModel>(0.f, 0.f, 0.f, 1.f, false));
 	//AddModel(make_shared<MirrorModel>(3.f, 3.f, 0.f, 0.f, 3.f, 0.f, 0.f, 0.f));
 	//AddModel(make_shared<MirrorModel>(10.f, 10.f, 0.f, -2.f, 0.f, 270.f, 0.f, 0.f));
 	//AddModel(make_shared<CubeModel>(0.f, 0.f, 0.f, 10.f, true));
 	spIBLModel = make_shared<CubeMapModel>(500.f);
-	AddModel(spIBLModel);
+	AddObject(spIBLModel);
 }
 
 ModelManipulator::~ModelManipulator()
@@ -42,13 +41,13 @@ ModelManipulator::~ModelManipulator()
 void ModelManipulator::SetSelctedModel(const uint32_t& selected_id)
 {
 	uiSelectedModelIdx = selected_id;
-	if (pModels.find(selected_id) != pModels.end())
+	if (pObjects.find(selected_id) != pObjects.end())
 	{
-		spSelectedMesh = pModels[selected_id];
+		spSelectedObject = pObjects[selected_id];
 	}
 	else
 	{
-		spSelectedMesh = nullptr;
+		spSelectedObject = nullptr;
 	}
 };
 
@@ -64,9 +63,9 @@ void ModelManipulator::PopAsDialog()
 
 	ListUpModel();
 
-	if (spSelectedMesh != nullptr)
+	if (spSelectedObject != nullptr)
 	{
-		spSelectedMesh->AcceptModelManipulating(this);
+		spSelectedObject->AcceptModelManipulating(this);
 	}
 	End();
 }
@@ -79,7 +78,7 @@ void ModelManipulator::ListUpModel()
 		ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 10.0f);
 		if (BeginListBox("Model List", ImVec2(0.f, GetTextLineHeight() * 10.f)))
 		{
-			for (auto& model : pModels)
+			for (auto& model : pObjects)
 			{
 				model.second->AcceptModelAsList(this);
 				Separator();
@@ -90,25 +89,17 @@ void ModelManipulator::ListUpModel()
 
 		if (BeginDragDropTarget())
 		{
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DRAG_DROP_MESH_KEY))
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DRAG_DROP_MODEL_KEY))
 			{
 				ModelFile* tmpPtr = (ModelFile*)payload->Data;
 				shared_ptr<ModelFile> modelFile = tmpPtr->shared_from_this();
-				shared_ptr<GroupPBRModel> groupModel = make_shared<GroupPBRModel>(modelFile);
-				AddModel(groupModel);
+				shared_ptr<SkeletalModel> groupModel = make_shared<SkeletalModel>(modelFile);
+				AddObject(groupModel);
 			}
 			ImGui::EndDragDropTarget();
 		}
 	}
 
-}
-
-void ModelManipulator::SetModelAsList(SinglePBRModel& singlePBRModel)
-{
-	if (Selectable(singlePBRModel.GetMeshName().c_str(), singlePBRModel.GetMeshID() == uiSelectedModelIdx))
-	{
-		SetSelctedModel(singlePBRModel.GetMeshID());
-	}
 }
 
 void ModelManipulator::SetModelAsList(GroupPBRModel& groupPBRModel)
@@ -123,7 +114,7 @@ void ModelManipulator::SetModelAsList(GroupPBRModel& groupPBRModel)
 	bool node_open = ImGui::TreeNodeEx(
 		(void*)(intptr_t)groupPBRModel.GetMeshID(),
 		treeNodeStyle,
-		groupPBRModel.GetMeshName().c_str()
+		groupPBRModel.GetObjectName().c_str()
 	);
 
 	if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
@@ -135,7 +126,7 @@ void ModelManipulator::SetModelAsList(GroupPBRModel& groupPBRModel)
 	{
 		for (auto& pbrMesh : vPBRMeshes)
 		{
-			BulletText(pbrMesh.GetMeshName().c_str());
+			BulletText(pbrMesh.GetObjectName().c_str());
 		}
 		ImGui::TreePop();
 	}
@@ -143,7 +134,7 @@ void ModelManipulator::SetModelAsList(GroupPBRModel& groupPBRModel)
 
 void ModelManipulator::SetModelAsList(MirrorModel& mirrorModel)
 {
-	if (Selectable(mirrorModel.GetMeshName().c_str(), mirrorModel.GetMeshID() == uiSelectedModelIdx))
+	if (Selectable(mirrorModel.GetObjectName().c_str(), mirrorModel.GetMeshID() == uiSelectedModelIdx))
 	{
 		SetSelctedModel(mirrorModel.GetMeshID());
 	}
@@ -151,21 +142,15 @@ void ModelManipulator::SetModelAsList(MirrorModel& mirrorModel)
 
 void ModelManipulator::SetModelAsList(AIBLMesh& iblMesh)
 {
-	if (Selectable(iblMesh.GetMeshName().c_str(), iblMesh.GetMeshID() == uiSelectedModelIdx))
+	if (Selectable(iblMesh.GetObjectName().c_str(), iblMesh.GetMeshID() == uiSelectedModelIdx))
 	{
 		SetSelctedModel(iblMesh.GetMeshID());
 	}
 }
 
-void ModelManipulator::AddModel(shared_ptr<IMesh> spMesh)
+void ModelManipulator::AddObject(shared_ptr<IObject> spObject)
 {
-	pModels.emplace(spMesh->GetMeshID(), spMesh);
-}
-
-void ModelManipulator::ManipulateModel(SinglePBRModel& singlePBRModel)
-{
-	DrawTransformation(singlePBRModel);
-	DrawPBRTexture(singlePBRModel);
+	pObjects.emplace(spObject->GetMeshID(), spObject);
 }
 
 void ModelManipulator::ManipulateModel(GroupPBRModel& groupPBRModel)
@@ -212,11 +197,13 @@ void ModelManipulator::DrawTransformation(ATransformerable& transformable)
 
 void ModelManipulator::DrawPBRTexture(PBRStaticMesh& pBRStaticMesh)
 {
-	if (CollapsingHeader(("PBR Model Textures " + pBRStaticMesh.GetMeshName()).c_str()))
+	if (CollapsingHeader(("PBR Model Textures " + pBRStaticMesh.GetObjectName()).c_str()))
 	{
 		DragFloat3("Fresnel Reflectance", pBRStaticMesh.GetFresnelConstantAddress(), 0.005f, 0.f, 1.f, "%.3f");
 
-		if (pBRStaticMesh.GetTextureImageFileRef(HEIGHT_TEXTURE_MAP).get())
+		MaterialFile* pMaterial = pBRStaticMesh.GetMeshFileRef()->GetMaterial().get();
+
+		if (pMaterial->GetTextureImageFileRef(HEIGHT_TEXTURE_MAP).get())
 		{
 			DragFloat("Height Factor", pBRStaticMesh.GetHeightFactorAddress(), 0.005f, 0.f, 1.f, "%.3f");
 		}
@@ -231,8 +218,8 @@ void ModelManipulator::DrawPBRTexture(PBRStaticMesh& pBRStaticMesh)
 		for (WORD idx = 0; idx < TEXTURE_MAP_NUM; ++idx)
 		{
 			SetTextureDragAndDrop(
-				PBRStaticMesh::GetTextureName(idx).c_str(), 
-				pBRStaticMesh.GetTextureImageFileRef((EModelTextures)idx),
+				MaterialFile::GetTextureName(idx).c_str(), 
+				pMaterial->GetTextureImageFileRef((EModelTextures)idx),
 				DRAG_DROP_TEXTURE_KEY
 			);
 		}
@@ -270,7 +257,7 @@ void ModelManipulator::DrawIBLTexture(AIBLMesh& iBLModel)
 
 void ModelManipulator::DrawMirrorProperties(MirrorModel& mirrorModel)
 {
-	if (CollapsingHeader(("Mirror Properties " + mirrorModel.GetMeshName()).c_str()))
+	if (CollapsingHeader(("Mirror Properties " + mirrorModel.GetObjectName()).c_str()))
 	{
 		DragFloat("Alpha Constant", mirrorModel.GetAlphaAddress(), 0.005f, 0.f, 1.f, "%.3f");
 	}
@@ -306,7 +293,7 @@ void ModelManipulator::SetTextureDragAndDrop(
 	if (spFile != nullptr)
 	{
 		SameLine();
-		Text(spFile->GetFileName().c_str());
+		Text(spFile->GetFileLabel().c_str());
 	}
 	else
 	{

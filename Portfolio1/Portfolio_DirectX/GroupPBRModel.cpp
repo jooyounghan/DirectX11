@@ -14,18 +14,17 @@ uint32_t GroupPBRModel::uiGroupPBRModelIdx = 1;
 GroupPBRModel::GroupPBRModel(
 	const std::shared_ptr<ModelFile>& spModelFile
 )
-	: IMesh(), ATransformerable(),
+	: IObject(), ATransformerable(),
 	IMovable(0.f, 0.f, 0.f),
 	IScalable(),
 	IAngleAdjustable(0.f, 0.f, 0.f)
 {
-	const vector<MeshFileSet>& vMeshFileSets = spModelFile->GetMeshFileSet();
-	for (auto& meshFileSet : vMeshFileSets)
+	for (auto& meshFile : spModelFile->GetMeshFileSet())
 	{
-		vChildrenMeshes.emplace_back(meshFileSet);
+		vChildrenMeshes.emplace_back(meshFile);
 	}
 	
-	SetMeshName(spModelFile->GetFileName() + to_string(uiGroupPBRModelIdx));
+	SetObjectName(spModelFile->GetFileLabel() + to_string(uiGroupPBRModelIdx));
 	uiGroupPBRModelIdx++;
 }
 

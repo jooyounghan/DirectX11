@@ -6,6 +6,7 @@
 #include "DDSImageFile.h"
 #include "NormalImageFile.h"
 #include "ModelFile.h"
+#include "SkeletalFile.h"
 
 #include "DirectXDevice.h"
 
@@ -95,7 +96,7 @@ void FileManipulator::LoadFiles(const std::wstring& wstrFilePathIn)
             UINT uiWidth, uiHeight, uiChannel;
 
             const string strFilePathIn = entry.path().parent_path().string();
-            const string strFileName = entry.path().filename().stem().string();
+            const string strFileLabel = entry.path().filename().stem().string();
             const string strExtention = entry.path().extension().string();
             
             bool isImage = false;
@@ -106,7 +107,7 @@ void FileManipulator::LoadFiles(const std::wstring& wstrFilePathIn)
                 bool isNeedLoad = false;
                 uint8_t* ucImageRawData = nullptr;
                 shared_ptr<IFile> spFileInterface = FileLoader::LoadImageFile(
-                    strFilePathIn, strFileName, strExtention, &uiWidth, &uiHeight, &uiChannel
+                    strFilePathIn, strFileLabel, strExtention, &uiWidth, &uiHeight, &uiChannel
                 );
 
                 if (spFileInterface.get() != nullptr)
@@ -119,7 +120,7 @@ void FileManipulator::LoadFiles(const std::wstring& wstrFilePathIn)
                 if (isObject)
                 {
                     vector<shared_ptr<IFile>> spFileInterfaces = FileLoader::LoadModelFile(
-                        strFilePathIn, strFileName, strExtention
+                        strFilePathIn, strFileLabel, strExtention
                     );
 
                     for (auto& spFileInterface : spFileInterfaces)
@@ -143,7 +144,7 @@ void FileManipulator::ShowAsList(NormalImageFile& imageFile)
         BeginGroup();
         Image(pIndexedSRV, ImVec2(60.f, 60.f));
         SameLine();
-        TextEx(imageFile.GetFileName().c_str(), (const char*)0, ImGuiTextFlags_::ImGuiTextFlags_NoWidthForLargeClippedText);
+        TextEx(imageFile.GetFileLabel().c_str(), (const char*)0, ImGuiTextFlags_::ImGuiTextFlags_NoWidthForLargeClippedText);
         EndGroup();
 
         if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
@@ -164,7 +165,7 @@ void FileManipulator::ShowAsList(DDSImageFile& imageFile)
         BeginGroup();
         Image(pIndexedSRV, ImVec2(60.f, 60.f));
         SameLine();
-        TextEx(imageFile.GetFileName().c_str(), (const char*)0, ImGuiTextFlags_::ImGuiTextFlags_NoWidthForLargeClippedText);
+        TextEx(imageFile.GetFileLabel().c_str(), (const char*)0, ImGuiTextFlags_::ImGuiTextFlags_NoWidthForLargeClippedText);
         EndGroup();
 
         if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
@@ -183,22 +184,5 @@ void FileManipulator::ShowAsList(DDSImageFile& imageFile)
                 ImGui::EndDragDropSource();
             }
         }
-    }
-}
-
-void FileManipulator::ShowAsList(ModelFile& modelFile)
-{
-    ID3D11ShaderResourceView* pIndexedSRV = modelFile.GetThumbNailSRV();
-
-    BeginGroup();
-    Image(pIndexedSRV, ImVec2(60.f, 60.f));
-    SameLine();
-    TextEx(modelFile.GetFileName().c_str(), (const char*)0, ImGuiTextFlags_::ImGuiTextFlags_NoWidthForLargeClippedText);
-    EndGroup();
-
-    if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
-    {
-        ImGui::SetDragDropPayload(DRAG_DROP_MESH_KEY, &modelFile, sizeof(ModelFile));
-        ImGui::EndDragDropSource();
     }
 }

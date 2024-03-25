@@ -14,16 +14,15 @@ CubeModel::CubeModel(
 	const float& fRadius,
 	const bool& bReverse
 )
-	: SinglePBRModel(),
+	: GroupPBRModel(FileLoader::LoadDefaultCubeModel(bReverse)),
 	IMovable(fCenterX, fCenterY, fCenterZ),
 	IScalable(),
 	IAngleAdjustable(0.f, 0.f, 0.f)
 {
-	spMeshFile = FileLoader::LoadDefaultCubeMesh(bReverse);
 	ScaleUp(fRadius - 1.f, fRadius - 1.f, fRadius - 1.f);
 	UpdateTranformationMatrix();
 
-	SetMeshName("Cube Model " + to_string(uiCubeModelIdx));
+	SetObjectName("Cube Model " + to_string(uiCubeModelIdx));
 	uiCubeModelIdx++;
 }
 

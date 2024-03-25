@@ -28,7 +28,7 @@ public:
 public:
 	void SetShader(
 		class SpotLight& spotLight, 
-		class IMesh& idMesh, 
+		class IObject& iObject,
 		class PBRStaticMesh& pbrStaticMesh, 
 		class Viewable& viewable
 	);

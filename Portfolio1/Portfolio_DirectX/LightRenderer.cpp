@@ -5,7 +5,6 @@
 #include "ModelRendererDomainShader.h"
 #include "DepthOnlyPixelShader.h"
 
-#include "SinglePBRModel.h"
 #include "GroupPBRModel.h"
 #include "AIBLMesh.h"
 #include "MirrorModel.h"
@@ -18,7 +17,7 @@
 using namespace std;
 
 LightRenderer::LightRenderer()
-	: IRenderer(), pModelSet(nullptr), pLight(nullptr), pViewable(nullptr)
+	: IRenderer(), pObjectSet(nullptr), pLight(nullptr), pViewable(nullptr)
 {
 	modelRenderVS = ModelRenderVertexShader::GetInstance();
 	modelRenderHS = ModelRenderHullShader::GetInstance();
@@ -32,7 +31,7 @@ LightRenderer::~LightRenderer()
 
 
 void LightRenderer::UpdateLightMap(
-	const unordered_map<uint32_t, shared_ptr<IMesh>>& vMeshes,
+	const unordered_map<uint32_t, shared_ptr<IObject>>& vMeshes,
 	const vector<shared_ptr<ILight>>& vLights
 )
 {
@@ -41,7 +40,7 @@ void LightRenderer::UpdateLightMap(
 	modelRenderDS->ApplyShader();
 	depthOnlyPS->ApplyShader();
 
-	pModelSet = &vMeshes;
+	pObjectSet = &vMeshes;
 
 	for (auto& spLight : vLights)
 	{
@@ -49,7 +48,7 @@ void LightRenderer::UpdateLightMap(
 		spLight->AcceptUpdatingLightMap(this);
 	}
 	pLight = nullptr;
-	pModelSet = nullptr;
+	pObjectSet = nullptr;
 
 	modelRenderVS->DisapplyShader();
 	modelRenderHS->DisapplyShader();
@@ -64,7 +63,7 @@ void LightRenderer::SetForUpdatingLightMap(PointLight& pointLight)
 		pointLight.SetDepthOnlyRenderTarget(idx);
 
 		pViewable = &pointLight.GetViewable((EDirections)idx);
-		for (auto model : *pModelSet)
+		for (auto model : *pObjectSet)
 		{
 			model.second->AcceptRenderingLightMap(this);
 		}
@@ -77,27 +76,12 @@ void LightRenderer::SetForUpdatingLightMap(SpotLight& spotLight)
 {
 	spotLight.SetDepthOnlyRenderTarget();
 	pViewable = &spotLight;
-	for (auto model : *pModelSet)
+	for (auto model : *pObjectSet)
 	{
 		model.second->AcceptRenderingLightMap(this);
 	}
 	pViewable = nullptr;
 	spotLight.ResetDepthOnlyRenderTarget();
-}
-
-void LightRenderer::RenderLightMap(SinglePBRModel& singlePBRMesh)
-{
-	modelRenderVS->SetIAStage(singlePBRMesh);
-	modelRenderVS->SetShader(singlePBRMesh, *pViewable);
-	modelRenderHS->SetShader(*pLight);
-	modelRenderDS->SetShader(singlePBRMesh, *pViewable);
-
-	singlePBRMesh.Draw();
-
-	modelRenderVS->ResetIAStage();
-	modelRenderVS->ResetShader();
-	modelRenderHS->ResetShader();
-	modelRenderDS->ResetShader();
 }
 
 void LightRenderer::RenderLightMap(GroupPBRModel& groupPBRMesh)

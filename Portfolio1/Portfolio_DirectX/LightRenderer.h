@@ -1,6 +1,7 @@
 #pragma once
 #include "IRenderer.h"
 
+class IObject;
 class IMesh;
 class ILight;
 class Viewable;
@@ -27,7 +28,7 @@ public:
 
 
 private:
-	const std::unordered_map<uint32_t, std::shared_ptr<IMesh>>* pModelSet;
+	const std::unordered_map<uint32_t, std::shared_ptr<IObject>>* pObjectSet;
 	ILight* pLight;
 	Viewable* pViewable;
 
@@ -40,7 +41,7 @@ private:
 
 public:
 	void UpdateLightMap(
-		const std::unordered_map<uint32_t, std::shared_ptr<IMesh>>& vMeshes,
+		const std::unordered_map<uint32_t, std::shared_ptr<IObject>>& vMeshes,
 		const std::vector<std::shared_ptr<ILight>>& vLights
 	);
 

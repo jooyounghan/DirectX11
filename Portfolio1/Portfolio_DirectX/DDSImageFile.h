@@ -5,8 +5,8 @@ class DDSImageFile : public IImageFile
 {
 public:
 	DDSImageFile(
-		const std::string& strFilePathIn,
-		const std::string& strFileNameIn,
+		const std::string& strFileFullPath,
+		const std::string& strFileLabelIn,
 		const bool& bIsTextureCube
 	);
 	virtual ~DDSImageFile();

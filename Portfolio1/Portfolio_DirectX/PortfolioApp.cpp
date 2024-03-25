@@ -89,16 +89,16 @@ void PortfolioApp::Render()
 		const std::vector<std::shared_ptr<ILight>>& pLights = pLightManipulator->GetLights();
 
 		const shared_ptr<AIBLMesh>& spIBLModel = upModelManipulator->GetIBLModel();
-		const unordered_map<uint32_t, std::shared_ptr<IMesh>>& pModels = upModelManipulator->GetModels();
+		const unordered_map<uint32_t, std::shared_ptr<IObject>>& pObjects = upModelManipulator->GetModels();
 
-		upLightRenderer->UpdateLightMap(pModels, pLights);
+		upLightRenderer->UpdateLightMap(pObjects, pLights);
 
 		if (upModelManipulator->GetIsDrawingNormal())
 		{
-			upNormalVectorRenderer->RenderNormalVector(pCamera, pModels);
+			upNormalVectorRenderer->RenderNormalVector(pCamera, pObjects);
 		}
 
-		upModelRenderer->RenderObjects(pCamera, spIBLModel, pModels, pLights);
+		upModelRenderer->RenderObjects(pCamera, spIBLModel, pObjects, pLights);
 
 		pCamera->Resolve();
 	}

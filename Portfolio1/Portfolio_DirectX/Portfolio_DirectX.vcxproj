@@ -132,6 +132,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AnimationFile.h" />
+    <ClInclude Include="Bone.h" />
     <ClInclude Include="ColorBlurComputeShader.h" />
     <ClInclude Include="BlurFilter.h" />
     <ClInclude Include="CameraManipulator.h" />
@@ -145,6 +146,7 @@
     <ClInclude Include="IGeometryShader.h" />
     <ClInclude Include="IHullShader.h" />
     <ClInclude Include="ImageFile.h" />
+    <ClInclude Include="IObject.h" />
     <ClInclude Include="IPixelShader.h" />
     <ClInclude Include="IRenderer.h" />
     <ClInclude Include="FileManipulator.h" />
@@ -160,6 +162,7 @@
     <ClInclude Include="IVertexShader.h" />
     <ClInclude Include="LightManipulator.h" />
     <ClInclude Include="LightRenderer.h" />
+    <ClInclude Include="MaterialFile.h" />
     <ClInclude Include="MeshFile.h" />
     <ClInclude Include="MirrorModel.h" />
     <ClInclude Include="MirrorModelPixelShader.h" />
@@ -179,7 +182,8 @@
     <ClInclude Include="PBRIBLLightPixelShader.h" />
     <ClInclude Include="PBRPointLightPixelShader.h" />
     <ClInclude Include="PBRSpotLightPixelShader.h" />
-    <ClInclude Include="SinglePBRModel.h" />
+    <ClInclude Include="SkeletalFile.h" />
+    <ClInclude Include="SkeletalModel.h" />
     <ClInclude Include="StageManipulator.h" />
     <ClInclude Include="CubeRenderTargets.h" />
     <ClInclude Include="TODO.h" />
@@ -222,6 +226,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AnimationFile.cpp" />
+    <ClCompile Include="Bone.cpp" />
     <ClCompile Include="ColorBlurComputeShader.cpp" />
     <ClCompile Include="BlurFilter.cpp" />
     <ClCompile Include="CameraManipulator.cpp" />
@@ -235,6 +240,7 @@
     <ClCompile Include="IGeometryShader.cpp" />
     <ClCompile Include="IHullShader.cpp" />
     <ClCompile Include="ImageFile.cpp" />
+    <ClCompile Include="IObject.cpp" />
     <ClCompile Include="IPixelShader.cpp" />
     <ClCompile Include="IRenderer.cpp" />
     <ClCompile Include="FileManipulator.cpp" />
@@ -248,6 +254,7 @@
     <ClCompile Include="IVertexShader.cpp" />
     <ClCompile Include="LightManipulator.cpp" />
     <ClCompile Include="LightRenderer.cpp" />
+    <ClCompile Include="MaterialFile.cpp" />
     <ClCompile Include="MeshFile.cpp" />
     <ClCompile Include="MirrorModel.cpp" />
     <ClCompile Include="MirrorModelPixelShader.cpp" />
@@ -267,7 +274,8 @@
     <ClCompile Include="PBRIBLLightPixelShader.cpp" />
     <ClCompile Include="PBRPointLightPixelShader.cpp" />
     <ClCompile Include="PBRSpotLightPixelShader.cpp" />
-    <ClCompile Include="SinglePBRModel.cpp" />
+    <ClCompile Include="SkeletalFile.cpp" />
+    <ClCompile Include="SkeletalModel.cpp" />
     <ClCompile Include="StageManipulator.cpp" />
     <ClCompile Include="CubeRenderTargets.cpp" />
     <ClCompile Include="TypeResolveComputeShader.cpp" />

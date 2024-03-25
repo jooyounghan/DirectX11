@@ -7,28 +7,9 @@
 
 class PBRStaticMesh : public IMesh
 {
-protected:
-	static std::string								strDefaultTextureName;
-	static std::unordered_map<WORD, std::string>	unmapTextureNames;
-
 public:
-	static const std::string& GetTextureName(const WORD& iTextureID);
-
-public:
-	PBRStaticMesh();
-	PBRStaticMesh(const MeshFileSet& meshFileSet);
+	PBRStaticMesh(const std::shared_ptr<MeshFile>& spMeshFileIn);
 	virtual ~PBRStaticMesh();
-
-private:
-	void InitPBRStaticMesh();
-
-protected:
-	bool bIsInitialized;
-	std::shared_ptr<IImageFile>			spModelTexture[TEXTURE_MAP_NUM];
-
-public:
-	inline const bool& IsMeshFileInitailized() { return bIsInitialized; }
-	inline std::shared_ptr<IImageFile>& GetTextureImageFileRef(const EModelTextures& eModelTexture) { return spModelTexture[eModelTexture]; }
 
 protected:
 	struct
@@ -36,16 +17,9 @@ protected:
 		float fFresnelConstant[3];
 		float fHeightFactor;
 	} sPBRConstant;
-	struct
-	{
-		BOOL bIsTextureOn[TEXTURE_MAP_NUM];
-		BOOL bIsGLTF;
-		BOOL bDummy[2];
-	} sPBRTextureFlag;
 
 protected:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> cpPBRConstantBuffer;
-	Microsoft::WRL::ComPtr<ID3D11Buffer> cpPBRTextureFlagBuffer;
 
 public:
 	inline float* GetFresnelConstantAddress() { return sPBRConstant.fFresnelConstant; }
@@ -56,7 +30,6 @@ public:
 
 public:
 	inline ID3D11Buffer* const* GetPBRConstantBuffer() { return cpPBRConstantBuffer.GetAddressOf(); }
-	inline ID3D11Buffer* const* GetPBRTextureFlagBuffer() { return cpPBRTextureFlagBuffer.GetAddressOf(); }
 
 public:
 	virtual void Draw() override;

@@ -5,19 +5,9 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="헤더 파일">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
     <Filter Include="리소스 파일">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
-    <Filter Include="소스 파일\Model">
-      <UniqueIdentifier>{e094f8df-6504-4841-b99a-5aba5bb0b026}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\Model">
-      <UniqueIdentifier>{dbd10f0d-a2d8-4f97-82d7-ab48dc4582ce}</UniqueIdentifier>
     </Filter>
     <Filter Include="소스 파일\Texture2D">
       <UniqueIdentifier>{4ab9d611-8253-4e48-b0b5-89d0ad5dcf5a}</UniqueIdentifier>
@@ -25,23 +15,11 @@
     <Filter Include="소스 파일\Utils">
       <UniqueIdentifier>{087132cc-90b9-4958-8b25-0c8b8edc732d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="헤더 파일\Texture2D">
-      <UniqueIdentifier>{00f15671-9d2d-4e25-9728-f17ea0eb6b7f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\Utils">
-      <UniqueIdentifier>{58f8cb82-e966-481e-9933-ff201815d05f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\File">
       <UniqueIdentifier>{3ee554cd-e489-4738-b34e-5dcb6057c305}</UniqueIdentifier>
     </Filter>
-    <Filter Include="헤더 파일\File">
-      <UniqueIdentifier>{e7b4b086-cb9c-4ce4-8a99-47929dcd5d35}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\File\Extended">
       <UniqueIdentifier>{2489e3c0-d145-4bc4-8863-6baba5646df1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\File\Extended">
-      <UniqueIdentifier>{5fc0424f-d7fb-4a7d-a84a-3079e4fd5ea7}</UniqueIdentifier>
     </Filter>
     <Filter Include="Shader">
       <UniqueIdentifier>{2a2334f3-bf48-4e07-849c-5795f0e8ef8a}</UniqueIdentifier>
@@ -64,59 +42,17 @@
     <Filter Include="소스 파일\Viewable\Camera\Extended">
       <UniqueIdentifier>{b0dc9273-53ca-464e-81dd-56e71b637cec}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Model\PBR">
-      <UniqueIdentifier>{0c67cf94-e0cd-49d3-9124-f656a7966ad8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\Model\PBR\Extended">
-      <UniqueIdentifier>{d23da7d2-5505-4387-81f3-1556d3ebc0c8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\Base">
       <UniqueIdentifier>{fd7625c0-c836-42dd-bba5-f4d6901afd62}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\Base">
-      <UniqueIdentifier>{7c011e25-acc7-43ff-ad5d-118e08c0ff2f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\Viewable">
-      <UniqueIdentifier>{8bc504b1-37dc-4710-81c8-e5efe90e0ba6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\Viewable\Light">
-      <UniqueIdentifier>{00902773-6854-4a13-a845-a63496334ac5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\Viewable\Light\Extended">
-      <UniqueIdentifier>{49126e72-1582-4a46-8683-34b4fa7889a4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\Viewable\Camera">
-      <UniqueIdentifier>{c4d9c025-6a27-40e2-b81c-f20b7a1dad58}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\Viewable\Camera\Extended">
-      <UniqueIdentifier>{bb1a46be-3e93-44bf-ab9c-80459a216d38}</UniqueIdentifier>
     </Filter>
     <Filter Include="소스 파일\GUI">
       <UniqueIdentifier>{418547eb-a3ce-435d-8c78-f08dccfd1b50}</UniqueIdentifier>
     </Filter>
-    <Filter Include="헤더 파일\GUI">
-      <UniqueIdentifier>{8acf11eb-96bb-40b6-9ced-fca5ee998ffc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\Model\PBR">
-      <UniqueIdentifier>{674cc944-26ea-4edc-980a-dcb80571a1c4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\Model\PBR\Extended">
-      <UniqueIdentifier>{04e62b96-fbe1-4b8b-97eb-5b3178b808e6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\GUI\Extended">
       <UniqueIdentifier>{a3eb3afe-2954-4708-82e9-6a8e12003ff8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="헤더 파일\GUI\Extended">
-      <UniqueIdentifier>{b084a5a0-c95d-46e0-8206-2c49ee734262}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\Renderer">
       <UniqueIdentifier>{e422ef01-8ba8-4d4e-9a24-fac266c5ae4d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\Renderer">
-      <UniqueIdentifier>{c27c3d6a-0893-4142-a6fd-9e68385320f7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\Renderer\Extended">
-      <UniqueIdentifier>{4de72885-b08c-443e-8487-ec033af3ffe1}</UniqueIdentifier>
     </Filter>
     <Filter Include="소스 파일\Renderer\Extended">
       <UniqueIdentifier>{e64e1940-cf6a-4ed5-ba81-f961d928e032}</UniqueIdentifier>
@@ -136,15 +72,6 @@
     <Filter Include="소스 파일\GUI\Extended\Stage">
       <UniqueIdentifier>{96bdc20b-90fd-4166-8644-686ed23e3006}</UniqueIdentifier>
     </Filter>
-    <Filter Include="헤더 파일\GUI\Extended\Stage">
-      <UniqueIdentifier>{125eb9df-eafa-450b-acbb-b056b47d4db1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\Texture2D\Filter">
-      <UniqueIdentifier>{a2cd1a36-b049-4b26-95b2-eb212e32fa7d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\Texture2D\Filter\Extended">
-      <UniqueIdentifier>{16bea631-9948-478a-9422-b4e62d4bf269}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\Texture2D\Filter">
       <UniqueIdentifier>{bd9064d5-8f12-4486-a5f5-80f78241bb97}</UniqueIdentifier>
     </Filter>
@@ -153,15 +80,6 @@
     </Filter>
     <Filter Include="소스 파일\Shader">
       <UniqueIdentifier>{b25ef745-bcdb-4c80-850a-bf6196c5f5c7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\Shader">
-      <UniqueIdentifier>{ffb9fe0d-a1b0-4688-8234-0983ba84fe79}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\Shader\Extended">
-      <UniqueIdentifier>{12931a71-69ce-4f2a-9dde-d43ffb81aaa1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\Shader\Extended\Geometry">
-      <UniqueIdentifier>{c6689add-5b20-4d01-86d4-1987d98ce6e4}</UniqueIdentifier>
     </Filter>
     <Filter Include="소스 파일\Shader\Extended">
       <UniqueIdentifier>{0550780d-070d-48a1-a561-99b7c52980ee}</UniqueIdentifier>
@@ -175,6 +93,79 @@
     <Filter Include="소스 파일\Shader\Extended\Geometry">
       <UniqueIdentifier>{895457cb-e3db-4805-abe5-6cd86c667622}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Shader\Extended\Domain">
+      <UniqueIdentifier>{cbc0f798-8c1c-4fb1-b2a8-cf195b6f9e8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Shader\Extended\Hull">
+      <UniqueIdentifier>{b71972af-2380-435b-bfc1-8dc8d68c2d05}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Shader\Extended\Compute">
+      <UniqueIdentifier>{e55f5f62-d3b4-4e88-8d7b-0053926ccd32}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="헤더 파일\Texture2D">
+      <UniqueIdentifier>{00f15671-9d2d-4e25-9728-f17ea0eb6b7f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Texture2D\Filter">
+      <UniqueIdentifier>{a2cd1a36-b049-4b26-95b2-eb212e32fa7d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Texture2D\Filter\Extended">
+      <UniqueIdentifier>{16bea631-9948-478a-9422-b4e62d4bf269}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Utils">
+      <UniqueIdentifier>{58f8cb82-e966-481e-9933-ff201815d05f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\File">
+      <UniqueIdentifier>{e7b4b086-cb9c-4ce4-8a99-47929dcd5d35}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\File\Extended">
+      <UniqueIdentifier>{5fc0424f-d7fb-4a7d-a84a-3079e4fd5ea7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Base">
+      <UniqueIdentifier>{7c011e25-acc7-43ff-ad5d-118e08c0ff2f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Viewable">
+      <UniqueIdentifier>{8bc504b1-37dc-4710-81c8-e5efe90e0ba6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Viewable\Light">
+      <UniqueIdentifier>{00902773-6854-4a13-a845-a63496334ac5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Viewable\Light\Extended">
+      <UniqueIdentifier>{49126e72-1582-4a46-8683-34b4fa7889a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Viewable\Camera">
+      <UniqueIdentifier>{c4d9c025-6a27-40e2-b81c-f20b7a1dad58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Viewable\Camera\Extended">
+      <UniqueIdentifier>{bb1a46be-3e93-44bf-ab9c-80459a216d38}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\GUI">
+      <UniqueIdentifier>{8acf11eb-96bb-40b6-9ced-fca5ee998ffc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\GUI\Extended">
+      <UniqueIdentifier>{b084a5a0-c95d-46e0-8206-2c49ee734262}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\GUI\Extended\Stage">
+      <UniqueIdentifier>{125eb9df-eafa-450b-acbb-b056b47d4db1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Renderer">
+      <UniqueIdentifier>{c27c3d6a-0893-4142-a6fd-9e68385320f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Renderer\Extended">
+      <UniqueIdentifier>{4de72885-b08c-443e-8487-ec033af3ffe1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Shader">
+      <UniqueIdentifier>{ffb9fe0d-a1b0-4688-8234-0983ba84fe79}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Shader\Extended">
+      <UniqueIdentifier>{12931a71-69ce-4f2a-9dde-d43ffb81aaa1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Shader\Extended\Geometry">
+      <UniqueIdentifier>{c6689add-5b20-4d01-86d4-1987d98ce6e4}</UniqueIdentifier>
+    </Filter>
     <Filter Include="헤더 파일\Shader\Extended\Vertex">
       <UniqueIdentifier>{81687c77-1a41-40b7-b39c-854c68da6919}</UniqueIdentifier>
     </Filter>
@@ -187,17 +178,38 @@
     <Filter Include="헤더 파일\Shader\Extended\Pixel">
       <UniqueIdentifier>{a8a133df-0924-4a70-9d59-6e921cb79b50}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Shader\Extended\Domain">
-      <UniqueIdentifier>{cbc0f798-8c1c-4fb1-b2a8-cf195b6f9e8d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\Shader\Extended\Hull">
-      <UniqueIdentifier>{b71972af-2380-435b-bfc1-8dc8d68c2d05}</UniqueIdentifier>
-    </Filter>
     <Filter Include="헤더 파일\Shader\Extended\Compute">
       <UniqueIdentifier>{e78a9fa5-6ea1-4c26-850d-138206724a94}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Shader\Extended\Compute">
-      <UniqueIdentifier>{e55f5f62-d3b4-4e88-8d7b-0053926ccd32}</UniqueIdentifier>
+    <Filter Include="소스 파일\Object">
+      <UniqueIdentifier>{e094f8df-6504-4841-b99a-5aba5bb0b026}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Object\Mesh">
+      <UniqueIdentifier>{b60b5433-0eb6-4ccc-8300-5e7dc4d9b026}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Object\Model">
+      <UniqueIdentifier>{a5eda72c-1f21-4cc4-8685-dabdf970e3e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Object\Model\PBR">
+      <UniqueIdentifier>{0c67cf94-e0cd-49d3-9124-f656a7966ad8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Object\Model\PBR\Extended">
+      <UniqueIdentifier>{d23da7d2-5505-4387-81f3-1556d3ebc0c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Object">
+      <UniqueIdentifier>{dbd10f0d-a2d8-4f97-82d7-ab48dc4582ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Object\Mesh">
+      <UniqueIdentifier>{29da92b8-3b79-4a54-9af5-2db0c7e76058}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Object\Model">
+      <UniqueIdentifier>{2d171152-3e9f-47b5-8e06-0761b8eb41d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Object\Model\PBR">
+      <UniqueIdentifier>{674cc944-26ea-4edc-980a-dcb80571a1c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Object\Model\PBR\Extended">
+      <UniqueIdentifier>{04e62b96-fbe1-4b8b-97eb-5b3178b808e6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -208,7 +220,7 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="IMesh.h">
-      <Filter>헤더 파일\Model</Filter>
+      <Filter>헤더 파일\Object</Filter>
     </ClInclude>
     <ClInclude Include="APossessable.h">
       <Filter>헤더 파일\Base</Filter>
@@ -324,14 +336,8 @@
     <ClInclude Include="FileManipulator.h">
       <Filter>헤더 파일\GUI\Extended</Filter>
     </ClInclude>
-    <ClInclude Include="PBRStaticMesh.h">
-      <Filter>헤더 파일\Model\PBR</Filter>
-    </ClInclude>
     <ClInclude Include="CubeModel.h">
-      <Filter>헤더 파일\Model\PBR\Extended</Filter>
-    </ClInclude>
-    <ClInclude Include="AIBLMesh.h">
-      <Filter>헤더 파일\Model\PBR</Filter>
+      <Filter>헤더 파일\Object\Model\PBR\Extended</Filter>
     </ClInclude>
     <ClInclude Include="IRenderer.h">
       <Filter>헤더 파일\Renderer</Filter>
@@ -373,13 +379,10 @@
       <Filter>헤더 파일\File\Extended</Filter>
     </ClInclude>
     <ClInclude Include="CubeMapModel.h">
-      <Filter>헤더 파일\Model\PBR\Extended</Filter>
-    </ClInclude>
-    <ClInclude Include="SinglePBRModel.h">
-      <Filter>헤더 파일\Model\PBR</Filter>
+      <Filter>헤더 파일\Object\Model\PBR\Extended</Filter>
     </ClInclude>
     <ClInclude Include="GroupPBRModel.h">
-      <Filter>헤더 파일\Model\PBR</Filter>
+      <Filter>헤더 파일\Object\Model\PBR</Filter>
     </ClInclude>
     <ClInclude Include="IShader.h">
       <Filter>헤더 파일\Shader</Filter>
@@ -435,9 +438,6 @@
     <ClInclude Include="TODO.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="MirrorModel.h">
-      <Filter>헤더 파일\Model\PBR</Filter>
-    </ClInclude>
     <ClInclude Include="MirrorModelPixelShader.h">
       <Filter>헤더 파일\Shader\Extended\Pixel</Filter>
     </ClInclude>
@@ -464,6 +464,30 @@
     </ClInclude>
     <ClInclude Include="AnimationFile.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Bone.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="SkeletalFile.h">
+      <Filter>헤더 파일\File\Extended</Filter>
+    </ClInclude>
+    <ClInclude Include="SkeletalModel.h">
+      <Filter>헤더 파일\Object\Model\PBR</Filter>
+    </ClInclude>
+    <ClInclude Include="AIBLMesh.h">
+      <Filter>헤더 파일\Object\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="PBRStaticMesh.h">
+      <Filter>헤더 파일\Object\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="MirrorModel.h">
+      <Filter>헤더 파일\Object\Model\PBR\Extended</Filter>
+    </ClInclude>
+    <ClInclude Include="IObject.h">
+      <Filter>헤더 파일\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="MaterialFile.h">
+      <Filter>헤더 파일\File\Extended</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -498,7 +522,7 @@
       <Filter>소스 파일\Utils</Filter>
     </ClCompile>
     <ClCompile Include="IMesh.cpp">
-      <Filter>소스 파일\Model</Filter>
+      <Filter>소스 파일\Object</Filter>
     </ClCompile>
     <ClCompile Include="DDSImageFile.cpp">
       <Filter>소스 파일\File\Extended</Filter>
@@ -554,9 +578,6 @@
     <ClCompile Include="Viewable.cpp">
       <Filter>소스 파일\Viewable</Filter>
     </ClCompile>
-    <ClCompile Include="PBRStaticMesh.cpp">
-      <Filter>소스 파일\Model\PBR</Filter>
-    </ClCompile>
     <ClCompile Include="IDepthStencil.cpp">
       <Filter>소스 파일\Texture2D</Filter>
     </ClCompile>
@@ -583,9 +604,6 @@
     </ClCompile>
     <ClCompile Include="FileManipulator.cpp">
       <Filter>소스 파일\GUI\Extended</Filter>
-    </ClCompile>
-    <ClCompile Include="AIBLMesh.cpp">
-      <Filter>소스 파일\Model\PBR</Filter>
     </ClCompile>
     <ClCompile Include="IRenderer.cpp">
       <Filter>소스 파일\Renderer</Filter>
@@ -627,16 +645,13 @@
       <Filter>소스 파일\File\Extended</Filter>
     </ClCompile>
     <ClCompile Include="CubeModel.cpp">
-      <Filter>소스 파일\Model\PBR\Extended</Filter>
+      <Filter>소스 파일\Object\Model\PBR\Extended</Filter>
     </ClCompile>
     <ClCompile Include="CubeMapModel.cpp">
-      <Filter>소스 파일\Model\PBR\Extended</Filter>
+      <Filter>소스 파일\Object\Model\PBR\Extended</Filter>
     </ClCompile>
     <ClCompile Include="GroupPBRModel.cpp">
-      <Filter>소스 파일\Model\PBR</Filter>
-    </ClCompile>
-    <ClCompile Include="SinglePBRModel.cpp">
-      <Filter>소스 파일\Model\PBR</Filter>
+      <Filter>소스 파일\Object\Model\PBR</Filter>
     </ClCompile>
     <ClCompile Include="IShader.cpp">
       <Filter>소스 파일\Shader</Filter>
@@ -689,9 +704,6 @@
     <ClCompile Include="PBRSpotLightPixelShader.cpp">
       <Filter>소스 파일\Shader\Extended\Pixel</Filter>
     </ClCompile>
-    <ClCompile Include="MirrorModel.cpp">
-      <Filter>소스 파일\Model\PBR</Filter>
-    </ClCompile>
     <ClCompile Include="MirrorModelPixelShader.cpp">
       <Filter>소스 파일\Shader\Extended\Pixel</Filter>
     </ClCompile>
@@ -718,6 +730,30 @@
     </ClCompile>
     <ClCompile Include="AnimationFile.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Bone.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="SkeletalFile.cpp">
+      <Filter>소스 파일\File\Extended</Filter>
+    </ClCompile>
+    <ClCompile Include="SkeletalModel.cpp">
+      <Filter>소스 파일\Object\Model\PBR</Filter>
+    </ClCompile>
+    <ClCompile Include="PBRStaticMesh.cpp">
+      <Filter>소스 파일\Object\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="AIBLMesh.cpp">
+      <Filter>소스 파일\Object\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="MirrorModel.cpp">
+      <Filter>소스 파일\Object\Model\PBR\Extended</Filter>
+    </ClCompile>
+    <ClCompile Include="IObject.cpp">
+      <Filter>소스 파일\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="MaterialFile.cpp">
+      <Filter>소스 파일\File\Extended</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

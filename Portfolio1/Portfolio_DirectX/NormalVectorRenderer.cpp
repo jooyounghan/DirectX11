@@ -7,7 +7,7 @@
 #include "DirectXDevice.h"
 
 #include "ACamera.h"
-#include "SinglePBRModel.h"
+
 #include "GroupPBRModel.h"
 #include "AIBLMesh.h"
 #include "MirrorModel.h"
@@ -28,7 +28,7 @@ NormalVectorRenderer::~NormalVectorRenderer()
 
 void NormalVectorRenderer::RenderNormalVector(
 	ACamera* pCameraIn, 
-	const unordered_map<uint32_t, shared_ptr<IMesh>>& vMeshesIn
+	const unordered_map<uint32_t, shared_ptr<IObject>>& vMeshesIn
 )
 {
 	pCameraIn->SetAsRenderTarget();
@@ -49,19 +49,6 @@ void NormalVectorRenderer::RenderNormalVector(
 	normalVectorVS->DisapplyShader();
 	normalVectorGS->DisapplyShader();
 	normalVectorPS->DisapplyShader();
-}
-
-void NormalVectorRenderer::RenderNormal(SinglePBRModel& singlePBRMesh)
-{
-	normalVectorVS->SetIAStage(singlePBRMesh);
-	normalVectorVS->SetShader(singlePBRMesh);
-	normalVectorGS->SetShader(singlePBRMesh, *pCamera);
-
-	singlePBRMesh.Draw();
-
-	normalVectorVS->ResetIAStage();
-	normalVectorVS->ResetShader();
-	normalVectorGS->ResetShader();
 }
 
 void NormalVectorRenderer::RenderNormal(GroupPBRModel& groupPBRMesh)

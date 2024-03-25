@@ -6,8 +6,7 @@ class IImageFile : public IFile, public ShaderResource, public std::enable_share
 {
 public:
 	IImageFile(
-		const std::string& strFilePathIn,
-		const std::string& strFileNameIn
+		const std::string& strFileLabelIn
 	);
 	IImageFile(
 		const UINT& uiWidthIn,
@@ -15,8 +14,7 @@ public:
 		const UINT& uiMiscFlagIn,
 		DXGI_FORMAT eFormatIn,
 		uint8_t* pImageSource,
-		const std::string& strFilePathIn,
-		const std::string& strFileNameIn
+		const std::string& strFileLabelIn
 	);
 	virtual ~IImageFile();
 

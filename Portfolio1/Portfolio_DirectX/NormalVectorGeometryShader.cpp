@@ -41,10 +41,10 @@ void NormalVectorGeometryShader::SetShader(PBRStaticMesh& pbrStaticMesh, Viewabl
 {
 	DirectXDevice::pDeviceContext->GSSetConstantBuffers(0, 1, pbrStaticMesh.GetPBRConstantBuffer());
 	DirectXDevice::pDeviceContext->GSSetConstantBuffers(1, 1, viewableCamera.GetViewProjBuffer());
-	DirectXDevice::pDeviceContext->GSSetConstantBuffers(2, 1, pbrStaticMesh.GetPBRTextureFlagBuffer());
+	DirectXDevice::pDeviceContext->GSSetConstantBuffers(2, 1, pbrStaticMesh.GetMeshFileRef()->GetMaterial()->GetPBRTextureFlagBuffer());
 
-	shared_ptr<IImageFile>& normalImage = pbrStaticMesh.GetTextureImageFileRef(NORMAL_TEXTURE_MAP);
-	shared_ptr<IImageFile>& heightImage = pbrStaticMesh.GetTextureImageFileRef(HEIGHT_TEXTURE_MAP);
+	shared_ptr<IImageFile>& normalImage = pbrStaticMesh.GetMeshFileRef()->GetMaterial()->GetTextureImageFileRef(NORMAL_TEXTURE_MAP);
+	shared_ptr<IImageFile>& heightImage = pbrStaticMesh.GetMeshFileRef()->GetMaterial()->GetTextureImageFileRef(HEIGHT_TEXTURE_MAP);
 
 	DirectXDevice::pDeviceContext->GSSetShaderResources(0, 1,
 		normalImage.get() != nullptr ?

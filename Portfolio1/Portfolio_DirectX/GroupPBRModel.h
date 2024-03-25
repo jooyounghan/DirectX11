@@ -3,7 +3,7 @@
 #include "PBRStaticMesh.h"
 #include "ATransformerable.h"
 
-class GroupPBRModel : public IMesh, public ATransformerable
+class GroupPBRModel : public IObject, public ATransformerable
 {
 public:
 	GroupPBRModel(const std::shared_ptr<ModelFile>& spModelFile);

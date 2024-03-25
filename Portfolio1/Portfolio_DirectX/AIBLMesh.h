@@ -8,7 +8,7 @@
 class AIBLMesh : public IMesh, public ATransformerable
 {
 public:
-	AIBLMesh();
+	AIBLMesh(std::shared_ptr<MeshFile> spMeshFileIn);
 	virtual ~AIBLMesh();
 
 	struct

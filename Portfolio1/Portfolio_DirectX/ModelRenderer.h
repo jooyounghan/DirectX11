@@ -1,13 +1,14 @@
 #pragma once
 #include "IRenderer.h"
 #include <stack>
+#include <unordered_map>
 
+class IObject;
 class IMesh;
 class PBRStaticMesh;
 class ILight;
 class ACamera;
 class ViewableRenderTarget;
-class SinglePBRModel;
 class GroupPBRModel;
 class AIBLMesh;
 class MirrorModel;
@@ -16,7 +17,6 @@ class SpotLight;
 
 class ModelRenderer : public IRenderer
 {
-	friend SinglePBRModel;
 	friend GroupPBRModel;
 	friend AIBLMesh;
 	friend MirrorModel;
@@ -33,12 +33,12 @@ private:
 
 private:
 	ViewableRenderTarget*	pViewableRT;
-	IMesh*					pIMesh;
+	IObject*				pObject;
 	PBRStaticMesh*			pPBRStaticMesh;
 
 	std::shared_ptr<AIBLMesh> spIBLModel;
 	const std::vector<std::shared_ptr<ILight>>* pLights;
-	const std::unordered_map<uint32_t, std::shared_ptr<IMesh>>* pMeshes;
+	const std::unordered_map<uint32_t, std::shared_ptr<IObject>>* pObjects;
 
 private:
 	class BasicVertexShader*			basicVS;
@@ -60,13 +60,12 @@ public:
 	void RenderObjects(
 		ACamera* pCameraIn,
 		std::shared_ptr<AIBLMesh> spIBLModelIn,
-		const std::unordered_map<uint32_t, std::shared_ptr<IMesh>>& vMeshes,
+		const std::unordered_map<uint32_t, std::shared_ptr<IObject>>& vObjects,
 		const std::vector<std::shared_ptr<ILight>>& vLightsIn
 		= std::vector<std::shared_ptr<ILight>>()
 	);
 
 private:
-	void RenderModel(SinglePBRModel& singlePBRMesh);
 	void RenderModel(GroupPBRModel& groupPBRMesh);
 	void RenderModel(AIBLMesh& iblMesh);
 	void RenderModel(MirrorModel& mirrorModel);

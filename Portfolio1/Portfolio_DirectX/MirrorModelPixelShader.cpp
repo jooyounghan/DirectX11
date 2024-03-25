@@ -34,7 +34,7 @@ void MirrorModelPixelShader::DisapplyShader()
 
 void MirrorModelPixelShader::SetShader(MirrorModel& mirrorModel)
 {
-	DirectXDevice::pDeviceContext->PSSetConstantBuffers(0, 1, mirrorModel.GetIDBuffer());
+	DirectXDevice::pDeviceContext->PSSetConstantBuffers(0, 1, mirrorModel.GetObjectBuffer());
 	DirectXDevice::pDeviceContext->PSSetConstantBuffers(1, 1, mirrorModel.GetMirrorPropertiesBuffer());
 
 	DirectXDevice::pDeviceContext->PSSetShaderResources(0, 1, mirrorModel.GetAddressOfSRV());

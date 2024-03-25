@@ -13,8 +13,8 @@ const std::vector<UINT> AIBLMesh::uiStrides = { sizeof(DirectX::XMFLOAT3), sizeo
 const std::vector<UINT> AIBLMesh::uiOffsets = { 0, 0, 0, 0 };
 
 
-AIBLMesh::AIBLMesh()
-	: IMesh(), ATransformerable(),
+AIBLMesh::AIBLMesh(std::shared_ptr<MeshFile> spMeshFileIn)
+	: IMesh(spMeshFileIn), ATransformerable(),
 	IMovable(0.f, 0.f, 0.f), 
 	IScalable(), 
 	IAngleAdjustable(0.f, 0.f, 0.f)

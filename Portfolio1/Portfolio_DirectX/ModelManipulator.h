@@ -5,18 +5,17 @@
 #include <memory>
 #include <unordered_map>
 
+class IObject;
 class IMesh;
 class AIBLMesh;
 class PBRStaticMesh;
 class ATransformerable;
-class SinglePBRModel;
 class GroupPBRModel;
 class AIBLMesh;
 class MirrorModel;
 
 class ModelManipulator : public IGuiMenu
 {
-	friend SinglePBRModel;
 	friend GroupPBRModel;
 	friend AIBLMesh;
 	friend MirrorModel;
@@ -36,37 +35,35 @@ public:
 	inline bool GetIsDrawingNormal() { return bIsDrawingNormal; }
 
 private:
-	std::unordered_map<uint32_t, std::shared_ptr<IMesh>> pModels;
+	std::unordered_map<uint32_t, std::shared_ptr<IObject>> pObjects;
 
 private:
 	uint32_t uiSelectedModelIdx;
 
 private:
 	std::shared_ptr<AIBLMesh> spIBLModel;
-	std::shared_ptr<IMesh> spSelectedMesh;
+	std::shared_ptr<IObject> spSelectedObject;
 
 public:
-	inline const std::unordered_map<uint32_t, std::shared_ptr<IMesh>>& GetModels() { return pModels; }
+	inline const std::unordered_map<uint32_t, std::shared_ptr<IObject>>& GetModels() { return pObjects; }
 	inline const std::shared_ptr<AIBLMesh>& GetIBLModel() { return spIBLModel; }
 
 public:
-	void AddModel(std::shared_ptr<IMesh> spMesh);
+	void AddObject(std::shared_ptr<IObject> spObject);
 
 public:
 	virtual void PopAsDialog() override;
-	inline virtual bool IsGuiAvailable() override { return spSelectedMesh != nullptr; }
+	inline virtual bool IsGuiAvailable() override { return spSelectedObject != nullptr; }
 
 private:
 	void ListUpModel();
 
 private:
-	void SetModelAsList(SinglePBRModel& singlePBRModel);
 	void SetModelAsList(GroupPBRModel& groupPBRModel);
 	void SetModelAsList(AIBLMesh& iblMesh);
 	void SetModelAsList(MirrorModel& mirrorModel);
 
 private:
-	void ManipulateModel(SinglePBRModel& singlePBRModel);
 	void ManipulateModel(GroupPBRModel& groupPBRModel);
 	void ManipulateModel(AIBLMesh& iblMesh);
 	void ManipulateModel(MirrorModel& mirrorModel);

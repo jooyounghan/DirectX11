@@ -5,6 +5,7 @@
 #include <string>
 #include <unordered_map>
 #include <DirectXMath.h>
+#include <set>
 
 class FileLoader
 {
@@ -31,6 +32,20 @@ public:
 		const std::string& strExtension, 
 		UINT* x, UINT* y, UINT* comp
 	);
+
+private:
+	inline static const std::string GetFileNameAsLabel(
+		const std::string& strFileName,
+		const std::string& strExtension
+	)
+	{
+		std::string labelType = strExtension;
+		replace(labelType.begin(), labelType.end(), '.', '_');
+		transform(labelType.begin(), labelType.end(), labelType.begin(), ::toupper);
+		return strFileName + labelType;
+	}
+
+public:
 	static std::vector<std::shared_ptr<class IFile>> LoadModelFile(
 		const std::string& strFilePath,
 		const std::string& strFileName,
@@ -38,30 +53,58 @@ public:
 	);
 
 private:
-	static void ProcessNode(
-		const std::string& strFilePath,
-		const std::string& strFileName,
-		const std::string& strExtension,
-		const bool& bIsGltf,
-		struct aiNode* pNode,
-		const struct aiScene* pScene,
-		DirectX::XMMATRIX& xmMatrix,
-		class ModelFile* pModelFile
-	);
+	static bool HasBones(const struct aiScene*);
+	inline static const std::string GetFileNameAsSkeletalLabel(const std::string& strFileName) { return strFileName + "_SKELETAL"; }
 
-	static struct MeshFileSet ProcessMesh(
-		const std::string& strFilePath,
-		const std::string& strFileName,
+private:
+	static std::shared_ptr<IFile> LoadSkeletalFile(
+		const std::string strFileName, 
+		const struct aiScene* pScene
+	);
+	static std::vector<std::shared_ptr<IFile>> LoadMaterialFile(
+		const std::string strFilePath, 
+		const struct aiScene* pScene,
+		const bool& bIsGltfIn
+	);
+	static std::shared_ptr<IFile> LoadModelFile(
+		const std::string& strFilePath, 
+		const std::string& strFileName, 
 		const std::string& strExtension,
 		const bool& bIsGltf,
-		struct aiMesh* pMesh,
-		DirectX::XMMATRIX& xmMatrix,
 		const struct aiScene* pScene
 	);
 
 private:
-	static std::unordered_map<std::string, int> GetBoneInformation(const struct aiScene* pScene);
+	static void ProcessNode(
+		const std::string& strFilePath,
+		const std::string& strFileLabel,
+		uint8_t& ucElementIdx,
+		const bool& bIsGltf,
+		const struct aiNode* pNode,
+		const struct aiScene* pScene,
+		const DirectX::XMMATRIX& xmMatrix,
+		class ModelFile* pModelFile
+	);
 
+	static std::shared_ptr<class MeshFile> LoadMeshFile(
+		const std::string& strFilePath,
+		uint8_t& ucElementIdx,
+		const bool& bIsGltf,
+		const struct aiMesh* pMesh,
+		const DirectX::XMMATRIX& xmMatrix,
+		const struct aiScene* pScene
+	);
+
+private:
+	static void UpdateBoneNameSet(
+		const struct aiScene* pScene, 
+		std::set<std::string>& setBoneInformation
+	);
+	static void LoadBoneFromNode(
+		const struct aiNode* pNode,
+		class Bone* pBoneParent,
+		const std::set<std::string>& setBoneInformation
+	);
 
 public:
 	static std::string ReadTextureFileName(
@@ -79,6 +122,9 @@ public:
 	static std::string ConvertUniCodeToUTF8(const std::wstring& wStr);
 
 public:
+	static std::shared_ptr<class ModelFile> LoadDefaultCubeModel(
+		const bool& bReverse
+	);
 	static std::shared_ptr<class MeshFile> LoadDefaultCubeMesh(
 		const bool& bReverse
 	);

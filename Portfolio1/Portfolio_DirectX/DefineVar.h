@@ -11,4 +11,5 @@
 
 #define DRAG_DROP_IBL_KEY		"CubeMap"
 #define DRAG_DROP_TEXTURE_KEY	"Texture2D"
-#define DRAG_DROP_MESH_KEY		"ModelFile"
+#define DRAG_DROP_MODEL_KEY		"ModelFile"
+#define DRAG_DROP_SKELETAL_KEY	"SkeletalFile"
