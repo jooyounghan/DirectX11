@@ -468,7 +468,7 @@
     <ClInclude Include="Bone.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="SkeletalFile.h">
+    <ClInclude Include="BoneFile.h">
       <Filter>헤더 파일\File\Extended</Filter>
     </ClInclude>
     <ClInclude Include="SkeletalModel.h">
@@ -487,6 +487,12 @@
       <Filter>헤더 파일\Object</Filter>
     </ClInclude>
     <ClInclude Include="MaterialFile.h">
+      <Filter>헤더 파일\File\Extended</Filter>
+    </ClInclude>
+    <ClInclude Include="SkeletalModelFile.h">
+      <Filter>헤더 파일\File\Extended</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticModelFile.h">
       <Filter>헤더 파일\File\Extended</Filter>
     </ClInclude>
   </ItemGroup>
@@ -734,7 +740,7 @@
     <ClCompile Include="Bone.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="SkeletalFile.cpp">
+    <ClCompile Include="BoneFile.cpp">
       <Filter>소스 파일\File\Extended</Filter>
     </ClCompile>
     <ClCompile Include="SkeletalModel.cpp">
@@ -753,6 +759,12 @@
       <Filter>소스 파일\Object</Filter>
     </ClCompile>
     <ClCompile Include="MaterialFile.cpp">
+      <Filter>소스 파일\File\Extended</Filter>
+    </ClCompile>
+    <ClCompile Include="SkeletalModelFile.cpp">
+      <Filter>소스 파일\File\Extended</Filter>
+    </ClCompile>
+    <ClCompile Include="StaticModelFile.cpp">
       <Filter>소스 파일\File\Extended</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,15 +1,20 @@
 #pragma once
 #include "GroupPBRModel.h"
-#include "SkeletalFile.h"
-#include "ModelFile.h"
+#include "SkeletalModelFile.h"
 
 class SkeletalModel : public GroupPBRModel
 {
 public:
-	SkeletalModel(const std::shared_ptr<ModelFile>& spModelFile);
+	SkeletalModel(const std::shared_ptr<SkeletalModelFile>& spSkeletalModelFile);
 	virtual ~SkeletalModel();
 
 private:
-	std::shared_ptr<SkeletalFile> spSkeletalFile;
+	std::shared_ptr<BoneFile> spBoneFile;
+
+public:
+	Bone* GetBone() { return spBoneFile.get(); }
+
+public:
+	virtual void AcceptModelManipulating(class ModelManipulator* pModelManipulator) override;
 };
 

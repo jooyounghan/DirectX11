@@ -24,6 +24,11 @@ GroupPBRModel::GroupPBRModel(
 		vChildrenMeshes.emplace_back(meshFile);
 	}
 	
+	for (auto& mesh : vChildrenMeshes)
+	{
+		mesh.SetObjectName(mesh.GetMeshFileRef()->GetFileLabel());
+	}
+
 	SetObjectName(spModelFile->GetFileLabel() + to_string(uiGroupPBRModelIdx));
 	uiGroupPBRModelIdx++;
 }

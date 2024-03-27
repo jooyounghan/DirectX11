@@ -11,12 +11,15 @@ class AIBLMesh;
 class PBRStaticMesh;
 class ATransformerable;
 class GroupPBRModel;
+class SkeletalModel;
 class AIBLMesh;
 class MirrorModel;
+class Bone;
 
 class ModelManipulator : public IGuiMenu
 {
 	friend GroupPBRModel;
+	friend SkeletalModel;
 	friend AIBLMesh;
 	friend MirrorModel;
 
@@ -65,6 +68,7 @@ private:
 
 private:
 	void ManipulateModel(GroupPBRModel& groupPBRModel);
+	void ManipulateModel(SkeletalModel& skeletalModel);
 	void ManipulateModel(AIBLMesh& iblMesh);
 	void ManipulateModel(MirrorModel& mirrorModel);
 
@@ -75,6 +79,9 @@ private:
 	void DrawPBRTexture(PBRStaticMesh& pBRStaticMesh);
 	void DrawIBLTexture(AIBLMesh& iBLModel);
 	void DrawMirrorProperties(MirrorModel& mirrorModel);
+
+private:
+	void DrawBone(const class Bone& bone);
 
 private:
 	void SetTextureDragAndDrop(

@@ -27,7 +27,7 @@ PBRStaticMesh::~PBRStaticMesh()
 
 void PBRStaticMesh::Draw()
 {
-	DirectXDevice::pDeviceContext->DrawIndexed(spMeshFile->GetVerticesCount(), NULL, NULL);
+	DirectXDevice::pDeviceContext->DrawIndexed(spMeshFile->GetIndicesCount(), NULL, NULL);
 }
 
 void PBRStaticMesh::UpdateModel(const float& fDelta)

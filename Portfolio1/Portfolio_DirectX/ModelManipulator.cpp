@@ -6,7 +6,8 @@
 #include "AIBLMesh.h"
 #include "MirrorModel.h"
 
-#include "ModelFile.h"
+#include "SkeletalModelFile.h"
+#include "StaticModelFile.h"
 #include "NormalImageFile.h"
 #include "DDSImageFile.h"
 
@@ -89,12 +90,20 @@ void ModelManipulator::ListUpModel()
 
 		if (BeginDragDropTarget())
 		{
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DRAG_DROP_MODEL_KEY))
+			const ImGuiPayload* payload = nullptr;
+			if (payload = ImGui::AcceptDragDropPayload(DRAG_DROP_STATIC_MODEL_KEY))
 			{
-				ModelFile* tmpPtr = (ModelFile*)payload->Data;
-				shared_ptr<ModelFile> modelFile = tmpPtr->shared_from_this();
-				shared_ptr<SkeletalModel> groupModel = make_shared<SkeletalModel>(modelFile);
+				StaticModelFile* tmpPtr = (StaticModelFile*)payload->Data;
+				shared_ptr<StaticModelFile> staticModelFile = tmpPtr->shared_from_this();
+				shared_ptr<GroupPBRModel> groupModel = make_shared<GroupPBRModel>(staticModelFile);
 				AddObject(groupModel);
+			}
+			else if (payload = ImGui::AcceptDragDropPayload(DRAG_DROP_SKELETAL_MODEL_KEY))
+			{
+				SkeletalModelFile* tmpPtr = (SkeletalModelFile*)payload->Data;
+				shared_ptr<SkeletalModelFile> skeletalModelFile = tmpPtr->shared_from_this();
+				shared_ptr<SkeletalModel> skeletalModel = make_shared<SkeletalModel>(skeletalModelFile);
+				AddObject(skeletalModel);
 			}
 			ImGui::EndDragDropTarget();
 		}
@@ -155,7 +164,7 @@ void ModelManipulator::AddObject(shared_ptr<IObject> spObject)
 
 void ModelManipulator::ManipulateModel(GroupPBRModel& groupPBRModel)
 {
-	DrawTransformation((groupPBRModel));
+	DrawTransformation(groupPBRModel);
 	Separator();
 	vector<PBRStaticMesh>& vPBRMeshes = groupPBRModel.GetChildrenMeshesRef();
 	for (auto& pbrMesh : vPBRMeshes)
@@ -165,9 +174,28 @@ void ModelManipulator::ManipulateModel(GroupPBRModel& groupPBRModel)
 	}
 }
 
+void ModelManipulator::ManipulateModel(SkeletalModel& skeletalModel)
+{
+	DrawTransformation(skeletalModel);
+	Separator();
+
+	Bone* pBone = skeletalModel.GetBone();
+	if (pBone != nullptr && CollapsingHeader("Bone Data"))
+	{
+		DrawBone(*pBone);
+	}
+
+	vector<PBRStaticMesh>& vPBRMeshes = skeletalModel.GetChildrenMeshesRef();
+	for (auto& pbrMesh : vPBRMeshes)
+	{
+		Separator();
+		DrawPBRTexture(pbrMesh);
+	}
+}
+
 void ModelManipulator::ManipulateModel(AIBLMesh& iblModel)
 {
-	DrawTransformation((iblModel));
+	DrawTransformation(iblModel);
 	Separator();
 	DrawIBLTexture(iblModel);
 }
@@ -197,13 +225,14 @@ void ModelManipulator::DrawTransformation(ATransformerable& transformable)
 
 void ModelManipulator::DrawPBRTexture(PBRStaticMesh& pBRStaticMesh)
 {
-	if (CollapsingHeader(("PBR Model Textures " + pBRStaticMesh.GetObjectName()).c_str()))
+	MaterialFile* pMaterialFromMesh = pBRStaticMesh.GetMeshFileRef()->GetMaterial().get();
+
+
+	if (pMaterialFromMesh != nullptr && CollapsingHeader(("PBR Model Material " + pMaterialFromMesh->GetFileLabel()).c_str()))
 	{
 		DragFloat3("Fresnel Reflectance", pBRStaticMesh.GetFresnelConstantAddress(), 0.005f, 0.f, 1.f, "%.3f");
 
-		MaterialFile* pMaterial = pBRStaticMesh.GetMeshFileRef()->GetMaterial().get();
-
-		if (pMaterial->GetTextureImageFileRef(HEIGHT_TEXTURE_MAP).get())
+		if (pMaterialFromMesh->GetTextureImageFileRef(HEIGHT_TEXTURE_MAP).get())
 		{
 			DragFloat("Height Factor", pBRStaticMesh.GetHeightFactorAddress(), 0.005f, 0.f, 1.f, "%.3f");
 		}
@@ -215,13 +244,25 @@ void ModelManipulator::DrawPBRTexture(PBRStaticMesh& pBRStaticMesh)
 			EndDisabled();
 		}
 
+		BeginGroup();
 		for (WORD idx = 0; idx < TEXTURE_MAP_NUM; ++idx)
 		{
 			SetTextureDragAndDrop(
 				MaterialFile::GetTextureName(idx).c_str(), 
-				pMaterial->GetTextureImageFileRef((EModelTextures)idx),
+				pMaterialFromMesh->GetTextureImageFileRef((EModelTextures)idx),
 				DRAG_DROP_TEXTURE_KEY
 			);
+		}
+		EndGroup();
+
+		if (BeginDragDropTarget())
+		{
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DRAG_DROP_MATERIAL_KEY))
+			{
+				MaterialFile* pMaterial = (MaterialFile*)payload->Data;
+				pBRStaticMesh.GetMeshFileRef()->SetMaterial(pMaterial->shared_from_this());
+			}
+			ImGui::EndDragDropTarget();
 		}
 	}
 }
@@ -260,6 +301,34 @@ void ModelManipulator::DrawMirrorProperties(MirrorModel& mirrorModel)
 	if (CollapsingHeader(("Mirror Properties " + mirrorModel.GetObjectName()).c_str()))
 	{
 		DragFloat("Alpha Constant", mirrorModel.GetAlphaAddress(), 0.005f, 0.f, 1.f, "%.3f");
+	}
+}
+
+void ModelManipulator::DrawBone(const Bone& bone)
+{
+	const vector<Bone> bones = bone.GetBoneChildren();
+	const ImGuiTreeNodeFlags style = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth;
+
+	if (bones.size() > 0)
+	{
+		bool node_open = ImGui::TreeNodeEx(
+			bone.GetBoneName().c_str(),
+			style,
+			bone.GetBoneName().c_str()
+		);
+
+		if (node_open)
+		{
+			for (const auto& boneChild : bone.GetBoneChildren())
+			{
+				DrawBone(boneChild);
+			}
+			ImGui::TreePop();
+		}
+	}
+	else
+	{
+		BulletText(bone.GetBoneName().c_str());
 	}
 }
 

@@ -6,7 +6,7 @@
 #include "DDSImageFile.h"
 #include "NormalImageFile.h"
 #include "ModelFile.h"
-#include "SkeletalFile.h"
+#include "BoneFile.h"
 
 #include "DirectXDevice.h"
 
@@ -119,7 +119,7 @@ void FileManipulator::LoadFiles(const std::wstring& wstrFilePathIn)
                 FileLoader::IsStrSame(&isObject, strExtention, ".fbx", ".gltf");
                 if (isObject)
                 {
-                    vector<shared_ptr<IFile>> spFileInterfaces = FileLoader::LoadModelFile(
+                    vector<shared_ptr<IFile>> spFileInterfaces = FileLoader::LoadModelFileSet(
                         strFilePathIn, strFileLabel, strExtention
                     );
 

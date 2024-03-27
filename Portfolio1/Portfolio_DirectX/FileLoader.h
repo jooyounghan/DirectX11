@@ -46,7 +46,7 @@ private:
 	}
 
 public:
-	static std::vector<std::shared_ptr<class IFile>> LoadModelFile(
+	static std::vector<std::shared_ptr<class IFile>> LoadModelFileSet(
 		const std::string& strFilePath,
 		const std::string& strFileName,
 		const std::string& strExtension
@@ -54,14 +54,14 @@ public:
 
 private:
 	static bool HasBones(const struct aiScene*);
-	inline static const std::string GetFileNameAsSkeletalLabel(const std::string& strFileName) { return strFileName + "_SKELETAL"; }
+	inline static const std::string GetFileNameAsBoneLabel(const std::string& strFileName) { return strFileName + "_Bone"; }
 
 private:
-	static std::shared_ptr<IFile> LoadSkeletalFile(
+	static std::shared_ptr<class BoneFile> LoadBoneFile(
 		const std::string strFileName, 
 		const struct aiScene* pScene
 	);
-	static std::vector<std::shared_ptr<IFile>> LoadMaterialFile(
+	static std::vector<std::shared_ptr<class MaterialFile>> LoadMaterialFile(
 		const std::string strFilePath, 
 		const struct aiScene* pScene,
 		const bool& bIsGltfIn
@@ -71,7 +71,9 @@ private:
 		const std::string& strFileName, 
 		const std::string& strExtension,
 		const bool& bIsGltf,
-		const struct aiScene* pScene
+		const struct aiScene* pScene,
+		const std::shared_ptr<class BoneFile>& spBone,
+		const std::vector<std::shared_ptr<class MaterialFile>>& spMaterials
 	);
 
 private:
@@ -83,7 +85,8 @@ private:
 		const struct aiNode* pNode,
 		const struct aiScene* pScene,
 		const DirectX::XMMATRIX& xmMatrix,
-		class ModelFile* pModelFile
+		class ModelFile* pModelFile,
+		const std::vector<std::shared_ptr<class MaterialFile>>& spMaterials
 	);
 
 	static std::shared_ptr<class MeshFile> LoadMeshFile(

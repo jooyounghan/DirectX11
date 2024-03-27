@@ -38,8 +38,10 @@ protected:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> cpInicesBuffer;
 
 public:
-	std::vector<DirectX::XMFLOAT3>& GetVerticesRef() { return vVertices; }
-	inline UINT GetVerticesCount() { return (UINT)vVertices.size(); }
+	inline std::vector<DirectX::XMFLOAT3>& GetVerticesRef() { return vVertices; }
+
+public:
+	inline UINT GetIndicesCount() { return (UINT)vIndices.size(); }
 
 public:
 	void CreateBuffers();
@@ -53,9 +55,6 @@ protected:
 public:
 	void SetMaterial(const std::shared_ptr<MaterialFile>& spMaterialIn) { spMaterial = spMaterialIn; }
 	std::shared_ptr<MaterialFile> GetMaterial() { return spMaterial; }
-
-public:
-	inline void UpdateMesh() { spMaterial.get() != nullptr ? spMaterial->UpdateMaterial() : void(); }
 
 private:
 	virtual void AcceptFileAsList(class FileManipulator* pFileManipulator) override {};

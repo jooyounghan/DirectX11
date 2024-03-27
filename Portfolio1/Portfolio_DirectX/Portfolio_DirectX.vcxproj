@@ -182,10 +182,12 @@
     <ClInclude Include="PBRIBLLightPixelShader.h" />
     <ClInclude Include="PBRPointLightPixelShader.h" />
     <ClInclude Include="PBRSpotLightPixelShader.h" />
-    <ClInclude Include="SkeletalFile.h" />
+    <ClInclude Include="BoneFile.h" />
     <ClInclude Include="SkeletalModel.h" />
+    <ClInclude Include="SkeletalModelFile.h" />
     <ClInclude Include="StageManipulator.h" />
     <ClInclude Include="CubeRenderTargets.h" />
+    <ClInclude Include="StaticModelFile.h" />
     <ClInclude Include="TODO.h" />
     <ClInclude Include="TypeResolveComputeShader.h" />
     <ClInclude Include="Viewable.h" />
@@ -274,10 +276,12 @@
     <ClCompile Include="PBRIBLLightPixelShader.cpp" />
     <ClCompile Include="PBRPointLightPixelShader.cpp" />
     <ClCompile Include="PBRSpotLightPixelShader.cpp" />
-    <ClCompile Include="SkeletalFile.cpp" />
+    <ClCompile Include="BoneFile.cpp" />
     <ClCompile Include="SkeletalModel.cpp" />
+    <ClCompile Include="SkeletalModelFile.cpp" />
     <ClCompile Include="StageManipulator.cpp" />
     <ClCompile Include="CubeRenderTargets.cpp" />
+    <ClCompile Include="StaticModelFile.cpp" />
     <ClCompile Include="TypeResolveComputeShader.cpp" />
     <ClCompile Include="Viewable.cpp" />
     <ClCompile Include="BaseApp.cpp" />

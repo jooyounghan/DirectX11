@@ -7,7 +7,7 @@ using namespace std;
 ModelFile::ModelFile(
     const std::string& strFileLabelIn
 )
-	: IFile(strFileLabelIn)
+	: IFile(strFileLabelIn), bIsInitialized(false)
 {
 
 }
@@ -47,12 +47,8 @@ void ModelFile::Initialize()
                 v.y = (v.y + translation.y) * scale;
                 v.z = (v.z + translation.z) * scale;
             }
+            meshFile->CreateBuffers();
         }
         bIsInitialized = true;
     }
-}
-
-void ModelFile::AcceptFileAsList(FileManipulator* pFileManipulator)
-{
-	pFileManipulator->ShowAsList(*this, DRAG_DROP_MODEL_KEY);
 }

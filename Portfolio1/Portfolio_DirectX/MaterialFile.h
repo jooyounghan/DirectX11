@@ -1,9 +1,8 @@
 #pragma once
 #include <unordered_map>
-
 #include "ImageFile.h"
 
-class MaterialFile : public IFile
+class MaterialFile : public IFile, public std::enable_shared_from_this<MaterialFile>
 {
 public:
 	MaterialFile(
@@ -30,11 +29,8 @@ protected:
 	std::shared_ptr<IImageFile>			spModelTexture[TEXTURE_MAP_NUM];
 
 public:
-	inline void SetTextureImageFile(const EModelTextures& eModelTexture, std::shared_ptr<IImageFile> spImageFileIn) { spModelTexture[eModelTexture] = spImageFileIn; }
+	void SetTextureImageFile(const EModelTextures& eModelTexture, std::shared_ptr<IImageFile> spImageFileIn);
 	inline std::shared_ptr<IImageFile>& GetTextureImageFileRef(const EModelTextures& eModelTexture) { return spModelTexture[eModelTexture]; }
-
-public:
-	void UpdateMaterial();
 
 protected:
 	static std::string								strDefaultTextureName;

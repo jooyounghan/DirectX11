@@ -1,6 +1,7 @@
 #include "MaterialFile.h"
 #include "ID3D11Helper.h"
 #include "DirectXDevice.h"
+#include "FileManipulator.h"
 
 using namespace std;
 
@@ -18,8 +19,10 @@ std::unordered_map<WORD, std::string> MaterialFile::unmapTextureNames
 	 { HEIGHT_TEXTURE_MAP, "Height Map" }
 };
 
-void MaterialFile::UpdateMaterial()
+void MaterialFile::SetTextureImageFile(const EModelTextures& eModelTexture, std::shared_ptr<IImageFile> spImageFileIn)
 {
+	spModelTexture[eModelTexture] = spImageFileIn;
+
 	for (WORD idx = 0; idx < TEXTURE_MAP_NUM; ++idx)
 	{
 		sModelTextureFlag.bIsTextureOn[idx] = (spModelTexture[idx].get() != nullptr);
@@ -46,6 +49,7 @@ const std::string& MaterialFile::GetTextureName(const WORD& iTextureID)
 
 void MaterialFile::AcceptFileAsList(FileManipulator* pFileManipulator)
 {
+	pFileManipulator->ShowAsList(*this, DRAG_DROP_MATERIAL_KEY);
 }
 
 MaterialFile::MaterialFile(
