@@ -1,15 +1,35 @@
 #pragma once
 #include <vector>
 #include <string>
+#include <DirectXMath.h>
 
 class Bone
 {
 public:
-	Bone(const std::string& strBoneNameIn, Bone* pBoneParentIn = nullptr);
+	Bone(
+		const std::string& strBoneNameIn, 
+		Bone* pBoneParentIn = nullptr
+	);
 	~Bone();
 
 private:
 	std::string strBoneName;
+
+private:
+	struct BoneWeight
+	{
+		unsigned int uiVertexId;
+		float fWeight;
+	};
+
+private:
+	unsigned int uiNumWeight;
+	BoneWeight* pBoneWeights;
+	DirectX::XMMATRIX	xmMatrix;
+
+public:
+	void SetWeights(const unsigned& uiNumWeightIn, void* pWeights);
+	inline void SetBoneMatrix(DirectX::XMMATRIX&& xmMatirxIn) { xmMatrix = xmMatirxIn; }
 
 private:
 	Bone* pBoneParent;

@@ -54,7 +54,11 @@ public:
 
 private:
 	static bool HasBones(const struct aiScene*);
+
+private:
 	inline static const std::string GetFileNameAsBoneLabel(const std::string& strFileName) { return strFileName + "_Bone"; }
+	inline static const std::string GetFileNameAsAnimationLabel(const std::string& strFileName) { return strFileName + "_ANIM"; }
+	inline static const std::string GetFileNameAsAnimationChannelLabel(const std::string& strFileName) { return strFileName + "_ANIM_CHANNEL"; }
 
 private:
 	static std::shared_ptr<class BoneFile> LoadBoneFile(
@@ -66,6 +70,11 @@ private:
 		const struct aiScene* pScene,
 		const bool& bIsGltfIn
 	);
+	static std::vector<std::shared_ptr<class AnimationFile>> LoadAnimationFile(
+		const std::string strFileName,
+		const struct aiScene* pScene
+	);
+
 	static std::shared_ptr<IFile> LoadModelFile(
 		const std::string& strFilePath, 
 		const std::string& strFileName, 
@@ -101,12 +110,12 @@ private:
 private:
 	static void UpdateBoneNameSet(
 		const struct aiScene* pScene, 
-		std::set<std::string>& setBoneInformation
+		std::unordered_map<std::string, const void*>& unmapBoneInformation
 	);
 	static void LoadBoneFromNode(
 		const struct aiNode* pNode,
 		class Bone* pBoneParent,
-		const std::set<std::string>& setBoneInformation
+		const std::unordered_map<std::string, const void*>& unmapBoneInformation
 	);
 
 public:

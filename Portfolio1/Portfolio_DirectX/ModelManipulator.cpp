@@ -5,6 +5,8 @@
 #include "SkeletalModel.h"
 #include "AIBLMesh.h"
 #include "MirrorModel.h"
+#include "Bone.h"
+#include "Animation.h"
 
 #include "SkeletalModelFile.h"
 #include "StaticModelFile.h"
@@ -183,13 +185,17 @@ void ModelManipulator::ManipulateModel(SkeletalModel& skeletalModel)
 	if (pBone != nullptr && CollapsingHeader("Bone Data"))
 	{
 		DrawBone(*pBone);
+		Separator();
 	}
+
+	DrawAnimInformation(skeletalModel.GetAnimation());
+	Separator();
 
 	vector<PBRStaticMesh>& vPBRMeshes = skeletalModel.GetChildrenMeshesRef();
 	for (auto& pbrMesh : vPBRMeshes)
 	{
-		Separator();
 		DrawPBRTexture(pbrMesh);
+		Separator();
 	}
 }
 
@@ -307,7 +313,7 @@ void ModelManipulator::DrawMirrorProperties(MirrorModel& mirrorModel)
 void ModelManipulator::DrawBone(const Bone& bone)
 {
 	const vector<Bone> bones = bone.GetBoneChildren();
-	const ImGuiTreeNodeFlags style = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth;
+	const ImGuiTreeNodeFlags style = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_DefaultOpen;
 
 	if (bones.size() > 0)
 	{
@@ -329,6 +335,33 @@ void ModelManipulator::DrawBone(const Bone& bone)
 	else
 	{
 		BulletText(bone.GetBoneName().c_str());
+	}
+}
+
+void ModelManipulator::DrawAnimInformation(Animation& anim)
+{
+	if (CollapsingHeader("Animation Data"))
+	{
+		if (anim.GetAnimationFile() != nullptr)
+		{
+			double dblMin = 0.1;
+			double dblMax = 3.0;
+			DragScalar(
+				"Animation Speed", ImGuiDataType_::ImGuiDataType_Double,
+				anim.GetAnimSpeedAddress(),
+				0.001f,
+				&dblMin, &dblMax, "%.3f"
+			);
+		}
+		if (BeginDragDropTarget())
+		{
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DRAG_DROP_ANIMATION_KEY))
+			{
+				AnimationFile* pAnimFile = (AnimationFile*)payload->Data;
+				anim = Animation(pAnimFile->shared_from_this());
+			}
+			ImGui::EndDragDropTarget();
+		}
 	}
 }
 

@@ -2,7 +2,7 @@
 #include "IFile.h"
 #include "Bone.h"
 #include <memory>
-#include <set>
+#include <unordered_map>
 
 class BoneFile : public IFile, public Bone, public std::enable_shared_from_this<BoneFile>
 {
@@ -11,10 +11,10 @@ public:
 	virtual ~BoneFile();
 
 private:
-	std::set<std::string> setBoneInformation;
+	std::unordered_map<std::string, const void*> unmapBoneInformation;
 
 public:
-	std::set<std::string>& GetBoneInformation() { return setBoneInformation; };
+	std::unordered_map<std::string, const void*>& GetBoneInformation() { return unmapBoneInformation; };
 
 private:
 	virtual void AcceptFileAsList(class FileManipulator* pFileManipulator) override;

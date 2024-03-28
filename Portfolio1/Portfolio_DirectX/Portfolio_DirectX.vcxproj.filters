@@ -211,6 +211,12 @@
     <Filter Include="헤더 파일\Object\Model\PBR\Extended">
       <UniqueIdentifier>{04e62b96-fbe1-4b8b-97eb-5b3178b808e6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Animation">
+      <UniqueIdentifier>{5fcf7722-1afe-4029-8236-b98c07b541af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Animation">
+      <UniqueIdentifier>{99dfcfb4-ff5f-42b4-b456-af383c10c0c1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseApp.h">
@@ -462,12 +468,6 @@
     <ClInclude Include="DepthBlurComputeShader.h">
       <Filter>헤더 파일\Shader\Extended\Compute</Filter>
     </ClInclude>
-    <ClInclude Include="AnimationFile.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Bone.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="BoneFile.h">
       <Filter>헤더 파일\File\Extended</Filter>
     </ClInclude>
@@ -494,6 +494,15 @@
     </ClInclude>
     <ClInclude Include="StaticModelFile.h">
       <Filter>헤더 파일\File\Extended</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationFile.h">
+      <Filter>헤더 파일\File\Extended</Filter>
+    </ClInclude>
+    <ClInclude Include="Bone.h">
+      <Filter>헤더 파일\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation.h">
+      <Filter>헤더 파일\Animation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -734,12 +743,6 @@
     <ClCompile Include="DepthBlurComputeShader.cpp">
       <Filter>소스 파일\Shader\Extended\Compute</Filter>
     </ClCompile>
-    <ClCompile Include="AnimationFile.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="Bone.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="BoneFile.cpp">
       <Filter>소스 파일\File\Extended</Filter>
     </ClCompile>
@@ -766,6 +769,15 @@
     </ClCompile>
     <ClCompile Include="StaticModelFile.cpp">
       <Filter>소스 파일\File\Extended</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationFile.cpp">
+      <Filter>소스 파일\File\Extended</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation.cpp">
+      <Filter>소스 파일\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="Bone.cpp">
+      <Filter>소스 파일\Animation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

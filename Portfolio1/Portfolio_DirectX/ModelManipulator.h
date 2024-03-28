@@ -15,6 +15,7 @@ class SkeletalModel;
 class AIBLMesh;
 class MirrorModel;
 class Bone;
+class Animation;
 
 class ModelManipulator : public IGuiMenu
 {
@@ -81,7 +82,8 @@ private:
 	void DrawMirrorProperties(MirrorModel& mirrorModel);
 
 private:
-	void DrawBone(const class Bone& bone);
+	void DrawBone(const Bone& bone);
+	void DrawAnimInformation(Animation& anim);
 
 private:
 	void SetTextureDragAndDrop(

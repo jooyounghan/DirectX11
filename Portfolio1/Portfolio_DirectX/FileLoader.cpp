@@ -13,6 +13,7 @@
 #include "BoneFile.h"
 #include "SkeletalModelFile.h"
 #include "StaticModelFile.h"
+#include "AnimationFile.h"
 
 #include "DefineVar.h"
 
@@ -228,8 +229,14 @@ vector<shared_ptr<IFile>> FileLoader::LoadModelFileSet(
         }
 
         // Read Animation File
+        vector<shared_ptr<AnimationFile>> spAnimFiles;
         if (pScene->mNumAnimations > 0)
         {
+            spAnimFiles = LoadAnimationFile(strFileName, pScene);
+            for (auto& anim : spAnimFiles)
+            {
+                vLoadedFiles.emplace_back(anim);
+            }
         }
 
         // Read Mesh File
@@ -332,6 +339,39 @@ vector<shared_ptr<MaterialFile>> FileLoader::LoadMaterialFile(
         }
     }
     return spMaterials;
+}
+
+vector<shared_ptr<AnimationFile>> FileLoader::LoadAnimationFile(const std::string strFileName, const aiScene* pScene)
+{
+    vector<shared_ptr<AnimationFile>> result;
+    for (size_t animIdx = 0; animIdx < pScene->mNumAnimations; ++animIdx)
+    {
+        aiAnimation* pAnimation = pScene->mAnimations[animIdx];
+        const string animationLabel = GetFileNameAsAnimationLabel(strFileName);
+        shared_ptr<AnimationFile> spAnimation = make_shared<AnimationFile>(
+            animationLabel, pAnimation->mDuration, pAnimation->mTicksPerSecond
+        );
+
+        for (size_t channelIdx = 0; channelIdx < pAnimation->mNumChannels; ++channelIdx)
+        {
+            aiNodeAnim* pAnimNode = pAnimation->mChannels[channelIdx];
+            const string animNodeName = pAnimNode->mNodeName.C_Str();
+
+            spAnimation->AddAnimChannel(
+                AnimChannelFile(
+                    animNodeName,
+                    pAnimNode->mNumPositionKeys,
+                    pAnimNode->mPositionKeys,
+                    pAnimNode->mNumRotationKeys,
+                    pAnimNode->mRotationKeys,
+                    pAnimNode->mNumScalingKeys,
+                    pAnimNode->mScalingKeys
+                )
+            );
+        }
+        result.push_back(spAnimation);
+    }
+    return result;
 }
 
 shared_ptr<IFile> FileLoader::LoadModelFile(
@@ -496,7 +536,7 @@ shared_ptr<MeshFile> FileLoader::LoadMeshFile(
 
 void FileLoader::UpdateBoneNameSet(
     const aiScene* pScene, 
-    set<string>& setBoneInformation
+    unordered_map<string, const void*>& unmapBoneInformation
 )
 {
     if (pScene != nullptr)
@@ -507,7 +547,7 @@ void FileLoader::UpdateBoneNameSet(
             for (size_t bone_idx = 0; bone_idx < pMesh->mNumBones; ++bone_idx)
             {
                 const aiBone* pBone = pMesh->mBones[bone_idx];
-                setBoneInformation.insert(pBone->mName.C_Str());
+                unmapBoneInformation.emplace(pBone->mName.C_Str(), pBone);
             }
         }
     }
@@ -516,7 +556,7 @@ void FileLoader::UpdateBoneNameSet(
 void FileLoader::LoadBoneFromNode(
     const aiNode* pNode,
     Bone* pBoneParent,
-    const set<string>& setBoneInformation
+    const unordered_map<string, const void*>& unmapBoneInformation
 )
 {
     if (pNode != nullptr && pBoneParent != nullptr)
@@ -524,11 +564,15 @@ void FileLoader::LoadBoneFromNode(
         for (size_t node_idx = 0; node_idx < pNode->mNumChildren; ++node_idx)
         {
             aiNode* pChild = pNode->mChildren[node_idx];
-            const string&& boneName = pChild->mName.C_Str();
-            if (setBoneInformation.find(boneName) != setBoneInformation.end())
+            const string boneName = pChild->mName.C_Str();
+            if (unmapBoneInformation.find(boneName) != unmapBoneInformation.end())
             {
+                const aiBone* pBone = (aiBone*)unmapBoneInformation.at(boneName);
                 pBoneParent->AddBoneChild(boneName);
-                LoadBoneFromNode(pChild, pBoneParent->GetLatestBoneChild(), setBoneInformation);
+                Bone* pLastBone = pBoneParent->GetLatestBoneChild();
+                pLastBone->SetWeights(pBone->mNumWeights, pBone->mWeights);
+                pLastBone->SetBoneMatrix(DirectX::XMMATRIX(&pBone->mOffsetMatrix.a1));
+                LoadBoneFromNode(pChild, pLastBone, unmapBoneInformation);
             }
         }
     }
@@ -764,3 +808,13 @@ shared_ptr<MeshFile> FileLoader::LoadPlaneMesh(
 
     return meshData;
 }
+
+/*
+File은 변하지 않는 객체로 두고, 이를 생성자에서 받아서 인스턴스를 조작하는 방식으로!
+ModelFile -> GroupModel
+BoneFile -> Bone
+MaterialFile -> Material
+AnimationFile -> Animation
+
+
+*/

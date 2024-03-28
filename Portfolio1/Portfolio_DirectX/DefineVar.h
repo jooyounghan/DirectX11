@@ -15,3 +15,4 @@
 #define DRAG_DROP_SKELETAL_MODEL_KEY	"SkeletalModelFile"
 #define DRAG_DROP_BONE_KEY				"BoneFile"
 #define DRAG_DROP_MATERIAL_KEY			"MaterialFile"
+#define DRAG_DROP_ANIMATION_KEY			"AnimationFile"
