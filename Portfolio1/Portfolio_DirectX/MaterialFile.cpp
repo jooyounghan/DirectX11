@@ -1,4 +1,5 @@
 #include "MaterialFile.h"
+#include "DefineVar.h"
 #include "ID3D11Helper.h"
 #include "DirectXDevice.h"
 #include "FileManipulator.h"
@@ -19,22 +20,6 @@ std::unordered_map<WORD, std::string> MaterialFile::unmapTextureNames
 	 { HEIGHT_TEXTURE_MAP, "Height Map" }
 };
 
-void MaterialFile::SetTextureImageFile(const EModelTextures& eModelTexture, std::shared_ptr<IImageFile> spImageFileIn)
-{
-	spModelTexture[eModelTexture] = spImageFileIn;
-
-	for (WORD idx = 0; idx < TEXTURE_MAP_NUM; ++idx)
-	{
-		sModelTextureFlag.bIsTextureOn[idx] = (spModelTexture[idx].get() != nullptr);
-	}
-
-	ID3D11Helper::UpdateBuffer(
-		DirectXDevice::pDeviceContext,
-		sModelTextureFlag, D3D11_MAP_WRITE_DISCARD,
-		cpModelTextureFlagBuffer.Get()
-	);
-}
-
 const std::string& MaterialFile::GetTextureName(const WORD& iTextureID)
 {
 	if (unmapTextureNames.find(iTextureID) != unmapTextureNames.end())
@@ -45,11 +30,6 @@ const std::string& MaterialFile::GetTextureName(const WORD& iTextureID)
 	{
 		return strDefaultTextureName;
 	}
-}
-
-void MaterialFile::AcceptFileAsList(FileManipulator* pFileManipulator)
-{
-	pFileManipulator->ShowAsList(*this, DRAG_DROP_MATERIAL_KEY);
 }
 
 MaterialFile::MaterialFile(
@@ -70,4 +50,23 @@ MaterialFile::MaterialFile(
 
 MaterialFile::~MaterialFile()
 {
+}
+
+void MaterialFile::SetTextureImageFile(const EModelTextures& eModelTexture, std::shared_ptr<IImageFile> spImageFileIn)
+{
+	spModelTexture[eModelTexture] = spImageFileIn;
+
+	sModelTextureFlag.bIsTextureOn[eModelTexture] = (spModelTexture[eModelTexture].get() != nullptr);
+
+	ID3D11Helper::UpdateBuffer(
+		DirectXDevice::pDeviceContext,
+		sModelTextureFlag, D3D11_MAP_WRITE_DISCARD,
+		cpModelTextureFlagBuffer.Get()
+	);
+}
+
+
+void MaterialFile::AcceptFileAsList(FileManipulator* pFileManipulator)
+{
+	pFileManipulator->ShowAsList(*this, DRAG_DROP_MATERIAL_KEY);
 }

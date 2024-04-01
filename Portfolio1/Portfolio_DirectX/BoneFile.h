@@ -1,20 +1,43 @@
 #pragma once
 #include "IFile.h"
-#include "Bone.h"
+#include <DirectXMath.h>
 #include <memory>
-#include <unordered_map>
+#include <vector>
 
-class BoneFile : public IFile, public Bone, public std::enable_shared_from_this<BoneFile>
+struct BoneWeight
+{
+	unsigned int uiVertexId;
+	float fWeight;
+};
+
+struct BoneData
+{
+	std::string strBoneName;
+	unsigned int uiNumWeight;
+	BoneWeight* pBoneWeights;
+	BoneData* pBoneParent;
+	std::vector<BoneData> vBoneChildren;
+};
+
+class BoneFile : public IFile, public std::enable_shared_from_this<BoneFile>
 {
 public:
-	BoneFile(const std::string& strFileLabelIn);
+	BoneFile(const std::string& strFileLabelIn, const size_t& uiBoneNumsIn);
 	virtual ~BoneFile();
 
 private:
-	std::unordered_map<std::string, const void*> unmapBoneInformation;
+	BoneData boneRoot;
+	size_t uiBoneNums;
+
+private:
+	std::vector<DirectX::XMMATRIX> vBoneOffsetMatrix;
 
 public:
-	std::unordered_map<std::string, const void*>& GetBoneInformation() { return unmapBoneInformation; };
+	inline void SetOffsetMatrix(const size_t boneIdIdx, const DirectX::XMMATRIX& boneOffsetMatrixIn) { vBoneOffsetMatrix[boneIdIdx] = boneOffsetMatrixIn; }
+
+public:
+	BoneData& GetRootBone() { return boneRoot; }
+	inline const size_t& GetBoneNums() { return uiBoneNums; }
 
 private:
 	virtual void AcceptFileAsList(class FileManipulator* pFileManipulator) override;

@@ -11,9 +11,9 @@
 #include "NormalImageFile.h"
 #include "DDSImageFile.h"
 #include "BoneFile.h"
-#include "MaterialFile.h"
+#include "SkeletalModelFile.h"
+#include "StaticModelFile.h"
 #include "AnimationFile.h"
-#include "MeshFile.h"
 
 #include "DefineVar.h"
 
@@ -36,7 +36,7 @@ using namespace std;
 using namespace DirectX;
 
 unordered_map<string, weak_ptr<class IFile>> FileLoader::mapUsingFiles;
-size_t FileLoader::uiBoneId = 0;
+unsigned int FileLoader::uiBoneId = 0;
 
 uint8_t* FileLoader::LoadFileWithStbi(const char* sFilename, UINT* x, UINT* y, UINT* comp)
 {
@@ -246,7 +246,7 @@ vector<shared_ptr<IFile>> FileLoader::LoadModelFileSet(
         {
             // When Loading Model Files, Set Loaded Bone And Material as Argument to decide the type of the File Class between StaticModelFile and BoneMdel File
             // Static Model File Has Mesh and Material File and, Bone Model File Has Bone File and All of Static Mesh
-            spMeshFile = LoadMeshFile(strFilePath, strFileName, strExtension, bIsGltf, pScene);
+            spMeshFile = LoadModelFile(strFilePath, strFileName, strExtension, bIsGltf, pScene, spBoneFile, vMaterials);
             vLoadedFiles.emplace_back(spMeshFile);
         }
     }
@@ -287,10 +287,9 @@ shared_ptr<BoneFile> FileLoader::LoadBoneFile(const string strFileName, const ai
     if (pBone == nullptr)
     {
         cout << "Loading " << BoneLabel << "..." << endl;
-        const std::unordered_map<std::string, struct aiBone*> nodeToBoneTable = GetNodeToBoneTable(pScene);
-
-        spBone = make_shared<BoneFile>(BoneLabel, nodeToBoneTable.size());
-        LoadBoneFromNode(pScene->mRootNode, spBone.get(), spBone->GetRootBone(), nodeToBoneTable);
+        spBone = make_shared<BoneFile>(BoneLabel);
+        uiBoneId = 0;
+        LoadBoneFromNode(pScene->mRootNode, spBone->GetRootBone(), GetNodeToBoneTable(pScene));
         FileLoader::AddUsingFile(BoneLabel, spBone);
     }
     else
@@ -375,116 +374,163 @@ vector<shared_ptr<AnimationFile>> FileLoader::LoadAnimationFile(const std::strin
     return result;
 }
 
-shared_ptr<MeshFile> FileLoader::LoadMeshFile(
+shared_ptr<IFile> FileLoader::LoadModelFile(
     const string& strFilePath, 
     const string& strFileName, 
     const string& strExtension,
     const bool& bIsGltf,
-    const aiScene* pScene
+    const aiScene* pScene,
+    const shared_ptr<BoneFile>& spBone,
+    const vector<shared_ptr<MaterialFile>>& spMaterials
 )
 {
-    shared_ptr<MeshFile> spMesh;
+    const bool isSkeletal = spBone.get() != nullptr;
 
-    const string meshLabel = GetFileNameAsLabel(strFileName, strExtension);
-    MeshFile* pMesh = (MeshFile*)FileLoader::GetUsingFile(meshLabel).get();
-
-    if (pMesh == nullptr)
+    shared_ptr<IFile> spModel;
+    const string modelLabel = GetFileNameAsLabel(strFileName, strExtension);
+    ModelFile* pModel = (ModelFile*)FileLoader::GetUsingFile(modelLabel).get();
+    if (pModel == nullptr)
     {
-        cout << "Start Loading " << meshLabel << "====================================" << endl;
+        cout << "Start Loading " << modelLabel << "====================================" << endl;
 
-        size_t mesh_idx = 0;
+        shared_ptr<ModelFile> spTempModel;
+
+        if (isSkeletal)
+        {
+            shared_ptr<SkeletalModelFile> spTempSkeletalModel = make_shared<SkeletalModelFile>(modelLabel);
+            spTempSkeletalModel->SetBoneFile(spBone);
+            spTempModel = spTempSkeletalModel;
+        }
+        else
+        {
+            spTempModel = make_shared<StaticModelFile>(modelLabel);
+        }
+
+        uint8_t mesh_idx = 0;
         DirectX::XMMATRIX xmmTransform = DirectX::XMMatrixIdentity();
-        spMesh = make_shared<MeshFile>(meshLabel, pScene->mNumMeshes);
-        ProcessNode(strFilePath, meshLabel, mesh_idx, bIsGltf, pScene->mRootNode, pScene, xmmTransform, spMesh.get());
-        spMesh->Initialize();
+        ProcessNode(strFilePath, modelLabel, mesh_idx, bIsGltf, pScene->mRootNode, pScene, xmmTransform, spTempModel.get(), spMaterials);
+        spTempModel->Initialize();
+        cout << "Finish Loading " << modelLabel << "===================================" << endl;
 
-        cout << "Finish Loading " << meshLabel << "===================================" << endl;
-
-        FileLoader::AddUsingFile(meshLabel, spMesh);
+        spModel = spTempModel;
+        FileLoader::AddUsingFile(modelLabel, spModel);
     }
     else
     {
-        spMesh = pMesh->shared_from_this();
+        if (isSkeletal)
+        {
+            spModel = ((SkeletalModelFile*)pModel)->shared_from_this();
+        }
+        else
+        {
+            spModel = ((StaticModelFile*)pModel)->shared_from_this();
+        }
     }
-    return spMesh;
+    return spModel;
 }
 
 void FileLoader::ProcessNode(
     const string& strFilePath,
     const string& strFileLabel,
-    size_t& uiElementIdx,
+    uint8_t& ucElementIdx,
     const bool& bIsGltf,
-    const struct aiNode* pNode,
-    const struct aiScene* pScene,
-    const XMMATRIX& xmMatrix,
-    class MeshFile* pMeshFile
+    const aiNode* pNode, 
+    const aiScene* pScene, 
+    const DirectX::XMMATRIX& xmMatrix,
+    ModelFile* pModelFile,
+    const std::vector<std::shared_ptr<MaterialFile>>& spMaterials
 )
 {
     DirectX::XMMATRIX m(&pNode->mTransformation.a1);
     m = DirectX::XMMatrixTranspose(m) * xmMatrix;
+
    
     for (UINT idx = 0; idx < pNode->mNumMeshes; ++idx)
     {
+        ucElementIdx++;
         aiMesh* pMesh = pScene->mMeshes[pNode->mMeshes[idx]];
-        LoadMeshData(strFilePath, uiElementIdx, bIsGltf, pMesh, m, pScene, pMeshFile);
-        uiElementIdx++;
+        shared_ptr<MeshFile> meshFile = LoadMeshFile(strFilePath, ucElementIdx, bIsGltf, pMesh, m, pScene);
+        
+        const size_t materialIdx = pMesh->mMaterialIndex;
+        if (spMaterials.size() > materialIdx)
+        {
+            meshFile->SetMaterial(spMaterials[materialIdx]);
+        }
+
+        pModelFile->AddMeshFile(meshFile);
     }
 
     for (UINT i = 0; i < pNode->mNumChildren; i++) 
     {
-        ProcessNode(strFilePath, strFileLabel, uiElementIdx, bIsGltf, pNode->mChildren[i], pScene, m, pMeshFile);
+        ProcessNode(strFilePath, strFileLabel, ucElementIdx, bIsGltf, pNode->mChildren[i], pScene, m, pModelFile, spMaterials);
     }
 }
 
-void FileLoader::LoadMeshData(
+shared_ptr<MeshFile> FileLoader::LoadMeshFile(
     const string& strFilePath,
-    size_t& uiElementIdx,
+    uint8_t& ucElementIdx,
     const bool& bIsGltf,
     const aiMesh* pMesh, 
     const DirectX::XMMATRIX& xmMatrix,
-    const aiScene* pScene,
-    class MeshFile* pMeshFile
+    const aiScene* pScene
 )
 {
-    Mesh& mesh = pMeshFile->GetMeshData(uiElementIdx);
-    for (UINT i = 0; i < pMesh->mNumVertices; i++)
-    {
-        mesh.vVertices.emplace_back(
-            pMesh->mVertices[i].x,
-            pMesh->mVertices[i].y,
-            pMesh->mVertices[i].z
-        );
+    shared_ptr<MeshFile> result;
 
-        if (pMesh->mTextureCoords[0]) {
-            mesh.vTexcoords.emplace_back(
-                (float)pMesh->mTextureCoords[0][i].x,
-                (float)pMesh->mTextureCoords[0][i].y
+    const string strMeshLabelExtMesh = string(pMesh->mName.C_Str()) + to_string(ucElementIdx) + "_Mesh";
+    MeshFile* pMeshFile = (MeshFile*)GetUsingFile(strMeshLabelExtMesh).get();
+    if (pMeshFile == nullptr)
+    {
+        cout << "Loading " << strMeshLabelExtMesh << "..." << endl;
+
+        result = make_shared<MeshFile>(strMeshLabelExtMesh);
+
+        for (UINT i = 0; i < pMesh->mNumVertices; i++)
+        {
+            result->vVertices.emplace_back(
+                pMesh->mVertices[i].x,
+                pMesh->mVertices[i].y,
+                pMesh->mVertices[i].z
+            );
+
+            if (pMesh->mTextureCoords[0]) {
+                result->vTexcoords.emplace_back(
+                    (float)pMesh->mTextureCoords[0][i].x,
+                    (float)pMesh->mTextureCoords[0][i].y
+                );
+            }
+
+            bIsGltf ? result->vNormals.emplace_back(
+                pMesh->mNormals[i].x, -pMesh->mNormals[i].z, pMesh->mNormals[i].y
+            ) : result->vNormals.emplace_back(
+                pMesh->mNormals[i].x, pMesh->mNormals[i].y, pMesh->mNormals[i].z
             );
         }
 
-        bIsGltf ? mesh.vNormals.emplace_back(
-            pMesh->mNormals[i].x, -pMesh->mNormals[i].z, pMesh->mNormals[i].y
-        ) : mesh.vNormals.emplace_back(
-            pMesh->mNormals[i].x, pMesh->mNormals[i].y, pMesh->mNormals[i].z
-        );
+        for (UINT i = 0; i < pMesh->mNumFaces; i++) {
+            aiFace face = pMesh->mFaces[i];
+            for (UINT j = 0; j < face.mNumIndices; j++)
+                result->vIndices.emplace_back(face.mIndices[j]);
+        }
+
+        result->vTangents.resize(result->vNormals.size());
+        result->UpdateTangents();
+
+        vector<DirectX::XMFLOAT3>& vertices = result->vVertices;
+
+        for (DirectX::XMFLOAT3& v : vertices)
+        {
+            DirectX::XMVECTOR f4Vector = DirectX::XMVectorSet(v.x, v.y, v.z, 0.f);
+            f4Vector = DirectX::XMVector3TransformCoord(f4Vector, xmMatrix);
+            memcpy(&v, f4Vector.m128_f32, sizeof(v));
+        }
+        AddUsingFile(strMeshLabelExtMesh, result);
     }
-
-    for (UINT i = 0; i < pMesh->mNumFaces; i++) {
-        aiFace face = pMesh->mFaces[i];
-        for (UINT j = 0; j < face.mNumIndices; j++)
-            mesh.vIndices.emplace_back(face.mIndices[j]);
-    }
-
-    mesh.vTangents.resize(mesh.vNormals.size());
-
-    vector<DirectX::XMFLOAT3>& vertices = mesh.vVertices;
-
-    for (DirectX::XMFLOAT3& v : vertices)
+    else
     {
-        DirectX::XMVECTOR f4Vector = DirectX::XMVectorSet(v.x, v.y, v.z, 0.f);
-        f4Vector = DirectX::XMVector3TransformCoord(f4Vector, xmMatrix);
-        memcpy(&v, f4Vector.m128_f32, sizeof(v));
+        result = pMeshFile->shared_from_this();
     }
+    return result;
 }
 
 std::unordered_map<string, aiBone*> FileLoader::GetNodeToBoneTable(const aiScene* pScene)
@@ -504,14 +550,13 @@ std::unordered_map<string, aiBone*> FileLoader::GetNodeToBoneTable(const aiScene
 
 void FileLoader::LoadBoneFromNode(
     const aiNode* pNode,
-    BoneFile* pBoneFile,
     BoneData& boneData,
     const unordered_map<string, aiBone*>& nodeToBoneTable
 )
 {
     if (pNode != nullptr)
     {
-        uiBoneId++;
+        boneData.uiBoneId = uiBoneId;
         boneData.strBoneName = pNode->mName.C_Str();
 
         if (nodeToBoneTable.find(boneData.strBoneName) != nodeToBoneTable.end())
@@ -522,8 +567,6 @@ void FileLoader::LoadBoneFromNode(
             boneData.pBoneWeights = (BoneWeight*)malloc(weightsSize);
             memcpy(boneData.pBoneWeights, pBone->mWeights, weightsSize);
 
-            pBoneFile->SetOffsetMatrix(uiBoneId, XMMATRIX(&pBone->mOffsetMatrix.a1));
-
             for (size_t node_idx = 0; node_idx < pNode->mNumChildren; ++node_idx)
             {
                 const aiNode* pChildNode = pNode->mChildren[node_idx];
@@ -531,16 +574,16 @@ void FileLoader::LoadBoneFromNode(
                 boneData.vBoneChildren.emplace_back();
                 BoneData& currentBoneData = boneData.vBoneChildren[boneData.vBoneChildren.size() - 1];
                 currentBoneData.pBoneParent = &boneData;
-                LoadBoneFromNode(pChildNode, pBoneFile, currentBoneData, nodeToBoneTable);
+                LoadBoneFromNode(pChildNode, currentBoneData, nodeToBoneTable);
             }
         }
     }
 }
 
 string FileLoader::ReadTextureFileName(
-    const std::string& strFilePath, 
-    const aiScene* pScene, 
-    aiMaterial* pMaterial, 
+    const string& strFilePath,
+    const aiScene* pScene,
+    aiMaterial* pMaterial,
     aiTextureType eType
 )
 {
@@ -550,13 +593,13 @@ string FileLoader::ReadTextureFileName(
         pMaterial->GetTexture(eType, 0, &fileName);
         fullPath = fileName.C_Str();
         fullPath = strFilePath + "\\textures\\" + fullPath.filename().string();
-        if (!filesystem::exists(fullPath))
+        if (!filesystem::exists(fullPath)) 
         {
             const aiTexture* texture =
                 pScene->GetEmbeddedTexture(fileName.C_Str());
-            if (texture)
+            if (texture) 
             {
-                if (string(texture->achFormatHint).find("png") != string::npos)
+                if (string(texture->achFormatHint).find("png") != string::npos) 
                 {
                     filesystem::create_directories(fullPath.parent_path());
 
@@ -570,7 +613,7 @@ string FileLoader::ReadTextureFileName(
                 cout << "No Embedded Texture. (" << fileName.C_Str() << ")" << endl;
             }
         }
-        else
+        else 
         {
 
         }
@@ -630,11 +673,29 @@ string FileLoader::ConvertUniCodeToUTF8(const wstring& wStr)
     return result;
 }
 
-shared_ptr<MeshFile> FileLoader::LoadDefaultCubeMesh(
-    const bool& bReverse
-)
+shared_ptr<ModelFile> FileLoader::LoadDefaultCubeModel(const bool& bReverse)
 {
-    shared_ptr<MeshFile> spMeshFile;
+    shared_ptr<ModelFile> modelData;
+    string strModelFileName = bReverse ? "DefaultReverseCube_MODEL" : "DefaultCube_MODEL";
+
+    StaticModelFile* pModelFile = (StaticModelFile*)GetUsingFile(strModelFileName).get();
+
+    if (pModelFile == nullptr)
+    {
+        modelData = make_shared<StaticModelFile>(strModelFileName);
+        modelData->AddMeshFile(LoadDefaultCubeMesh(bReverse));
+    }
+    else
+    {
+        modelData = pModelFile->shared_from_this();
+    }
+
+    return modelData;
+}
+
+shared_ptr<class MeshFile> FileLoader::LoadDefaultCubeMesh(const bool& bReverse)
+{
+    shared_ptr<MeshFile> meshData;
     string strMeshFileName = bReverse ? "DefaultReverseCube_MESH" : "DefaultCube_MESH";
 
     const float normalFactor = bReverse ? -1.f : 1.f;
@@ -644,9 +705,7 @@ shared_ptr<MeshFile> FileLoader::LoadDefaultCubeMesh(
     {
         cout << "Loading " << strMeshFileName << "..." << endl;
 
-        spMeshFile = make_shared<MeshFile>(strMeshFileName, 1);
-        Mesh& meshData = spMeshFile->GetMeshData(0);
-
+        meshData = make_shared<MeshFile>(strMeshFileName);
         for (uint32_t latitudeIdx = 0; latitudeIdx < DEFAULT_CUBE_LEVEL; ++latitudeIdx)
         {
             const float& fLatitudeLow = DirectX::XM_PIDIV2 / DEFAULT_CUBE_LEVEL * latitudeIdx;
@@ -654,61 +713,63 @@ shared_ptr<MeshFile> FileLoader::LoadDefaultCubeMesh(
             const float& fLatitudeLowTextureCord = (latitudeIdx / DEFAULT_CUBE_LEVEL) / 2.f;
             const float& fLatitudeHighTextureCord = ((latitudeIdx + 1) / DEFAULT_CUBE_LEVEL) / 2.f;
 
-            const uint32_t& usLatitudeOffset = (uint32_t)meshData.vVertices.size();
+            const uint32_t& usLatitudeOffset = (uint32_t)meshData->vVertices.size();
 
             for (uint32_t longitudeIdx = 0; longitudeIdx <= (uint32_t)DEFAULT_CUBE_LEVEL * 2; ++longitudeIdx)
             {
                 const float& fLongitudeLow = DirectX::XM_2PI / (DEFAULT_CUBE_LEVEL * 2.f) * longitudeIdx;
                 const float& fLongitudeTextureCord = longitudeIdx / (DEFAULT_CUBE_LEVEL * 2.f);
 
-                meshData.vVertices.emplace_back(cosf(fLongitudeLow) * cosf(fLatitudeLow), sinf(fLatitudeLow), cosf(fLatitudeLow) * sinf(fLongitudeLow));
-                meshData.vVertices.emplace_back(cosf(fLongitudeLow) * cosf(fLatitudeHigh), sinf(fLatitudeHigh), cosf(fLatitudeHigh) * sinf(fLongitudeLow));
-                meshData.vVertices.emplace_back(cosf(fLongitudeLow) * cosf(-fLatitudeLow), sinf(-fLatitudeLow), cosf(-fLatitudeLow) * sinf(fLongitudeLow));
-                meshData.vVertices.emplace_back(cosf(fLongitudeLow) * cosf(-fLatitudeHigh), sinf(-fLatitudeHigh), cosf(-fLatitudeHigh) * sinf(fLongitudeLow));
+                meshData->vVertices.emplace_back(cosf(fLongitudeLow) * cosf(fLatitudeLow), sinf(fLatitudeLow), cosf(fLatitudeLow) * sinf(fLongitudeLow));
+                meshData->vVertices.emplace_back(cosf(fLongitudeLow) * cosf(fLatitudeHigh), sinf(fLatitudeHigh), cosf(fLatitudeHigh) * sinf(fLongitudeLow));
+                meshData->vVertices.emplace_back(cosf(fLongitudeLow) * cosf(-fLatitudeLow), sinf(-fLatitudeLow), cosf(-fLatitudeLow) * sinf(fLongitudeLow));
+                meshData->vVertices.emplace_back(cosf(fLongitudeLow) * cosf(-fLatitudeHigh), sinf(-fLatitudeHigh), cosf(-fLatitudeHigh) * sinf(fLongitudeLow));
 
-                meshData.vTexcoords.emplace_back(fLongitudeTextureCord, 0.5f + fLatitudeLowTextureCord);
-                meshData.vTexcoords.emplace_back(fLongitudeTextureCord, 0.5f + fLatitudeHighTextureCord);
-                meshData.vTexcoords.emplace_back(fLongitudeTextureCord, 0.5f - fLatitudeLowTextureCord);
-                meshData.vTexcoords.emplace_back(fLongitudeTextureCord, 0.5f - fLatitudeHighTextureCord);
+                meshData->vTexcoords.emplace_back(fLongitudeTextureCord, 0.5f + fLatitudeLowTextureCord);
+                meshData->vTexcoords.emplace_back(fLongitudeTextureCord, 0.5f + fLatitudeHighTextureCord);
+                meshData->vTexcoords.emplace_back(fLongitudeTextureCord, 0.5f - fLatitudeLowTextureCord);
+                meshData->vTexcoords.emplace_back(fLongitudeTextureCord, 0.5f - fLatitudeHighTextureCord);
 
-                meshData.vNormals.emplace_back(normalFactor * cosf(fLongitudeLow) * cosf(fLatitudeLow), normalFactor * sinf(fLatitudeLow), normalFactor * cosf(fLatitudeLow) * sinf(fLongitudeLow));
-                meshData.vNormals.emplace_back(normalFactor * cosf(fLongitudeLow) * cosf(fLatitudeHigh), normalFactor * sinf(fLatitudeHigh), normalFactor * cosf(fLatitudeHigh) * sinf(fLongitudeLow));
-                meshData.vNormals.emplace_back(normalFactor * cosf(fLongitudeLow) * cosf(-fLatitudeLow), normalFactor * sinf(-fLatitudeLow), normalFactor * cosf(-fLatitudeLow) * sinf(fLongitudeLow));
-                meshData.vNormals.emplace_back(normalFactor * cosf(fLongitudeLow) * cosf(-fLatitudeHigh), normalFactor * sinf(-fLatitudeHigh), normalFactor * cosf(-fLatitudeHigh) * sinf(fLongitudeLow));
+                meshData->vNormals.emplace_back(normalFactor * cosf(fLongitudeLow) * cosf(fLatitudeLow), normalFactor * sinf(fLatitudeLow), normalFactor * cosf(fLatitudeLow) * sinf(fLongitudeLow));
+                meshData->vNormals.emplace_back(normalFactor * cosf(fLongitudeLow) * cosf(fLatitudeHigh), normalFactor * sinf(fLatitudeHigh), normalFactor * cosf(fLatitudeHigh) * sinf(fLongitudeLow));
+                meshData->vNormals.emplace_back(normalFactor * cosf(fLongitudeLow) * cosf(-fLatitudeLow), normalFactor * sinf(-fLatitudeLow), normalFactor * cosf(-fLatitudeLow) * sinf(fLongitudeLow));
+                meshData->vNormals.emplace_back(normalFactor * cosf(fLongitudeLow) * cosf(-fLatitudeHigh), normalFactor * sinf(-fLatitudeHigh), normalFactor * cosf(-fLatitudeHigh) * sinf(fLongitudeLow));
             }
 
             for (uint32_t longitudeIdx = 0; longitudeIdx < (uint32_t)DEFAULT_CUBE_LEVEL * 2; ++longitudeIdx)
             {
                 const uint32_t& usLongitudeOffset = 4 * longitudeIdx + usLatitudeOffset;
-                meshData.vIndices.push_back(usLongitudeOffset + 0);
-                meshData.vIndices.push_back(usLongitudeOffset + 1);
-                meshData.vIndices.push_back(usLongitudeOffset + 4);
-                meshData.vIndices.push_back(usLongitudeOffset + 4);
-                meshData.vIndices.push_back(usLongitudeOffset + 1);
-                meshData.vIndices.push_back(usLongitudeOffset + 5);
+                meshData->vIndices.push_back(usLongitudeOffset + 0);
+                meshData->vIndices.push_back(usLongitudeOffset + 1);
+                meshData->vIndices.push_back(usLongitudeOffset + 4);
+                meshData->vIndices.push_back(usLongitudeOffset + 4);
+                meshData->vIndices.push_back(usLongitudeOffset + 1);
+                meshData->vIndices.push_back(usLongitudeOffset + 5);
 
-                meshData.vIndices.push_back(usLongitudeOffset + 3);
-                meshData.vIndices.push_back(usLongitudeOffset + 2);
-                meshData.vIndices.push_back(usLongitudeOffset + 7);
-                meshData.vIndices.push_back(usLongitudeOffset + 7);
-                meshData.vIndices.push_back(usLongitudeOffset + 2);
-                meshData.vIndices.push_back(usLongitudeOffset + 6);
+                meshData->vIndices.push_back(usLongitudeOffset + 3);
+                meshData->vIndices.push_back(usLongitudeOffset + 2);
+                meshData->vIndices.push_back(usLongitudeOffset + 7);
+                meshData->vIndices.push_back(usLongitudeOffset + 7);
+                meshData->vIndices.push_back(usLongitudeOffset + 2);
+                meshData->vIndices.push_back(usLongitudeOffset + 6);
             }
         }
 
-        meshData.vTangents.resize(meshData.vNormals.size());
+        meshData->vTangents.resize(meshData->vNormals.size());
+        meshData->UpdateTangents();
+
         if (bReverse)
         {
-            reverse(meshData.vIndices.begin(), meshData.vIndices.end());
+            reverse(meshData->vIndices.begin(), meshData->vIndices.end());
         }
-        spMeshFile->Initialize();
-        FileLoader::AddUsingFile(strMeshFileName, spMeshFile);
+        meshData->CreateBuffers();
+        FileLoader::AddUsingFile(strMeshFileName, meshData);
     }
     else
     {
-        spMeshFile = pMeshFile->shared_from_this();
+        meshData = pMeshFile->shared_from_this();
     }
-    return spMeshFile;
+    return meshData;
 }
 
 shared_ptr<MeshFile> FileLoader::LoadPlaneMesh(
@@ -716,35 +777,62 @@ shared_ptr<MeshFile> FileLoader::LoadPlaneMesh(
     const float& fMirrorHeightIn
 )
 {
-    shared_ptr<MeshFile> spMeshFile = make_shared<MeshFile>("Plane_MESH", 1);
-    Mesh& meshData = spMeshFile->GetMeshData(0);
-    meshData.vVertices = vector<XMFLOAT3> {
+    shared_ptr<MeshFile> meshData = make_shared<MeshFile>("Plane_MESH");
+
+    meshData->vVertices = vector<XMFLOAT3> { 
         XMFLOAT3(-0.5f * fMirrorWidthIn, -0.5f * fMirrorHeightIn, 0.f),
         XMFLOAT3(-0.5f * fMirrorWidthIn, +0.5f * fMirrorHeightIn, 0.f),
         XMFLOAT3(+0.5f * fMirrorWidthIn, +0.5f * fMirrorHeightIn, 0.f),
         XMFLOAT3(+0.5f * fMirrorWidthIn, -0.5f * fMirrorHeightIn, 0.f)
     };
 
-    meshData.vTexcoords = vector<XMFLOAT2>{
+    meshData->vTexcoords = vector<XMFLOAT2>{
         XMFLOAT2(1.f, 1.f),
         XMFLOAT2(1.f, 0.f),
         XMFLOAT2(0.f, 0.f),
         XMFLOAT2(0.f, 1.f)
     };
 
-    meshData.vNormals = vector<XMFLOAT3>{
+    meshData->vNormals = vector<XMFLOAT3>{
         XMFLOAT3(0.0f, 0.0f, 1.0f),
         XMFLOAT3(0.0f, 0.0f, 1.0f),
         XMFLOAT3(0.0f, 0.0f, 1.0f),
         XMFLOAT3(0.0f, 0.0f, 1.0f),
     };
 
-    meshData.vIndices = vector<uint32_t>{
+    meshData->vIndices = vector<uint32_t>{
         0, 2, 1, 0, 3, 2,
     };
 
-    meshData.vTangents.resize(meshData.vNormals.size());
-    spMeshFile->Initialize();
+    meshData->vTangents.resize(meshData->vNormals.size());
+    meshData->UpdateTangents();
+    meshData->CreateBuffers();
 
-    return spMeshFile;
+    return meshData;
 }
+
+/*
+TODO : 
+        int count = 0;
+        for (uint32_t i = 0; i < mesh->mNumBones; i++) {
+            const aiBone *bone = mesh->mBones[i];
+
+            // 디버깅
+            // cout << "BoneMap " << count++ << " : " << bone->mName.C_Str()
+            //     << " NumBoneWeights = " << bone->mNumWeights << endl;
+
+            const uint32_t boneId = m_aniData.boneNameToId[bone->mName.C_Str()];
+
+            m_aniData.offsetMatrices[boneId] =
+                Matrix((float *)&bone->mOffsetMatrix).Transpose();
+
+            // 이 뼈가 영향을 주는 Vertex의 개수
+            for (uint32_t j = 0; j < bone->mNumWeights; j++) {
+                aiVertexWeight weight = bone->mWeights[j];
+                assert(weight.mVertexId < boneIndices.size());
+                boneIndices[weight.mVertexId].push_back(boneId);
+                boneWeights[weight.mVertexId].push_back(weight.mWeight);
+            }
+
+
+*/

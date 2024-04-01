@@ -12,6 +12,9 @@ public:
 	virtual ~MaterialFile();
 
 protected:
+	std::shared_ptr<IImageFile>			spModelTexture[TEXTURE_MAP_NUM];
+
+private:
 	struct
 	{
 		BOOL bIsTextureOn[TEXTURE_MAP_NUM];
@@ -19,17 +22,14 @@ protected:
 		BOOL bDummy[2];
 	} sModelTextureFlag;
 
-protected:
+private:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> cpModelTextureFlagBuffer;
 
 public:
 	inline ID3D11Buffer* const* GetPBRTextureFlagBuffer() { return cpModelTextureFlagBuffer.GetAddressOf(); }
 
-protected:
-	std::shared_ptr<IImageFile>			spModelTexture[TEXTURE_MAP_NUM];
-
 public:
-	void SetTextureImageFile(const EModelTextures& eModelTexture, std::shared_ptr<IImageFile> spImageFileIn);
+	inline void SetTextureImageFile(const EModelTextures& eModelTexture, std::shared_ptr<IImageFile> spImageFileIn);
 	inline std::shared_ptr<IImageFile>& GetTextureImageFileRef(const EModelTextures& eModelTexture) { return spModelTexture[eModelTexture]; }
 
 protected:

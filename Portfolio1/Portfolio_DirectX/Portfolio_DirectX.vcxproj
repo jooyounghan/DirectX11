@@ -131,9 +131,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Animation.h" />
     <ClInclude Include="AnimationFile.h" />
-    <ClInclude Include="Bone.h" />
     <ClInclude Include="ColorBlurComputeShader.h" />
     <ClInclude Include="BlurFilter.h" />
     <ClInclude Include="CameraManipulator.h" />
@@ -168,7 +166,6 @@
     <ClInclude Include="MirrorModel.h" />
     <ClInclude Include="MirrorModelPixelShader.h" />
     <ClInclude Include="BasicVertexShader.h" />
-    <ClInclude Include="ModelFile.h" />
     <ClInclude Include="ModelIDResolveComputeShader.h" />
     <ClInclude Include="ModelManipulator.h" />
     <ClInclude Include="ModelRenderer.h" />
@@ -185,10 +182,8 @@
     <ClInclude Include="PBRSpotLightPixelShader.h" />
     <ClInclude Include="BoneFile.h" />
     <ClInclude Include="SkeletalModel.h" />
-    <ClInclude Include="SkeletalModelFile.h" />
     <ClInclude Include="StageManipulator.h" />
     <ClInclude Include="CubeRenderTargets.h" />
-    <ClInclude Include="StaticModelFile.h" />
     <ClInclude Include="TODO.h" />
     <ClInclude Include="TypeResolveComputeShader.h" />
     <ClInclude Include="Viewable.h" />
@@ -228,9 +223,7 @@
     <ClInclude Include="ViewableRenderTarget.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Animation.cpp" />
     <ClCompile Include="AnimationFile.cpp" />
-    <ClCompile Include="Bone.cpp" />
     <ClCompile Include="ColorBlurComputeShader.cpp" />
     <ClCompile Include="BlurFilter.cpp" />
     <ClCompile Include="CameraManipulator.cpp" />
@@ -263,7 +256,6 @@
     <ClCompile Include="MirrorModel.cpp" />
     <ClCompile Include="MirrorModelPixelShader.cpp" />
     <ClCompile Include="BasicVertexShader.cpp" />
-    <ClCompile Include="ModelFile.cpp" />
     <ClCompile Include="ModelIDResolveComputeShader.cpp" />
     <ClCompile Include="ModelManipulator.cpp" />
     <ClCompile Include="ModelRenderer.cpp" />
@@ -280,10 +272,8 @@
     <ClCompile Include="PBRSpotLightPixelShader.cpp" />
     <ClCompile Include="BoneFile.cpp" />
     <ClCompile Include="SkeletalModel.cpp" />
-    <ClCompile Include="SkeletalModelFile.cpp" />
     <ClCompile Include="StageManipulator.cpp" />
     <ClCompile Include="CubeRenderTargets.cpp" />
-    <ClCompile Include="StaticModelFile.cpp" />
     <ClCompile Include="TypeResolveComputeShader.cpp" />
     <ClCompile Include="Viewable.cpp" />
     <ClCompile Include="BaseApp.cpp" />

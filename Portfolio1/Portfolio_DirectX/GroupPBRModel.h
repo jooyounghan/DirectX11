@@ -33,3 +33,11 @@ protected:
 	static uint32_t uiGroupPBRModelIdx;
 };
 
+/*
+TODO
+GroupPBR이 없어져도됨.
+
+SkeletalModel의 생성자에서 BoneFile과 MeshFile을 생성자로 두고,
+이를 통해 MeshFile의 input 부분 생성해주기
+
+*/

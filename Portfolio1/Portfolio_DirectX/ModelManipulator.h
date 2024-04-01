@@ -82,8 +82,8 @@ private:
 	void DrawMirrorProperties(MirrorModel& mirrorModel);
 
 private:
-	void DrawBone(const Bone& bone);
-	void DrawAnimInformation(Animation& anim);
+	void DrawBone(Bone& bone);
+	void DrawAnimInformation(SkeletalModel& skeletalModel);
 
 private:
 	void SetTextureDragAndDrop(
@@ -91,4 +91,27 @@ private:
 		std::shared_ptr<class IImageFile>& spFile,
 		const char* pDragDropLabel
 	);
+	
+private:
+	template<typename T>
+	void ShowFileWithThumbNail(const T& spFile);
 };
+
+template<typename T>
+inline void ModelManipulator::ShowFileWithThumbNail(const T& spFile)
+{
+	ImGui::BeginGroup();
+	if (spFile != nullptr)
+	{
+		ImGui::Image(spFile->GetThumbNailSRV(), ImVec2(60.f, 60.f));
+		ImGui::SameLine();
+		ImGui::Text(spFile->GetFileLabel().c_str());
+	}
+	else
+	{
+		ImGui::Dummy(ImVec2(60.f, 60.f));
+		ImGui::SameLine();
+		ImGui::Text("");
+	}
+	ImGui::EndGroup();
+}

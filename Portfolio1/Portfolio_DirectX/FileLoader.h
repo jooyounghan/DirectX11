@@ -75,53 +75,52 @@ private:
 		const struct aiScene* pScene
 	);
 
-	static std::shared_ptr<IFile> LoadModelFile(
+	static std::shared_ptr<class MeshFile> LoadMeshFile(
 		const std::string& strFilePath, 
 		const std::string& strFileName, 
 		const std::string& strExtension,
 		const bool& bIsGltf,
-		const struct aiScene* pScene,
-		const std::shared_ptr<class BoneFile>& spBone,
-		const std::vector<std::shared_ptr<class MaterialFile>>& spMaterials
+		const struct aiScene* pScene
 	);
 
 private:
 	static void ProcessNode(
 		const std::string& strFilePath,
 		const std::string& strFileLabel,
-		uint8_t& ucElementIdx,
+		size_t& uiElementIdx,
 		const bool& bIsGltf,
 		const struct aiNode* pNode,
 		const struct aiScene* pScene,
 		const DirectX::XMMATRIX& xmMatrix,
-		class ModelFile* pModelFile,
-		const std::vector<std::shared_ptr<class MaterialFile>>& spMaterials
+		class MeshFile* pMeshFile
 	);
 
-	static std::shared_ptr<class MeshFile> LoadMeshFile(
+	static void LoadMeshData(
 		const std::string& strFilePath,
-		uint8_t& ucElementIdx,
+		size_t& uiElementIdx,
 		const bool& bIsGltf,
 		const struct aiMesh* pMesh,
 		const DirectX::XMMATRIX& xmMatrix,
-		const struct aiScene* pScene
+		const struct aiScene* pScene,
+		class MeshFile* pMeshFile
 	);
 
 private:
-	static void UpdateBoneNameSet(
-		const struct aiScene* pScene, 
-		std::unordered_map<std::string, const void*>& unmapBoneInformation
+	static size_t uiBoneId;
+	static std::unordered_map<std::string, struct aiBone*> GetNodeToBoneTable(
+		const struct aiScene* pScene
 	);
 	static void LoadBoneFromNode(
 		const struct aiNode* pNode,
-		class Bone* pBoneParent,
-		const std::unordered_map<std::string, const void*>& unmapBoneInformation
+		class BoneFile* pBoneFile,
+		struct BoneData& boneData,
+		const std::unordered_map<std::string, struct aiBone*>& nodeToBoneTable
 	);
 
 public:
 	static std::string ReadTextureFileName(
 		const std::string& strFilePath,
-		const aiScene* pScene,
+		const struct aiScene* pScene,
 		struct aiMaterial* pMaterial,
 		enum aiTextureType eType
 	);
@@ -134,9 +133,6 @@ public:
 	static std::string ConvertUniCodeToUTF8(const std::wstring& wStr);
 
 public:
-	static std::shared_ptr<class ModelFile> LoadDefaultCubeModel(
-		const bool& bReverse
-	);
 	static std::shared_ptr<class MeshFile> LoadDefaultCubeMesh(
 		const bool& bReverse
 	);

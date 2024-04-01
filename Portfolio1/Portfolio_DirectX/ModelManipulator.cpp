@@ -6,7 +6,6 @@
 #include "AIBLMesh.h"
 #include "MirrorModel.h"
 #include "Bone.h"
-#include "Animation.h"
 
 #include "SkeletalModelFile.h"
 #include "StaticModelFile.h"
@@ -188,7 +187,7 @@ void ModelManipulator::ManipulateModel(SkeletalModel& skeletalModel)
 		Separator();
 	}
 
-	DrawAnimInformation(skeletalModel.GetAnimation());
+	DrawAnimInformation(skeletalModel);
 	Separator();
 
 	vector<PBRStaticMesh>& vPBRMeshes = skeletalModel.GetChildrenMeshesRef();
@@ -310,9 +309,9 @@ void ModelManipulator::DrawMirrorProperties(MirrorModel& mirrorModel)
 	}
 }
 
-void ModelManipulator::DrawBone(const Bone& bone)
+void ModelManipulator::DrawBone(Bone& bone)
 {
-	const vector<Bone> bones = bone.GetBoneChildren();
+	vector<Bone>& bones = bone.GetBoneChildren();
 	const ImGuiTreeNodeFlags style = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_DefaultOpen;
 
 	if (bones.size() > 0)
@@ -325,7 +324,7 @@ void ModelManipulator::DrawBone(const Bone& bone)
 
 		if (node_open)
 		{
-			for (const auto& boneChild : bone.GetBoneChildren())
+			for (auto& boneChild : bone.GetBoneChildren())
 			{
 				DrawBone(boneChild);
 			}
@@ -338,27 +337,31 @@ void ModelManipulator::DrawBone(const Bone& bone)
 	}
 }
 
-void ModelManipulator::DrawAnimInformation(Animation& anim)
+void ModelManipulator::DrawAnimInformation(SkeletalModel& skeletalModel)
 {
 	if (CollapsingHeader("Animation Data"))
 	{
-		if (anim.GetAnimationFile() != nullptr)
+		AnimationFile* pAnimationFile = skeletalModel.GetAnimationFile();
+		if (pAnimationFile != nullptr)
 		{
 			double dblMin = 0.1;
 			double dblMax = 3.0;
 			DragScalar(
 				"Animation Speed", ImGuiDataType_::ImGuiDataType_Double,
-				anim.GetAnimSpeedAddress(),
+				skeletalModel.GetAnimSpeedAddress(),
 				0.001f,
 				&dblMin, &dblMax, "%.3f"
 			);
 		}
+
+		ShowFileWithThumbNail(pAnimationFile);
+
 		if (BeginDragDropTarget())
 		{
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DRAG_DROP_ANIMATION_KEY))
 			{
 				AnimationFile* pAnimFile = (AnimationFile*)payload->Data;
-				anim = Animation(pAnimFile->shared_from_this());
+				skeletalModel.SetAnimationFile(pAnimFile->shared_from_this());
 			}
 			ImGui::EndDragDropTarget();
 		}
@@ -373,14 +376,7 @@ void ModelManipulator::SetTextureDragAndDrop(
 {
 	Separator();
 	Text(pDescription);
-	if (spFile != nullptr)
-	{
-		Image(spFile->GetThumbNailSRV(), ImVec2(60.f, 60.f));
-	}
-	else
-	{
-		Dummy(ImVec2(60.f, 60.f));
-	}
+	ShowFileWithThumbNail(spFile.get());
 
 	if (BeginDragDropTarget())
 	{
@@ -390,16 +386,5 @@ void ModelManipulator::SetTextureDragAndDrop(
 			spFile = imagePtr->shared_from_this();
 		}
 		ImGui::EndDragDropTarget();
-	}
-
-	if (spFile != nullptr)
-	{
-		SameLine();
-		Text(spFile->GetFileLabel().c_str());
-	}
-	else
-	{
-		SameLine();
-		Text("");
 	}
 }
