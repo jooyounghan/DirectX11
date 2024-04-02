@@ -33,22 +33,6 @@ AIBLMesh::~AIBLMesh()
 {
 }
 
-void AIBLMesh::Draw()
-{
-	const std::vector<ID3D11Buffer*> vertexBuffers = {
-		spMeshFile->cpVerticesBuffer.Get(),
-		spMeshFile->cpTexcoordsBuffer.Get(),
-		spMeshFile->cpNormalsBuffer.Get(),
-		spMeshFile->cpTangentsBuffer.Get()
-	};
-	DirectXDevice::pDeviceContext->IASetVertexBuffers(0, 4, vertexBuffers.data(), uiStrides.data(), uiOffsets.data());
-	DirectXDevice::pDeviceContext->IASetIndexBuffer(spMeshFile->cpInicesBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
-	DirectXDevice::pDeviceContext->DrawIndexed((UINT)spMeshFile->vIndices.size(), NULL, NULL);
-	DirectXDevice::pDeviceContext->IASetIndexBuffer(pNullBuffers[0], DXGI_FORMAT_R32_UINT, 0);
-	DirectXDevice::pDeviceContext->IASetVertexBuffers(0, 4, pNullBuffers, pNulls, pNulls);
-}
-
-
 void AIBLMesh::UpdateModel(const float& fDelta)
 {
 	UpdateTranformationMatrix();

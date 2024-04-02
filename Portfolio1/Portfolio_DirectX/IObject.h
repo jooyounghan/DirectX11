@@ -41,7 +41,6 @@ public:
 	inline const std::string& GetObjectName() const { return strObjectName; }
 
 public:
-	virtual void Draw() = 0;
 	virtual void UpdateModel(const float& fDelta) = 0;
 
 public:

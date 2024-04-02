@@ -9,3 +9,8 @@ IMesh::IMesh(std::shared_ptr<MeshFile> spMeshFileIn)
 }
 
 IMesh::~IMesh() {}
+
+void IMesh::Draw(const size_t& meshDataIdx)
+{
+	DirectXDevice::pDeviceContext->DrawIndexed(spMeshFile->GetMeshData(meshDataIdx).vIndices.size(), NULL, NULL);
+}

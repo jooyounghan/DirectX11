@@ -1,24 +1,13 @@
 #pragma once
 #include "IFile.h"
-
-#include <unordered_map>
+#include "BoneFile.h"
 #include <DirectXMath.h>
-#include <cmath>
-#include <algorithm>
 
-class AnimChannelFile
+class AnimChannel
 {
 public:
-	AnimChannelFile(
-		const std::string& strChannleNameIn,
-		const unsigned int& uiNumPosition,
-		const unsigned int& uiNumRotation,
-		const unsigned int& uiNumScale,
-		void* pPositionIn,
-		void* pRotationIn,
-		void* pScaleIn
-	);
-	~AnimChannelFile();
+	AnimChannel();
+	~AnimChannel();
 
 public:
 	typedef struct AnimTranslation
@@ -34,15 +23,20 @@ public:
 	};
 
 private:
-	std::string						strAnimChannelData;
-
-private:
 	std::vector<AnimTranslation>	vTranslation;
 	std::vector<AnimRotation>		vRotation;
 	std::vector<AnimScale>			vScale;
 
+private:
+	template<typename T>
+	inline void SetChannelData(const size_t& uiNumData, void* pSrc, std::vector<T>& channelData);
+
 public:
-	inline const std::string& GetAnimChannelName() const { return strAnimChannelData; }
+	inline void SetTranslation(const size_t& uiNumData, void* pSrc) { SetChannelData(uiNumData, pSrc, vTranslation); }
+	inline void SetRotation(const size_t& uiNumData, void* pSrc) { SetChannelData(uiNumData, pSrc, vRotation); }
+	inline void SetScale(const size_t& uiNumData, void* pSrc) { SetChannelData(uiNumData, pSrc, vScale); }
+
+public:
 	DirectX::XMMATRIX GetChannelTransformation(const double& dblPlayTimeIn);
 
 private:
@@ -55,7 +49,7 @@ private:
 };
 
 template<typename T>
-DirectX::XMVECTOR AnimChannelFile::GetInterpolatedData(const double& dblPlayTimeIn, std::vector<T>& vData, const float& w, const DirectX::XMVECTOR& defaultResult)
+DirectX::XMVECTOR AnimChannel::GetInterpolatedData(const double& dblPlayTimeIn, std::vector<T>& vData, const float& w, const DirectX::XMVECTOR& defaultResult)
 {
 	for (size_t back_idx = 0; back_idx < vData.size(); ++back_idx)
 	{
@@ -74,12 +68,20 @@ DirectX::XMVECTOR AnimChannelFile::GetInterpolatedData(const double& dblPlayTime
 	return defaultResult;
 }
 
+template<typename T>
+inline void AnimChannel::SetChannelData(const size_t& uiNumData, void* pSrc, std::vector<T>& channelData)
+{
+	channelData.resize(uiNumData);
+	memcpy(channelData.data(), pSrc, sizeof(T) * uiNumData);
+}
+
 
 class AnimationFile : public IFile, public std::enable_shared_from_this<AnimationFile>
 {
 public:
 	AnimationFile(
 		const std::string& strFileLabelIn,
+		const std::shared_ptr<BoneFile>& spBoneFileIn,
 		const double& dblDurationIn,
 		const double& dblTicksPerSecondIn
 	);
@@ -88,18 +90,14 @@ public:
 private:
 	double dblDuration;
 	double dblTicksPerSecond;
-	std::unordered_map<std::string, AnimChannelFile> unmapAnimChannels;
+	std::vector<AnimChannel> vAnimChannels;
 
 public:
 	inline const double& GetDuration() const { return dblDuration; }
 	inline const double& GetTicksPerSecond() const { return dblTicksPerSecond; }
 
 public:
-	inline std::unordered_map<std::string, AnimChannelFile>& GetAnimationChannels() { return unmapAnimChannels; }
-	inline void AddAnimChannel(AnimChannelFile&& spAnimChannel) { 
-		unmapAnimChannels.emplace(spAnimChannel.GetAnimChannelName(), spAnimChannel);
-	}
-
+	inline AnimChannel* GetAnimChannel(const size_t& channelIdx) { return vAnimChannels.size() > channelIdx ? &vAnimChannels[channelIdx] : nullptr; }
 
 public:
 	virtual void AcceptFileAsList(class FileManipulator* pFileManipulator);

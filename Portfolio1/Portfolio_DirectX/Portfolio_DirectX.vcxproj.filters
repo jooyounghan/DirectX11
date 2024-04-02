@@ -378,9 +378,6 @@
     <ClInclude Include="CubeMapModel.h">
       <Filter>헤더 파일\Object\Model\PBR\Extended</Filter>
     </ClInclude>
-    <ClInclude Include="GroupPBRModel.h">
-      <Filter>헤더 파일\Object\Model\PBR</Filter>
-    </ClInclude>
     <ClInclude Include="IShader.h">
       <Filter>헤더 파일\Shader</Filter>
     </ClInclude>
@@ -640,9 +637,6 @@
     </ClCompile>
     <ClCompile Include="CubeMapModel.cpp">
       <Filter>소스 파일\Object\Model\PBR\Extended</Filter>
-    </ClCompile>
-    <ClCompile Include="GroupPBRModel.cpp">
-      <Filter>소스 파일\Object\Model\PBR</Filter>
     </ClCompile>
     <ClCompile Include="IShader.cpp">
       <Filter>소스 파일\Shader</Filter>

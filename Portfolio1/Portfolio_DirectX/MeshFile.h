@@ -10,6 +10,7 @@
 #include "ID3D11Helper.h"
 #include "DirectXDevice.h"
 #include "FileLoader.h"
+#include "BoneFile.h"
 
 class Mesh
 {
@@ -48,12 +49,26 @@ class MeshFile : public IFile, public std::enable_shared_from_this<MeshFile>
 {
 public:
 	MeshFile(
-		const std::string& strFileLabelIn, const size_t uiMeshCountIn
+		const std::string& strFileLabelIn, 
+		const size_t uiMeshCountIn, 
+		const bool& bIsGLTFIn,
+		const std::shared_ptr<BoneFile>& spBoneFileIn = nullptr
 	);
 	virtual ~MeshFile() {};
 
 protected:
 	bool bIsInitialized;
+	bool bIsGLTF;
+
+public:
+	inline const bool& IsGLTF() { return bIsGLTF; }
+
+protected:
+	std::shared_ptr<BoneFile> spBoneFile;
+
+public:
+	inline bool IsSkeletal() { return spBoneFile.get() != nullptr; }
+	inline BoneFile* GetBoneFile() { return spBoneFile.get(); }
 
 protected:
 	std::vector<Mesh> vMeshData;
@@ -63,6 +78,7 @@ public:
 	void UpdateTangents();
 
 public:
+	inline size_t GetMeshNums() { return vMeshData.size(); }
 	inline Mesh& GetMeshData(const size_t& uiMeshIdx) { return vMeshData[uiMeshIdx]; }
 
 private:

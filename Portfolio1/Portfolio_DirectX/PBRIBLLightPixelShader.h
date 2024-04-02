@@ -25,6 +25,11 @@ public:
 	virtual void DisapplyShader() override;
 
 public:
-	void SetShader(class AIBLMesh& iblMesh, class IObject& idObject, class PBRStaticMesh& pbrStaticMesh, class Viewable& viewable);
+	void SetShader(
+		class AIBLMesh& iblMesh, 
+		const size_t& meshIdx, 
+		class PBRStaticMesh& pbrStaticMesh, 
+		class Viewable& viewable
+	);
 	void ResetShader();
 };

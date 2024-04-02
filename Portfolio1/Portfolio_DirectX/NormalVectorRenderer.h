@@ -4,15 +4,13 @@
 class IObject;
 class IMesh;
 class ACamera;
-class SinglePBRModel;
-class GroupPBRModel;
+class PBRStaticMesh;
 class AIBLMesh;
 class MirrorModel;
 
 class NormalVectorRenderer : public IRenderer
 {
-	friend SinglePBRModel;
-	friend GroupPBRModel;
+	friend PBRStaticMesh;
 	friend AIBLMesh;
 	friend MirrorModel;
 
@@ -35,7 +33,7 @@ public:
 	);
 
 private:
-	void RenderNormal(GroupPBRModel& groupPBRMesh);
+	void RenderNormal(PBRStaticMesh& pbrStaticMesh);
 	void RenderNormal(AIBLMesh& iblMesh);
 	void RenderNormal(MirrorModel& mirrorModel);
 };

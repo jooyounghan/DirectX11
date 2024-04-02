@@ -16,9 +16,13 @@ void Mesh::CreateBuffer()
 
 MeshFile::MeshFile(
 	const std::string& strFileLabelIn,
-	const size_t uiMeshCountIn
+	const size_t uiMeshCountIn,
+	const bool& bIsGLTFIn,
+	const std::shared_ptr<BoneFile>& spBoneFileIn
 )
-	: IFile(strFileLabelIn), bIsInitialized(false)
+	: IFile(strFileLabelIn), 
+	bIsInitialized(false), bIsGLTF(bIsGLTFIn),
+	spBoneFile(spBoneFileIn)
 {
 	vMeshData.resize(uiMeshCountIn);
 }

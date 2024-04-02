@@ -8,7 +8,7 @@
 
 #include "ACamera.h"
 
-#include "GroupPBRModel.h"
+#include "PBRStaticMesh.h"
 #include "AIBLMesh.h"
 #include "MirrorModel.h"
 
@@ -51,18 +51,19 @@ void NormalVectorRenderer::RenderNormalVector(
 	normalVectorPS->DisapplyShader();
 }
 
-void NormalVectorRenderer::RenderNormal(GroupPBRModel& groupPBRMesh)
+void NormalVectorRenderer::RenderNormal(PBRStaticMesh& pbrStaticMesh)
 {
-	vector<PBRStaticMesh>& vPBRMeshes = groupPBRMesh.GetChildrenMeshesRef();
+	const size_t meshNums = pbrStaticMesh.GetMeshNums();
 
-	normalVectorVS->SetShader(groupPBRMesh);
-	for (PBRStaticMesh& pbrMesh : vPBRMeshes)
+	normalVectorVS->SetShader(pbrStaticMesh);
+	for (size_t meshIdx = 0; meshIdx < meshNums; ++meshIdx)
 	{
-		normalVectorVS->SetIAStage(pbrMesh);
-		normalVectorGS->SetShader(pbrMesh, *pCamera);
-		pbrMesh.Draw();
+		normalVectorVS->SetIAStage(meshIdx, pbrStaticMesh);
+		normalVectorGS->SetShader(meshIdx, pbrStaticMesh, *pCamera);
+		pbrStaticMesh.Draw(meshIdx);
 		normalVectorVS->ResetIAStage();
 		normalVectorGS->ResetShader();
+
 	}
 	normalVectorVS->ResetShader();
 }
@@ -74,13 +75,17 @@ void NormalVectorRenderer::RenderNormal(AIBLMesh& iblMesh)
 
 void NormalVectorRenderer::RenderNormal(MirrorModel& mirrorModel)
 {
-	normalVectorVS->SetIAStage(mirrorModel);
+	const size_t meshNums = mirrorModel.GetMeshNums();
+
 	normalVectorVS->SetShader(mirrorModel);
-	normalVectorGS->SetShader(mirrorModel, *pCamera);
+	for (size_t meshIdx = 0; meshIdx < meshNums; ++meshIdx)
+	{
+		normalVectorVS->SetIAStage(meshIdx, mirrorModel);
+		normalVectorGS->SetShader(meshIdx, mirrorModel, *pCamera);
+		mirrorModel.Draw(meshIdx);
+		normalVectorVS->ResetIAStage();
+		normalVectorGS->ResetShader();
 
-	mirrorModel.Draw();
-
-	normalVectorVS->ResetIAStage();
+	}
 	normalVectorVS->ResetShader();
-	normalVectorGS->ResetShader();
 }

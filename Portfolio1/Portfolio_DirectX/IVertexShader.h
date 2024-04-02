@@ -1,5 +1,6 @@
 #pragma once
 #include "IShader.h"
+#include "IMesh.h"
 
 class IVertexShader : public IShader
 {
@@ -14,5 +15,9 @@ protected:
 public:
 	virtual void ApplyShader() = 0;
 	virtual void DisapplyShader() = 0;
+
+public:
+	virtual void SetIAStage(const size_t& meshIdx, IMesh& mesh) = 0;
+	virtual void ResetIAStage() = 0;
 };
 

@@ -76,11 +76,6 @@ MirrorModel::~MirrorModel()
 {
 }
 
-void MirrorModel::Draw()
-{
-	DirectXDevice::pDeviceContext->DrawIndexed((UINT)spMeshFile->vIndices.size(), NULL, NULL);
-}
-
 void MirrorModel::SetAsRenderTarget()
 {
 	DirectXDevice::pDeviceContext->OMSetRenderTargets(1, cpRTV.GetAddressOf(), cpDSV.Get());

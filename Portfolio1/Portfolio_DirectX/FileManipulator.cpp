@@ -5,7 +5,6 @@
 #include "DefineVar.h"
 #include "DDSImageFile.h"
 #include "NormalImageFile.h"
-#include "ModelFile.h"
 #include "BoneFile.h"
 
 #include "DirectXDevice.h"

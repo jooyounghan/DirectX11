@@ -68,34 +68,24 @@ void ModelRenderVertexShader::ResetShader()
 	DirectXDevice::pDeviceContext->VSSetConstantBuffers(1, 1, &pNullBuffer);
 }
 
-void ModelRenderVertexShader::SetIAStage(IMesh& mesh)
+void ModelRenderVertexShader::SetIAStage(const size_t& meshIdx, IMesh& mesh)
 {
-	DirectXDevice::pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
+	if (mesh.GetMeshNums() > meshIdx)
+	{
+		Mesh& meshData = mesh.GetMeshFile()->GetMeshData(meshIdx);
 
-	const std::vector<ID3D11Buffer*> vertexBuffers = {
-		mesh.GetMeshFileRef()->cpVerticesBuffer.Get(),
-		mesh.GetMeshFileRef()->cpTexcoordsBuffer.Get(),
-		mesh.GetMeshFileRef()->cpNormalsBuffer.Get(),
-		mesh.GetMeshFileRef()->cpTangentsBuffer.Get()
-	};
+		DirectXDevice::pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
 
-	DirectXDevice::pDeviceContext->IASetVertexBuffers(0, 4, vertexBuffers.data(), uiStrides, uiOffsets);
-	DirectXDevice::pDeviceContext->IASetIndexBuffer(mesh.GetMeshFileRef()->cpInicesBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
-}
+		const std::vector<ID3D11Buffer*> vertexBuffers = {
+			meshData.cpVerticesBuffer.Get(),
+			meshData.cpTexcoordsBuffer.Get(),
+			meshData.cpNormalsBuffer.Get(),
+			meshData.cpTangentsBuffer.Get()
+		};
 
-void ModelRenderVertexShader::SetIAStage(AIBLMesh& ablMesh)
-{
-	DirectXDevice::pDeviceContext->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-	const std::vector<ID3D11Buffer*> vertexBuffers = {
-		ablMesh.GetMeshFileRef()->cpVerticesBuffer.Get(),
-		ablMesh.GetMeshFileRef()->cpTexcoordsBuffer.Get(),
-		ablMesh.GetMeshFileRef()->cpNormalsBuffer.Get(),
-		ablMesh.GetMeshFileRef()->cpTangentsBuffer.Get()
-	};
-
-	DirectXDevice::pDeviceContext->IASetVertexBuffers(0, 4, vertexBuffers.data(), uiStrides, uiOffsets);
-	DirectXDevice::pDeviceContext->IASetIndexBuffer(ablMesh.GetMeshFileRef()->cpInicesBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+		DirectXDevice::pDeviceContext->IASetVertexBuffers(0, 4, vertexBuffers.data(), uiStrides, uiOffsets);
+		DirectXDevice::pDeviceContext->IASetIndexBuffer(meshData.cpInicesBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+	}
 }
 
 void ModelRenderVertexShader::ResetIAStage()

@@ -39,7 +39,6 @@ private:
 	static const std::vector<UINT> uiOffsets;
 
 public:
-	virtual void Draw() override;
 	virtual void UpdateModel(const float& fDelta) override;
 
 private:

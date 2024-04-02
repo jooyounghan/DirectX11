@@ -40,7 +40,7 @@ void PBRSpotLightPixelShader::DisapplyShader()
 
 void PBRSpotLightPixelShader::SetShader(
 	SpotLight& spotLight, 
-	IObject& idObject, 
+	const size_t meshIdx,
 	PBRStaticMesh& pbrStaticMesh, 
 	Viewable& viewable
 )
@@ -53,21 +53,21 @@ void PBRSpotLightPixelShader::SetShader(
 		DirectXDevice::pDeviceContext->PSSetShaderResources(startSlot, numViews, &pSRV);
 		};
 
-	SetSRV(pbrStaticMesh.GetMeshFileRef()->GetMaterial()->GetTextureImageFileRef(COLOR_TEXTURE_MAP).get(), 0, 1);
-	SetSRV(pbrStaticMesh.GetMeshFileRef()->GetMaterial()->GetTextureImageFileRef(DIFFUSE_TEXTURE_MAP).get(), 1, 1);
-	SetSRV(pbrStaticMesh.GetMeshFileRef()->GetMaterial()->GetTextureImageFileRef(SPECULAR_TEXTURE_MAP).get(), 2, 1);
-	SetSRV(pbrStaticMesh.GetMeshFileRef()->GetMaterial()->GetTextureImageFileRef(METALNESS_TEXTURE_MAP).get(), 3, 1);
-	SetSRV(pbrStaticMesh.GetMeshFileRef()->GetMaterial()->GetTextureImageFileRef(ROUGHNESS_TEXTURE_MAP).get(), 4, 1);
-	SetSRV(pbrStaticMesh.GetMeshFileRef()->GetMaterial()->GetTextureImageFileRef(EMISSION_TEXTURE_MAP).get(), 5, 1);
-	SetSRV(pbrStaticMesh.GetMeshFileRef()->GetMaterial()->GetTextureImageFileRef(NORMAL_TEXTURE_MAP).get(), 6, 1);
+	SetSRV(pbrStaticMesh.GetMaterialFile(meshIdx)->GetTextureImageFileRef(COLOR_TEXTURE_MAP).get(), 0, 1);
+	SetSRV(pbrStaticMesh.GetMaterialFile(meshIdx)->GetTextureImageFileRef(DIFFUSE_TEXTURE_MAP).get(), 1, 1);
+	SetSRV(pbrStaticMesh.GetMaterialFile(meshIdx)->GetTextureImageFileRef(SPECULAR_TEXTURE_MAP).get(), 2, 1);
+	SetSRV(pbrStaticMesh.GetMaterialFile(meshIdx)->GetTextureImageFileRef(METALNESS_TEXTURE_MAP).get(), 3, 1);
+	SetSRV(pbrStaticMesh.GetMaterialFile(meshIdx)->GetTextureImageFileRef(ROUGHNESS_TEXTURE_MAP).get(), 4, 1);
+	SetSRV(pbrStaticMesh.GetMaterialFile(meshIdx)->GetTextureImageFileRef(EMISSION_TEXTURE_MAP).get(), 5, 1);
+	SetSRV(pbrStaticMesh.GetMaterialFile(meshIdx)->GetTextureImageFileRef(NORMAL_TEXTURE_MAP).get(), 6, 1);
 	DirectXDevice::pDeviceContext->PSSetShaderResources(7, 1, spotLight.GetAddressOfSRV());
 
-	DirectXDevice::pDeviceContext->PSSetConstantBuffers(0, 1, idObject.GetObjectBuffer());
+	DirectXDevice::pDeviceContext->PSSetConstantBuffers(0, 1, pbrStaticMesh.GetObjectBuffer());
 	DirectXDevice::pDeviceContext->PSSetConstantBuffers(1, 1, spotLight.GetPositionBuffer());
 	DirectXDevice::pDeviceContext->PSSetConstantBuffers(2, 1, spotLight.GetBaseLightBuffer());
 	DirectXDevice::pDeviceContext->PSSetConstantBuffers(3, 1, spotLight.GetSpotLightBuffer());
 	DirectXDevice::pDeviceContext->PSSetConstantBuffers(4, 1, pbrStaticMesh.GetPBRConstantBuffer());
-	DirectXDevice::pDeviceContext->PSSetConstantBuffers(5, 1, pbrStaticMesh.GetMeshFileRef()->GetMaterial()->GetPBRTextureFlagBuffer());
+	DirectXDevice::pDeviceContext->PSSetConstantBuffers(5, 1, pbrStaticMesh.GetMaterialFile(meshIdx)->GetPBRTextureFlagBuffer());
 
 	DirectXDevice::pDeviceContext->PSSetConstantBuffers(6, 1, viewable.GetPositionBuffer());
 	DirectXDevice::pDeviceContext->PSSetConstantBuffers(7, 1, spotLight.GetViewProjBuffer());

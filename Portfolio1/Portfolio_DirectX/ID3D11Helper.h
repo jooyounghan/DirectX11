@@ -214,25 +214,28 @@ void ID3D11Helper::CreateBuffer(
 	OUT ID3D11Buffer** ppBuffer
 )
 {
-	D3D11_BUFFER_DESC sBufferDesc;
-	AutoZeroMemory(sBufferDesc);
-	sBufferDesc.ByteWidth = UINT(vData.size()) * sizeof(T);
-	sBufferDesc.Usage = eUsage;
-	sBufferDesc.BindFlags = uiBindFlag;
-	sBufferDesc.CPUAccessFlags = eCpuAccess;
-	sBufferDesc.MiscFlags = eMiscFlag;
-	sBufferDesc.StructureByteStride = sizeof(T);
-
-	D3D11_SUBRESOURCE_DATA sSubResourceData;
-	AutoZeroMemory(sSubResourceData);
-	sSubResourceData.pSysMem = vData.data();
-	sSubResourceData.SysMemPitch = 0;
-	sSubResourceData.SysMemSlicePitch = 0;
-
-	HRESULT hResult = pDevice->CreateBuffer(&sBufferDesc, &sSubResourceData, ppBuffer);
-	if (FAILED(hResult))
+	if (vData.size() > 0)
 	{
-		Console::AssertPrint("버퍼를 생성하는데 실패하였습니다.");
+		D3D11_BUFFER_DESC sBufferDesc;
+		AutoZeroMemory(sBufferDesc);
+		sBufferDesc.ByteWidth = UINT(vData.size()) * sizeof(T);
+		sBufferDesc.Usage = eUsage;
+		sBufferDesc.BindFlags = uiBindFlag;
+		sBufferDesc.CPUAccessFlags = eCpuAccess;
+		sBufferDesc.MiscFlags = eMiscFlag;
+		sBufferDesc.StructureByteStride = sizeof(T);
+
+		D3D11_SUBRESOURCE_DATA sSubResourceData;
+		AutoZeroMemory(sSubResourceData);
+		sSubResourceData.pSysMem = vData.data();
+		sSubResourceData.SysMemPitch = 0;
+		sSubResourceData.SysMemSlicePitch = 0;
+
+		HRESULT hResult = pDevice->CreateBuffer(&sBufferDesc, &sSubResourceData, ppBuffer);
+		if (FAILED(hResult))
+		{
+			Console::AssertPrint("버퍼를 생성하는데 실패하였습니다.");
+		}
 	}
 }
 

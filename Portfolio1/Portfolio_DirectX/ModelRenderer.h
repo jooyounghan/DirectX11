@@ -5,11 +5,10 @@
 
 class IObject;
 class IMesh;
-class PBRStaticMesh;
 class ILight;
 class ACamera;
 class ViewableRenderTarget;
-class GroupPBRModel;
+class PBRStaticMesh;
 class AIBLMesh;
 class MirrorModel;
 class PointLight;
@@ -17,7 +16,7 @@ class SpotLight;
 
 class ModelRenderer : public IRenderer
 {
-	friend GroupPBRModel;
+	friend PBRStaticMesh;
 	friend AIBLMesh;
 	friend MirrorModel;
 	friend PointLight;
@@ -33,7 +32,6 @@ private:
 
 private:
 	ViewableRenderTarget*	pViewableRT;
-	IObject*				pObject;
 	PBRStaticMesh*			pPBRStaticMesh;
 
 	std::shared_ptr<AIBLMesh> spIBLModel;
@@ -66,7 +64,7 @@ public:
 	);
 
 private:
-	void RenderModel(GroupPBRModel& groupPBRMesh);
+	void RenderModel(PBRStaticMesh& pbrStaticMesh);
 	void RenderModel(AIBLMesh& iblMesh);
 	void RenderModel(MirrorModel& mirrorModel);
 

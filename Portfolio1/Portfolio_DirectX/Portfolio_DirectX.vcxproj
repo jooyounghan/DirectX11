@@ -138,7 +138,6 @@
     <ClInclude Include="CubeMapModel.h" />
     <ClInclude Include="DepthBlurComputeShader.h" />
     <ClInclude Include="DepthOnlyPixelShader.h" />
-    <ClInclude Include="GroupPBRModel.h" />
     <ClInclude Include="IBLRenderingPixelShader.h" />
     <ClInclude Include="IComputeShader.h" />
     <ClInclude Include="IDomainShader.h" />
@@ -230,7 +229,6 @@
     <ClCompile Include="CubeMapModel.cpp" />
     <ClCompile Include="DepthBlurComputeShader.cpp" />
     <ClCompile Include="DepthOnlyPixelShader.cpp" />
-    <ClCompile Include="GroupPBRModel.cpp" />
     <ClCompile Include="IBLRenderingPixelShader.cpp" />
     <ClCompile Include="IComputeShader.cpp" />
     <ClCompile Include="IDomainShader.cpp" />

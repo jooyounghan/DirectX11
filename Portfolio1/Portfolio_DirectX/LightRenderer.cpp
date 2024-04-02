@@ -5,7 +5,7 @@
 #include "ModelRendererDomainShader.h"
 #include "DepthOnlyPixelShader.h"
 
-#include "GroupPBRModel.h"
+#include "PBRStaticMesh.h"
 #include "AIBLMesh.h"
 #include "MirrorModel.h"
 
@@ -84,23 +84,28 @@ void LightRenderer::SetForUpdatingLightMap(SpotLight& spotLight)
 	spotLight.ResetDepthOnlyRenderTarget();
 }
 
-void LightRenderer::RenderLightMap(GroupPBRModel& groupPBRMesh)
+void LightRenderer::RenderLightMap(PBRStaticMesh& pbrStaticMesh)
 {
-	vector<PBRStaticMesh> vPBRMeshes = groupPBRMesh.GetChildrenMeshesRef();
-
-	for (PBRStaticMesh& pbrMesh : vPBRMeshes)
+	const size_t meshNums = pbrStaticMesh.GetMeshNums();
+	MeshFile* pMeshFile = pbrStaticMesh.GetMeshFile();
+	if (pMeshFile != nullptr)
 	{
-		modelRenderVS->SetIAStage(pbrMesh);
-		modelRenderVS->SetShader(groupPBRMesh, *pViewable);
+		modelRenderVS->SetShader(pbrStaticMesh, *pViewable);
 		modelRenderHS->SetShader(*pLight);
-		modelRenderDS->SetShader(pbrMesh, *pViewable);
 
-		pbrMesh.Draw();
+		for (size_t meshIdx = 0; meshIdx < meshNums; ++meshIdx)
+		{
+			modelRenderDS->SetShader(meshIdx, pbrStaticMesh, *pViewable);
+			modelRenderVS->SetIAStage(meshIdx, pbrStaticMesh);
 
-		modelRenderVS->ResetIAStage();
+			pbrStaticMesh.Draw(meshIdx);
+
+			modelRenderDS->ResetShader();
+			modelRenderVS->ResetIAStage();
+		}
 		modelRenderVS->ResetShader();
 		modelRenderHS->ResetShader();
-		modelRenderDS->ResetShader();
+
 	}
 }
 
@@ -111,16 +116,26 @@ void LightRenderer::RenderLightMap(AIBLMesh& iblMesh)
 
 void LightRenderer::RenderLightMap(MirrorModel& mirrorModel)
 {
-	//modelRenderVS.SetIAStage(mirrorModel);
-	//modelRenderVS.SetShader(mirrorModel, *pViewable);
-	//modelRenderHS.SetShader(*pLight);
-	//modelRenderDS.SetShader(mirrorModel, *pViewable);
+	const size_t meshNums = mirrorModel.GetMeshNums();
+	MeshFile* pMeshFile = mirrorModel.GetMeshFile();
+	if (pMeshFile != nullptr)
+	{
+		modelRenderVS->SetShader(mirrorModel, *pViewable);
+		modelRenderHS->SetShader(*pLight);
+		modelRenderDS->SetShader(*pViewable);
 
-	//mirrorModel.Draw();
+		for (size_t meshIdx = 0; meshIdx < meshNums; ++meshIdx)
+		{
+			modelRenderVS->SetIAStage(meshIdx, mirrorModel);
 
-	//modelRenderVS.ResetIAStage();
-	//modelRenderVS.ResetShader();
-	//modelRenderHS.ResetShader();
-	//modelRenderDS.ResetShader();
+			mirrorModel.Draw(meshIdx);
+
+			modelRenderVS->ResetIAStage();
+		}
+
+		modelRenderVS->ResetShader();
+		modelRenderHS->ResetShader();
+		modelRenderDS->ResetShader();
+	}
 }
 

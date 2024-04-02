@@ -42,8 +42,7 @@ public:
 	void ResetShader();
 
 public:
-	void SetIAStage(IMesh& mesh);
-	void SetIAStage(AIBLMesh& ablMesh);
-	void ResetIAStage();
+	virtual void SetIAStage(const size_t& meshIdx, IMesh& mesh) override;
+	virtual void ResetIAStage() override;
 };
 

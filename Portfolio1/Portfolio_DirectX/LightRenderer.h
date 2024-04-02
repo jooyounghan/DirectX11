@@ -5,8 +5,7 @@ class IObject;
 class IMesh;
 class ILight;
 class Viewable;
-class SinglePBRModel;
-class GroupPBRModel;
+class PBRStaticMesh;
 class AIBLMesh;
 class MirrorModel;
 class PointLight;
@@ -15,8 +14,7 @@ class SpotLight;
 
 class LightRenderer : public IRenderer
 {
-	friend SinglePBRModel;
-	friend GroupPBRModel;
+	friend PBRStaticMesh;
 	friend AIBLMesh;
 	friend MirrorModel;
 	friend PointLight;
@@ -50,8 +48,7 @@ private:
 	void SetForUpdatingLightMap(SpotLight& spotLight);
 
 private:
-	void RenderLightMap(SinglePBRModel& singlePBRModel);
-	void RenderLightMap(GroupPBRModel& groupPBRMesh);
+	void RenderLightMap(PBRStaticMesh& pbrStaticMesh);
 	void RenderLightMap(AIBLMesh& iblMesh);
 	void RenderLightMap(MirrorModel& mirrorModel);
 };

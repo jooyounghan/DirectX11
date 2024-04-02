@@ -233,7 +233,7 @@ vector<shared_ptr<IFile>> FileLoader::LoadModelFileSet(
         vector<shared_ptr<AnimationFile>> spAnimFiles;
         if (pScene->mNumAnimations > 0)
         {
-            spAnimFiles = LoadAnimationFile(strFileName, pScene);
+            spAnimFiles = LoadAnimationFile(strFileName, spBoneFile, pScene);
             for (auto& anim : spAnimFiles)
             {
                 vLoadedFiles.emplace_back(anim);
@@ -244,9 +244,7 @@ vector<shared_ptr<IFile>> FileLoader::LoadModelFileSet(
         shared_ptr<IFile> spMeshFile;
         if (pScene->mNumMeshes > 0)
         {
-            // When Loading Model Files, Set Loaded Bone And Material as Argument to decide the type of the File Class between StaticModelFile and BoneMdel File
-            // Static Model File Has Mesh and Material File and, Bone Model File Has Bone File and All of Static Mesh
-            spMeshFile = LoadMeshFile(strFilePath, strFileName, strExtension, bIsGltf, pScene);
+            spMeshFile = LoadMeshFile(strFilePath, strFileName, strExtension, bIsGltf, pScene, spBoneFile);
             vLoadedFiles.emplace_back(spMeshFile);
         }
     }
@@ -287,7 +285,7 @@ shared_ptr<BoneFile> FileLoader::LoadBoneFile(const string strFileName, const ai
     if (pBone == nullptr)
     {
         cout << "Loading " << BoneLabel << "..." << endl;
-        const std::unordered_map<std::string, struct aiBone*> nodeToBoneTable = GetNodeToBoneTable(pScene);
+        const std::unordered_map<std::string, const aiBone*> nodeToBoneTable = GetNodeToBoneTable(pScene);
 
         spBone = make_shared<BoneFile>(BoneLabel, nodeToBoneTable.size());
         LoadBoneFromNode(pScene->mRootNode, spBone.get(), spBone->GetRootBone(), nodeToBoneTable);
@@ -342,35 +340,49 @@ vector<shared_ptr<MaterialFile>> FileLoader::LoadMaterialFile(
     return spMaterials;
 }
 
-vector<shared_ptr<AnimationFile>> FileLoader::LoadAnimationFile(const std::string strFileName, const aiScene* pScene)
+vector<shared_ptr<AnimationFile>> FileLoader::LoadAnimationFile(
+    const std::string strFileName, 
+    const shared_ptr<BoneFile>& spBoneFile,
+    const aiScene* pScene
+)
 {
     vector<shared_ptr<AnimationFile>> result;
-    for (size_t animIdx = 0; animIdx < pScene->mNumAnimations; ++animIdx)
+ 
+    if (spBoneFile.get() != nullptr)
     {
-        aiAnimation* pAnimation = pScene->mAnimations[animIdx];
-        const string animationLabel = GetFileNameAsAnimationLabel(strFileName);
-        shared_ptr<AnimationFile> spAnimation = make_shared<AnimationFile>(
-            animationLabel, pAnimation->mDuration, pAnimation->mTicksPerSecond
-        );
-
-        for (size_t channelIdx = 0; channelIdx < pAnimation->mNumChannels; ++channelIdx)
+        for (size_t animIdx = 0; animIdx < pScene->mNumAnimations; ++animIdx)
         {
-            aiNodeAnim* pAnimNode = pAnimation->mChannels[channelIdx];
-            const string animNodeName = pAnimNode->mNodeName.C_Str();
+            aiAnimation* pAnimation = pScene->mAnimations[animIdx];
+            shared_ptr<AnimationFile> spAnimation;
 
-            spAnimation->AddAnimChannel(
-                AnimChannelFile(
-                    animNodeName,
-                    pAnimNode->mNumPositionKeys,
-                    pAnimNode->mNumRotationKeys,
-                    pAnimNode->mNumScalingKeys,
-                    pAnimNode->mPositionKeys,
-                    pAnimNode->mRotationKeys,
-                    pAnimNode->mScalingKeys
-                )
-            );
+            const string animationLabel = GetFileNameAsAnimationLabel(strFileName);
+            AnimationFile* pAnimationFile = (AnimationFile*)FileLoader::GetUsingFile(animationLabel).get();
+            if (pAnimationFile == nullptr)
+            {
+                cout << "Loading " << animationLabel << "..." << endl;
+
+                spAnimation = make_shared<AnimationFile>(
+                    animationLabel, spBoneFile, pAnimation->mDuration, pAnimation->mTicksPerSecond
+                    );
+
+                for (size_t channelIdx = 0; channelIdx < pAnimation->mNumChannels; ++channelIdx)
+                {
+                    aiNodeAnim* pAnimNode = pAnimation->mChannels[channelIdx];
+                    const string animNodeName = pAnimNode->mNodeName.C_Str();
+                    const size_t boneIdx = spBoneFile->GetBoneIdxByName(animNodeName);
+                    AnimChannel* pAnimChannel = spAnimation->GetAnimChannel(boneIdx);
+
+                    pAnimChannel->SetTranslation(pAnimNode->mNumPositionKeys, pAnimNode->mPositionKeys);
+                    pAnimChannel->SetRotation(pAnimNode->mNumRotationKeys, pAnimNode->mRotationKeys);
+                    pAnimChannel->SetScale(pAnimNode->mNumScalingKeys, pAnimNode->mScalingKeys);
+                }
+            }
+            else
+            {
+                spAnimation = pAnimationFile->shared_from_this();
+            }
+            result.push_back(spAnimation);
         }
-        result.push_back(spAnimation);
     }
     return result;
 }
@@ -380,7 +392,8 @@ shared_ptr<MeshFile> FileLoader::LoadMeshFile(
     const string& strFileName, 
     const string& strExtension,
     const bool& bIsGltf,
-    const aiScene* pScene
+    const aiScene* pScene,
+    const std::shared_ptr<BoneFile>& spBoneFileIn
 )
 {
     shared_ptr<MeshFile> spMesh;
@@ -394,7 +407,7 @@ shared_ptr<MeshFile> FileLoader::LoadMeshFile(
 
         size_t mesh_idx = 0;
         DirectX::XMMATRIX xmmTransform = DirectX::XMMatrixIdentity();
-        spMesh = make_shared<MeshFile>(meshLabel, pScene->mNumMeshes);
+        spMesh = make_shared<MeshFile>(meshLabel, pScene->mNumMeshes, bIsGltf, spBoneFileIn);
         ProcessNode(strFilePath, meshLabel, mesh_idx, bIsGltf, pScene->mRootNode, pScene, xmmTransform, spMesh.get());
         spMesh->Initialize();
 
@@ -487,9 +500,9 @@ void FileLoader::LoadMeshData(
     }
 }
 
-std::unordered_map<string, aiBone*> FileLoader::GetNodeToBoneTable(const aiScene* pScene)
+std::unordered_map<string, const aiBone*> FileLoader::GetNodeToBoneTable(const aiScene* pScene)
 {
-    std::unordered_map<string, aiBone*> result;
+    std::unordered_map<string, const aiBone*> result;
     for (size_t mesh_idx = 0; mesh_idx < pScene->mNumMeshes; ++mesh_idx)
     {
         const aiMesh* pMesh = pScene->mMeshes[mesh_idx];
@@ -506,7 +519,7 @@ void FileLoader::LoadBoneFromNode(
     const aiNode* pNode,
     BoneFile* pBoneFile,
     BoneData& boneData,
-    const unordered_map<string, aiBone*>& nodeToBoneTable
+    const unordered_map<string, const aiBone*>& nodeToBoneTable
 )
 {
     if (pNode != nullptr)
@@ -522,7 +535,7 @@ void FileLoader::LoadBoneFromNode(
             boneData.pBoneWeights = (BoneWeight*)malloc(weightsSize);
             memcpy(boneData.pBoneWeights, pBone->mWeights, weightsSize);
 
-            pBoneFile->SetOffsetMatrix(uiBoneId, XMMATRIX(&pBone->mOffsetMatrix.a1));
+            pBoneFile->SetOffsetMatrix(boneData.strBoneName, uiBoneId, XMMATRIX(&pBone->mOffsetMatrix.a1));
 
             for (size_t node_idx = 0; node_idx < pNode->mNumChildren; ++node_idx)
             {
@@ -644,7 +657,7 @@ shared_ptr<MeshFile> FileLoader::LoadDefaultCubeMesh(
     {
         cout << "Loading " << strMeshFileName << "..." << endl;
 
-        spMeshFile = make_shared<MeshFile>(strMeshFileName, 1);
+        spMeshFile = make_shared<MeshFile>(strMeshFileName, 1, false);
         Mesh& meshData = spMeshFile->GetMeshData(0);
 
         for (uint32_t latitudeIdx = 0; latitudeIdx < DEFAULT_CUBE_LEVEL; ++latitudeIdx)
@@ -716,7 +729,7 @@ shared_ptr<MeshFile> FileLoader::LoadPlaneMesh(
     const float& fMirrorHeightIn
 )
 {
-    shared_ptr<MeshFile> spMeshFile = make_shared<MeshFile>("Plane_MESH", 1);
+    shared_ptr<MeshFile> spMeshFile = make_shared<MeshFile>("Plane_MESH", 1, false);
     Mesh& meshData = spMeshFile->GetMeshData(0);
     meshData.vVertices = vector<XMFLOAT3> {
         XMFLOAT3(-0.5f * fMirrorWidthIn, -0.5f * fMirrorHeightIn, 0.f),

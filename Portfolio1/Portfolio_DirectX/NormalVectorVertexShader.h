@@ -37,7 +37,7 @@ public:
 	void ResetShader();
 
 public:
-	void SetIAStage(class IMesh& mesh);
-	void ResetIAStage();
+	virtual void SetIAStage(const size_t& meshIdx, IMesh& mesh) override;
+	virtual void ResetIAStage() override;
 };
 

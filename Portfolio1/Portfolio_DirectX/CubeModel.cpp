@@ -14,7 +14,7 @@ CubeModel::CubeModel(
 	const float& fRadius,
 	const bool& bReverse
 )
-	: GroupPBRModel(FileLoader::LoadDefaultCubeModel(bReverse)),
+	: PBRStaticMesh(FileLoader::LoadDefaultCubeMesh(bReverse)),
 	IMovable(fCenterX, fCenterY, fCenterZ),
 	IScalable(),
 	IAngleAdjustable(0.f, 0.f, 0.f)

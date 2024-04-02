@@ -3,6 +3,7 @@
 #include <DirectXMath.h>
 #include <memory>
 #include <vector>
+#include <unordered_map>
 
 struct BoneWeight
 {
@@ -29,15 +30,26 @@ private:
 	BoneData boneRoot;
 	size_t uiBoneNums;
 
-private:
-	std::vector<DirectX::XMMATRIX> vBoneOffsetMatrix;
-
-public:
-	inline void SetOffsetMatrix(const size_t boneIdIdx, const DirectX::XMMATRIX& boneOffsetMatrixIn) { vBoneOffsetMatrix[boneIdIdx] = boneOffsetMatrixIn; }
-
 public:
 	BoneData& GetRootBone() { return boneRoot; }
 	inline const size_t& GetBoneNums() { return uiBoneNums; }
+
+private:
+	std::unordered_map<std::string, size_t> unmapBoneNameToIdx;
+	std::vector<DirectX::XMMATRIX> vBoneOffsetMatrix;
+
+public:
+	inline size_t GetBoneIdxByName(const std::string& strBoneName) 
+	{
+		return unmapBoneNameToIdx.find(strBoneName) != unmapBoneNameToIdx.end() ?
+			unmapBoneNameToIdx[strBoneName] : -1;
+	}
+
+	void SetOffsetMatrix(
+		const std::string& boneName,
+		const size_t boneIdIdx,
+		const DirectX::XMMATRIX& boneOffsetMatrixIn
+	);
 
 private:
 	virtual void AcceptFileAsList(class FileManipulator* pFileManipulator) override;

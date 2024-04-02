@@ -29,7 +29,7 @@ public:
 	inline ID3D11Buffer* const* GetPBRTextureFlagBuffer() { return cpModelTextureFlagBuffer.GetAddressOf(); }
 
 public:
-	inline void SetTextureImageFile(const EModelTextures& eModelTexture, std::shared_ptr<IImageFile> spImageFileIn);
+	void SetTextureImageFile(const EModelTextures& eModelTexture, std::shared_ptr<IImageFile> spImageFileIn);
 	inline std::shared_ptr<IImageFile>& GetTextureImageFileRef(const EModelTextures& eModelTexture) { return spModelTexture[eModelTexture]; }
 
 protected:

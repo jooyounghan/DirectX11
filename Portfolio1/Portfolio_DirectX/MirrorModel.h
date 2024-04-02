@@ -52,9 +52,6 @@ public:
 	inline ID3D11Buffer* const* GetMirrorPropertiesBuffer() { return cpMirrorProperties.GetAddressOf(); }
 
 public:
-	virtual void Draw() override;
-
-public:
 	virtual void SetAsRenderTarget() override;
 	virtual void ResetAsRenderTarget() override;
 

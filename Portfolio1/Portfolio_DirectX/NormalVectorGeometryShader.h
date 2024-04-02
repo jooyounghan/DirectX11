@@ -24,8 +24,16 @@ public:
 	virtual void DisapplyShader() override;
 
 public:
-	void SetShader(class PBRStaticMesh& pbrStaticMesh, class Viewable& viewableCamera);
-	void SetShader(class IMesh& mesh, class Viewable& viewableCamera);
+	void SetShader(
+		const size_t& meshIdx, 
+		class PBRStaticMesh& pbrStaticMesh, 
+		class Viewable& viewableCamera
+	);
+	void SetShader(
+		const size_t& meshIdx, 
+		class MirrorModel& mirrorModel,
+		class Viewable& viewableCamera
+	);
 	void ResetShader();
 };
 

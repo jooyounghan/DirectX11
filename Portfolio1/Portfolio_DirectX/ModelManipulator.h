@@ -10,18 +10,19 @@ class IMesh;
 class AIBLMesh;
 class PBRStaticMesh;
 class ATransformerable;
-class GroupPBRModel;
 class SkeletalModel;
 class AIBLMesh;
 class MirrorModel;
-class Bone;
-class Animation;
+
+class BoneFile;
+class AnimationFile;
+class MaterialFile;
 
 class ModelManipulator : public IGuiMenu
 {
-	friend GroupPBRModel;
-	friend SkeletalModel;
+	friend PBRStaticMesh;
 	friend AIBLMesh;
+	friend SkeletalModel;
 	friend MirrorModel;
 
 public:
@@ -63,12 +64,12 @@ private:
 	void ListUpModel();
 
 private:
-	void SetModelAsList(GroupPBRModel& groupPBRModel);
+	void SetModelAsList(PBRStaticMesh& pbrStaticMesh);
 	void SetModelAsList(AIBLMesh& iblMesh);
 	void SetModelAsList(MirrorModel& mirrorModel);
 
 private:
-	void ManipulateModel(GroupPBRModel& groupPBRModel);
+	void ManipulateModel(PBRStaticMesh& pbrStaticMesh);
 	void ManipulateModel(SkeletalModel& skeletalModel);
 	void ManipulateModel(AIBLMesh& iblMesh);
 	void ManipulateModel(MirrorModel& mirrorModel);
@@ -77,12 +78,14 @@ private:
 	void DrawTransformation(ATransformerable& transformable);
 
 private:
-	void DrawPBRTexture(PBRStaticMesh& pBRStaticMesh);
+	void DrawPBRTexture(PBRStaticMesh& pbrStaticMesh);
+
+private:
 	void DrawIBLTexture(AIBLMesh& iBLModel);
 	void DrawMirrorProperties(MirrorModel& mirrorModel);
 
 private:
-	void DrawBone(Bone& bone);
+	void DrawBone(const struct BoneData& boneData);
 	void DrawAnimInformation(SkeletalModel& skeletalModel);
 
 private:

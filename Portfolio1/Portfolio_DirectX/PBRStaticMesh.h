@@ -2,14 +2,26 @@
 #include <unordered_map>
 
 #include "IMesh.h"
-#include "ModelFile.h"
-#include "ImageFile.h"
+#include "MaterialFile.h"
+#include "ATransformerable.h"
 
-class PBRStaticMesh : public IMesh
+class PBRStaticMesh : public IMesh, public ATransformerable
 {
 public:
 	PBRStaticMesh(const std::shared_ptr<MeshFile>& spMeshFileIn);
 	virtual ~PBRStaticMesh();
+
+protected:
+	std::vector<std::shared_ptr<MaterialFile>> vMaterials;
+
+public:
+	inline void SetMaterialFile(const size_t& materialIdx, const std::shared_ptr<MaterialFile>& spMaterialFileIn) { 
+		if (vMaterials.size() > materialIdx)
+		{
+			vMaterials[materialIdx] = spMaterialFileIn;
+		}
+	}
+	inline MaterialFile* GetMaterialFile(const size_t& materialIdx) { return vMaterials.size() > materialIdx ? vMaterials[materialIdx].get() : nullptr; }
 
 protected:
 	struct
@@ -32,13 +44,12 @@ public:
 	inline ID3D11Buffer* const* GetPBRConstantBuffer() { return cpPBRConstantBuffer.GetAddressOf(); }
 
 public:
-	virtual void Draw() override;
 	virtual void UpdateModel(const float& fDelta) override;
 
 protected:
-	virtual void AcceptModelAsList(ModelManipulator* pModelManipulator) override {};
-	virtual void AcceptModelManipulating(class ModelManipulator* pModelManipulator) override {};
-	virtual void AcceptModelRendering(class ModelRenderer* pModelRenderer) override {};
-	virtual void AcceptNormalVectorRendering(class NormalVectorRenderer* pNormalVectorRenderer) override {};
-	virtual void AcceptRenderingLightMap(class LightRenderer* pLightRnederer) override {};
+	virtual void AcceptModelAsList(ModelManipulator* pModelManipulator) override;
+	virtual void AcceptModelManipulating(class ModelManipulator* pModelManipulator) override;
+	virtual void AcceptModelRendering(class ModelRenderer* pModelRenderer) override;
+	virtual void AcceptNormalVectorRendering(class NormalVectorRenderer* pNormalVectorRenderer) override;
+	virtual void AcceptRenderingLightMap(class LightRenderer* pLightRnederer) override;
 };

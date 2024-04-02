@@ -9,8 +9,13 @@
 
 using namespace std;
 
-PBRStaticMesh::PBRStaticMesh(const std::shared_ptr<MeshFile>& spMeshFileIn)
-	: IMesh(spMeshFileIn)
+PBRStaticMesh::PBRStaticMesh(
+	const std::shared_ptr<MeshFile>& spMeshFileIn
+)
+	: IMesh(spMeshFileIn), ATransformerable(),
+	IMovable(0.f, 0.f, 0.f),
+	IScalable(),
+	IAngleAdjustable(0.f, 0.f, 0.f)
 {
 	AutoZeroMemory(sPBRConstant);
 
@@ -19,15 +24,17 @@ PBRStaticMesh::PBRStaticMesh(const std::shared_ptr<MeshFile>& spMeshFileIn)
 		D3D11_BIND_CONSTANT_BUFFER, D3D11_CPU_ACCESS_WRITE, NULL,
 		cpPBRConstantBuffer.GetAddressOf()
 	);
+	const size_t meshNums = spMeshFile->GetMeshNums();
+	const bool& isGltf = spMeshFile->IsGLTF();
+	for (size_t meshIdx = 0; meshIdx < meshNums; ++meshIdx)
+	{
+		const string strTmpMaterial = "TempMaterial" + to_string(meshIdx + 1);
+		vMaterials.push_back(make_shared<MaterialFile>(strTmpMaterial, isGltf));
+	}
 }
 
 PBRStaticMesh::~PBRStaticMesh()
 {
-}
-
-void PBRStaticMesh::Draw()
-{
-	DirectXDevice::pDeviceContext->DrawIndexed(spMeshFile->GetIndicesCount(), NULL, NULL);
 }
 
 void PBRStaticMesh::UpdateModel(const float& fDelta)
@@ -37,4 +44,29 @@ void PBRStaticMesh::UpdateModel(const float& fDelta)
 		sPBRConstant, D3D11_MAP_WRITE_DISCARD,
 		cpPBRConstantBuffer.Get()
 	);
+}
+
+void PBRStaticMesh::AcceptModelAsList(ModelManipulator* pModelManipulator)
+{
+	pModelManipulator->SetModelAsList(*this);
+}
+
+void PBRStaticMesh::AcceptModelManipulating(ModelManipulator* pModelManipulator)
+{
+	pModelManipulator->ManipulateModel(*this);
+}
+
+void PBRStaticMesh::AcceptModelRendering(ModelRenderer* pModelRenderer)
+{
+	pModelRenderer->RenderModel(*this);
+}
+
+void PBRStaticMesh::AcceptNormalVectorRendering(NormalVectorRenderer* pNormalVectorRenderer)
+{
+	pNormalVectorRenderer->RenderNormal(*this);
+}
+
+void PBRStaticMesh::AcceptRenderingLightMap(LightRenderer* pLightRnederer)
+{
+	pLightRnederer->RenderLightMap(*this);
 }

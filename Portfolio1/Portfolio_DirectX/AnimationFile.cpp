@@ -3,31 +3,16 @@
 
 using namespace DirectX;
 
-AnimChannelFile::AnimChannelFile(
-	const std::string& strChannleNameIn,
-	const unsigned int& uiNumPosition,
-	const unsigned int& uiNumRotation,
-	const unsigned int& uiNumScale,
-	void* pPositionIn,
-	void* pRotationIn,
-	void* pScaleIn
-)
-	: strAnimChannelData(strChannleNameIn)
+AnimChannel::AnimChannel()
 {
-	vTranslation.resize(uiNumPosition);
-	vRotation.resize(uiNumRotation);
-	vScale.resize(uiNumScale);
 
-	memcpy(vTranslation.data(), pPositionIn, sizeof(AnimTranslation) * uiNumPosition);
-	memcpy(vRotation.data(), pRotationIn, sizeof(AnimRotation) * uiNumRotation);
-	memcpy(vScale.data(), pScaleIn, sizeof(AnimScale) * uiNumScale);
 }
 
-AnimChannelFile::~AnimChannelFile()
+AnimChannel::~AnimChannel()
 {
 }
 
-XMMATRIX AnimChannelFile::GetChannelTransformation(const double& dblPlayTimeIn)
+XMMATRIX AnimChannel::GetChannelTransformation(const double& dblPlayTimeIn)
 {
 	XMVECTOR xmvTranslation = GetInterpolatedData(dblPlayTimeIn, vTranslation, 0.f, XMVectorSet(0.f, 0.f, 0.f, 0.f));
 	XMVECTOR xmvQuaternion = GetInterpolatedData(dblPlayTimeIn, vRotation, 0.f, XMVectorSet(0.f, 0.f, 0.f, 1.f));
@@ -39,11 +24,13 @@ XMMATRIX AnimChannelFile::GetChannelTransformation(const double& dblPlayTimeIn)
 
 AnimationFile::AnimationFile(
 	const std::string& strFileLabelIn,
+	const std::shared_ptr<BoneFile>& spBoneFileIn,
 	const double& dblDurationIn,
 	const double& dblTicksPerSecondIn
 )
 	: IFile(strFileLabelIn), dblDuration(dblDurationIn), dblTicksPerSecond(dblTicksPerSecondIn)
 {
+	vAnimChannels.resize(spBoneFileIn->GetBoneNums());
 }
 
 AnimationFile::~AnimationFile()

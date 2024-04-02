@@ -17,6 +17,16 @@ BoneFile::~BoneFile()
 }
 
 
+void BoneFile::SetOffsetMatrix(
+	const std::string& boneName, 
+	const size_t boneIdIdx, 
+	const DirectX::XMMATRIX& boneOffsetMatrixIn
+)
+{
+	unmapBoneNameToIdx[boneName] = boneIdIdx;
+	vBoneOffsetMatrix[boneIdIdx] = boneOffsetMatrixIn;
+}
+
 void BoneFile::AcceptFileAsList(FileManipulator* pFileManipulator)
 {
 	pFileManipulator->ShowAsList(*this, DRAG_DROP_BONE_KEY);
