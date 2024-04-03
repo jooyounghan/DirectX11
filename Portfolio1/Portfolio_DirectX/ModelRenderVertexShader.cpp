@@ -74,7 +74,11 @@ void ModelRenderVertexShader::SetIAStage(const size_t& meshIdx, IMesh& mesh)
 	{
 		Mesh& meshData = mesh.GetMeshFile()->GetMeshData(meshIdx);
 
-		DirectXDevice::pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
+		DirectXDevice::pDeviceContext->IASetPrimitiveTopology(
+			dynamic_cast<AIBLMesh*>(&mesh) == nullptr ?
+			D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST :
+			D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST
+		);
 
 		const std::vector<ID3D11Buffer*> vertexBuffers = {
 			meshData.cpVerticesBuffer.Get(),

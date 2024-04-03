@@ -24,13 +24,13 @@ XMMATRIX AnimChannel::GetChannelTransformation(const double& dblPlayTimeIn)
 
 AnimationFile::AnimationFile(
 	const std::string& strFileLabelIn,
-	const std::shared_ptr<BoneFile>& spBoneFileIn,
+	const size_t& channelNums,
 	const double& dblDurationIn,
 	const double& dblTicksPerSecondIn
 )
 	: IFile(strFileLabelIn), dblDuration(dblDurationIn), dblTicksPerSecond(dblTicksPerSecondIn)
 {
-	vAnimChannels.resize(spBoneFileIn->GetBoneNums());
+	vAnimChannels.resize(channelNums);
 }
 
 AnimationFile::~AnimationFile()

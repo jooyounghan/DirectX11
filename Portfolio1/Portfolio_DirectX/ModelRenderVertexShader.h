@@ -3,6 +3,7 @@
 #include "IVertexShader.h"
 
 class IMesh;
+class PBRStaticMesh;
 class AIBLMesh;
 class MirrorModel;
 class ATransformerable;

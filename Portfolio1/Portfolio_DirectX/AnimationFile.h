@@ -81,7 +81,7 @@ class AnimationFile : public IFile, public std::enable_shared_from_this<Animatio
 public:
 	AnimationFile(
 		const std::string& strFileLabelIn,
-		const std::shared_ptr<BoneFile>& spBoneFileIn,
+		const size_t& channelNums,
 		const double& dblDurationIn,
 		const double& dblTicksPerSecondIn
 	);
@@ -90,6 +90,7 @@ public:
 private:
 	double dblDuration;
 	double dblTicksPerSecond;
+	std::unordered_map<std::string, size_t> unmapChannelNameToIdx;
 	std::vector<AnimChannel> vAnimChannels;
 
 public:
@@ -97,6 +98,7 @@ public:
 	inline const double& GetTicksPerSecond() const { return dblTicksPerSecond; }
 
 public:
+	inline void SetChannelNameToId(const std::string& channelName, const size_t& channelIdx) { unmapChannelNameToIdx[channelName] = channelIdx; }
 	inline AnimChannel* GetAnimChannel(const size_t& channelIdx) { return vAnimChannels.size() > channelIdx ? &vAnimChannels[channelIdx] : nullptr; }
 
 public:

@@ -36,7 +36,7 @@ using namespace std;
 using namespace DirectX;
 
 unordered_map<string, weak_ptr<class IFile>> FileLoader::mapUsingFiles;
-size_t FileLoader::uiBoneId = 0;
+size_t FileLoader::uiBoneId = -1;
 
 uint8_t* FileLoader::LoadFileWithStbi(const char* sFilename, UINT* x, UINT* y, UINT* comp)
 {
@@ -233,7 +233,7 @@ vector<shared_ptr<IFile>> FileLoader::LoadModelFileSet(
         vector<shared_ptr<AnimationFile>> spAnimFiles;
         if (pScene->mNumAnimations > 0)
         {
-            spAnimFiles = LoadAnimationFile(strFileName, spBoneFile, pScene);
+            spAnimFiles = LoadAnimationFile(strFileName, pScene);
             for (auto& anim : spAnimFiles)
             {
                 vLoadedFiles.emplace_back(anim);
@@ -244,7 +244,11 @@ vector<shared_ptr<IFile>> FileLoader::LoadModelFileSet(
         shared_ptr<IFile> spMeshFile;
         if (pScene->mNumMeshes > 0)
         {
-            spMeshFile = LoadMeshFile(strFilePath, strFileName, strExtension, bIsGltf, pScene, spBoneFile);
+            spMeshFile = LoadMeshFile(
+                strFilePath, strFileName, 
+                strExtension, bIsGltf, 
+                pScene, spBoneFile
+            );
             vLoadedFiles.emplace_back(spMeshFile);
         }
     }
@@ -341,48 +345,45 @@ vector<shared_ptr<MaterialFile>> FileLoader::LoadMaterialFile(
 }
 
 vector<shared_ptr<AnimationFile>> FileLoader::LoadAnimationFile(
-    const std::string strFileName, 
-    const shared_ptr<BoneFile>& spBoneFile,
+    const std::string strFileName,
     const aiScene* pScene
 )
 {
     vector<shared_ptr<AnimationFile>> result;
  
-    if (spBoneFile.get() != nullptr)
+    for (size_t animIdx = 0; animIdx < pScene->mNumAnimations; ++animIdx)
     {
-        for (size_t animIdx = 0; animIdx < pScene->mNumAnimations; ++animIdx)
+        aiAnimation* pAnimation = pScene->mAnimations[animIdx];
+        shared_ptr<AnimationFile> spAnimation;
+
+        const string animationLabel = GetFileNameAsAnimationLabel(strFileName);
+        AnimationFile* pAnimationFile = (AnimationFile*)FileLoader::GetUsingFile(animationLabel).get();
+        if (pAnimationFile == nullptr)
         {
-            aiAnimation* pAnimation = pScene->mAnimations[animIdx];
-            shared_ptr<AnimationFile> spAnimation;
+            cout << "Loading " << animationLabel << "..." << endl;
 
-            const string animationLabel = GetFileNameAsAnimationLabel(strFileName);
-            AnimationFile* pAnimationFile = (AnimationFile*)FileLoader::GetUsingFile(animationLabel).get();
-            if (pAnimationFile == nullptr)
+            spAnimation = make_shared<AnimationFile>(
+                animationLabel, pAnimation->mNumChannels, pAnimation->mDuration, pAnimation->mTicksPerSecond
+                );
+
+            for (size_t channelIdx = 0; channelIdx < pAnimation->mNumChannels; ++channelIdx)
             {
-                cout << "Loading " << animationLabel << "..." << endl;
+                aiNodeAnim* pAnimNode = pAnimation->mChannels[channelIdx];
+                const string animNodeName = pAnimNode->mNodeName.C_Str();
 
-                spAnimation = make_shared<AnimationFile>(
-                    animationLabel, spBoneFile, pAnimation->mDuration, pAnimation->mTicksPerSecond
-                    );
+                spAnimation->SetChannelNameToId(animNodeName, channelIdx);
 
-                for (size_t channelIdx = 0; channelIdx < pAnimation->mNumChannels; ++channelIdx)
-                {
-                    aiNodeAnim* pAnimNode = pAnimation->mChannels[channelIdx];
-                    const string animNodeName = pAnimNode->mNodeName.C_Str();
-                    const size_t boneIdx = spBoneFile->GetBoneIdxByName(animNodeName);
-                    AnimChannel* pAnimChannel = spAnimation->GetAnimChannel(boneIdx);
-
-                    pAnimChannel->SetTranslation(pAnimNode->mNumPositionKeys, pAnimNode->mPositionKeys);
-                    pAnimChannel->SetRotation(pAnimNode->mNumRotationKeys, pAnimNode->mRotationKeys);
-                    pAnimChannel->SetScale(pAnimNode->mNumScalingKeys, pAnimNode->mScalingKeys);
-                }
+                AnimChannel* pAnimChannel = spAnimation->GetAnimChannel(channelIdx);
+                pAnimChannel->SetTranslation(pAnimNode->mNumPositionKeys, pAnimNode->mPositionKeys);
+                pAnimChannel->SetRotation(pAnimNode->mNumRotationKeys, pAnimNode->mRotationKeys);
+                pAnimChannel->SetScale(pAnimNode->mNumScalingKeys, pAnimNode->mScalingKeys);
             }
-            else
-            {
-                spAnimation = pAnimationFile->shared_from_this();
-            }
-            result.push_back(spAnimation);
         }
+        else
+        {
+            spAnimation = pAnimationFile->shared_from_this();
+        }
+        result.push_back(spAnimation);
     }
     return result;
 }
@@ -403,16 +404,13 @@ shared_ptr<MeshFile> FileLoader::LoadMeshFile(
 
     if (pMesh == nullptr)
     {
-        cout << "Start Loading " << meshLabel << "====================================" << endl;
+        cout << "Loading " << meshLabel << "..." << endl;
 
         size_t mesh_idx = 0;
         DirectX::XMMATRIX xmmTransform = DirectX::XMMatrixIdentity();
         spMesh = make_shared<MeshFile>(meshLabel, pScene->mNumMeshes, bIsGltf, spBoneFileIn);
         ProcessNode(strFilePath, meshLabel, mesh_idx, bIsGltf, pScene->mRootNode, pScene, xmmTransform, spMesh.get());
         spMesh->Initialize();
-
-        cout << "Finish Loading " << meshLabel << "===================================" << endl;
-
         FileLoader::AddUsingFile(meshLabel, spMesh);
     }
     else
@@ -460,49 +458,94 @@ void FileLoader::LoadMeshData(
 )
 {
     Mesh& mesh = pMeshFile->GetMeshData(uiElementIdx);
-    for (UINT i = 0; i < pMesh->mNumVertices; i++)
+
+    for (UINT vertexIdx = 0; vertexIdx < pMesh->mNumVertices; vertexIdx++)
     {
         mesh.vVertices.emplace_back(
-            pMesh->mVertices[i].x,
-            pMesh->mVertices[i].y,
-            pMesh->mVertices[i].z
+            pMesh->mVertices[vertexIdx].x,
+            pMesh->mVertices[vertexIdx].y,
+            pMesh->mVertices[vertexIdx].z
         );
 
         if (pMesh->mTextureCoords[0]) {
             mesh.vTexcoords.emplace_back(
-                (float)pMesh->mTextureCoords[0][i].x,
-                (float)pMesh->mTextureCoords[0][i].y
+                (float)pMesh->mTextureCoords[0][vertexIdx].x,
+                (float)pMesh->mTextureCoords[0][vertexIdx].y
             );
         }
 
         bIsGltf ? mesh.vNormals.emplace_back(
-            pMesh->mNormals[i].x, -pMesh->mNormals[i].z, pMesh->mNormals[i].y
+            pMesh->mNormals[vertexIdx].x, -pMesh->mNormals[vertexIdx].z, pMesh->mNormals[vertexIdx].y
         ) : mesh.vNormals.emplace_back(
-            pMesh->mNormals[i].x, pMesh->mNormals[i].y, pMesh->mNormals[i].z
+            pMesh->mNormals[vertexIdx].x, pMesh->mNormals[vertexIdx].y, pMesh->mNormals[vertexIdx].z
         );
     }
 
-    for (UINT i = 0; i < pMesh->mNumFaces; i++) {
-        aiFace face = pMesh->mFaces[i];
+    for (UINT faceIdx = 0; faceIdx < pMesh->mNumFaces; faceIdx++) {
+        aiFace face = pMesh->mFaces[faceIdx];
         for (UINT j = 0; j < face.mNumIndices; j++)
             mesh.vIndices.emplace_back(face.mIndices[j]);
     }
 
     mesh.vTangents.resize(mesh.vNormals.size());
 
-    vector<DirectX::XMFLOAT3>& vertices = mesh.vVertices;
-
-    for (DirectX::XMFLOAT3& v : vertices)
+    for (DirectX::XMFLOAT3& v : mesh.vVertices)
     {
         DirectX::XMVECTOR f4Vector = DirectX::XMVectorSet(v.x, v.y, v.z, 0.f);
         f4Vector = DirectX::XMVector3TransformCoord(f4Vector, xmMatrix);
         memcpy(&v, f4Vector.m128_f32, sizeof(v));
+    }
+
+    BoneFile* pBoneFile = pMeshFile->GetBoneFile();
+    if (pMesh->HasBones() && pBoneFile != nullptr)
+    {
+        mesh.vBlendWeight1.resize(mesh.vVertices.size());
+        mesh.vBlendWeight2.resize(mesh.vVertices.size());
+        mesh.vBlendIndices1.resize(mesh.vVertices.size());
+        mesh.vBlendIndices2.resize(mesh.vVertices.size());
+
+        vector<vector<float>> tempWeights;
+        vector<vector<size_t>> tempIndices;
+
+        tempWeights.resize(mesh.vVertices.size());
+        tempIndices.resize(mesh.vVertices.size());
+
+        for (size_t boneIdx = 0; boneIdx < pMesh->mNumBones; ++boneIdx)
+        {
+            const aiBone* pBone = pMesh->mBones[boneIdx];
+            size_t boneId = pBoneFile->GetBoneIdxByName(pBone->mName.C_Str());
+
+            for (size_t weightIdx = 0; weightIdx < pBone->mNumWeights; ++weightIdx)
+            {
+                const aiVertexWeight& pWeight = pBone->mWeights[weightIdx];
+                tempWeights[pWeight.mVertexId].push_back(pWeight.mWeight);
+                tempIndices[pWeight.mVertexId].push_back(boneId);
+            }            
+        }
+
+        for (size_t vertexIdx = 0; vertexIdx < mesh.vVertices.size(); ++vertexIdx)
+        {
+            vector<float>& weights = tempWeights[vertexIdx];
+            vector<size_t>& indices = tempIndices[vertexIdx];
+
+            const size_t weightNums = weights.size();
+
+            for (size_t weightIdx = 0; weightIdx < weightNums; ++weightIdx)
+            {
+                weightIdx < 4 ? *(&mesh.vBlendWeight1[vertexIdx].x + weightIdx) = weights[weightIdx] :
+                    *(&mesh.vBlendWeight2[vertexIdx].x + weightIdx - 4) = weights[weightIdx];
+
+                weightIdx < 4 ? *(&mesh.vBlendIndices1[vertexIdx].x + weightIdx) = indices[weightIdx] :
+                    *(&mesh.vBlendIndices2[vertexIdx].x + weightIdx - 4) = indices[weightIdx];
+            }
+        }
     }
 }
 
 std::unordered_map<string, const aiBone*> FileLoader::GetNodeToBoneTable(const aiScene* pScene)
 {
     std::unordered_map<string, const aiBone*> result;
+
     for (size_t mesh_idx = 0; mesh_idx < pScene->mNumMeshes; ++mesh_idx)
     {
         const aiMesh* pMesh = pScene->mMeshes[mesh_idx];
@@ -524,11 +567,11 @@ void FileLoader::LoadBoneFromNode(
 {
     if (pNode != nullptr)
     {
-        uiBoneId++;
         boneData.strBoneName = pNode->mName.C_Str();
 
         if (nodeToBoneTable.find(boneData.strBoneName) != nodeToBoneTable.end())
         {
+            uiBoneId++;
             const aiBone* pBone = nodeToBoneTable.at(boneData.strBoneName);
             boneData.uiNumWeight = pBone->mNumWeights;
             const size_t weightsSize = sizeof(BoneWeight) * boneData.uiNumWeight;
@@ -536,16 +579,16 @@ void FileLoader::LoadBoneFromNode(
             memcpy(boneData.pBoneWeights, pBone->mWeights, weightsSize);
 
             pBoneFile->SetOffsetMatrix(boneData.strBoneName, uiBoneId, XMMATRIX(&pBone->mOffsetMatrix.a1));
+        }
 
-            for (size_t node_idx = 0; node_idx < pNode->mNumChildren; ++node_idx)
-            {
-                const aiNode* pChildNode = pNode->mChildren[node_idx];
+        for (size_t node_idx = 0; node_idx < pNode->mNumChildren; ++node_idx)
+        {
+            const aiNode* pChildNode = pNode->mChildren[node_idx];
 
-                boneData.vBoneChildren.emplace_back();
-                BoneData& currentBoneData = boneData.vBoneChildren[boneData.vBoneChildren.size() - 1];
-                currentBoneData.pBoneParent = &boneData;
-                LoadBoneFromNode(pChildNode, pBoneFile, currentBoneData, nodeToBoneTable);
-            }
+            boneData.vBoneChildren.emplace_back();
+            BoneData& currentBoneData = boneData.vBoneChildren[boneData.vBoneChildren.size() - 1];
+            currentBoneData.pBoneParent = &boneData;
+            LoadBoneFromNode(pChildNode, pBoneFile, currentBoneData, nodeToBoneTable);
         }
     }
 }

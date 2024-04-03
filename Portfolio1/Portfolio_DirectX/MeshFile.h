@@ -82,7 +82,7 @@ public:
 	inline Mesh& GetMeshData(const size_t& uiMeshIdx) { return vMeshData[uiMeshIdx]; }
 
 private:
-	virtual void AcceptFileAsList(class FileManipulator* pFileManipulator) override {};
+	virtual void AcceptFileAsList(class FileManipulator* pFileManipulator) override;
 	virtual ID3D11ShaderResourceView* GetThumbNailSRV() override { return nullptr; }
 };
 

@@ -1,4 +1,6 @@
 #include "MeshFile.h"
+#include "DefineVar.h"
+#include "FileManipulator.h"
 
 void Mesh::CreateBuffer()
 {
@@ -33,7 +35,7 @@ void MeshFile::Initialize()
 	DirectX::XMFLOAT3 vmax(-1E9, -1E9, -1E9);
 	if (!bIsInitialized)
 	{
-		for (auto meshData : vMeshData)
+		for (auto& meshData : vMeshData)
 		{
 			for (auto& v : meshData.vVertices)
 			{
@@ -84,4 +86,9 @@ void MeshFile::UpdateTangents()
 		);
 		if (FAILED(hResult)) { std::cout << "Computing Tangent Frame Failed" << std::endl; }
 	}
+}
+
+void MeshFile::AcceptFileAsList(FileManipulator* pFileManipulator)
+{
+	pFileManipulator->ShowAsList(*this, DRAG_DROP_MESH_KEY);
 }

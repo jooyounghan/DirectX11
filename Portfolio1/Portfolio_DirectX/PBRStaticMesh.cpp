@@ -9,6 +9,8 @@
 
 using namespace std;
 
+uint32_t PBRStaticMesh::uiPBRStaticMeshlIdx = 1;
+
 PBRStaticMesh::PBRStaticMesh(
 	const std::shared_ptr<MeshFile>& spMeshFileIn
 )
@@ -31,6 +33,9 @@ PBRStaticMesh::PBRStaticMesh(
 		const string strTmpMaterial = "TempMaterial" + to_string(meshIdx + 1);
 		vMaterials.push_back(make_shared<MaterialFile>(strTmpMaterial, isGltf));
 	}
+
+	SetObjectName(spMeshFile->GetFileLabel() + to_string(uiPBRStaticMeshlIdx));
+	uiPBRStaticMeshlIdx++;
 }
 
 PBRStaticMesh::~PBRStaticMesh()
@@ -39,6 +44,8 @@ PBRStaticMesh::~PBRStaticMesh()
 
 void PBRStaticMesh::UpdateModel(const float& fDelta)
 {
+	ATransformerable::UpdatePosition();
+	ATransformerable::UpdateTranformationMatrix();
 	ID3D11Helper::UpdateBuffer(
 		DirectXDevice::pDeviceContext,
 		sPBRConstant, D3D11_MAP_WRITE_DISCARD,

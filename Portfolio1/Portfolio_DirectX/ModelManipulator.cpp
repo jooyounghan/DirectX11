@@ -24,7 +24,7 @@ ModelManipulator::ModelManipulator()
 	//AddModel(make_shared<CubeModel>(-5.f, 0.f, 0.f, 1.f, false));
 	//AddModel(make_shared<CubeModel>(5.f, 0.f, 0.f, 1.f, false));
 	//AddModel(make_shared<CubeModel>(0.f, -5.f, 0.f, 1.f, false));
-	AddObject(make_shared<CubeModel>(0.f, 5.f, 0.f, 1.f, false));
+	//AddObject(make_shared<CubeModel>(0.f, 5.f, 0.f, 1.f, false));
 	//AddModel(make_shared<CubeModel>(0.f, 0.f, 0.f, 1.f, false));
 	//AddModel(make_shared<MirrorModel>(3.f, 3.f, 0.f, 0.f, 3.f, 0.f, 0.f, 0.f));
 	//AddModel(make_shared<MirrorModel>(10.f, 10.f, 0.f, -2.f, 0.f, 270.f, 0.f, 0.f));
@@ -132,7 +132,7 @@ void ModelManipulator::SetModelAsList(PBRStaticMesh& pbrStaticMesh)
 	{
 		for (size_t meshIdx = 0; meshIdx < meshNums; ++meshIdx)
 		{
-			const string meshDataText = string(pbrStaticMesh.GetObjectName() + to_string(meshIdx));
+			const string meshDataText = string("Mesh " + to_string(meshIdx));
 			BulletText(meshDataText.c_str());
 		}
 		ImGui::TreePop();
@@ -232,7 +232,6 @@ void ModelManipulator::DrawPBRTexture(PBRStaticMesh& pbrStaticMesh)
 		for (size_t meshIdx = 0; meshIdx < meshNums; ++meshIdx)
 		{
 			BeginGroup();
-
 			MaterialFile* pMaterial = pbrStaticMesh.GetMaterialFile(meshIdx);
 			for (size_t idx = 0; idx < TEXTURE_MAP_NUM; ++idx)
 			{
@@ -242,6 +241,7 @@ void ModelManipulator::DrawPBRTexture(PBRStaticMesh& pbrStaticMesh)
 					DRAG_DROP_TEXTURE_KEY
 				);
 			}
+			EndGroup();
 			if (BeginDragDropTarget())
 			{
 				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DRAG_DROP_MATERIAL_KEY))
@@ -251,7 +251,7 @@ void ModelManipulator::DrawPBRTexture(PBRStaticMesh& pbrStaticMesh)
 				}
 				ImGui::EndDragDropTarget();
 			}
-			EndGroup();
+
 		}
 	}
 }

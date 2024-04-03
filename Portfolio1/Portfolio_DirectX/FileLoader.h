@@ -72,7 +72,6 @@ private:
 	);
 	static std::vector<std::shared_ptr<class AnimationFile>> LoadAnimationFile(
 		const std::string strFileName,
-		const std::shared_ptr<class BoneFile>& spBoneFile,
 		const struct aiScene* pScene
 	);
 
