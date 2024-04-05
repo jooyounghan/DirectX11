@@ -42,7 +42,8 @@ public:
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	cpBlendIndices2Buffer;
 
 public:
-	virtual void CreateBuffer();
+	void CreateBuffer();
+	void UpdateTangent();
 };
 
 class MeshFile : public IFile, public std::enable_shared_from_this<MeshFile>
@@ -75,7 +76,6 @@ protected:
 
 public:
 	void Initialize();
-	void UpdateTangents();
 
 public:
 	inline size_t GetMeshNums() { return vMeshData.size(); }

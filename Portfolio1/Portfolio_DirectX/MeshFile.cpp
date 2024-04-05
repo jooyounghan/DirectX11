@@ -16,6 +16,21 @@ void Mesh::CreateBuffer()
 	ID3D11Helper::CreateBuffer(DirectXDevice::pDevice, vBlendIndices2, D3D11_USAGE_IMMUTABLE, D3D11_BIND_VERTEX_BUFFER, NULL, NULL, cpBlendIndices2Buffer.GetAddressOf());
 }
 
+void Mesh::UpdateTangent()
+{
+	HRESULT hResult = DirectX::ComputeTangentFrame(
+		vIndices.data(),
+		vIndices.size() / 3,
+		vVertices.data(),
+		vNormals.data(),
+		vTexcoords.data(),
+		vVertices.size(),
+		vTangents.data(),
+		nullptr
+	);
+	if (FAILED(hResult)) { std::cout << "Computing Tangent Frame Failed" << std::endl; }
+}
+
 MeshFile::MeshFile(
 	const std::string& strFileLabelIn,
 	const size_t uiMeshCountIn,
@@ -62,29 +77,11 @@ void MeshFile::Initialize()
 				v.y = (v.y + translation.y) * scale;
 				v.z = (v.z + translation.z) * scale;
 			}
-
+			meshData.UpdateTangent();
 			meshData.CreateBuffer();
 		}
-		UpdateTangents();
+		
 		bIsInitialized = true;
-	}
-}
-
-void MeshFile::UpdateTangents()
-{
-	for (auto& meshData : vMeshData)
-	{
-		HRESULT hResult = DirectX::ComputeTangentFrame(
-			meshData.vIndices.data(),
-			meshData.vIndices.size() / 3,
-			meshData.vVertices.data(),
-			meshData.vNormals.data(),
-			meshData.vTexcoords.data(),
-			meshData.vVertices.size(),
-			meshData.vTangents.data(),
-			nullptr
-		);
-		if (FAILED(hResult)) { std::cout << "Computing Tangent Frame Failed" << std::endl; }
 	}
 }
 
