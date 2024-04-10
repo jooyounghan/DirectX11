@@ -2,6 +2,7 @@
 #include "PBRStaticMesh.h"
 #include "BoneFile.h"
 #include "AnimationFile.h"
+#include "StructuredBuffer.h"
 
 class SkeletalModel : public PBRStaticMesh
 {
@@ -11,27 +12,35 @@ public:
 	);
 	virtual ~SkeletalModel();
 
-private:
+protected:
 	std::shared_ptr<AnimationFile>	spAnimFile;
 
-private:
+protected:
 	DirectX::XMMATRIX xmmRootTransform;
 	DirectX::XMVECTOR xmvPreviousTranslation;
+	bool bIsFirstFrame;
 
 public:
 	inline void SetAnimationFile(const std::shared_ptr<AnimationFile>& spAnimFileIn) { spAnimFile = spAnimFileIn; }
-	AnimationFile* GetAnimationFile() { return spAnimFile.get(); }
+	inline AnimationFile* GetAnimationFile() { return spAnimFile.get(); }
 
-private:
+protected:
 	double dblAnimPlayTime;
 	struct
 	{
 		double dblAnimSpeed;
 		double dblDummy;
 	} sAnimData;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> cpAnimationBuffer;
 
 public:
-	Microsoft::WRL::ComPtr<ID3D11Buffer> cpAnimationBuffer;
+	inline ID3D11Buffer* const* GetAnimationBuffer() { return cpAnimationBuffer.GetAddressOf(); }
+
+protected:
+	StructuredBuffer<DirectX::XMMATRIX> sbBoneTransformation;
+
+public:
+	inline ID3D11ShaderResourceView* const* GetBoneTransformationBuffer() { return sbBoneTransformation.GetStructuredSRV(); }
 
 public:
 	void SetAnimSpeed(const double& dblSpeed) { sAnimData.dblAnimSpeed = dblSpeed; }
@@ -40,16 +49,14 @@ public:
 
 public:
 	void AddPlayTime(const float& fDeltaTime);
-	const double& GetPlayTime() { return dblAnimPlayTime; }
-
-private:
-	std::vector<DirectX::XMMATRIX> vBoneTransformation;
+	inline const double& GetPlayTime() { return dblAnimPlayTime; }
 
 public:
 	virtual void UpdateModel(const float& fDelta) override;
-	//virtual void UpdateBoneTransformation(Bone& bone);
+	void UpdateTransformation(size_t parentIdx, size_t& boneIdx, BoneData& boneData);
 
 public:
 	virtual void AcceptModelManipulating(class ModelManipulator* pModelManipulator) override;
+	virtual void AcceptModelRendering(class ModelRenderer* pModelRenderer) override;
 };
 

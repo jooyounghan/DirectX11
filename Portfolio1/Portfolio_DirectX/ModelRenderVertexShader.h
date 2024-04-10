@@ -2,10 +2,6 @@
 
 #include "IVertexShader.h"
 
-class IMesh;
-class PBRStaticMesh;
-class AIBLMesh;
-class MirrorModel;
 class ATransformerable;
 class Viewable;
 
@@ -18,14 +14,14 @@ private:
 	virtual ~ModelRenderVertexShader();
 
 public:
-	static ModelRenderVertexShader* pPixelShader;
+	static ModelRenderVertexShader* pVertexShader;
 
 public:
 	inline static ModelRenderVertexShader* GetInstance() {
-		if (pPixelShader == nullptr) {
-			pPixelShader = new ModelRenderVertexShader();
+		if (pVertexShader == nullptr) {
+			pVertexShader = new ModelRenderVertexShader();
 		}
-		return pPixelShader;
+		return pVertexShader;
 	}
 
 private:

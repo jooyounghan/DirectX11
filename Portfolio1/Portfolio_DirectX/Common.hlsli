@@ -23,6 +23,18 @@ struct PBRModelVertexInput
     float3  f3WorldTangent  : TANGENT;
 };
 
+struct PBRSkeletalVertexInput
+{
+    float3 f3WorldPos : POSITION;
+    float2 f2TexCoord : TEXCOORD;
+    float3 f3WorldNormal : NORMAL;
+    float3 f3WorldTangent : TANGENT;
+    float4 f4BoneWeights0 : BLENDWEIGHT0;
+    float4 f4BoneWeights1 : BLENDWEIGHT1;
+    uint4  ui4BoneIndices0 : BLENDINDICES0;
+    uint4  ui4BoneIndices1 : BLENDINDICES1;
+};
+
 struct PBRModelVertexOutput
 {
     float4  f4ProjPos       : SV_Position;

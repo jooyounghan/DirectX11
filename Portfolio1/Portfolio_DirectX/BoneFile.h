@@ -35,21 +35,21 @@ public:
 	inline const size_t& GetBoneNums() { return uiBoneNums; }
 
 private:
-	std::unordered_map<std::string, size_t> unmapBoneNameToIdx;
+	std::vector<std::string> vBoneNames;
 	std::vector<DirectX::XMMATRIX> vBoneOffsetMatrix;
+	static std::string strDefaultBoneName;
 
 public:
-	inline size_t GetBoneIdxByName(const std::string& strBoneName) 
-	{
-		return unmapBoneNameToIdx.find(strBoneName) != unmapBoneNameToIdx.end() ?
-			unmapBoneNameToIdx[strBoneName] : -1;
-	}
+	inline const std::vector<std::string>& GetBoneNames() { return vBoneNames; }
 
+public:
+	size_t GetBoneIdx(const std::string& strBoneNameIn);
 	void SetOffsetMatrix(
 		const std::string& boneName,
 		const size_t boneIdIdx,
 		const DirectX::XMMATRIX& boneOffsetMatrixIn
 	);
+	inline const DirectX::XMMATRIX& GetOffsetMatrix(const size_t& offsetMatrixIdx) { return vBoneOffsetMatrix[offsetMatrixIdx]; }
 
 private:
 	virtual void AcceptFileAsList(class FileManipulator* pFileManipulator) override;

@@ -8,9 +8,12 @@ class IMesh;
 class ILight;
 class ACamera;
 class ViewableRenderTarget;
+
 class PBRStaticMesh;
 class AIBLMesh;
 class MirrorModel;
+class SkeletalModel;
+
 class PointLight;
 class SpotLight;
 
@@ -19,6 +22,7 @@ class ModelRenderer : public IRenderer
 	friend PBRStaticMesh;
 	friend AIBLMesh;
 	friend MirrorModel;
+	friend SkeletalModel;
 	friend PointLight;
 	friend SpotLight;
 
@@ -40,8 +44,8 @@ private:
 
 private:
 	class BasicVertexShader*			basicVS;
-
 	class ModelRenderVertexShader*		modelRenderVS;
+	class SkeletalVertexShader*			skeletalVS;
 
 	class ModelRenderHullShader*		modelRenderHS;
 	class ModelRendererDomainShader*	modelRenderDS;
@@ -67,6 +71,7 @@ private:
 	void RenderModel(PBRStaticMesh& pbrStaticMesh);
 	void RenderModel(AIBLMesh& iblMesh);
 	void RenderModel(MirrorModel& mirrorModel);
+	void RenderModel(SkeletalModel& skeletalModel);
 
 private:
 	void RenderWithLight(PointLight& pointLight);

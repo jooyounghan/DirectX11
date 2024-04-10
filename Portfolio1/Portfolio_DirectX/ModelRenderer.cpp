@@ -2,6 +2,7 @@
 
 #include "BasicVertexShader.h"
 #include "ModelRenderVertexShader.h"
+#include "SkeletalVertexShader.h"
 
 #include "ModelRenderHullShader.h"
 #include "ModelRendererDomainShader.h"
@@ -17,6 +18,7 @@
 #include "PBRStaticMesh.h"
 #include "AIBLMesh.h"
 #include "MirrorModel.h"
+#include "SkeletalModel.h"
 
 #include "SpotLight.h"
 #include "PointLight.h"
@@ -34,6 +36,7 @@ ModelRenderer::ModelRenderer()
 {
 	basicVS = BasicVertexShader::GetInstance();
 	modelRenderVS = ModelRenderVertexShader::GetInstance();
+	skeletalVS = SkeletalVertexShader::GetInstance();
 
 	modelRenderHS = ModelRenderHullShader::GetInstance();
 	modelRenderDS = ModelRendererDomainShader::GetInstance();
@@ -188,6 +191,46 @@ void ModelRenderer::RenderModel(MirrorModel& mirrorModel)
 	mirrorModelPS->DisapplyShader();
 
 	return;
+}
+
+void ModelRenderer::RenderModel(SkeletalModel& skeletalModel)
+{
+	skeletalVS->ApplyShader();
+	modelRenderHS->ApplyShader();
+	modelRenderDS->ApplyShader();
+
+	const size_t meshNums = skeletalModel.GetMeshNums();
+	for (size_t meshIdx = 0; meshIdx < meshNums; ++meshIdx)
+	{
+		Mesh& meshData = skeletalModel.GetMeshFile()->GetMeshData(meshIdx);
+
+		skeletalVS->SetIAStage(meshIdx, skeletalModel);
+		skeletalVS->SetShader(skeletalModel, *pViewableRT);
+		modelRenderHS->SetShader(*pViewableRT);
+		modelRenderDS->SetShader(meshIdx, skeletalModel, *pViewableRT);
+
+		// IBL을 활용한 렌더링
+		pbrIBLPS->ApplyShader();
+		pbrIBLPS->SetShader(*spIBLModel.get(), meshIdx, skeletalModel, *pViewableRT);
+		skeletalModel.Draw(meshIdx);
+		pbrIBLPS->ResetShader();
+		pbrIBLPS->DisapplyShader();
+
+		pPBRStaticMesh = &skeletalModel;
+		for (auto& pLight : *pLights)
+		{
+			pLight->AcceptPBRDirectLighting(this);
+		}
+
+		skeletalVS->ResetIAStage();
+		skeletalVS->ResetShader();
+		modelRenderHS->ResetShader();
+		modelRenderDS->ResetShader();
+	}
+
+	skeletalVS->DisapplyShader();
+	modelRenderHS->DisapplyShader();
+	modelRenderDS->DisapplyShader();
 }
 
 void ModelRenderer::RenderWithLight(PointLight& pointLight)

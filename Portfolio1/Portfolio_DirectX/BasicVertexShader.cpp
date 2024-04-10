@@ -10,7 +10,7 @@
 
 using namespace std;
 
-BasicVertexShader* BasicVertexShader::pPixelShader = nullptr;
+BasicVertexShader* BasicVertexShader::pVertexShader = nullptr;
 
 ID3D11Buffer* const BasicVertexShader::pNullBuffers[3] = { nullptr, nullptr, nullptr };
 const UINT BasicVertexShader::pNulls[3] = { NULL, NULL, NULL };

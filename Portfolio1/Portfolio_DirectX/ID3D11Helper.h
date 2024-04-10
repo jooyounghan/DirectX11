@@ -73,6 +73,24 @@ public:
 		OUT ID3D11Resource* pResource
 	);
 
+	template<typename T>
+	static void CreateStagingBuffer(
+		IN ID3D11Device* pDevice,
+		IN const std::vector<T>& vData,
+		OUT ID3D11Buffer** ppBuffer
+	);
+
+	template<typename T>
+	static void CreateStructuredBuffer(
+		IN ID3D11Device* pDevice,
+		IN const std::vector<T>& vData,
+		OUT ID3D11Buffer** ppBuffer,
+		OUT ID3D11ShaderResourceView** ppSRV,
+		OUT ID3D11UnorderedAccessView** ppUAV
+	);
+
+
+
 	static bool GetBackBuffer(
 		IN IDXGISwapChain* pSwapChain,
 		OUT ID3D11Texture2D** ppTexture2D
@@ -175,19 +193,6 @@ public:
 		OUT ID3D11BlendState** ppBlendState
 	);
 
-	//static void CreateTexture2D(
-	//	IN ID3D11Device*				pDevice,
-	//	IN const UINT&					uiWidth,
-	//	IN const UINT&					uiHeight,
-	//	IN const UINT&					uiBindFlag,
-	//	IN const UINT&					uiCPUAccess,
-	//	IN const UINT&					uiMiscFlag,
-	//	IN D3D11_USAGE					eUsage,
-	//	IN DXGI_FORMAT					eFormat,
-	//	IN uint8_t*						pImageRawData,
-	//	OUT ID3D11Texture2D**			ppTexture2D
-	//);
-
 	static void CreateTexture2D(
 		IN ID3D11Device* pDevice,
 		IN const UINT& uiWidth,
@@ -204,7 +209,7 @@ public:
 };
 
 template<typename T>
-void ID3D11Helper::CreateBuffer(
+inline void ID3D11Helper::CreateBuffer(
 	IN ID3D11Device* pDevice,
 	IN const std::vector<T>& vData,
 	IN D3D11_USAGE eUsage,
@@ -240,7 +245,7 @@ void ID3D11Helper::CreateBuffer(
 }
 
 template<typename T>
-void ID3D11Helper::CreateBuffer(
+inline void ID3D11Helper::CreateBuffer(
 	IN ID3D11Device* pDevice,
 	IN const T& data,
 	IN D3D11_USAGE eUsage,
@@ -272,7 +277,7 @@ void ID3D11Helper::CreateBuffer(
 }
 
 template<typename T>
-void ID3D11Helper::UpdateBuffer(
+inline void ID3D11Helper::UpdateBuffer(
 	IN ID3D11DeviceContext* pDeviceContext,
 	IN const T& data,
 	IN D3D11_MAP mapFlag,
@@ -286,7 +291,7 @@ void ID3D11Helper::UpdateBuffer(
 }
 
 template<typename T>
-void ID3D11Helper::UpdateBuffer(
+inline void ID3D11Helper::UpdateBuffer(
 	IN ID3D11DeviceContext* pDeviceContext,
 	IN const std::vector<T>& data,
 	IN D3D11_MAP mapFlag,
@@ -297,4 +302,79 @@ void ID3D11Helper::UpdateBuffer(
 	pDeviceContext->Map(pResource, NULL, mapFlag, NULL, &ms);
 	memcpy(ms.pData, data.data(), data.size() * sizeof(T));
 	pDeviceContext->Unmap(pResource, NULL);
+}
+
+template<typename T>
+inline void ID3D11Helper::CreateStagingBuffer(
+	IN ID3D11Device* pDevice,
+	IN const std::vector<T>& vData,
+	OUT ID3D11Buffer** ppBuffer
+)
+{
+	if (vData.size() > 0)
+	{
+		D3D11_BUFFER_DESC sBufferDesc;
+		AutoZeroMemory(sBufferDesc);
+		sBufferDesc.ByteWidth = UINT(vData.size()) * sizeof(T);
+		sBufferDesc.Usage = D3D11_USAGE_STAGING;
+		sBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE | D3D11_CPU_ACCESS_READ;
+		sBufferDesc.StructureByteStride = sizeof(T);
+
+		D3D11_SUBRESOURCE_DATA sSubResourceData;
+		AutoZeroMemory(sSubResourceData);
+		sSubResourceData.pSysMem = vData.data();
+
+		HRESULT hResult = pDevice->CreateBuffer(&sBufferDesc, &sSubResourceData, ppBuffer);
+		if (FAILED(hResult))
+		{
+			Console::AssertPrint("Fail To Create Staging Buffer");
+		}
+	}
+}
+
+template<typename T>
+inline void ID3D11Helper::CreateStructuredBuffer(
+	IN ID3D11Device* pDevice, 
+	IN const std::vector<T>& vData, 
+	OUT ID3D11Buffer** ppBuffer,
+	OUT ID3D11ShaderResourceView** ppSRV,
+	OUT ID3D11UnorderedAccessView** ppUAV
+)
+{
+	if (vData.size() > 0)
+	{
+		D3D11_BUFFER_DESC sBufferDesc;
+		AutoZeroMemory(sBufferDesc);
+		sBufferDesc.ByteWidth = UINT(vData.size()) * sizeof(T);
+		sBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+		sBufferDesc.BindFlags = D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE;
+		sBufferDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+		sBufferDesc.StructureByteStride = sizeof(T);
+
+		D3D11_SUBRESOURCE_DATA sSubResourceData;
+		AutoZeroMemory(sSubResourceData);
+		sSubResourceData.pSysMem = vData.data();
+
+		HRESULT hResult = pDevice->CreateBuffer(&sBufferDesc, &sSubResourceData, ppBuffer);
+		if (FAILED(hResult))
+		{
+			Console::AssertPrint("Failed To Create Structured Buffer");
+		}
+
+		D3D11_UNORDERED_ACCESS_VIEW_DESC sUAVDesc;
+		AutoZeroMemory(sUAVDesc);
+		sUAVDesc.Format = DXGI_FORMAT_UNKNOWN;
+		sUAVDesc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
+		sUAVDesc.Buffer.NumElements = vData.size();
+		pDevice->CreateUnorderedAccessView(*ppBuffer, &sUAVDesc,
+			ppUAV);
+
+		D3D11_SHADER_RESOURCE_VIEW_DESC sSRVDesc;
+		AutoZeroMemory(sSRVDesc);
+		sSRVDesc.Format = DXGI_FORMAT_UNKNOWN;
+		sSRVDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
+		sSRVDesc.BufferEx.NumElements = vData.size();
+		pDevice->CreateShaderResourceView(*ppBuffer, &sSRVDesc,
+			ppSRV);
+	}
 }

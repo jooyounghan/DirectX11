@@ -40,20 +40,26 @@ void ModelRendererDomainShader::SetShader(
 	class Viewable& viewable
 )
 {
-	if (pbrStaticMesh.GetMeshNums() > meshIdx)
+	MeshFile* pMeshFile = pbrStaticMesh.GetMeshFile();
+	if (pMeshFile != nullptr && pbrStaticMesh.GetMeshNums() > meshIdx)
 	{
-		DirectXDevice::pDeviceContext->DSSetConstantBuffers(0, 1, pbrStaticMesh.GetPBRConstantBuffer());
-		DirectXDevice::pDeviceContext->DSSetConstantBuffers(1, 1, viewable.GetViewProjBuffer());
-		DirectXDevice::pDeviceContext->DSSetConstantBuffers(2, 1, pbrStaticMesh.GetMaterialFile(meshIdx)->GetPBRTextureFlagBuffer());
+		MaterialFile* pMaterialFile = pMeshFile->GetMaterialFile(meshIdx);
 
-		shared_ptr<IImageFile>& heightFile = pbrStaticMesh.GetMaterialFile(meshIdx)->GetTextureImageFileRef(HEIGHT_TEXTURE_MAP);
+		if (pMaterialFile != nullptr)
+		{
+			DirectXDevice::pDeviceContext->DSSetConstantBuffers(0, 1, pbrStaticMesh.GetPBRConstantBuffer());
+			DirectXDevice::pDeviceContext->DSSetConstantBuffers(1, 1, viewable.GetViewProjBuffer());
+			DirectXDevice::pDeviceContext->DSSetConstantBuffers(2, 1, pMaterialFile->GetPBRTextureFlagBuffer());
 
-		DirectXDevice::pDeviceContext->DSSetShaderResources(0, 1,
-			heightFile.get() != nullptr ?
-			heightFile->GetAddressOfSRV() : &pNullSRV
-		);
+			shared_ptr<IImageFile>& heightFile = pMaterialFile->GetTextureImageFileRef(HEIGHT_TEXTURE_MAP);
 
-		DirectXDevice::pDeviceContext->DSSetSamplers(0, 1, DirectXDevice::ppClampSampler);
+			DirectXDevice::pDeviceContext->DSSetShaderResources(0, 1,
+				heightFile.get() != nullptr ?
+				heightFile->GetAddressOfSRV() : &pNullSRV
+			);
+
+			DirectXDevice::pDeviceContext->DSSetSamplers(0, 1, DirectXDevice::ppClampSampler);
+		}
 	}
 }
 

@@ -247,7 +247,7 @@ vector<shared_ptr<IFile>> FileLoader::LoadModelFileSet(
             spMeshFile = LoadMeshFile(
                 strFilePath, strFileName, 
                 strExtension, bIsGltf, 
-                pScene, spBoneFile
+                pScene, spBoneFile, vMaterials
             );
             vLoadedFiles.emplace_back(spMeshFile);
         }
@@ -291,6 +291,7 @@ shared_ptr<BoneFile> FileLoader::LoadBoneFile(const string strFileName, const ai
         cout << "Loading " << BoneLabel << "..." << endl;
         const std::unordered_map<std::string, const aiBone*> nodeToBoneTable = GetNodeToBoneTable(pScene);
 
+        uiBoneId = -1;
         spBone = make_shared<BoneFile>(BoneLabel, nodeToBoneTable.size());
         LoadBoneFromNode(pScene->mRootNode, spBone.get(), spBone->GetRootBone(), nodeToBoneTable);
         FileLoader::AddUsingFile(BoneLabel, spBone);
@@ -363,17 +364,14 @@ vector<shared_ptr<AnimationFile>> FileLoader::LoadAnimationFile(
             cout << "Loading " << animationLabel << "..." << endl;
 
             spAnimation = make_shared<AnimationFile>(
-                animationLabel, pAnimation->mNumChannels, pAnimation->mDuration, pAnimation->mTicksPerSecond
+                animationLabel, pAnimation->mDuration, pAnimation->mTicksPerSecond
                 );
 
             for (size_t channelIdx = 0; channelIdx < pAnimation->mNumChannels; ++channelIdx)
             {
                 aiNodeAnim* pAnimNode = pAnimation->mChannels[channelIdx];
                 const string animNodeName = pAnimNode->mNodeName.C_Str();
-
-                spAnimation->SetChannelNameToId(animNodeName, channelIdx);
-
-                AnimChannel* pAnimChannel = spAnimation->GetAnimChannel(channelIdx);
+                AnimChannel* pAnimChannel = spAnimation->AddAnimChannel(animNodeName);
                 pAnimChannel->SetTranslation(pAnimNode->mNumPositionKeys, pAnimNode->mPositionKeys);
                 pAnimChannel->SetRotation(pAnimNode->mNumRotationKeys, pAnimNode->mRotationKeys);
                 pAnimChannel->SetScale(pAnimNode->mNumScalingKeys, pAnimNode->mScalingKeys);
@@ -394,7 +392,8 @@ shared_ptr<MeshFile> FileLoader::LoadMeshFile(
     const string& strExtension,
     const bool& bIsGltf,
     const aiScene* pScene,
-    const std::shared_ptr<BoneFile>& spBoneFileIn
+    const std::shared_ptr<BoneFile>& spBoneFileIn,
+    const std::vector<std::shared_ptr<MaterialFile>>& spMaterialFileIn
 )
 {
     shared_ptr<MeshFile> spMesh;
@@ -409,7 +408,7 @@ shared_ptr<MeshFile> FileLoader::LoadMeshFile(
         size_t mesh_idx = 0;
         DirectX::XMMATRIX xmmTransform = DirectX::XMMatrixIdentity();
         spMesh = make_shared<MeshFile>(meshLabel, pScene->mNumMeshes, bIsGltf, spBoneFileIn);
-        ProcessNode(strFilePath, meshLabel, mesh_idx, bIsGltf, pScene->mRootNode, pScene, xmmTransform, spMesh.get());
+        ProcessNode(strFilePath, meshLabel, mesh_idx, bIsGltf, pScene->mRootNode, pScene, xmmTransform, spMesh.get(), spMaterialFileIn);
         spMesh->Initialize();
         FileLoader::AddUsingFile(meshLabel, spMesh);
     }
@@ -428,7 +427,8 @@ void FileLoader::ProcessNode(
     const struct aiNode* pNode,
     const struct aiScene* pScene,
     const XMMATRIX& xmMatrix,
-    class MeshFile* pMeshFile
+    class MeshFile* pMeshFile,
+    const std::vector<std::shared_ptr<MaterialFile>>& spMaterialFileIn
 )
 {
     DirectX::XMMATRIX m(&pNode->mTransformation.a1);
@@ -437,13 +437,13 @@ void FileLoader::ProcessNode(
     for (UINT idx = 0; idx < pNode->mNumMeshes; ++idx)
     {
         aiMesh* pMesh = pScene->mMeshes[pNode->mMeshes[idx]];
-        LoadMeshData(strFilePath, uiElementIdx, bIsGltf, pMesh, m, pScene, pMeshFile);
+        LoadMeshData(strFilePath, uiElementIdx, bIsGltf, pMesh, m, pScene, pMeshFile, spMaterialFileIn);
         uiElementIdx++;
     }
 
     for (UINT i = 0; i < pNode->mNumChildren; i++) 
     {
-        ProcessNode(strFilePath, strFileLabel, uiElementIdx, bIsGltf, pNode->mChildren[i], pScene, m, pMeshFile);
+        ProcessNode(strFilePath, strFileLabel, uiElementIdx, bIsGltf, pNode->mChildren[i], pScene, m, pMeshFile, spMaterialFileIn);
     }
 }
 
@@ -454,11 +454,18 @@ void FileLoader::LoadMeshData(
     const aiMesh* pMesh, 
     const DirectX::XMMATRIX& xmMatrix,
     const aiScene* pScene,
-    class MeshFile* pMeshFile
+    class MeshFile* pMeshFile,
+    const std::vector<std::shared_ptr<MaterialFile>>& spMaterialFileIn
 )
 {
-    Mesh& mesh = pMeshFile->GetMeshData(uiElementIdx);
+    const unsigned int materialIdx = pMesh->mMaterialIndex;
+    if (spMaterialFileIn.size() > pMesh->mMaterialIndex)
+    {
+        pMeshFile->SetMaterialFile(uiElementIdx, spMaterialFileIn[pMesh->mMaterialIndex]);
+    }
 
+    Mesh& mesh = pMeshFile->GetMeshData(uiElementIdx);
+    
     for (UINT vertexIdx = 0; vertexIdx < pMesh->mNumVertices; vertexIdx++)
     {
         mesh.vVertices.emplace_back(
@@ -513,7 +520,7 @@ void FileLoader::LoadMeshData(
         for (size_t boneIdx = 0; boneIdx < pMesh->mNumBones; ++boneIdx)
         {
             const aiBone* pBone = pMesh->mBones[boneIdx];
-            size_t boneId = pBoneFile->GetBoneIdxByName(pBone->mName.C_Str());
+            size_t boneId = pBoneFile->GetBoneIdx(pBone->mName.C_Str());
 
             for (size_t weightIdx = 0; weightIdx < pBone->mNumWeights; ++weightIdx)
             {
@@ -584,11 +591,13 @@ void FileLoader::LoadBoneFromNode(
         for (size_t node_idx = 0; node_idx < pNode->mNumChildren; ++node_idx)
         {
             const aiNode* pChildNode = pNode->mChildren[node_idx];
-
-            boneData.vBoneChildren.emplace_back();
-            BoneData& currentBoneData = boneData.vBoneChildren[boneData.vBoneChildren.size() - 1];
-            currentBoneData.pBoneParent = &boneData;
-            LoadBoneFromNode(pChildNode, pBoneFile, currentBoneData, nodeToBoneTable);
+            if (pChildNode->mNumMeshes == 0)
+            {
+                boneData.vBoneChildren.emplace_back();
+                BoneData& currentBoneData = boneData.vBoneChildren[boneData.vBoneChildren.size() - 1];
+                currentBoneData.pBoneParent = &boneData;
+                LoadBoneFromNode(pChildNode, pBoneFile, currentBoneData, nodeToBoneTable);
+            }
         }
     }
 }

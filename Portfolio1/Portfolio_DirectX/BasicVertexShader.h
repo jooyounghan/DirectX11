@@ -17,14 +17,14 @@ private:
 	virtual ~BasicVertexShader();
 
 public:
-	static BasicVertexShader* pPixelShader;
+	static BasicVertexShader* pVertexShader;
 
 public:
 	inline static BasicVertexShader* GetInstance() {
-		if (pPixelShader == nullptr) {
-			pPixelShader = new BasicVertexShader();
+		if (pVertexShader == nullptr) {
+			pVertexShader = new BasicVertexShader();
 		}
-		return pPixelShader;
+		return pVertexShader;
 	}
 
 private:

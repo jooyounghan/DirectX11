@@ -81,7 +81,8 @@ private:
 		const std::string& strExtension,
 		const bool& bIsGltf,
 		const struct aiScene* pScene,
-		const std::shared_ptr<BoneFile>& spBoneFileIn
+		const std::shared_ptr<BoneFile>& spBoneFileIn,
+		const std::vector<std::shared_ptr<MaterialFile>>& spMaterialFileIn
 	);
 
 private:
@@ -93,7 +94,8 @@ private:
 		const struct aiNode* pNode,
 		const struct aiScene* pScene,
 		const DirectX::XMMATRIX& xmMatrix,
-		class MeshFile* pMeshFile
+		class MeshFile* pMeshFile,
+		const std::vector<std::shared_ptr<MaterialFile>>& spMaterialFileIn
 	);
 
 	static void LoadMeshData(
@@ -103,7 +105,8 @@ private:
 		const struct aiMesh* pMesh,
 		const DirectX::XMMATRIX& xmMatrix,
 		const struct aiScene* pScene,
-		class MeshFile* pMeshFile
+		class MeshFile* pMeshFile,
+		const std::vector<std::shared_ptr<MaterialFile>>& spMaterialFileIn
 	);
 
 private:

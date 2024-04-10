@@ -211,6 +211,9 @@
     <Filter Include="헤더 파일\Object\Model\PBR\Extended">
       <UniqueIdentifier>{04e62b96-fbe1-4b8b-97eb-5b3178b808e6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shader\Skeletal">
+      <UniqueIdentifier>{732000d0-b198-48cf-9211-4cbf255f8090}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseApp.h">
@@ -480,6 +483,12 @@
     <ClInclude Include="AnimationFile.h">
       <Filter>헤더 파일\File\Extended</Filter>
     </ClInclude>
+    <ClInclude Include="StructuredBuffer.h">
+      <Filter>헤더 파일\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="SkeletalVertexShader.h">
+      <Filter>헤더 파일\Shader\Extended\Vertex</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseApp.cpp">
@@ -737,6 +746,12 @@
     <ClCompile Include="AnimationFile.cpp">
       <Filter>소스 파일\File\Extended</Filter>
     </ClCompile>
+    <ClCompile Include="SkeletalVertexShader.cpp">
+      <Filter>소스 파일\Shader\Extended\Vertex</Filter>
+    </ClCompile>
+    <ClCompile Include="StructuredBuffer.cpp">
+      <Filter>소스 파일\Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="MS16ToSS8CS.hlsl">
@@ -756,15 +771,6 @@
     </FxCompile>
     <FxCompile Include="IBLModelPS.hlsl">
       <Filter>Shader\IBL</Filter>
-    </FxCompile>
-    <FxCompile Include="PBRModelVS.hlsl">
-      <Filter>Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="PBRModelDS.hlsl">
-      <Filter>Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="PBRModelHS.hlsl">
-      <Filter>Shader</Filter>
     </FxCompile>
     <FxCompile Include="PBRWithIBLPS.hlsl">
       <Filter>Shader\PBRModel</Filter>
@@ -792,6 +798,18 @@
     </FxCompile>
     <FxCompile Include="DepthBlurCS.hlsl">
       <Filter>Shader\Filter</Filter>
+    </FxCompile>
+    <FxCompile Include="PBRModelDS.hlsl">
+      <Filter>Shader\PBRModel</Filter>
+    </FxCompile>
+    <FxCompile Include="PBRModelHS.hlsl">
+      <Filter>Shader\PBRModel</Filter>
+    </FxCompile>
+    <FxCompile Include="PBRModelVS.hlsl">
+      <Filter>Shader\PBRModel</Filter>
+    </FxCompile>
+    <FxCompile Include="PBRSkeletalVS.hlsl">
+      <Filter>Shader\Skeletal</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

@@ -132,7 +132,7 @@ void ModelManipulator::SetModelAsList(PBRStaticMesh& pbrStaticMesh)
 	{
 		for (size_t meshIdx = 0; meshIdx < meshNums; ++meshIdx)
 		{
-			const string meshDataText = string("Mesh " + to_string(meshIdx));
+			const string meshDataText = string("Mesh " + to_string(meshIdx + 1));
 			BulletText(meshDataText.c_str());
 		}
 		ImGui::TreePop();
@@ -227,31 +227,39 @@ void ModelManipulator::DrawPBRTexture(PBRStaticMesh& pbrStaticMesh)
 		DragFloat3("Fresnel Reflectance", pbrStaticMesh.GetFresnelConstantAddress(), 0.005f, 0.f, 1.f, "%.3f");
 		DragFloat("Height Factor", pbrStaticMesh.GetHeightFactorAddress(), 0.005f, 0.f, 1.f, "%.3f");
 
+		MeshFile* pMeshFile = pbrStaticMesh.GetMeshFile();
 
-		const size_t meshNums = pbrStaticMesh.GetMeshNums();
-		for (size_t meshIdx = 0; meshIdx < meshNums; ++meshIdx)
+		if (pMeshFile != nullptr)
 		{
-			BeginGroup();
-			MaterialFile* pMaterial = pbrStaticMesh.GetMaterialFile(meshIdx);
-			for (size_t idx = 0; idx < TEXTURE_MAP_NUM; ++idx)
+			const size_t meshNums = pbrStaticMesh.GetMeshNums();
+			for (size_t meshIdx = 0; meshIdx < meshNums; ++meshIdx)
 			{
-				SetTextureDragAndDrop(
-					MaterialFile::GetTextureName(idx).c_str(),
-					pMaterial->GetTextureImageFileRef((EModelTextures)idx),
-					DRAG_DROP_TEXTURE_KEY
-				);
-			}
-			EndGroup();
-			if (BeginDragDropTarget())
-			{
-				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DRAG_DROP_MATERIAL_KEY))
+				const string meshDataText = string("Mesh " + to_string(meshIdx + 1));
+				Separator();
+				BulletText(meshDataText.c_str());
+				Indent();
+				BeginGroup();
+				MaterialFile* pMaterial = pMeshFile->GetMaterialFile(meshIdx);
+				for (size_t idx = 0; idx < TEXTURE_MAP_NUM; ++idx)
 				{
-					MaterialFile* pMaterial = (MaterialFile*)payload->Data;
-					pbrStaticMesh.SetMaterialFile(meshIdx, pMaterial->shared_from_this());
+					SetTextureDragAndDrop(
+						MaterialFile::GetTextureName(idx).c_str(),
+						pMaterial->GetTextureImageFileRef((EModelTextures)idx),
+						DRAG_DROP_TEXTURE_KEY
+					);
 				}
-				ImGui::EndDragDropTarget();
+				EndGroup();
+				if (BeginDragDropTarget())
+				{
+					if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DRAG_DROP_MATERIAL_KEY))
+					{
+						MaterialFile* pMaterial = (MaterialFile*)payload->Data;
+						pMeshFile->SetMaterialFile(meshIdx, pMaterial->shared_from_this());
+					}
+					ImGui::EndDragDropTarget();
+				}
+				Unindent();
 			}
-
 		}
 	}
 }

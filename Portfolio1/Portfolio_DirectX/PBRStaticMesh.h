@@ -12,19 +12,7 @@ public:
 	virtual ~PBRStaticMesh();
 
 protected:
-	std::vector<std::shared_ptr<MaterialFile>> vMaterials;
-
-protected:
 	static uint32_t uiPBRStaticMeshlIdx;
-
-public:
-	inline void SetMaterialFile(const size_t& materialIdx, const std::shared_ptr<MaterialFile>& spMaterialFileIn) { 
-		if (vMaterials.size() > materialIdx)
-		{
-			vMaterials[materialIdx] = spMaterialFileIn;
-		}
-	}
-	inline MaterialFile* GetMaterialFile(const size_t& materialIdx) { return vMaterials.size() > materialIdx ? vMaterials[materialIdx].get() : nullptr; }
 
 protected:
 	struct

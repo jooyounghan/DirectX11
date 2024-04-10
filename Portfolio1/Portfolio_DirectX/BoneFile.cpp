@@ -4,8 +4,12 @@
 #include "DirectXDevice.h"
 #include "ID3D11Helper.h"
 
+using namespace std;
+
+string BoneFile::strDefaultBoneName = "";
+
 BoneFile::BoneFile(
-	const std::string& strFileLabelIn, const size_t& uiBoneNumsIn
+	const string& strFileLabelIn, const size_t& uiBoneNumsIn
 )
 	: IFile(strFileLabelIn), uiBoneNums(uiBoneNumsIn)
 {
@@ -17,14 +21,39 @@ BoneFile::~BoneFile()
 }
 
 
+size_t BoneFile::GetBoneIdx(const std::string& strBoneNameIn)
+{
+	for (size_t idx = 0; idx < vBoneNames.size(); ++idx)
+	{
+		if (vBoneNames[idx] == strBoneNameIn)
+			return idx;
+	}
+	return -1;
+}
+
 void BoneFile::SetOffsetMatrix(
-	const std::string& boneName, 
-	const size_t boneIdIdx, 
+	const string& boneName,
+	const size_t boneIdIdx,
 	const DirectX::XMMATRIX& boneOffsetMatrixIn
 )
 {
-	unmapBoneNameToIdx[boneName] = boneIdIdx;
-	vBoneOffsetMatrix[boneIdIdx] = boneOffsetMatrixIn;
+	if (vBoneNames.size() > boneIdIdx)
+	{
+		vBoneNames.insert(vBoneNames.begin() + boneIdIdx, boneName);
+	}
+	else
+	{
+		vBoneNames.emplace_back(boneName);
+	}
+
+	if (vBoneOffsetMatrix.size() > boneIdIdx)
+	{
+		vBoneOffsetMatrix.insert(vBoneOffsetMatrix.begin() + boneIdIdx, boneOffsetMatrixIn);
+	}
+	else
+	{
+		vBoneOffsetMatrix.emplace_back(boneOffsetMatrixIn);
+	}
 }
 
 void BoneFile::AcceptFileAsList(FileManipulator* pFileManipulator)

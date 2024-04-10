@@ -37,7 +37,11 @@ public:
 	inline void SetScale(const size_t& uiNumData, void* pSrc) { SetChannelData(uiNumData, pSrc, vScale); }
 
 public:
-	DirectX::XMMATRIX GetChannelTransformation(const double& dblPlayTimeIn);
+	DirectX::XMVECTOR GetTranslation(const double& dblPlayTimeIn);
+
+public:
+	DirectX::XMMATRIX GetTransformation (const double& dblPlayTimeIn);
+	DirectX::XMMATRIX GetTransformationWithoutTranslation(const double& dblPlayTimeIn);
 
 private:
 	static DirectX::XMVECTOR SetXMVectorFromXMFloat(const DirectX::XMFLOAT3& xmFloat3, const float& w) { return DirectX::XMVectorSet(xmFloat3.x, xmFloat3.y, xmFloat3.z, w); };
@@ -81,7 +85,6 @@ class AnimationFile : public IFile, public std::enable_shared_from_this<Animatio
 public:
 	AnimationFile(
 		const std::string& strFileLabelIn,
-		const size_t& channelNums,
 		const double& dblDurationIn,
 		const double& dblTicksPerSecondIn
 	);
@@ -90,16 +93,21 @@ public:
 private:
 	double dblDuration;
 	double dblTicksPerSecond;
-	std::unordered_map<std::string, size_t> unmapChannelNameToIdx;
-	std::vector<AnimChannel> vAnimChannels;
+	std::unordered_map<std::string, AnimChannel> unmapAnimChannels;
 
 public:
 	inline const double& GetDuration() const { return dblDuration; }
 	inline const double& GetTicksPerSecond() const { return dblTicksPerSecond; }
 
 public:
-	inline void SetChannelNameToId(const std::string& channelName, const size_t& channelIdx) { unmapChannelNameToIdx[channelName] = channelIdx; }
-	inline AnimChannel* GetAnimChannel(const size_t& channelIdx) { return vAnimChannels.size() > channelIdx ? &vAnimChannels[channelIdx] : nullptr; }
+	inline AnimChannel* AddAnimChannel(const std::string& strChannelName)
+	{
+		return &unmapAnimChannels[strChannelName];
+	}
+	inline AnimChannel* GetAnimChannel(const std::string& strChannelName) 
+	{ 
+		return unmapAnimChannels.find(strChannelName) != unmapAnimChannels.end() ? &unmapAnimChannels[strChannelName] : nullptr; 
+	}
 
 public:
 	virtual void AcceptFileAsList(class FileManipulator* pFileManipulator);

@@ -181,8 +181,10 @@
     <ClInclude Include="PBRSpotLightPixelShader.h" />
     <ClInclude Include="BoneFile.h" />
     <ClInclude Include="SkeletalModel.h" />
+    <ClInclude Include="SkeletalVertexShader.h" />
     <ClInclude Include="StageManipulator.h" />
     <ClInclude Include="CubeRenderTargets.h" />
+    <ClInclude Include="StructuredBuffer.h" />
     <ClInclude Include="TODO.h" />
     <ClInclude Include="TypeResolveComputeShader.h" />
     <ClInclude Include="Viewable.h" />
@@ -270,8 +272,10 @@
     <ClCompile Include="PBRSpotLightPixelShader.cpp" />
     <ClCompile Include="BoneFile.cpp" />
     <ClCompile Include="SkeletalModel.cpp" />
+    <ClCompile Include="SkeletalVertexShader.cpp" />
     <ClCompile Include="StageManipulator.cpp" />
     <ClCompile Include="CubeRenderTargets.cpp" />
+    <ClCompile Include="StructuredBuffer.cpp" />
     <ClCompile Include="TypeResolveComputeShader.cpp" />
     <ClCompile Include="Viewable.cpp" />
     <ClCompile Include="BaseApp.cpp" />
@@ -416,6 +420,13 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="PBRSkeletalVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="PBRWithIBLPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>

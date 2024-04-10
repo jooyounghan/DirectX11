@@ -28,11 +28,6 @@ PBRStaticMesh::PBRStaticMesh(
 	);
 	const size_t meshNums = spMeshFile->GetMeshNums();
 	const bool& isGltf = spMeshFile->IsGLTF();
-	for (size_t meshIdx = 0; meshIdx < meshNums; ++meshIdx)
-	{
-		const string strTmpMaterial = "TempMaterial" + to_string(meshIdx + 1);
-		vMaterials.push_back(make_shared<MaterialFile>(strTmpMaterial, isGltf));
-	}
 
 	SetObjectName(spMeshFile->GetFileLabel() + to_string(uiPBRStaticMeshlIdx));
 	uiPBRStaticMeshlIdx++;

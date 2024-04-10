@@ -2,6 +2,9 @@
 #include "DefineVar.h"
 #include "FileManipulator.h"
 
+using namespace std;
+using namespace DirectX;
+
 void Mesh::CreateBuffer()
 {
 	ID3D11Helper::CreateBuffer(DirectXDevice::pDevice, vVertices, D3D11_USAGE_IMMUTABLE, D3D11_BIND_VERTEX_BUFFER, NULL, NULL, cpVerticesBuffer.GetAddressOf());
@@ -18,7 +21,7 @@ void Mesh::CreateBuffer()
 
 void Mesh::UpdateTangent()
 {
-	HRESULT hResult = DirectX::ComputeTangentFrame(
+	HRESULT hResult = ComputeTangentFrame(
 		vIndices.data(),
 		vIndices.size() / 3,
 		vVertices.data(),
@@ -41,36 +44,50 @@ MeshFile::MeshFile(
 	bIsInitialized(false), bIsGLTF(bIsGLTFIn),
 	spBoneFile(spBoneFileIn)
 {
+	for (size_t meshIdx = 0; meshIdx < uiMeshCountIn; ++meshIdx)
+	{
+		const string strTmpMaterial = "TempMaterial" + to_string(meshIdx + 1);
+		vMaterials.push_back(make_shared<MaterialFile>(strTmpMaterial, bIsGLTFIn));
+	}
+
 	vMeshData.resize(uiMeshCountIn);
 }
 
 void MeshFile::Initialize()
 {
-	DirectX::XMFLOAT3 vmin(1E9, 1E9, 1E9);
-	DirectX::XMFLOAT3 vmax(-1E9, -1E9, -1E9);
+	XMFLOAT3 vmin(1E9, 1E9, 1E9);
+	XMFLOAT3 vmax(-1E9, -1E9, -1E9);
 	if (!bIsInitialized)
 	{
 		for (auto& meshData : vMeshData)
 		{
 			for (auto& v : meshData.vVertices)
 			{
-				vmin.x = DirectX::XMMin(vmin.x, v.x);
-				vmin.y = DirectX::XMMin(vmin.y, v.y);
-				vmin.z = DirectX::XMMin(vmin.z, v.z);
+				vmin.x = XMMin(vmin.x, v.x);
+				vmin.y = XMMin(vmin.y, v.y);
+				vmin.z = XMMin(vmin.z, v.z);
 
-				vmax.x = DirectX::XMMax(vmax.x, v.x);
-				vmax.y = DirectX::XMMax(vmax.y, v.y);
-				vmax.z = DirectX::XMMax(vmax.z, v.z);
+				vmax.x = XMMax(vmax.x, v.x);
+				vmax.y = XMMax(vmax.y, v.y);
+				vmax.z = XMMax(vmax.z, v.z);
 			}
+		}
 
-			float dx = vmax.x - vmin.x, dy = vmax.y - vmin.y, dz = vmax.z - vmin.z;
-			float scale = 1.f / DirectX::XMMax(DirectX::XMMax(dx, dy), dz);
+		XMFLOAT3 translation;
+		translation.x = -(vmin.x + vmax.x) * 0.5f;
+		translation.y = -(vmin.y + vmax.y) * 0.5f;
+		translation.z = -(vmin.z + vmax.z) * 0.5f;
 
-			DirectX::XMFLOAT3 translation;
-			translation.x = -(vmin.x + vmax.x) * 0.5f;
-			translation.y = -(vmin.y + vmax.y) * 0.5f;
-			translation.z = -(vmin.z + vmax.z) * 0.5f;
+		float dx = vmax.x - vmin.x, dy = vmax.y - vmin.y, dz = vmax.z - vmin.z;
+		float scale = 1.f / XMMax(XMMax(dx, dy), dz);
 
+
+		xmmNormalizedMatrix = 
+			XMMatrixTranslation(translation.x, translation.y, translation.z) 
+			* XMMatrixScaling(scale, scale, scale);
+
+		for (auto& meshData : vMeshData)
+		{
 			for (auto& v : meshData.vVertices)
 			{
 				v.x = (v.x + translation.x) * scale;

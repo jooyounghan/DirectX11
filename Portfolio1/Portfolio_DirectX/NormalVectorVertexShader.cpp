@@ -8,7 +8,7 @@
 
 using namespace std;
 
-NormalVectorVertexShader* NormalVectorVertexShader::pPixelShader = nullptr;
+NormalVectorVertexShader* NormalVectorVertexShader::pVertexShader = nullptr;
 
 ID3D11Buffer* const NormalVectorVertexShader::pNullBuffers[4] = { nullptr, nullptr, nullptr, nullptr };
 UINT NormalVectorVertexShader::pNulls[4] = { NULL, NULL, NULL, NULL };

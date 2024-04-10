@@ -12,7 +12,7 @@
 using namespace std;
 using namespace DirectX;
 
-ModelRenderVertexShader* ModelRenderVertexShader::pPixelShader = nullptr;
+ModelRenderVertexShader* ModelRenderVertexShader::pVertexShader = nullptr;
 
 ID3D11Buffer* const ModelRenderVertexShader::pNullBuffers[4] = { nullptr, nullptr, nullptr, nullptr };
 const UINT ModelRenderVertexShader::pNulls[4] = { NULL, NULL, NULL, NULL };

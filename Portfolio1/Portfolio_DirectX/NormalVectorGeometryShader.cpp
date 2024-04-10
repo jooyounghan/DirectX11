@@ -44,23 +44,29 @@ void NormalVectorGeometryShader::SetShader(
 	Viewable& viewableCamera
 )
 {
-	if (pbrStaticMesh.GetMeshNums() > meshIdx)
+	MeshFile* pMeshFile = pbrStaticMesh.GetMeshFile();
+	if (pMeshFile != nullptr && pbrStaticMesh.GetMeshNums() > meshIdx)
 	{
-		DirectXDevice::pDeviceContext->GSSetConstantBuffers(0, 1, pbrStaticMesh.GetPBRConstantBuffer());
-		DirectXDevice::pDeviceContext->GSSetConstantBuffers(1, 1, viewableCamera.GetViewProjBuffer());
-		DirectXDevice::pDeviceContext->GSSetConstantBuffers(2, 1, pbrStaticMesh.GetMaterialFile(meshIdx)->GetPBRTextureFlagBuffer());
-		
-		shared_ptr<IImageFile>& normalImage = pbrStaticMesh.GetMaterialFile(meshIdx)->GetTextureImageFileRef(NORMAL_TEXTURE_MAP);
-		shared_ptr<IImageFile>& heightImage = pbrStaticMesh.GetMaterialFile(meshIdx)->GetTextureImageFileRef(HEIGHT_TEXTURE_MAP);
+		MaterialFile* pMaterialFile = pMeshFile->GetMaterialFile(meshIdx);
 
-		DirectXDevice::pDeviceContext->GSSetShaderResources(0, 1,
-			normalImage.get() != nullptr ?
-			normalImage->GetAddressOfSRV() : &pNullSRV);
-		DirectXDevice::pDeviceContext->GSSetShaderResources(1, 1,
-			heightImage.get() != nullptr ?
-			heightImage->GetAddressOfSRV() : &pNullSRV);
+		if (pMaterialFile != nullptr)
+		{
+			DirectXDevice::pDeviceContext->GSSetConstantBuffers(0, 1, pbrStaticMesh.GetPBRConstantBuffer());
+			DirectXDevice::pDeviceContext->GSSetConstantBuffers(1, 1, viewableCamera.GetViewProjBuffer());
+			DirectXDevice::pDeviceContext->GSSetConstantBuffers(2, 1, pMeshFile->GetMaterialFile(meshIdx)->GetPBRTextureFlagBuffer());
 
-		DirectXDevice::pDeviceContext->GSSetSamplers(0, 1, DirectXDevice::ppClampSampler);
+			shared_ptr<IImageFile>& normalImage = pMaterialFile->GetTextureImageFileRef(NORMAL_TEXTURE_MAP);
+			shared_ptr<IImageFile>& heightImage = pMaterialFile->GetTextureImageFileRef(HEIGHT_TEXTURE_MAP);
+
+			DirectXDevice::pDeviceContext->GSSetShaderResources(0, 1,
+				normalImage.get() != nullptr ?
+				normalImage->GetAddressOfSRV() : &pNullSRV);
+			DirectXDevice::pDeviceContext->GSSetShaderResources(1, 1,
+				heightImage.get() != nullptr ?
+				heightImage->GetAddressOfSRV() : &pNullSRV);
+
+			DirectXDevice::pDeviceContext->GSSetSamplers(0, 1, DirectXDevice::ppClampSampler);
+		}
 	}
 }
 
