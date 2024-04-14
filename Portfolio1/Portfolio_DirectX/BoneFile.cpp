@@ -13,7 +13,7 @@ BoneFile::BoneFile(
 )
 	: IFile(strFileLabelIn), uiBoneNums(uiBoneNumsIn)
 {
-	vBoneOffsetMatrix.resize(uiBoneNums);
+
 }
 
 BoneFile::~BoneFile()

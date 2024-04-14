@@ -72,20 +72,25 @@ void SkeletalModel::UpdateModel(const float& fDelta)
 		{
 			size_t boneIdx = 0;
 			BoneData& boneData = pBoneFile->GetRootBone();
-			boneData.vBoneChildren.size() == 1 ?
-				UpdateTransformation(boneIdx, boneIdx, boneData.vBoneChildren[0])
-				: UpdateTransformation(boneIdx, boneIdx, boneData);
+			if (boneData.strBoneName == "RootNode" && boneData.vBoneChildren.size() == 1)
+			{
+				UpdateTransformation(boneIdx, boneIdx, boneData.vBoneChildren[0]);
+			}
+			else
+			{
+				UpdateTransformation(boneIdx, boneIdx, boneData);
+			}
 
 			for (size_t idx = 0; idx < pBoneFile->GetBoneNums(); ++idx)
 			{
 				sbBoneTransformation[idx] = XMMatrixTranspose(
 					XMMatrixInverse(nullptr, normalizedMatrix)
-					* pBoneFile->GetOffsetMatrix(idx) 
+					* pBoneFile->GetOffsetMatrix(idx)
 					* sbBoneTransformation[idx]
 					* normalizedMatrix
 				);
 			}
-
+			
 			sbBoneTransformation.UpdateStructuredBuffer();
 
 		}
@@ -98,34 +103,57 @@ void SkeletalModel::UpdateTransformation(size_t parentIdx, size_t& currentIdx, B
 
 	AnimChannel* pAnimChannel = spAnimFile->GetAnimChannel(boneData.strBoneName);
 
-	if (bIsRoot && pAnimChannel != nullptr)
-	{
-		DirectX::XMVECTOR xmvCurrentTranslation = pAnimChannel->GetTranslation(dblAnimPlayTime);
-
-		if (bIsFirstFrame)
-		{
-			xmmRootTransform = XMMatrixTranslationFromVector(XMVectorSet(0.f, xmvCurrentTranslation.m128_f32[1], 0.f, 0.f));
-		}
-		else
-		{
-			xmmRootTransform = XMMatrixTranslationFromVector(xmvCurrentTranslation - xmvPreviousTranslation) * xmmRootTransform;
-		}
-		xmvPreviousTranslation = xmvCurrentTranslation;
-
-	}
-
-	const XMMATRIX& parentMatrix = bIsRoot ?
+	const XMMATRIX parentMatrix = bIsRoot ?
 		xmmRootTransform :
 		sbBoneTransformation[parentIdx];
 
-	sbBoneTransformation[currentIdx] = pAnimChannel != nullptr ?
-		pAnimChannel->GetTransformation(dblAnimPlayTime) * parentMatrix :
-		XMMatrixIdentity() * parentMatrix;
-
-	parentIdx = currentIdx;
-	for (BoneData& childBoneData : boneData.vBoneChildren)
+	if (pAnimChannel != nullptr)
 	{
-		UpdateTransformation(parentIdx, ++currentIdx, childBoneData);
+		if (bIsRoot)
+		{
+			DirectX::XMVECTOR xmvCurrentTranslation = pAnimChannel->GetTranslation(dblAnimPlayTime);
+
+			if (bIsFirstFrame)
+			{
+				XMVECTOR xmvRootScaleTranslation;
+				XMVECTOR xmvRootRotation;
+				XMVECTOR xmvRootTranslation;
+				XMMatrixDecompose(
+					&xmvRootScaleTranslation, 
+					&xmvRootRotation,
+					&xmvRootTranslation, 
+					xmmRootTransform
+				);
+
+				xmmRootTransform = XMMatrixTranslationFromVector(XMVectorSet(
+					xmvRootTranslation.m128_f32[0], 
+					xmvCurrentTranslation.m128_f32[1],
+					xmvRootTranslation.m128_f32[2],
+					xmvRootTranslation.m128_f32[3])
+				);
+			}
+			else
+			{
+				xmmRootTransform = XMMatrixTranslationFromVector(xmvCurrentTranslation - xmvPreviousTranslation) * xmmRootTransform;
+			}
+			xmmRootTransform = XMMatrixTranslationFromVector(xmvCurrentTranslation - xmvPreviousTranslation) * xmmRootTransform;
+			xmvPreviousTranslation = xmvCurrentTranslation;
+		}
+
+		sbBoneTransformation[currentIdx] = bIsRoot ?
+			pAnimChannel->GetTransformationWithoutTranslation(dblAnimPlayTime) * parentMatrix :
+			pAnimChannel->GetTransformation(dblAnimPlayTime) * parentMatrix;
+
+		parentIdx = currentIdx;
+		for (BoneData& childBoneData : boneData.vBoneChildren)
+		{
+			UpdateTransformation(parentIdx, ++currentIdx, childBoneData);
+		}
+
+		if (bIsFirstFrame)
+		{
+			bIsFirstFrame = false;
+		}
 	}
 }
 

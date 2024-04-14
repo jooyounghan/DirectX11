@@ -14,8 +14,6 @@ struct BoneWeight
 struct BoneData
 {
 	std::string strBoneName;
-	unsigned int uiNumWeight;
-	BoneWeight* pBoneWeights;
 	BoneData* pBoneParent;
 	std::vector<BoneData> vBoneChildren;
 };

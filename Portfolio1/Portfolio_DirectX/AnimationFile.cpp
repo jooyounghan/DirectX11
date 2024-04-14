@@ -16,28 +16,28 @@ AnimChannel::~AnimChannel()
 
 DirectX::XMVECTOR AnimChannel::GetTranslation(const double& dblPlayTimeIn)
 {
-	return GetInterpolatedData(dblPlayTimeIn, vTranslation, 0.f, XMVectorSet(0.f, 0.f, 0.f, 0.f));
+	return GetInterpolatedData(dblPlayTimeIn, vTranslation, 0.f, XMVectorSet(0.f, 0.f, 0.f, 1.f));
 }
 
 XMMATRIX AnimChannel::GetTransformation(const double& dblPlayTimeIn)
 {
-	XMVECTOR xmvTranslation = GetInterpolatedData(dblPlayTimeIn, vTranslation, 0.f, XMVectorSet(0.f, 0.f, 0.f, 0.f));
+	XMVECTOR xmvTranslation = GetInterpolatedData(dblPlayTimeIn, vTranslation, 0.f, XMVectorSet(0.f, 0.f, 0.f, 1.f));
 	XMVECTOR xmvQuaternion = GetInterpolatedData(dblPlayTimeIn, vRotation, 0.f, XMVectorSet(0.f, 0.f, 0.f, 1.f));
-	XMVECTOR xmvScaling = GetInterpolatedData(dblPlayTimeIn, vScale, 1.f, XMVectorSet(1.f, 1.f, 1.f, 1.f));
+	XMVECTOR xmvScaling = GetInterpolatedData(dblPlayTimeIn, vScale, 1.f, XMVectorSet(1.f, 1.f, 1.f, 0.f));
 
-	return XMMatrixTranslationFromVector(xmvTranslation) 
-		* XMMatrixRotationQuaternion(xmvQuaternion) 
-		* XMMatrixScalingFromVector(xmvScaling);
+	return XMMatrixScalingFromVector(xmvScaling)
+		* XMMatrixRotationQuaternion(xmvQuaternion)
+		* XMMatrixTranslationFromVector(xmvTranslation);
 }
 
 DirectX::XMMATRIX AnimChannel::GetTransformationWithoutTranslation(const double& dblPlayTimeIn)
 {
 	XMVECTOR xmvQuaternion = GetInterpolatedData(dblPlayTimeIn, vRotation, 0.f, XMVectorSet(0.f, 0.f, 0.f, 1.f));
-	XMVECTOR xmvScaling = GetInterpolatedData(dblPlayTimeIn, vScale, 1.f, XMVectorSet(1.f, 1.f, 1.f, 1.f));
+	XMVECTOR xmvScaling = GetInterpolatedData(dblPlayTimeIn, vScale, 1.f, XMVectorSet(1.f, 1.f, 1.f, 0.f));
 
-	return XMMatrixTranslationFromVector(XMVectorSet(0.f, 0.f, 0.f, 0.f)) 
-		* XMMatrixRotationQuaternion(xmvQuaternion) 
-		* XMMatrixScalingFromVector(xmvScaling);
+	return XMMatrixScalingFromVector(xmvScaling)
+		* XMMatrixRotationQuaternion(xmvQuaternion)
+		* XMMatrixTranslationFromVector(XMVectorSet(0.f, 0.f, 0.f, 1.f));
 }
 
 

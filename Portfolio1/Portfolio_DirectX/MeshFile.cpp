@@ -42,7 +42,8 @@ MeshFile::MeshFile(
 )
 	: IFile(strFileLabelIn), 
 	bIsInitialized(false), bIsGLTF(bIsGLTFIn),
-	spBoneFile(spBoneFileIn)
+	spBoneFile(spBoneFileIn),
+	xmmNormalizedMatrix(XMMatrixIdentity())
 {
 	for (size_t meshIdx = 0; meshIdx < uiMeshCountIn; ++meshIdx)
 	{
@@ -82,8 +83,8 @@ void MeshFile::Initialize()
 		float scale = 1.f / XMMax(XMMax(dx, dy), dz);
 
 
-		xmmNormalizedMatrix = 
-			XMMatrixTranslation(translation.x, translation.y, translation.z) 
+		xmmNormalizedMatrix =
+			XMMatrixTranslation(translation.x, translation.y, translation.z)
 			* XMMatrixScaling(scale, scale, scale);
 
 		for (auto& meshData : vMeshData)

@@ -55,17 +55,18 @@ private:
 template<typename T>
 DirectX::XMVECTOR AnimChannel::GetInterpolatedData(const double& dblPlayTimeIn, std::vector<T>& vData, const float& w, const DirectX::XMVECTOR& defaultResult)
 {
-	for (size_t back_idx = 0; back_idx < vData.size(); ++back_idx)
+	for (size_t right_idx = 0; right_idx < vData.size(); ++right_idx)
 	{
-		size_t front_idx = back_idx != 0 ? back_idx - 1 : back_idx;
-		T& front_data = vData[front_idx];
-		T& back_data = vData[back_idx];
+		size_t left_idx = right_idx != 0 ? right_idx - 1 : right_idx;
+		T& left_data = vData[left_idx];
+		T& right_data = vData[right_idx];
 
-		if (front_data.dblTime < dblPlayTimeIn && dblPlayTimeIn < back_data.dblTime)
+		if (left_data.dblTime <= dblPlayTimeIn && dblPlayTimeIn < right_data.dblTime)
 		{
-			const double totalTime = back_data.dblTime - front_data.dblTime;
-			const double frontTimePortion = dblPlayTimeIn - front_data.dblTime;
-			return (frontTimePortion / totalTime) * SetXMVectorFromXMFloat(front_data.xmElement, w) + (1.0 - frontTimePortion / totalTime) * SetXMVectorFromXMFloat(back_data.xmElement, w);
+			const double totalTime = right_data.dblTime - left_data.dblTime;
+			const double spentTime = dblPlayTimeIn - left_data.dblTime;
+			const double rightWeight = spentTime / totalTime;
+			return (1 - rightWeight) * SetXMVectorFromXMFloat(left_data.xmElement, w) + (rightWeight) * SetXMVectorFromXMFloat(right_data.xmElement, w);
 		}
 	}
 

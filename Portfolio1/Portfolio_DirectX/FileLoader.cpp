@@ -580,12 +580,7 @@ void FileLoader::LoadBoneFromNode(
         {
             uiBoneId++;
             const aiBone* pBone = nodeToBoneTable.at(boneData.strBoneName);
-            boneData.uiNumWeight = pBone->mNumWeights;
-            const size_t weightsSize = sizeof(BoneWeight) * boneData.uiNumWeight;
-            boneData.pBoneWeights = (BoneWeight*)malloc(weightsSize);
-            memcpy(boneData.pBoneWeights, pBone->mWeights, weightsSize);
-
-            pBoneFile->SetOffsetMatrix(boneData.strBoneName, uiBoneId, XMMATRIX(&pBone->mOffsetMatrix.a1));
+            pBoneFile->SetOffsetMatrix(boneData.strBoneName, uiBoneId, XMMatrixTranspose(XMMATRIX((float*)&pBone->mOffsetMatrix)));
         }
 
         for (size_t node_idx = 0; node_idx < pNode->mNumChildren; ++node_idx)
