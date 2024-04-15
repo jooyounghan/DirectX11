@@ -372,9 +372,43 @@ vector<shared_ptr<AnimationFile>> FileLoader::LoadAnimationFile(
                 aiNodeAnim* pAnimNode = pAnimation->mChannels[channelIdx];
                 const string animNodeName = pAnimNode->mNodeName.C_Str();
                 AnimChannel* pAnimChannel = spAnimation->AddAnimChannel(animNodeName);
-                pAnimChannel->SetTranslation(pAnimNode->mNumPositionKeys, pAnimNode->mPositionKeys);
-                pAnimChannel->SetRotation(pAnimNode->mNumRotationKeys, pAnimNode->mRotationKeys);
-                pAnimChannel->SetScale(pAnimNode->mNumScalingKeys, pAnimNode->mScalingKeys);
+
+                pAnimChannel->ReserveTranslation(pAnimNode->mNumPositionKeys);
+                for (size_t idx = 0; idx < pAnimNode->mNumPositionKeys; ++idx)
+                {
+                    pAnimChannel->AddTranslation(
+                        pAnimNode->mPositionKeys[idx].mTime,
+                        pAnimNode->mPositionKeys[idx].mValue.x,
+                        pAnimNode->mPositionKeys[idx].mValue.y,
+                        pAnimNode->mPositionKeys[idx].mValue.z
+                    );
+                }
+
+                pAnimChannel->ReserveRotationQuat(pAnimNode->mNumRotationKeys);
+                for (size_t idx = 0; idx < pAnimNode->mNumRotationKeys; ++idx)
+                {
+                    pAnimChannel->AddRotationQuat(
+                        pAnimNode->mRotationKeys[idx].mTime,
+                        pAnimNode->mRotationKeys[idx].mValue.x,
+                        pAnimNode->mRotationKeys[idx].mValue.y,
+                        pAnimNode->mRotationKeys[idx].mValue.z,
+                        pAnimNode->mRotationKeys[idx].mValue.w
+                    );
+                }
+
+                pAnimChannel->ReserveScale(pAnimNode->mNumScalingKeys);
+                for (size_t idx = 0; idx < pAnimNode->mNumScalingKeys; ++idx)
+                {
+                    pAnimChannel->AddScale(
+                        pAnimNode->mScalingKeys[idx].mTime,
+                        pAnimNode->mScalingKeys[idx].mValue.x,
+                        pAnimNode->mScalingKeys[idx].mValue.y,
+                        pAnimNode->mScalingKeys[idx].mValue.z
+                    );
+                }
+
+
+
             }
         }
         else

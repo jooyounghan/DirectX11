@@ -17,7 +17,7 @@ protected:
 
 protected:
 	DirectX::XMMATRIX xmmRootTransform;
-	DirectX::XMVECTOR xmvPreviousTranslation;
+	DirectX::XMFLOAT3 xmvPreviousTranslation;
 	bool bIsFirstFrame;
 
 public:

@@ -82,11 +82,6 @@ void MeshFile::Initialize()
 		float dx = vmax.x - vmin.x, dy = vmax.y - vmin.y, dz = vmax.z - vmin.z;
 		float scale = 1.f / XMMax(XMMax(dx, dy), dz);
 
-
-		xmmNormalizedMatrix =
-			XMMatrixTranslation(translation.x, translation.y, translation.z)
-			* XMMatrixScaling(scale, scale, scale);
-
 		for (auto& meshData : vMeshData)
 		{
 			for (auto& v : meshData.vVertices)
@@ -99,6 +94,10 @@ void MeshFile::Initialize()
 			meshData.CreateBuffer();
 		}
 		
+		xmmNormalizedMatrix =
+			XMMatrixTranslation(translation.x, translation.y, translation.z)
+			* XMMatrixScaling(scale, scale, scale);
+
 		bIsInitialized = true;
 	}
 }

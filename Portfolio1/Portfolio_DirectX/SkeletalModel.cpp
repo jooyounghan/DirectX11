@@ -15,7 +15,7 @@ SkeletalModel::SkeletalModel(
 )
 	: PBRStaticMesh(spMeshFileIn),
 	dblAnimPlayTime(0.), xmmRootTransform(XMMatrixIdentity()),
-	xmvPreviousTranslation(XMVectorSet(0.f, 0.f, 0.f, 0.f)),
+	xmvPreviousTranslation(XMFLOAT3(0.f, 0.f, 0.f)),
 	sbBoneTransformation(spMeshFile->GetBoneFile()->GetBoneNums(), XMMatrixIdentity()),
 	bIsFirstFrame(true),
 	IMovable(0.f, 0.f, 0.f),
@@ -111,32 +111,20 @@ void SkeletalModel::UpdateTransformation(size_t parentIdx, size_t& currentIdx, B
 	{
 		if (bIsRoot)
 		{
-			DirectX::XMVECTOR xmvCurrentTranslation = pAnimChannel->GetTranslation(dblAnimPlayTime);
+			XMFLOAT3 xmvCurrentTranslation = pAnimChannel->GetTranslation(dblAnimPlayTime);
 
 			if (bIsFirstFrame)
 			{
-				XMVECTOR xmvRootScaleTranslation;
-				XMVECTOR xmvRootRotation;
-				XMVECTOR xmvRootTranslation;
-				XMMatrixDecompose(
-					&xmvRootScaleTranslation, 
-					&xmvRootRotation,
-					&xmvRootTranslation, 
-					xmmRootTransform
-				);
-
-				xmmRootTransform = XMMatrixTranslationFromVector(XMVectorSet(
-					xmvRootTranslation.m128_f32[0], 
-					xmvCurrentTranslation.m128_f32[1],
-					xmvRootTranslation.m128_f32[2],
-					xmvRootTranslation.m128_f32[3])
-				);
+				xmmRootTransform.r[3].m128_f32[1] = xmvCurrentTranslation.y;
 			}
 			else
 			{
-				xmmRootTransform = XMMatrixTranslationFromVector(xmvCurrentTranslation - xmvPreviousTranslation) * xmmRootTransform;
+				xmmRootTransform = XMMatrixTranslation(
+					xmvCurrentTranslation.x - xmvPreviousTranslation.x,
+					xmvCurrentTranslation.y - xmvPreviousTranslation.y,
+					xmvCurrentTranslation.z - xmvPreviousTranslation.z					
+				) * xmmRootTransform;
 			}
-			xmmRootTransform = XMMatrixTranslationFromVector(xmvCurrentTranslation - xmvPreviousTranslation) * xmmRootTransform;
 			xmvPreviousTranslation = xmvCurrentTranslation;
 		}
 
