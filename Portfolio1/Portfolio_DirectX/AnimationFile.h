@@ -54,13 +54,20 @@ private:
 template<typename T>
 DirectX::XMFLOAT3 AnimChannel::GetInterpolatedData(const double& dblPlayTimeIn, std::vector<T>& vData, const DirectX::XMFLOAT3& defaultResult)
 {
-	for (size_t right_idx = 0; right_idx < vData.size(); ++right_idx)
+	for (size_t left_idx = 0; left_idx < vData.size() - 1; ++left_idx)
 	{
-		size_t left_idx = right_idx != 0 ? right_idx - 1 : right_idx;
 		T& left_data = vData[left_idx];
-		T& right_data = vData[right_idx];
+		T& right_data = vData[left_idx + 1];
 
-		if (left_data.dblTime <= dblPlayTimeIn && dblPlayTimeIn < right_data.dblTime)
+		if (dblPlayTimeIn < left_data.dblTime)
+		{
+			return DirectX::XMFLOAT3(
+				left_data.xmElement.x,
+				left_data.xmElement.y,
+				left_data.xmElement.z
+			);
+		}
+		else if (left_data.dblTime <= dblPlayTimeIn && dblPlayTimeIn < right_data.dblTime)
 		{
 			const double totalTime = right_data.dblTime - left_data.dblTime;
 			const double spentTime = dblPlayTimeIn - left_data.dblTime;
@@ -68,9 +75,19 @@ DirectX::XMFLOAT3 AnimChannel::GetInterpolatedData(const double& dblPlayTimeIn, 
 			return DirectX::XMFLOAT3(
 				(1 - rightWeight) * left_data.xmElement.x + rightWeight * right_data.xmElement.x,
 				(1 - rightWeight) * left_data.xmElement.y + rightWeight * right_data.xmElement.y,
-				(1 - rightWeight) * left_data.xmElement.z + rightWeight * right_data.xmElement.z
-			);
+				(1 - rightWeight) * left_data.xmElement.z + rightWeight * right_data.xmElement.z			);
 		}
+		else;
+	}
+
+	if (!vData.empty() && vData[vData.size() - 1].dblTime <= dblPlayTimeIn)
+	{
+		T& last_data = vData[vData.size() - 1];
+		return DirectX::XMFLOAT3(
+			last_data.xmElement.x,
+			last_data.xmElement.y,
+			last_data.xmElement.z
+		);
 	}
 	return defaultResult;
 }
@@ -78,25 +95,48 @@ DirectX::XMFLOAT3 AnimChannel::GetInterpolatedData(const double& dblPlayTimeIn, 
 template<typename T>
 DirectX::XMFLOAT4 AnimChannel::GetInterpolatedData(const double& dblPlayTimeIn, std::vector<T>& vData, const DirectX::XMFLOAT4& defaultResult)
 {
-	for (size_t right_idx = 0; right_idx < vData.size(); ++right_idx)
+	for (size_t left_idx = 0; left_idx < vData.size() - 1; ++left_idx)
 	{
-		size_t left_idx = right_idx != 0 ? right_idx - 1 : right_idx;
 		T& left_data = vData[left_idx];
-		T& right_data = vData[right_idx];
+		T& right_data = vData[left_idx + 1];
 
-		if (left_data.dblTime <= dblPlayTimeIn && dblPlayTimeIn < right_data.dblTime)
+
+		if (dblPlayTimeIn < left_data.dblTime)
+		{
+			return DirectX::XMFLOAT4(
+				left_data.xmElement.x,
+				left_data.xmElement.y,
+				left_data.xmElement.z,
+				left_data.xmElement.w
+			);
+		}
+		else if (left_data.dblTime <= dblPlayTimeIn && dblPlayTimeIn < right_data.dblTime)
 		{
 			const double totalTime = right_data.dblTime - left_data.dblTime;
 			const double spentTime = dblPlayTimeIn - left_data.dblTime;
 			const double rightWeight = spentTime / totalTime;
-			return DirectX::XMFLOAT4(
-				(1 - rightWeight) * left_data.xmElement.x + rightWeight * right_data.xmElement.x,
-				(1 - rightWeight) * left_data.xmElement.y + rightWeight * right_data.xmElement.y,
-				(1 - rightWeight) * left_data.xmElement.z + rightWeight * right_data.xmElement.z,
-				(1 - rightWeight) * left_data.xmElement.w + rightWeight * right_data.xmElement.w
+			DirectX::XMVECTOR result = DirectX::XMQuaternionSlerp(
+				DirectX::XMVectorSet(left_data.xmElement.x, left_data.xmElement.y, left_data.xmElement.z, left_data.xmElement.w),
+				DirectX::XMVectorSet(right_data.xmElement.x, right_data.xmElement.y, right_data.xmElement.z, right_data.xmElement.w),
+				rightWeight
 			);
+
+			return DirectX::XMFLOAT4(result.m128_f32);
 		}
+		else;
 	}
+
+	if (!vData.empty() && vData[vData.size() - 1].dblTime <= dblPlayTimeIn)
+	{
+		T& last_data = vData[vData.size() - 1];
+		return DirectX::XMFLOAT4(
+			last_data.xmElement.x,
+			last_data.xmElement.y,
+			last_data.xmElement.z,
+			last_data.xmElement.w
+		);
+	}
+
 	return defaultResult;
 }
 
