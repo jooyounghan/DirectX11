@@ -21,7 +21,7 @@ struct BoneData
 class BoneFile : public IFile, public std::enable_shared_from_this<BoneFile>
 {
 public:
-	BoneFile(const std::string& strFileLabelIn, const size_t& uiBoneNumsIn);
+	BoneFile(const std::string& strFileLabelIn);
 	virtual ~BoneFile();
 
 private:
@@ -31,6 +31,7 @@ private:
 public:
 	BoneData& GetRootBone() { return boneRoot; }
 	inline const size_t& GetBoneNums() { return uiBoneNums; }
+	inline void SetBoneNums(const size_t uiBoneNumsIn) { uiBoneNums = uiBoneNumsIn; }
 
 private:
 	std::vector<std::string> vBoneNames;

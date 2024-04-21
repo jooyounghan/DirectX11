@@ -292,8 +292,10 @@ shared_ptr<BoneFile> FileLoader::LoadBoneFile(const string strFileName, const ai
         const std::unordered_map<std::string, const aiBone*> nodeToBoneTable = GetNodeToBoneTable(pScene);
 
         uiBoneId = -1;
-        spBone = make_shared<BoneFile>(BoneLabel, nodeToBoneTable.size());
+        spBone = make_shared<BoneFile>(BoneLabel);
         LoadBoneFromNode(pScene->mRootNode, spBone.get(), spBone->GetRootBone(), nodeToBoneTable);
+        spBone->SetBoneNums(uiBoneId + 1);
+
         FileLoader::AddUsingFile(BoneLabel, spBone);
     }
     else
@@ -374,6 +376,7 @@ vector<shared_ptr<AnimationFile>> FileLoader::LoadAnimationFile(
                 AnimChannel* pAnimChannel = spAnimation->AddAnimChannel(animNodeName);
 
                 pAnimChannel->ReserveTranslation(pAnimNode->mNumPositionKeys);
+
                 for (size_t idx = 0; idx < pAnimNode->mNumPositionKeys; ++idx)
                 {
                     pAnimChannel->AddTranslation(
@@ -608,13 +611,17 @@ void FileLoader::LoadBoneFromNode(
 {
     if (pNode != nullptr)
     {
-        boneData.strBoneName = pNode->mName.C_Str();
-
-        if (nodeToBoneTable.find(boneData.strBoneName) != nodeToBoneTable.end())
+        const char* pNodeName = pNode->mName.C_Str();
+        boneData.strBoneName = pNodeName;
+        uiBoneId++;
+        if (nodeToBoneTable.find(pNodeName) != nodeToBoneTable.end())
         {
-            uiBoneId++;
             const aiBone* pBone = nodeToBoneTable.at(boneData.strBoneName);
             pBoneFile->SetOffsetMatrix(boneData.strBoneName, uiBoneId, XMMatrixTranspose(XMMATRIX((float*)&pBone->mOffsetMatrix)));
+        }
+        else
+        {
+            pBoneFile->SetOffsetMatrix(boneData.strBoneName, uiBoneId, XMMatrixIdentity());
         }
 
         for (size_t node_idx = 0; node_idx < pNode->mNumChildren; ++node_idx)

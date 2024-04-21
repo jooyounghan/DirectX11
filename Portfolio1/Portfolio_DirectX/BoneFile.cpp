@@ -8,10 +8,8 @@ using namespace std;
 
 string BoneFile::strDefaultBoneName = "";
 
-BoneFile::BoneFile(
-	const string& strFileLabelIn, const size_t& uiBoneNumsIn
-)
-	: IFile(strFileLabelIn), uiBoneNums(uiBoneNumsIn)
+BoneFile::BoneFile(const string& strFileLabelIn)
+	: IFile(strFileLabelIn)
 {
 
 }

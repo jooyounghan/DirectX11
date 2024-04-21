@@ -72,14 +72,8 @@ void SkeletalModel::UpdateModel(const float& fDelta)
 		{
 			size_t boneIdx = 0;
 			BoneData& boneData = pBoneFile->GetRootBone();
-			if (boneData.strBoneName == "RootNode" && boneData.vBoneChildren.size() == 1)
-			{
-				UpdateTransformation(boneIdx, boneIdx, boneData.vBoneChildren[0]);
-			}
-			else
-			{
-				UpdateTransformation(boneIdx, boneIdx, boneData);
-			}
+
+			UpdateTransformation(boneIdx, boneIdx, boneData);
 
 			for (size_t idx = 0; idx < pBoneFile->GetBoneNums(); ++idx)
 			{
@@ -132,16 +126,22 @@ void SkeletalModel::UpdateTransformation(size_t parentIdx, size_t& currentIdx, B
 			pAnimChannel->GetTransformationWithoutTranslation(dblAnimPlayTime) * parentMatrix :
 			pAnimChannel->GetTransformation(dblAnimPlayTime) * parentMatrix;
 
-		parentIdx = currentIdx;
-		for (BoneData& childBoneData : boneData.vBoneChildren)
-		{
-			UpdateTransformation(parentIdx, ++currentIdx, childBoneData);
-		}
+	}
+	else
+	{
+		sbBoneTransformation[currentIdx] = parentMatrix;
+	}
 
-		if (bIsFirstFrame)
-		{
-			bIsFirstFrame = false;
-		}
+	parentIdx = currentIdx;
+	for (BoneData& childBoneData : boneData.vBoneChildren)
+	{
+		UpdateTransformation(parentIdx, ++currentIdx, childBoneData);
+	}
+
+
+	if (bIsFirstFrame)
+	{
+		bIsFirstFrame = false;
 	}
 }
 
