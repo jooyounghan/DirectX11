@@ -4,6 +4,9 @@
 
 #include "CameraManipulator.h"
 #include "BlurFilter.h"
+#include "BloomFilter.h"
+
+using namespace std;
 
 size_t FilteredCamera::ullFiltertedCamaraCnt = 0;
 
@@ -65,7 +68,7 @@ void FilteredCamera::Resize(const UINT& uiWidthIn, const UINT& uiHeightIn)
 {
 	ACamera::Resize(uiWidthIn, uiHeightIn);
 
-	for (std::unique_ptr<AFilter>& filter : upFilters)
+	for (unique_ptr<AFilter>& filter : upFilters)
 	{
 		// 필터 초기화
 		filter->ResetFilter();
@@ -117,7 +120,7 @@ void FilteredCamera::Resolve()
 
 		if (upFilters.size() > 0)
 		{
-			for (std::unique_ptr<AFilter>& pFilter : upFilters)
+			for (unique_ptr<AFilter>& pFilter : upFilters)
 			{
 				pFilter->Apply(ppInputSRV);
 				ppInputSRV = pFilter->GetAddressOfSRV();
@@ -152,9 +155,26 @@ void FilteredCamera::AcceptLButtonDown(
 
 void FilteredCamera::AddBlurState()
 {
-	upFilters.push_back(std::make_unique<BlurFilter>(
+	upFilters.push_back(make_unique<BlurFilter>(
 		uiWidth, uiHeight, AFilter::uiArraySize, AFilter::uiNumQualityLevels,
 		D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS, NULL,
 		NULL, D3D11_USAGE_DEFAULT, AFilter::eFormat
 	));
+}
+
+void FilteredCamera::AddBloomState()
+{
+	if (!stackBloomInputs.empty())
+	{
+		upFilters.push_back(make_unique<BloomFilter>(
+			uiWidth, uiHeight, AFilter::uiArraySize, AFilter::uiNumQualityLevels,
+			D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS, NULL,
+			NULL, D3D11_USAGE_DEFAULT, AFilter::eFormat
+		));
+
+		BloomFilter* pBloomFilter = (BloomFilter*)upFilters[upFilters.size() - 1].get();
+		pBloomFilter->PresetInput(stackBloomInputs.top());
+		stackBloomInputs.pop();
+	}
+
 }

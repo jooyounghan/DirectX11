@@ -34,10 +34,10 @@ public:
 
 protected:
 	static std::string								strDefaultTextureName;
-	static std::unordered_map<WORD, std::string>	unmapTextureNames;
+	static std::unordered_map<size_t, std::string>	unmapTextureNames;
 
 public:
-	static const std::string& GetTextureName(const WORD& iTextureID);
+	static const std::string& GetTextureName(const size_t& iTextureID);
 
 public:
 	virtual void AcceptFileAsList(class FileManipulator* pFileManipulator);

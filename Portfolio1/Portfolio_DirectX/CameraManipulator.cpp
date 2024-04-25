@@ -2,7 +2,10 @@
 #include "ModelManipulator.h"
 
 #include "DefineVar.h"
+
 #include "PickableCamera.h"
+#include "BlurFilter.h"
+#include "BloomFilter.h"
 
 #include <imgui.h>
 #include <imgui_impl_dx11.h>
@@ -304,6 +307,23 @@ void CameraManipulator::VisitCameraInfo(FilteredCamera& filtered)
 	{
 		filtered.AddBlurState();
 	}
+	if (Button("Set Bloom Filter Input"))
+	{
+		if (filters.size() > 0)
+		{
+			filtered.SetBloomInput(filters[filters.size() - 1].get()->GetAddressOfSRV());
+		}
+		else
+		{
+			filtered.SetBloomInput(filtered.GetAddressOfFilterSRV());
+		}
+	}
+	BeginDisabled(!filtered.IsBloomInputSet());
+	if (Button("Add Bloom Filter"))
+	{
+		filtered.AddBloomState();
+	}
+	EndDisabled();
 	EndGroup();
 
 	SameLine();
@@ -329,6 +349,11 @@ void CameraManipulator::VisitCameraInfo(PickableCamera& pickable)
 void CameraManipulator::VisitFilterList(BlurFilter& blurFilter)
 {
 	SetFilterList("Blur Filter");
+}
+
+void CameraManipulator::VisitFilterList(BloomFilter& bloomFilter)
+{
+	SetFilterList("Bloom Filter");
 }
 
 void CameraManipulator::VisitFilterList(ACamera& camera)

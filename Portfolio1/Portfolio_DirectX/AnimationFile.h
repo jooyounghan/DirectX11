@@ -69,9 +69,9 @@ DirectX::XMFLOAT3 AnimChannel::GetInterpolatedData(const double& dblPlayTimeIn, 
 		}
 		else if (left_data.dblTime <= dblPlayTimeIn && dblPlayTimeIn < right_data.dblTime)
 		{
-			const double totalTime = right_data.dblTime - left_data.dblTime;
-			const double spentTime = dblPlayTimeIn - left_data.dblTime;
-			const double rightWeight = spentTime / totalTime;
+			const float totalTime = static_cast<float>(right_data.dblTime - left_data.dblTime);
+			const float spentTime = static_cast<float>(dblPlayTimeIn - left_data.dblTime);
+			const float rightWeight = spentTime / totalTime;
 			return DirectX::XMFLOAT3(
 				(1 - rightWeight) * left_data.xmElement.x + rightWeight * right_data.xmElement.x,
 				(1 - rightWeight) * left_data.xmElement.y + rightWeight * right_data.xmElement.y,
@@ -112,9 +112,9 @@ DirectX::XMFLOAT4 AnimChannel::GetInterpolatedData(const double& dblPlayTimeIn, 
 		}
 		else if (left_data.dblTime <= dblPlayTimeIn && dblPlayTimeIn < right_data.dblTime)
 		{
-			const double totalTime = right_data.dblTime - left_data.dblTime;
-			const double spentTime = dblPlayTimeIn - left_data.dblTime;
-			const double rightWeight = spentTime / totalTime;
+			const float totalTime = static_cast<float>(right_data.dblTime - left_data.dblTime);
+			const float spentTime = static_cast<float>(dblPlayTimeIn - left_data.dblTime);
+			const float rightWeight = spentTime / totalTime;
 			DirectX::XMVECTOR result = DirectX::XMQuaternionSlerp(
 				DirectX::XMVectorSet(left_data.xmElement.x, left_data.xmElement.y, left_data.xmElement.z, left_data.xmElement.w),
 				DirectX::XMVectorSet(right_data.xmElement.x, right_data.xmElement.y, right_data.xmElement.z, right_data.xmElement.w),

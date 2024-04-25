@@ -24,7 +24,7 @@ private:
 	size_t ullPointLightId;
 
 private:
-	class DepthBlurComputeShader* pBlurCS;
+	class PointLightDepthBlurComputeShader* pBlurCS;
 
 private:
 	static ID3D11RenderTargetView* pNullRTV;

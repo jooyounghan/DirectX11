@@ -456,7 +456,7 @@
     <ClInclude Include="TypeResolveComputeShader.h">
       <Filter>헤더 파일\Shader\Extended\Compute</Filter>
     </ClInclude>
-    <ClInclude Include="DepthBlurComputeShader.h">
+    <ClInclude Include="SpotLightDepthBlurComputeShader.h">
       <Filter>헤더 파일\Shader\Extended\Compute</Filter>
     </ClInclude>
     <ClInclude Include="BoneFile.h">
@@ -488,6 +488,18 @@
     </ClInclude>
     <ClInclude Include="SkeletalVertexShader.h">
       <Filter>헤더 파일\Shader\Extended\Vertex</Filter>
+    </ClInclude>
+    <ClInclude Include="ADualInputFilter.h">
+      <Filter>헤더 파일\Texture2D\Filter</Filter>
+    </ClInclude>
+    <ClInclude Include="BloomFilter.h">
+      <Filter>헤더 파일\Texture2D\Filter\Extended</Filter>
+    </ClInclude>
+    <ClInclude Include="InputMergeComputeShader.h">
+      <Filter>헤더 파일\Shader\Extended\Compute</Filter>
+    </ClInclude>
+    <ClInclude Include="PointLightDepthBlurComputeShader.h">
+      <Filter>헤더 파일\Shader\Extended\Compute</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -719,7 +731,7 @@
     <ClCompile Include="ColorBlurComputeShader.cpp">
       <Filter>소스 파일\Shader\Extended\Compute</Filter>
     </ClCompile>
-    <ClCompile Include="DepthBlurComputeShader.cpp">
+    <ClCompile Include="SpotLightDepthBlurComputeShader.cpp">
       <Filter>소스 파일\Shader\Extended\Compute</Filter>
     </ClCompile>
     <ClCompile Include="BoneFile.cpp">
@@ -751,6 +763,18 @@
     </ClCompile>
     <ClCompile Include="StructuredBuffer.cpp">
       <Filter>소스 파일\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="ADualInputFilter.cpp">
+      <Filter>소스 파일\Texture2D\Filter</Filter>
+    </ClCompile>
+    <ClCompile Include="BloomFilter.cpp">
+      <Filter>소스 파일\Texture2D\Filter\Extended</Filter>
+    </ClCompile>
+    <ClCompile Include="PointLightDepthBlurComputeShader.cpp">
+      <Filter>소스 파일\Shader\Extended\Compute</Filter>
+    </ClCompile>
+    <ClCompile Include="InputMergeComputeShader.cpp">
+      <Filter>소스 파일\Shader\Extended\Compute</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -796,7 +820,7 @@
     <FxCompile Include="BasicVS.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
-    <FxCompile Include="DepthBlurCS.hlsl">
+    <FxCompile Include="SpotLightDepthBlurCS.hlsl">
       <Filter>Shader\Filter</Filter>
     </FxCompile>
     <FxCompile Include="PBRModelDS.hlsl">
@@ -810,6 +834,12 @@
     </FxCompile>
     <FxCompile Include="PBRSkeletalVS.hlsl">
       <Filter>Shader\Skeletal</Filter>
+    </FxCompile>
+    <FxCompile Include="InputMergeCS.hlsl">
+      <Filter>Shader\Filter</Filter>
+    </FxCompile>
+    <FxCompile Include="PointLightDepthBlurCS.hlsl">
+      <Filter>Shader\Filter</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

@@ -182,11 +182,15 @@ void LightManipulator::ShowLightPointSetting(
 	float* fLightPower
 )
 {
+	float fFallOffEndLimit = *fFallOffStartIn + NEAR_CLOSE;
+
 	DragFloat3("Light Position", fLightPosIn, 0.5f, -100.f, 100.f);
 	DragFloat3("Light Color RGB", fLightColorIn, 0.001f, 0.f, 1.f);
-	DragFloat("Fall-Off Start Constant", fFallOffStartIn, 0.1f, 0.f, 100.f);
-	DragFloat("Fall-Off End Constant", fFallOffEndIn, 0.1f, *fFallOffStartIn, 100.f);
+	DragFloat("Fall-Off Start Constant", fFallOffStartIn, 0.1f, ILight::gLightNearZ, 100.f);
+	DragFloat("Fall-Off End Constant", fFallOffEndIn, 0.1f, fFallOffEndLimit,100.f);
 	DragFloat("Light Power", fLightPower, 0.01f, 0.f, 10.f);
+
+	if (*fFallOffEndIn < fFallOffEndLimit) *fFallOffEndIn = fFallOffEndLimit;
 }
 
 void LightManipulator::AddLight()

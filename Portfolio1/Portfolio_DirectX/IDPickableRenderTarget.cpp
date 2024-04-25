@@ -15,7 +15,7 @@ IDPickableRenderTarget::IDPickableRenderTarget(
 	uiWidthIn, uiHeightIn,
 	1, 0, D3D11_BIND_UNORDERED_ACCESS,
 	NULL, NULL, D3D11_USAGE_DEFAULT, DXGI_FORMAT_R32_UINT,
-	256, 1, 1),
+	32, 32, 1),
 	RenderTarget(
 	uiWidthIn, uiHeightIn,
 	1, uiNumQualityLevelsIn, D3D11_BIND_RENDER_TARGET,

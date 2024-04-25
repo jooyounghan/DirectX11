@@ -19,14 +19,7 @@ AIBLMesh::AIBLMesh(std::shared_ptr<MeshFile> spMeshFileIn)
 	IScalable(), 
 	IAngleAdjustable(0.f, 0.f, 0.f)
 {
-	AutoZeroMemory(sIBLData);
-	ID3D11Helper::CreateBuffer(
-		DirectXDevice::pDevice, 
-		sIBLData, D3D11_USAGE_DYNAMIC, 
-		D3D11_BIND_CONSTANT_BUFFER, 
-		D3D11_CPU_ACCESS_WRITE, 
-		NULL, cpIBLDataBuffer.GetAddressOf()
-	);
+
 }
 
 AIBLMesh::~AIBLMesh()
@@ -35,12 +28,7 @@ AIBLMesh::~AIBLMesh()
 
 void AIBLMesh::UpdateModel(const float& fDelta)
 {
-	UpdateTranformationMatrix();
-	ID3D11Helper::UpdateBuffer(
-		DirectXDevice::pDeviceContext, 
-		sIBLData, D3D11_MAP_WRITE_DISCARD, 
-		cpIBLDataBuffer.Get()
-	);
+
 }
 
 void AIBLMesh::AcceptModelAsList(ModelManipulator* pModelManipulator)

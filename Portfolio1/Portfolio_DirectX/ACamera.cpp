@@ -51,7 +51,7 @@ ACamera::ACamera(
 		D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS,
 		NULL, NULL, D3D11_USAGE_DEFAULT,
 		DXGI_FORMAT_R8G8B8A8_UNORM,
-		256, 1, 1
+		32, 32, 1
 	), isLinkedWithBackBuffer(false)
 {
 	pTypeResolveCS = TypeResolveComputeShader::GetInstance();
@@ -157,4 +157,5 @@ void ACamera::Apply(ID3D11ShaderResourceView** ppInputSRV)
 			}
 		}
 	}
+	
 }

@@ -22,7 +22,7 @@ BlurFilter::BlurFilter(
 		uiBindFlagIn, uiCPUAccessIn,
 		uiMiscFlagIn, eUsageIn,
 		eFormatIn,
-		256, 1, 1
+		32, 32, 1
 	),
 	IRectangle(uiWidthIn, uiHeightIn)
 {

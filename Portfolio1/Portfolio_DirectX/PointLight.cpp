@@ -7,7 +7,9 @@
 #include "LightManipulator.h"
 
 #include "ColorBlurComputeShader.h"
-#include "DepthBlurComputeShader.h"
+#include "PointLightDepthBlurComputeShader.h"
+
+using namespace std;
 
 size_t PointLight::ullPointLightCnt = 0;
 ID3D11RenderTargetView* PointLight::pNullRTV = nullptr;
@@ -42,7 +44,7 @@ PointLight::PointLight(
 	ullPointLightCnt++;
 	ullPointLightId = ullPointLightCnt;
 
-	pBlurCS = DepthBlurComputeShader::GetInstance();
+	pBlurCS = PointLightDepthBlurComputeShader::GetInstance();
 }
 
 PointLight::~PointLight() {}
@@ -59,11 +61,9 @@ void PointLight::UpdateLight()
 
 	pBlurCS->ApplyShader();
 
-	/*
-	TODO: Dispatch 하나로 묶어보기
-	블러 7x7 수행 관련해서 3x3으로바꿔보기
-	그림자 7x7 수행 관련해서 3x3 또는 5x5로 바꿔보기
-	*/ 
+	vector<ID3D11ShaderResourceView*> srvs;
+	vector<ID3D11UnorderedAccessView*> uavs;
+
 	for (size_t idx = 0; idx < EDirections::DirectionNum; ++idx)
 	{
 		cubeViewParts[idx].SetFarZ(sBaseLightData.fFallOffEnd);
@@ -72,16 +72,24 @@ void PointLight::UpdateLight()
 		cubeViewParts[idx].UpdatePosition();
 		cubeViewParts[idx].UpdateViewToPerspective();
 
-		pBlurCS->SetShader(cubeViewParts[idx].GetAddressOfSRV(), cpUAVs[idx].GetAddressOf());
-		DirectXDevice::pDeviceContext->Dispatch(
-			uiWidth / 200, uiHeight / 4, 1
-		);
-
-		pBlurCS->ResetShader();
+		srvs.push_back(cubeViewParts[idx].GetSRV());
+		uavs.push_back(cpUAVs[idx].Get());
 	}
+
+	pBlurCS->SetShader(srvs.data(), uavs.data(), EDirections::DirectionNum);
+
+	const UINT xNumThread = 16;
+	const UINT yNumThread = 16;
+
+	DirectXDevice::pDeviceContext->Dispatch(
+		uiWidth % xNumThread ? uiWidth / xNumThread + 1 : uiWidth / xNumThread,
+		uiHeight % yNumThread ? uiHeight / yNumThread + 1 : uiHeight / yNumThread,
+		1
+	);
+
+	pBlurCS->ResetShader();
 	pBlurCS->DisapplyShader();
 }
-
 
 void PointLight::SetDepthOnlyRenderTarget(const size_t& idx)
 {

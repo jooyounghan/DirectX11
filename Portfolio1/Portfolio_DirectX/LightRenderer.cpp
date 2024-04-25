@@ -1,10 +1,12 @@
 #include "LightRenderer.h"
 
 #include "ModelRenderVertexShader.h"
+#include "SkeletalVertexShader.h"
 #include "ModelRenderHullShader.h"
 #include "ModelRendererDomainShader.h"
 #include "DepthOnlyPixelShader.h"
 
+#include "SkeletalModel.h"
 #include "PBRStaticMesh.h"
 #include "AIBLMesh.h"
 #include "MirrorModel.h"
@@ -20,6 +22,8 @@ LightRenderer::LightRenderer()
 	: IRenderer(), pObjectSet(nullptr), pLight(nullptr), pViewable(nullptr)
 {
 	modelRenderVS = ModelRenderVertexShader::GetInstance();
+	skeletalVS = SkeletalVertexShader::GetInstance();
+
 	modelRenderHS = ModelRenderHullShader::GetInstance();
 	modelRenderDS = ModelRendererDomainShader::GetInstance();
 	depthOnlyPS = DepthOnlyPixelShader::GetInstance();
@@ -35,7 +39,6 @@ void LightRenderer::UpdateLightMap(
 	const vector<shared_ptr<ILight>>& vLights
 )
 {
-	modelRenderVS->ApplyShader();
 	modelRenderHS->ApplyShader();
 	modelRenderDS->ApplyShader();
 	depthOnlyPS->ApplyShader();
@@ -50,7 +53,6 @@ void LightRenderer::UpdateLightMap(
 	pLight = nullptr;
 	pObjectSet = nullptr;
 
-	modelRenderVS->DisapplyShader();
 	modelRenderHS->DisapplyShader();
 	modelRenderDS->DisapplyShader();
 	depthOnlyPS->DisapplyShader();
@@ -84,8 +86,37 @@ void LightRenderer::SetForUpdatingLightMap(SpotLight& spotLight)
 	spotLight.ResetDepthOnlyRenderTarget();
 }
 
+void LightRenderer::RenderLightMap(SkeletalModel& skeletalModel)
+{
+	skeletalVS->ApplyShader();
+
+	const size_t meshNums = skeletalModel.GetMeshNums();
+	MeshFile* pMeshFile = skeletalModel.GetMeshFile();
+	if (pMeshFile != nullptr)
+	{
+		skeletalVS->SetShader(skeletalModel, *pViewable);
+		modelRenderHS->SetShader(*pLight);
+
+		for (size_t meshIdx = 0; meshIdx < meshNums; ++meshIdx)
+		{
+			modelRenderDS->SetShader(meshIdx, skeletalModel, *pViewable);
+			skeletalVS->SetIAStage(meshIdx, skeletalModel);
+
+			skeletalModel.Draw(meshIdx);
+
+			modelRenderDS->ResetShader();
+			skeletalVS->ResetIAStage();
+		}
+		skeletalVS->ResetShader();
+		modelRenderHS->ResetShader();
+	}
+	skeletalVS->DisapplyShader();
+}
+
 void LightRenderer::RenderLightMap(PBRStaticMesh& pbrStaticMesh)
 {
+	modelRenderVS->ApplyShader();
+
 	const size_t meshNums = pbrStaticMesh.GetMeshNums();
 	MeshFile* pMeshFile = pbrStaticMesh.GetMeshFile();
 	if (pMeshFile != nullptr)
@@ -107,6 +138,8 @@ void LightRenderer::RenderLightMap(PBRStaticMesh& pbrStaticMesh)
 		modelRenderHS->ResetShader();
 
 	}
+
+	modelRenderVS->DisapplyShader();
 }
 
 void LightRenderer::RenderLightMap(AIBLMesh& iblMesh)

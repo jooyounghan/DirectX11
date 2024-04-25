@@ -131,12 +131,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ADualInputFilter.h" />
     <ClInclude Include="AnimationFile.h" />
+    <ClInclude Include="BloomFilter.h" />
     <ClInclude Include="ColorBlurComputeShader.h" />
     <ClInclude Include="BlurFilter.h" />
     <ClInclude Include="CameraManipulator.h" />
     <ClInclude Include="CubeMapModel.h" />
-    <ClInclude Include="DepthBlurComputeShader.h" />
+    <ClInclude Include="PointLightDepthBlurComputeShader.h" />
+    <ClInclude Include="SpotLightDepthBlurComputeShader.h" />
     <ClInclude Include="DepthOnlyPixelShader.h" />
     <ClInclude Include="IBLRenderingPixelShader.h" />
     <ClInclude Include="IComputeShader.h" />
@@ -144,6 +147,7 @@
     <ClInclude Include="IGeometryShader.h" />
     <ClInclude Include="IHullShader.h" />
     <ClInclude Include="ImageFile.h" />
+    <ClInclude Include="InputMergeComputeShader.h" />
     <ClInclude Include="IObject.h" />
     <ClInclude Include="IPixelShader.h" />
     <ClInclude Include="IRenderer.h" />
@@ -224,12 +228,15 @@
     <ClInclude Include="ViewableRenderTarget.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ADualInputFilter.cpp" />
     <ClCompile Include="AnimationFile.cpp" />
+    <ClCompile Include="BloomFilter.cpp" />
     <ClCompile Include="ColorBlurComputeShader.cpp" />
     <ClCompile Include="BlurFilter.cpp" />
     <ClCompile Include="CameraManipulator.cpp" />
     <ClCompile Include="CubeMapModel.cpp" />
-    <ClCompile Include="DepthBlurComputeShader.cpp" />
+    <ClCompile Include="PointLightDepthBlurComputeShader.cpp" />
+    <ClCompile Include="SpotLightDepthBlurComputeShader.cpp" />
     <ClCompile Include="DepthOnlyPixelShader.cpp" />
     <ClCompile Include="IBLRenderingPixelShader.cpp" />
     <ClCompile Include="IComputeShader.cpp" />
@@ -237,6 +244,7 @@
     <ClCompile Include="IGeometryShader.cpp" />
     <ClCompile Include="IHullShader.cpp" />
     <ClCompile Include="ImageFile.cpp" />
+    <ClCompile Include="InputMergeComputeShader.cpp" />
     <ClCompile Include="IObject.cpp" />
     <ClCompile Include="IPixelShader.cpp" />
     <ClCompile Include="IRenderer.cpp" />
@@ -313,7 +321,27 @@
     <ClCompile Include="ViewableRenderTarget.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="DepthBlurCS.hlsl">
+    <FxCompile Include="PointLightDepthBlurCS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="SpotLightDepthBlurCS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="InputMergeCS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>

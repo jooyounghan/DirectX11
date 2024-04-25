@@ -21,14 +21,13 @@ using namespace ImGui;
 ModelManipulator::ModelManipulator()
 	: bIsDrawingNormal(false), uiSelectedModelIdx(0)
 {
-	//AddModel(make_shared<CubeModel>(-5.f, 0.f, 0.f, 1.f, false));
-	//AddModel(make_shared<CubeModel>(5.f, 0.f, 0.f, 1.f, false));
-	//AddModel(make_shared<CubeModel>(0.f, -5.f, 0.f, 1.f, false));
+	//AddObject(make_shared<CubeModel>(-5.f, 0.f, 0.f, 1.f, false));
+	//AddObject(make_shared<CubeModel>(5.f, 0.f, 0.f, 1.f, false));
 	//AddObject(make_shared<CubeModel>(0.f, 5.f, 0.f, 1.f, false));
-	//AddModel(make_shared<CubeModel>(0.f, 0.f, 0.f, 1.f, false));
-	//AddModel(make_shared<MirrorModel>(3.f, 3.f, 0.f, 0.f, 3.f, 0.f, 0.f, 0.f));
-	//AddModel(make_shared<MirrorModel>(10.f, 10.f, 0.f, -2.f, 0.f, 270.f, 0.f, 0.f));
-	//AddModel(make_shared<CubeModel>(0.f, 0.f, 0.f, 10.f, true));
+	//AddObject(make_shared<CubeModel>(0.f, 0.f, 0.f, 1.f, false));
+	//AddObject(make_shared<MirrorModel>(3.f, 3.f, 0.f, 0.f, 3.f, 0.f, 0.f, 0.f));
+	//AddObject(make_shared<MirrorModel>(10.f, 10.f, 0.f, -2.f, 0.f, 270.f, 0.f, 0.f));
+	AddObject(make_shared<CubeModel>(0.f, 0.f, 0.f, 10.f, true));
 	spIBLModel = make_shared<CubeMapModel>(500.f);
 	AddObject(spIBLModel);
 }
@@ -192,8 +191,6 @@ void ModelManipulator::ManipulateModel(SkeletalModel& skeletalModel)
 
 void ModelManipulator::ManipulateModel(AIBLMesh& iblModel)
 {
-	DrawTransformation(iblModel);
-	Separator();
 	DrawIBLTexture(iblModel);
 }
 
@@ -203,7 +200,7 @@ void ModelManipulator::ManipulateModel(MirrorModel& mirrorModel)
 	{
 		Separator();
 		DragFloat3("Translation", mirrorModel.GetPosition().m128_f32, 0.1f, -1000000.f, 1000000.f, "%.2f");
-		DragFloat3("Rotaion", mirrorModel.GetAngles(), 0.1f, 0.f, 360.f, "%.2f");
+		DragFloat3("Rotaion", mirrorModel.GetAngles(), 0.1f, -360.f, 360.f, "%.2f");
 		DragFloat("Fov Angle(Deg)", mirrorModel.GetFovDegreeAddress(), 0.01f, 30.f, 120.f, "%.3f");
 	}
 	DrawMirrorProperties(mirrorModel);
@@ -215,7 +212,7 @@ void ModelManipulator::DrawTransformation(ATransformerable& transformable)
 	{
 		Separator();
 		DragFloat3("Translation", transformable.GetPosition().m128_f32, 0.1f, -1000000.f, 1000000.f, "%.2f");
-		DragFloat3("Rotaion", transformable.GetAngles(), 0.1f, 0.f, 360.f, "%.2f");
+		DragFloat3("Rotaion", transformable.GetAngles(), 0.1f, -360.f, 360.f, "%.2f");
 		DragFloat3("Scale", transformable.GetScale(), 0.005f, -1000000.f, 1000000.f, "%.2f");
 	}
 }
@@ -268,13 +265,11 @@ void ModelManipulator::DrawIBLTexture(AIBLMesh& iBLModel)
 {
 	if (CollapsingHeader("IBL Model Textures"))
 	{
-		DragFloat(
-			"Diffuse Rate",
-			iBLModel.GetDiffuseRateAddress(),
-			0.005f,
-			0.f, 1.f, "%.4f"
+		SetTextureDragAndDrop(
+			"IBL Image Texture",
+			iBLModel.GetIBLTextureFile(),
+			DRAG_DROP_EXR_KEY
 		);
-
 		SetTextureDragAndDrop(
 			"Specular IBL Texture",
 			iBLModel.GetSpecularTextureFileRef(),

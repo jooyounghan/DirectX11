@@ -5,6 +5,8 @@ class IObject;
 class IMesh;
 class ILight;
 class Viewable;
+
+class SkeletalModel;
 class PBRStaticMesh;
 class AIBLMesh;
 class MirrorModel;
@@ -14,6 +16,7 @@ class SpotLight;
 
 class LightRenderer : public IRenderer
 {
+	friend SkeletalModel;
 	friend PBRStaticMesh;
 	friend AIBLMesh;
 	friend MirrorModel;
@@ -32,6 +35,7 @@ private:
 
 private:
 	class ModelRenderVertexShader* modelRenderVS;
+	class SkeletalVertexShader* skeletalVS;
 	class ModelRenderHullShader* modelRenderHS;
 	class ModelRendererDomainShader* modelRenderDS;
 	class DepthOnlyPixelShader* depthOnlyPS;
@@ -48,6 +52,7 @@ private:
 	void SetForUpdatingLightMap(SpotLight& spotLight);
 
 private:
+	void RenderLightMap(SkeletalModel& skeletalModel);
 	void RenderLightMap(PBRStaticMesh& pbrStaticMesh);
 	void RenderLightMap(AIBLMesh& iblMesh);
 	void RenderLightMap(MirrorModel& mirrorModel);

@@ -51,7 +51,7 @@ MirrorModel::MirrorModel(
 	Viewable(
 		fXPos, fYPos, fZPos,
 		fPitchDegIn, fYawDegIn, fRollDegIn,
-		(UINT)(fMirrorWidthIn* gMirrorTextureHeight / fMirrorHeightIn), (UINT)gMirrorTextureHeight,
+		(fMirrorWidthIn* gMirrorTextureHeight / fMirrorHeightIn), gMirrorTextureHeight,
 		fFovDegreeIn, fNearZIn, fFarZIn
 	),
 	IRectangle((UINT)(fMirrorWidthIn* gMirrorTextureHeight / fMirrorHeightIn), (UINT)gMirrorTextureHeight),

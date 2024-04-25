@@ -148,10 +148,21 @@ void FileManipulator::ShowAsList(NormalImageFile& imageFile)
 
         if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
         {
-            ImGui::SetDragDropPayload(DRAG_DROP_TEXTURE_KEY, &imageFile, sizeof(NormalImageFile));
-            ImGui::EndDragDropSource();
-        }
 
+            D3D11_TEXTURE2D_DESC desc;
+            imageFile.GetTexture()->GetDesc(&desc);
+
+            if (desc.Format == DXGI_FORMAT_R16G16B16A16_FLOAT)
+            {
+                ImGui::SetDragDropPayload(DRAG_DROP_EXR_KEY, &imageFile, sizeof(NormalImageFile));
+                ImGui::EndDragDropSource();
+            }
+            else
+            {
+                ImGui::SetDragDropPayload(DRAG_DROP_TEXTURE_KEY, &imageFile, sizeof(NormalImageFile));
+                ImGui::EndDragDropSource();
+            }
+        }
     }
 }
 

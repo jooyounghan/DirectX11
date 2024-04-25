@@ -1,6 +1,7 @@
 #pragma once
 #include "ACamera.h"
 #include <vector>
+#include <stack>
 #include <memory>
 
 class FilteredCamera : public ACamera
@@ -55,5 +56,13 @@ public:
 
 public:
 	void AddBlurState();
+
+protected:
+	std::stack<ID3D11ShaderResourceView**> stackBloomInputs;
+
+public:
+	inline void SetBloomInput(ID3D11ShaderResourceView** ppBloomInput) { stackBloomInputs.push(ppBloomInput); }
+	inline const bool IsBloomInputSet() { return !stackBloomInputs.empty(); }
+	void AddBloomState();
 };
 

@@ -4,7 +4,7 @@ Texture2DMS<uint> InputTexture2D : register(t0);
 
 RWTexture2D<uint> ResolvedTexture : register(u0);
 
-[numthreads(256, 1, 1)]
+[numthreads(32, 32, 1)]
 void main(uint3 DTid : SV_DispatchThreadID)
 {
     uint uiWidth;
@@ -19,7 +19,12 @@ void main(uint3 DTid : SV_DispatchThreadID)
     uint pointIdx = 0;
     for (uint sampleIdx = 0; sampleIdx < MAX_MS_COUNT; ++sampleIdx)
     {
-        float2 loadPos = float2(clamp(DTid.x, 0, uiWidth), clamp(DTid.y, 0, uiHeight));
+        float2 loadPos = GetClampedTextureCoord(
+            uiWidth, uiHeight,
+            DTid.x + Offsets3x3[sampleIdx].x,
+            DTid.y + Offsets3x3[sampleIdx].y
+        );
+        
         uint loadedValue = InputTexture2D.Load(loadPos, sampleIdx);
 
         for (uint idx = 0; idx < MAX_MS_COUNT; ++idx)

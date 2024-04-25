@@ -10,6 +10,7 @@ class CameraManipulator
 	friend class FilteredCamera;
 	friend class PickableCamera;
 	friend class BlurFilter;
+	friend class BloomFilter;
 
 public:
 	CameraManipulator(
@@ -44,7 +45,7 @@ private:
 	bool	bSupportHDR;
 
 private:
-	std::vector<std::shared_ptr<class ACamera>> pCameras;
+	std::vector<std::shared_ptr<ACamera>> pCameras;
 
 private:
 	std::shared_ptr<ACamera> spSelectedCamera;
@@ -94,32 +95,33 @@ private:
 	);
 
 private:
-	void VisitCameraList(class FilteredCamera& filtered);
-	void VisitCameraList(class PickableCamera& pickable);
+	void VisitCameraList(FilteredCamera& filtered);
+	void VisitCameraList(PickableCamera& pickable);
 
 private:
 	void SetCameraList(const std::string& strCameraName);
 
 private:
-	void VisitCameraInfo(class FilteredCamera& fFiltered);
-	void VisitCameraInfo(class PickableCamera& pickable);
+	void VisitCameraInfo(FilteredCamera& fFiltered);
+	void VisitCameraInfo(PickableCamera& pickable);
 
 private:
-	void VisitFilterList(class BlurFilter& blurFilter);
-	void VisitFilterList(class ACamera& camera);
-	void VisitFilterList(class PickableCamera& pickable);
+	void VisitFilterList(BlurFilter& blurFilter);
+	void VisitFilterList(BloomFilter& bloomFilter);
+	void VisitFilterList(ACamera& camera);
+	void VisitFilterList(PickableCamera& pickable);
 
 private:
 	void SetFilterList(const std::string& strFilterName);
 
 private:
 	void VisitLButtonDown(
-		class FilteredCamera& fFiltered,
+		FilteredCamera& fFiltered,
 		const int& xPosIn,
 		const int& yPosIn
 	);
 	void VisitLButtonDown(
-		class PickableCamera& pickable,
+		PickableCamera& pickable,
 		const int& xPosIn,
 		const int& yPosIn
 	);

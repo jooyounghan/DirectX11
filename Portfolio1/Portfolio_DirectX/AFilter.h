@@ -30,6 +30,9 @@ protected:
 
 public:
 	inline void ResetFilter() { cpUAV.ReleaseAndGetAddressOf(); cpUAV = nullptr; }
+
+	inline ID3D11ShaderResourceView** GetAddressOfFilterSRV() { return cpSRV.GetAddressOf(); }
+
 	inline ID3D11UnorderedAccessView* GetFilterUAV() { return cpUAV.Get(); }
 	inline ID3D11UnorderedAccessView** GetAddressOfFilterUAV() { return cpUAV.GetAddressOf(); }
 

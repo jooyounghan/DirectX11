@@ -1,7 +1,7 @@
 #include "CommonFilterArgs.hlsli"
 
-Texture2D<unorm float4> InputTexture2D : register(t0);
-RWTexture2D<unorm float4> OutputTexture : register(u0);
+Texture2D<float> InputTexture2D : register(t0);
+RWTexture2DArray<float> OutputTexture : register(u0);
 
 SamplerState WrapSampler : register(s0);
 
@@ -13,7 +13,7 @@ void main(uint3 DTid : SV_DispatchThreadID)
 
     InputTexture2D.GetDimensions(uiWidth, uiHeight);
     
-    float4 sampleColor = float4(0.f, 0.f, 0.f, 0.f);
+    float sampleDepth = 0.f;
     
     for (uint idx = 0; idx < Gaussian5x5Count; ++idx)
     {
@@ -22,8 +22,9 @@ void main(uint3 DTid : SV_DispatchThreadID)
             DTid.x + Offsets5x5[idx].x,
             DTid.y + Offsets5x5[idx].y
         );
-                
-        sampleColor += InputTexture2D.SampleLevel(WrapSampler, loadPos, 0.f) * Gaussian5x5Kernel[idx];
+        
+        sampleDepth += InputTexture2D.SampleLevel(WrapSampler, loadPos, 0.f) * Gaussian5x5Kernel[idx];
     }
-    OutputTexture[DTid.xy] = sampleColor;
+    
+    OutputTexture[float3(DTid.xy, 0)] = sampleDepth;
 }

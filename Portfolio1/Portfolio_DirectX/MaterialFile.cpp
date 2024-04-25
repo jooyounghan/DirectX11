@@ -7,7 +7,7 @@
 using namespace std;
 
 std::string	MaterialFile::strDefaultTextureName = "Undefined Map";
-std::unordered_map<WORD, std::string> MaterialFile::unmapTextureNames
+std::unordered_map<size_t, std::string> MaterialFile::unmapTextureNames
 {
 	 {AO_TEXUTRE_MAP, "Ambient Occulusion Map"},
 	 { COLOR_TEXTURE_MAP, "Color Map" },
@@ -20,7 +20,7 @@ std::unordered_map<WORD, std::string> MaterialFile::unmapTextureNames
 	 { HEIGHT_TEXTURE_MAP, "Height Map" }
 };
 
-const std::string& MaterialFile::GetTextureName(const WORD& iTextureID)
+const std::string& MaterialFile::GetTextureName(const size_t& iTextureID)
 {
 	if (unmapTextureNames.find(iTextureID) != unmapTextureNames.end())
 	{

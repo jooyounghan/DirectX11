@@ -2,6 +2,7 @@
 
 #include "ModelManipulator.h"
 #include "ModelRenderer.h"
+#include "LightRenderer.h"
 
 #include "ID3D11Helper.h"
 #include "DirectXDevice.h"
@@ -77,6 +78,8 @@ void SkeletalModel::UpdateModel(const float& fDelta)
 
 			for (size_t idx = 0; idx < pBoneFile->GetBoneNums(); ++idx)
 			{
+				// TODO : 해당 부분 최적화
+				
 				sbBoneTransformation[idx] = XMMatrixTranspose(
 					XMMatrixInverse(nullptr, normalizedMatrix)
 					* pBoneFile->GetOffsetMatrix(idx)
@@ -153,4 +156,9 @@ void SkeletalModel::AcceptModelManipulating(ModelManipulator* pModelManipulator)
 void SkeletalModel::AcceptModelRendering(ModelRenderer* pModelRenderer)
 {
 	pModelRenderer->RenderModel(*this);
+}
+
+void SkeletalModel::AcceptRenderingLightMap(LightRenderer* pLightRnederer)
+{
+	pLightRnederer->RenderLightMap(*this);
 }

@@ -128,8 +128,8 @@ PBRModelPixelOutput main(PBRModelDomainOutput input)
     float G = GetGMasking(NDotL, NDotE, fRoughness);
     float D = GetNDF(NDotH, fRoughness);
         
-    float3 diffuseBrdf = lerp(float3(1, 1, 1) - F, float3(0, 0, 0), fMetallic) * f3Color;
-    float3 specularBrdf = (F * D * G) / (max(1e-6, 4.0 * NDotL * NDotE));
+    float3 diffuseBrdf = lerp(float3(1, 1, 1) - F, float3(0, 0, 0), fMetallic) * f3Color + DiffuseTexture.Sample(WrapSampler, input.f2TexCoord).rgb;
+    float3 specularBrdf = (F * D * G) / (max(1e-6, 4.0 * NDotL * NDotE)) + SpecularTexture.Sample(WrapSampler, input.f2TexCoord).rgb;
 
     uint uiWidth, uiHeight, uiNumLevels;
     ShadowMap.GetDimensions(0, uiWidth, uiHeight, uiNumLevels);

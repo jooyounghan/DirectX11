@@ -767,10 +767,10 @@ shared_ptr<MeshFile> FileLoader::LoadDefaultCubeMesh(
                 meshData.vVertices.emplace_back(cosf(fLongitudeLow) * cosf(-fLatitudeLow), sinf(-fLatitudeLow), cosf(-fLatitudeLow) * sinf(fLongitudeLow));
                 meshData.vVertices.emplace_back(cosf(fLongitudeLow) * cosf(-fLatitudeHigh), sinf(-fLatitudeHigh), cosf(-fLatitudeHigh) * sinf(fLongitudeLow));
 
-                meshData.vTexcoords.emplace_back(fLongitudeTextureCord, 0.5f + fLatitudeLowTextureCord);
-                meshData.vTexcoords.emplace_back(fLongitudeTextureCord, 0.5f + fLatitudeHighTextureCord);
                 meshData.vTexcoords.emplace_back(fLongitudeTextureCord, 0.5f - fLatitudeLowTextureCord);
                 meshData.vTexcoords.emplace_back(fLongitudeTextureCord, 0.5f - fLatitudeHighTextureCord);
+                meshData.vTexcoords.emplace_back(fLongitudeTextureCord, 0.5f + fLatitudeLowTextureCord);
+                meshData.vTexcoords.emplace_back(fLongitudeTextureCord, 0.5f + fLatitudeHighTextureCord);
 
                 meshData.vNormals.emplace_back(normalFactor * cosf(fLongitudeLow) * cosf(fLatitudeLow), normalFactor * sinf(fLatitudeLow), normalFactor * cosf(fLatitudeLow) * sinf(fLongitudeLow));
                 meshData.vNormals.emplace_back(normalFactor * cosf(fLongitudeLow) * cosf(fLatitudeHigh), normalFactor * sinf(fLatitudeHigh), normalFactor * cosf(fLatitudeHigh) * sinf(fLongitudeLow));

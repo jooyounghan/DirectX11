@@ -58,5 +58,6 @@ public:
 public:
 	virtual void AcceptModelManipulating(class ModelManipulator* pModelManipulator) override;
 	virtual void AcceptModelRendering(class ModelRenderer* pModelRenderer) override;
+	virtual void AcceptRenderingLightMap(class LightRenderer* pLightRnederer) override;
 };
 

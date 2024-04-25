@@ -19,7 +19,7 @@ void ID3D11Helper::CreateDeviceAndContext(
 	createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
 
-	const D3D_FEATURE_LEVEL pFeatureLevel[3] = { D3D_FEATURE_LEVEL_11_0 , D3D_FEATURE_LEVEL_10_1, D3D_FEATURE_LEVEL_9_3 };
+	const D3D_FEATURE_LEVEL pFeatureLevel[3] = { D3D_FEATURE_LEVEL_11_1 , D3D_FEATURE_LEVEL_10_1, D3D_FEATURE_LEVEL_9_3 };
 	D3D_FEATURE_LEVEL featureLevel;
 
 	DXGI_SWAP_CHAIN_DESC sSwapChainDesc;
@@ -308,7 +308,7 @@ void ID3D11Helper::CreateCS(IN ID3D11Device* pDevice, IN LPCWSTR pFileName, OUT 
 		D3D_COMPILE_STANDARD_FILE_INCLUDE,
 		"main",
 		"cs_5_0",
-		D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
+		D3DCOMPILE_DEBUG,
 		NULL,
 		cpShaderBlob.GetAddressOf(),
 		cpErrorBlob.GetAddressOf()
@@ -316,7 +316,7 @@ void ID3D11Helper::CreateCS(IN ID3D11Device* pDevice, IN LPCWSTR pFileName, OUT 
 
 	if (FAILED(hResult))
 	{
-		Console::AssertPrint("Domain Shader를 컴파일하는데 실패하였습니다.");
+		Console::AssertPrint("Compute Shader를 컴파일하는데 실패하였습니다.");
 		return;
 	}
 

@@ -5,12 +5,13 @@
 #define AutoDelete(a) if(a == nullptr) { delete a; a = nullptr; }
 
 #define NOT_SELECTED -1
-#define NEAR_CLOSE 0.0001f;
+#define NEAR_CLOSE 0.001f;
 
 #define DEFAULT_CUBE_LEVEL		15.f
 
-#define DRAG_DROP_IBL_KEY				"CubeMap"
-#define DRAG_DROP_TEXTURE_KEY			"Texture2D"
+#define DRAG_DROP_EXR_KEY				"EXRFile"
+#define DRAG_DROP_IBL_KEY				"IBLTextureFile"
+#define DRAG_DROP_TEXTURE_KEY			"ImageFile"
 #define DRAG_DROP_MESH_KEY				"MeshFile"
 #define DRAG_DROP_BONE_KEY				"BoneFile"
 #define DRAG_DROP_MATERIAL_KEY			"MaterialFile"
