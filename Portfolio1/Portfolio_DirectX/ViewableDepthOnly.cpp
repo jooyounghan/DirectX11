@@ -23,7 +23,7 @@ ViewableDepthOnly::ViewableDepthOnly(
 		uiWidthIn, uiHeightIn, 1, 0,
 		D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL,
 		NULL, NULL, D3D11_USAGE_DEFAULT, 
-		DXGI_FORMAT_R32_TYPELESS, DXGI_FORMAT_R32_FLOAT, D3D11_SRV_DIMENSION_TEXTURE2D
+		DXGI_FORMAT_R16_TYPELESS, DXGI_FORMAT_R16_UNORM, D3D11_SRV_DIMENSION_TEXTURE2D
 	),
 	Viewable(
 		fXPos, fYPos, fZPos,
@@ -37,7 +37,7 @@ ViewableDepthOnly::ViewableDepthOnly(
 {
 	D3D11_DEPTH_STENCIL_VIEW_DESC sDesc;
 	AutoZeroMemory(sDesc);
-	sDesc.Format = DXGI_FORMAT_D32_FLOAT;
+	sDesc.Format = DXGI_FORMAT_D16_UNORM;
 	sDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 
 	ID3D11Helper::CreateDepthStencilView(DirectXDevice::pDevice, cpTexture2D.Get(), &sDesc, cpDSV.GetAddressOf());

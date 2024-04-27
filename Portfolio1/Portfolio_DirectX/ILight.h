@@ -7,8 +7,8 @@ class ILight : virtual public IMovable
 public:
 	static constexpr float gLightFovDeg = 90.f;
 	static constexpr float gLightNearZ = 0.001f;
-	static constexpr UINT gShadowMapWidth = 1000;
-	static constexpr UINT gShadowMapHeight = 1000;
+	static constexpr UINT gShadowMapWidth = 500;
+	static constexpr UINT gShadowMapHeight = 500;
 
 public:
 	ILight(

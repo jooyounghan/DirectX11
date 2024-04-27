@@ -446,7 +446,10 @@ shared_ptr<MeshFile> FileLoader::LoadMeshFile(
         DirectX::XMMATRIX xmmTransform = DirectX::XMMatrixIdentity();
         spMesh = make_shared<MeshFile>(meshLabel, pScene->mNumMeshes, bIsGltf, spBoneFileIn);
         ProcessNode(strFilePath, meshLabel, mesh_idx, bIsGltf, pScene->mRootNode, pScene, xmmTransform, spMesh.get(), spMaterialFileIn);
+
         spMesh->Initialize();
+        spBoneFileIn->AdjustOffsetMatrix(XMMatrixInverse(nullptr, spMesh->GetNormalizedMatrix()));
+
         FileLoader::AddUsingFile(meshLabel, spMesh);
     }
     else
@@ -614,10 +617,17 @@ void FileLoader::LoadBoneFromNode(
         const char* pNodeName = pNode->mName.C_Str();
         boneData.strBoneName = pNodeName;
         uiBoneId++;
+
+        
+
         if (nodeToBoneTable.find(pNodeName) != nodeToBoneTable.end())
         {
             const aiBone* pBone = nodeToBoneTable.at(boneData.strBoneName);
-            pBoneFile->SetOffsetMatrix(boneData.strBoneName, uiBoneId, XMMatrixTranspose(XMMATRIX((float*)&pBone->mOffsetMatrix)));
+            pBoneFile->SetOffsetMatrix(
+                boneData.strBoneName, 
+                uiBoneId, 
+                XMMatrixTranspose(XMMATRIX((float*)&pBone->mOffsetMatrix))
+            );
         }
         else
         {

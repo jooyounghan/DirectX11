@@ -15,15 +15,15 @@ void main(uint3 DTid : SV_DispatchThreadID)
     
     float sampleDepth = 0.f;
     
-    for (uint idx = 0; idx < Gaussian5x5Count; ++idx)
+    for (uint idx = 0; idx < Gaussian3x3Count; ++idx)
     {
         float2 loadPos = GetClampedTextureCoord(
             uiWidth, uiHeight,
-            DTid.x + Offsets5x5[idx].x,
-            DTid.y + Offsets5x5[idx].y
+            DTid.x + Offsets3x3[idx].x,
+            DTid.y + Offsets3x3[idx].y
         );
         
-        sampleDepth += InputTexture2D.SampleLevel(WrapSampler, loadPos, 0.f) * Gaussian5x5Kernel[idx];
+        sampleDepth += InputTexture2D.SampleLevel(WrapSampler, loadPos, 0.f) * Gaussian3x3Kernel[idx];
     }
     
     OutputTexture[float3(DTid.xy, 0)] = sampleDepth;

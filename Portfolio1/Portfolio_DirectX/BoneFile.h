@@ -49,6 +49,7 @@ public:
 		const DirectX::XMMATRIX& boneOffsetMatrixIn
 	);
 	inline const DirectX::XMMATRIX& GetOffsetMatrix(const size_t& offsetMatrixIdx) { return vBoneOffsetMatrix[offsetMatrixIdx]; }
+	void AdjustOffsetMatrix(const DirectX::XMMATRIX& xmmAdjust);
 
 private:
 	virtual void AcceptFileAsList(class FileManipulator* pFileManipulator) override;

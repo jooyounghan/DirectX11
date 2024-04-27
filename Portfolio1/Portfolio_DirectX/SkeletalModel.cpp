@@ -78,11 +78,8 @@ void SkeletalModel::UpdateModel(const float& fDelta)
 
 			for (size_t idx = 0; idx < pBoneFile->GetBoneNums(); ++idx)
 			{
-				// TODO : 해당 부분 최적화
-				
 				sbBoneTransformation[idx] = XMMatrixTranspose(
-					XMMatrixInverse(nullptr, normalizedMatrix)
-					* pBoneFile->GetOffsetMatrix(idx)
+					pBoneFile->GetOffsetMatrix(idx)
 					* sbBoneTransformation[idx]
 					* normalizedMatrix
 				);

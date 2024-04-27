@@ -5,6 +5,7 @@
 #include "ID3D11Helper.h"
 
 using namespace std;
+using namespace DirectX;
 
 string BoneFile::strDefaultBoneName = "";
 
@@ -32,7 +33,7 @@ size_t BoneFile::GetBoneIdx(const std::string& strBoneNameIn)
 void BoneFile::SetOffsetMatrix(
 	const string& boneName,
 	const size_t boneIdIdx,
-	const DirectX::XMMATRIX& boneOffsetMatrixIn
+	const XMMATRIX& boneOffsetMatrixIn
 )
 {
 	if (vBoneNames.size() > boneIdIdx)
@@ -51,6 +52,14 @@ void BoneFile::SetOffsetMatrix(
 	else
 	{
 		vBoneOffsetMatrix.emplace_back(boneOffsetMatrixIn);
+	}
+}
+
+void BoneFile::AdjustOffsetMatrix(const XMMATRIX& xmmAdjust)
+{
+	for (XMMATRIX& boneOffsetMatrix : vBoneOffsetMatrix)
+	{
+		boneOffsetMatrix = xmmAdjust * boneOffsetMatrix;
 	}
 }
 

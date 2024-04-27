@@ -78,8 +78,8 @@ void PointLight::UpdateLight()
 
 	pBlurCS->SetShader(srvs.data(), uavs.data(), EDirections::DirectionNum);
 
-	const UINT xNumThread = 16;
-	const UINT yNumThread = 16;
+	const UINT xNumThread = 26;
+	const UINT yNumThread = 26;
 
 	DirectXDevice::pDeviceContext->Dispatch(
 		uiWidth % xNumThread ? uiWidth / xNumThread + 1 : uiWidth / xNumThread,
