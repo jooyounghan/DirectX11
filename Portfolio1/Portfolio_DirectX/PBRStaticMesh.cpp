@@ -26,11 +26,18 @@ PBRStaticMesh::PBRStaticMesh(
 		D3D11_BIND_CONSTANT_BUFFER, D3D11_CPU_ACCESS_WRITE, NULL,
 		cpPBRConstantBuffer.GetAddressOf()
 	);
-	const size_t meshNums = spMeshFile->GetMeshNums();
-	const bool& isGltf = spMeshFile->IsGLTF();
+	const size_t uiMeshNums = spMeshFile->GetMeshNums();
+	const bool& bIsGltf = spMeshFile->IsGLTF();
 
 	SetObjectName(spMeshFile->GetFileLabel() + to_string(uiPBRStaticMeshlIdx));
 	uiPBRStaticMeshlIdx++;
+
+	for (size_t meshIdx = 0; meshIdx < uiMeshNums; ++meshIdx)
+	{
+		const string strTmpMaterial = "TempMaterial" + to_string(meshIdx + 1);
+		vMaterials.push_back(make_shared<MaterialFile>(strTmpMaterial, bIsGltf));
+	}
+
 }
 
 PBRStaticMesh::~PBRStaticMesh()

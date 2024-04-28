@@ -139,7 +139,6 @@
     <ClInclude Include="CameraManipulator.h" />
     <ClInclude Include="CubeMapModel.h" />
     <ClInclude Include="PointLightDepthBlurComputeShader.h" />
-    <ClInclude Include="SpotLightDepthBlurComputeShader.h" />
     <ClInclude Include="DepthOnlyPixelShader.h" />
     <ClInclude Include="IBLRenderingPixelShader.h" />
     <ClInclude Include="IComputeShader.h" />
@@ -236,7 +235,6 @@
     <ClCompile Include="CameraManipulator.cpp" />
     <ClCompile Include="CubeMapModel.cpp" />
     <ClCompile Include="PointLightDepthBlurComputeShader.cpp" />
-    <ClCompile Include="SpotLightDepthBlurComputeShader.cpp" />
     <ClCompile Include="DepthOnlyPixelShader.cpp" />
     <ClCompile Include="IBLRenderingPixelShader.cpp" />
     <ClCompile Include="IComputeShader.cpp" />
@@ -322,16 +320,6 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="PointLightDepthBlurCS.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compute</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
-    </FxCompile>
-    <FxCompile Include="SpotLightDepthBlurCS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>

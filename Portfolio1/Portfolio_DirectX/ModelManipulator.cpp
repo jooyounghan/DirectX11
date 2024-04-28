@@ -21,13 +21,9 @@ using namespace ImGui;
 ModelManipulator::ModelManipulator()
 	: bIsDrawingNormal(false), uiSelectedModelIdx(0)
 {
-	//AddObject(make_shared<CubeModel>(-5.f, 0.f, 0.f, 1.f, false));
-	//AddObject(make_shared<CubeModel>(5.f, 0.f, 0.f, 1.f, false));
-	//AddObject(make_shared<CubeModel>(0.f, 5.f, 0.f, 1.f, false));
-	//AddObject(make_shared<CubeModel>(0.f, 0.f, 0.f, 1.f, false));
-	//AddObject(make_shared<MirrorModel>(3.f, 3.f, 0.f, 0.f, 3.f, 0.f, 0.f, 0.f));
-	//AddObject(make_shared<MirrorModel>(10.f, 10.f, 0.f, -2.f, 0.f, 270.f, 0.f, 0.f));
-	AddObject(make_shared<CubeModel>(0.f, 0.f, 0.f, 10.f, true));
+	AddObject(make_shared<CubeModel>(0.f, 0.f, 0.f, 1.f, false));
+	AddObject(make_shared<MirrorModel>(5.f, 5.f, 0.f, 0.f, 3.f, 0.f, 0.f, 0.f));
+	AddObject(make_shared<MirrorModel>(5.f, 5.f, 0.f, -2.f, 0.f, 270.f, 0.f, 0.f));
 	spIBLModel = make_shared<CubeMapModel>(500.f);
 	AddObject(spIBLModel);
 }
@@ -236,12 +232,12 @@ void ModelManipulator::DrawPBRTexture(PBRStaticMesh& pbrStaticMesh)
 				BulletText(meshDataText.c_str());
 				Indent();
 				BeginGroup();
-				MaterialFile* pMaterial = pMeshFile->GetMaterialFile(meshIdx);
+				MaterialFile* pMaterial = pbrStaticMesh.GetMaterialFile(meshIdx);
 				for (size_t idx = 0; idx < TEXTURE_MAP_NUM; ++idx)
 				{
 					SetTextureDragAndDrop(
 						MaterialFile::GetTextureName(idx).c_str(),
-						pMaterial->GetTextureImageFileRef((EModelTextures)idx),
+						pMaterial, idx,
 						DRAG_DROP_TEXTURE_KEY
 					);
 				}
@@ -251,7 +247,7 @@ void ModelManipulator::DrawPBRTexture(PBRStaticMesh& pbrStaticMesh)
 					if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DRAG_DROP_MATERIAL_KEY))
 					{
 						MaterialFile* pMaterial = (MaterialFile*)payload->Data;
-						pMeshFile->SetMaterialFile(meshIdx, pMaterial->shared_from_this());
+						pbrStaticMesh.SetMaterialFile(meshIdx, pMaterial->shared_from_this());
 					}
 					ImGui::EndDragDropTarget();
 				}
@@ -356,19 +352,45 @@ void ModelManipulator::DrawAnimInformation(SkeletalModel& skeletalModel)
 
 void ModelManipulator::SetTextureDragAndDrop(
 	const char* pDescription, 
-	std::shared_ptr<IImageFile>& spFile, 
+	MaterialFile* pMaterialFile,
+	size_t uiFileIdx,
 	const char* pDragDropLabel
 )
 {
 	Separator();
 	Text(pDescription);
-	ShowFileWithThumbNail(spFile.get());
+
+	EModelTextures eModelTextureType = (EModelTextures)uiFileIdx;
+
+	ShowFileWithThumbNail(pMaterialFile->GetTextureImageFileRef(eModelTextureType).get());
 
 	if (BeginDragDropTarget())
 	{
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(pDragDropLabel))
 		{
 			IImageFile* imagePtr = (IImageFile*)payload->Data;
+			pMaterialFile->SetTextureImageFile(eModelTextureType, imagePtr->shared_from_this());
+		}
+		ImGui::EndDragDropTarget();
+	}
+}
+
+void ModelManipulator::SetTextureDragAndDrop(
+	const char* pDescription, 
+	std::shared_ptr<class IImageFile>& spFile, 
+	const char* pDragDropLabel
+)
+{
+	Separator();
+	Text(pDescription);
+
+	ShowFileWithThumbNail(spFile.get());
+
+	if (BeginDragDropTarget())
+	{
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(pDragDropLabel))
+		{
+			IImageFile* imagePtr = (IImageFile*)payload->Data;			
 			spFile = imagePtr->shared_from_this();
 		}
 		ImGui::EndDragDropTarget();

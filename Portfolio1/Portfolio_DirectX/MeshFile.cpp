@@ -45,12 +45,6 @@ MeshFile::MeshFile(
 	spBoneFile(spBoneFileIn),
 	xmmNormalizedMatrix(XMMatrixIdentity())
 {
-	for (size_t meshIdx = 0; meshIdx < uiMeshCountIn; ++meshIdx)
-	{
-		const string strTmpMaterial = "TempMaterial" + to_string(meshIdx + 1);
-		vMaterials.push_back(make_shared<MaterialFile>(strTmpMaterial, bIsGLTFIn));
-	}
-
 	vMeshData.resize(uiMeshCountIn);
 }
 

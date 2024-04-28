@@ -73,18 +73,6 @@ public:
 	inline BoneFile* GetBoneFile() { return spBoneFile.get(); }
 
 protected:
-	std::vector<std::shared_ptr<MaterialFile>> vMaterials;
-
-public:
-	inline void SetMaterialFile(const size_t& materialIdx, const std::shared_ptr<MaterialFile>& spMaterialFileIn) {
-		if (vMaterials.size() > materialIdx)
-		{
-			vMaterials[materialIdx] = spMaterialFileIn;
-		}
-	}
-	inline MaterialFile* GetMaterialFile(const size_t& materialIdx) { return vMaterials.size() > materialIdx ? vMaterials[materialIdx].get() : nullptr; }
-
-protected:
 	std::vector<Mesh> vMeshData;
 
 protected:

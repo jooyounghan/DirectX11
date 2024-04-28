@@ -247,7 +247,7 @@ vector<shared_ptr<IFile>> FileLoader::LoadModelFileSet(
             spMeshFile = LoadMeshFile(
                 strFilePath, strFileName, 
                 strExtension, bIsGltf, 
-                pScene, spBoneFile, vMaterials
+                pScene, spBoneFile
             );
             vLoadedFiles.emplace_back(spMeshFile);
         }
@@ -429,8 +429,7 @@ shared_ptr<MeshFile> FileLoader::LoadMeshFile(
     const string& strExtension,
     const bool& bIsGltf,
     const aiScene* pScene,
-    const std::shared_ptr<BoneFile>& spBoneFileIn,
-    const std::vector<std::shared_ptr<MaterialFile>>& spMaterialFileIn
+    const std::shared_ptr<BoneFile>& spBoneFileIn
 )
 {
     shared_ptr<MeshFile> spMesh;
@@ -445,10 +444,13 @@ shared_ptr<MeshFile> FileLoader::LoadMeshFile(
         size_t mesh_idx = 0;
         DirectX::XMMATRIX xmmTransform = DirectX::XMMatrixIdentity();
         spMesh = make_shared<MeshFile>(meshLabel, pScene->mNumMeshes, bIsGltf, spBoneFileIn);
-        ProcessNode(strFilePath, meshLabel, mesh_idx, bIsGltf, pScene->mRootNode, pScene, xmmTransform, spMesh.get(), spMaterialFileIn);
+        ProcessNode(strFilePath, meshLabel, mesh_idx, bIsGltf, pScene->mRootNode, pScene, xmmTransform, spMesh.get());
 
         spMesh->Initialize();
-        spBoneFileIn->AdjustOffsetMatrix(XMMatrixInverse(nullptr, spMesh->GetNormalizedMatrix()));
+        if (spBoneFileIn.get() != nullptr)
+        {
+            spBoneFileIn->AdjustOffsetMatrix(XMMatrixInverse(nullptr, spMesh->GetNormalizedMatrix()));
+        }
 
         FileLoader::AddUsingFile(meshLabel, spMesh);
     }
@@ -467,8 +469,7 @@ void FileLoader::ProcessNode(
     const struct aiNode* pNode,
     const struct aiScene* pScene,
     const XMMATRIX& xmMatrix,
-    class MeshFile* pMeshFile,
-    const std::vector<std::shared_ptr<MaterialFile>>& spMaterialFileIn
+    class MeshFile* pMeshFile
 )
 {
     DirectX::XMMATRIX m(&pNode->mTransformation.a1);
@@ -477,13 +478,13 @@ void FileLoader::ProcessNode(
     for (UINT idx = 0; idx < pNode->mNumMeshes; ++idx)
     {
         aiMesh* pMesh = pScene->mMeshes[pNode->mMeshes[idx]];
-        LoadMeshData(strFilePath, uiElementIdx, bIsGltf, pMesh, m, pScene, pMeshFile, spMaterialFileIn);
+        LoadMeshData(strFilePath, uiElementIdx, bIsGltf, pMesh, m, pScene, pMeshFile);
         uiElementIdx++;
     }
 
     for (UINT i = 0; i < pNode->mNumChildren; i++) 
     {
-        ProcessNode(strFilePath, strFileLabel, uiElementIdx, bIsGltf, pNode->mChildren[i], pScene, m, pMeshFile, spMaterialFileIn);
+        ProcessNode(strFilePath, strFileLabel, uiElementIdx, bIsGltf, pNode->mChildren[i], pScene, m, pMeshFile);
     }
 }
 
@@ -494,16 +495,9 @@ void FileLoader::LoadMeshData(
     const aiMesh* pMesh, 
     const DirectX::XMMATRIX& xmMatrix,
     const aiScene* pScene,
-    class MeshFile* pMeshFile,
-    const std::vector<std::shared_ptr<MaterialFile>>& spMaterialFileIn
+    class MeshFile* pMeshFile
 )
 {
-    const unsigned int materialIdx = pMesh->mMaterialIndex;
-    if (spMaterialFileIn.size() > pMesh->mMaterialIndex)
-    {
-        pMeshFile->SetMaterialFile(uiElementIdx, spMaterialFileIn[pMesh->mMaterialIndex]);
-    }
-
     Mesh& mesh = pMeshFile->GetMeshData(uiElementIdx);
     
     for (UINT vertexIdx = 0; vertexIdx < pMesh->mNumVertices; vertexIdx++)

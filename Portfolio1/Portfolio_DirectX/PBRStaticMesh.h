@@ -5,6 +5,8 @@
 #include "MaterialFile.h"
 #include "ATransformerable.h"
 
+class MaterialFile;
+
 class PBRStaticMesh : public IMesh, public ATransformerable
 {
 public:
@@ -13,6 +15,18 @@ public:
 
 protected:
 	static uint32_t uiPBRStaticMeshlIdx;
+
+protected:
+	std::vector<std::shared_ptr<MaterialFile>> vMaterials;
+
+public:
+	inline void SetMaterialFile(const size_t& materialIdx, const std::shared_ptr<MaterialFile>& spMaterialFileIn) {
+		if (vMaterials.size() > materialIdx)
+		{
+			vMaterials[materialIdx] = spMaterialFileIn;
+		}
+	}
+	inline MaterialFile* GetMaterialFile(const size_t& materialIdx) { return vMaterials.size() > materialIdx ? vMaterials[materialIdx].get() : nullptr; }
 
 protected:
 	struct

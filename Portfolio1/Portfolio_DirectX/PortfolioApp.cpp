@@ -208,12 +208,15 @@ LRESULT __stdcall PortfolioApp::AppProc(HWND hWnd, UINT msg, WPARAM wParam, LPAR
 	pCameraManipulator->ProcWindowMsg(msg, wParam, lParam);
 
 	switch (msg) {
-	case WM_EXITSIZEMOVE:
-		pCameraManipulator->ResizeSelectedCamera(uiWidth, uiHeight);
-		return 0;
 	case WM_SIZE:
 		uiWidth = (UINT)LOWORD(lParam);
 		uiHeight = (UINT)HIWORD(lParam);
+		if (wParam != SIZE_MAXIMIZED && wParam != SIZE_MAXSHOW)
+		{
+			return 0;
+		}
+	case WM_EXITSIZEMOVE:
+		pCameraManipulator->ResizeSelectedCamera(uiWidth, uiHeight);
 		return 0;
 	}
 	return ::DefWindowProc(hWnd, msg, wParam, lParam);

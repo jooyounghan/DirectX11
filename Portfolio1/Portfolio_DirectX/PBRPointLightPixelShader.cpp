@@ -49,7 +49,7 @@ void PBRPointLightPixelShader::SetShader(
 	MeshFile* pMeshFile = pbrStaticMesh.GetMeshFile();
 	if (pMeshFile != nullptr)
 	{
-		MaterialFile* pMaterialFile = pMeshFile->GetMaterialFile(meshIdx);
+		MaterialFile* pMaterialFile = pbrStaticMesh.GetMaterialFile(meshIdx);
 
 		if (pMaterialFile != nullptr)
 		{

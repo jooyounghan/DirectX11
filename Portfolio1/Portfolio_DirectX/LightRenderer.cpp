@@ -149,26 +149,27 @@ void LightRenderer::RenderLightMap(AIBLMesh& iblMesh)
 
 void LightRenderer::RenderLightMap(MirrorModel& mirrorModel)
 {
+	modelRenderVS->ApplyShader();
+
 	const size_t meshNums = mirrorModel.GetMeshNums();
-	MeshFile* pMeshFile = mirrorModel.GetMeshFile();
-	if (pMeshFile != nullptr)
+
+	modelRenderVS->SetShader(mirrorModel, *pViewable);
+	modelRenderHS->SetShader(*pLight);
+	modelRenderDS->SetShader(*pViewable);
+
+	for (size_t meshIdx = 0; meshIdx < meshNums; ++meshIdx)
 	{
-		modelRenderVS->SetShader(mirrorModel, *pViewable);
-		modelRenderHS->SetShader(*pLight);
-		modelRenderDS->SetShader(*pViewable);
+		modelRenderVS->SetIAStage(meshIdx, mirrorModel);
 
-		for (size_t meshIdx = 0; meshIdx < meshNums; ++meshIdx)
-		{
-			modelRenderVS->SetIAStage(meshIdx, mirrorModel);
+		mirrorModel.Draw(meshIdx);
 
-			mirrorModel.Draw(meshIdx);
-
-			modelRenderVS->ResetIAStage();
-		}
-
-		modelRenderVS->ResetShader();
-		modelRenderHS->ResetShader();
-		modelRenderDS->ResetShader();
+		modelRenderVS->ResetIAStage();
 	}
+
+	modelRenderVS->ResetShader();
+	modelRenderHS->ResetShader();
+	modelRenderDS->ResetShader();
+
+	modelRenderVS->DisapplyShader();
 }
 

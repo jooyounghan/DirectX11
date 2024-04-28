@@ -90,6 +90,13 @@ private:
 
 private:
 	void SetTextureDragAndDrop(
+		const char* pDescription,
+		class MaterialFile* pMaterialFile,
+		size_t uiFileIdx,
+		const char* pDragDropLabel
+	);
+
+	void SetTextureDragAndDrop(
 		const char* pDescription, 
 		std::shared_ptr<class IImageFile>& spFile,
 		const char* pDragDropLabel

@@ -48,7 +48,7 @@ void PBRIBLLightPixelShader::SetShader(
 	MeshFile* pMeshFile = pbrStaticMesh.GetMeshFile();
 	if (pMeshFile != nullptr && pbrStaticMesh.GetMeshNums() > meshIdx)
 	{
-		MaterialFile* pMaterialFile = pMeshFile->GetMaterialFile(meshIdx);
+		MaterialFile* pMaterialFile = pbrStaticMesh.GetMaterialFile(meshIdx);
 
 		if (pMaterialFile != nullptr)
 		{

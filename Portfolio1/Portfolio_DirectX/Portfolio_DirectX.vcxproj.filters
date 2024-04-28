@@ -456,9 +456,6 @@
     <ClInclude Include="TypeResolveComputeShader.h">
       <Filter>헤더 파일\Shader\Extended\Compute</Filter>
     </ClInclude>
-    <ClInclude Include="SpotLightDepthBlurComputeShader.h">
-      <Filter>헤더 파일\Shader\Extended\Compute</Filter>
-    </ClInclude>
     <ClInclude Include="BoneFile.h">
       <Filter>헤더 파일\File\Extended</Filter>
     </ClInclude>
@@ -731,9 +728,6 @@
     <ClCompile Include="ColorBlurComputeShader.cpp">
       <Filter>소스 파일\Shader\Extended\Compute</Filter>
     </ClCompile>
-    <ClCompile Include="SpotLightDepthBlurComputeShader.cpp">
-      <Filter>소스 파일\Shader\Extended\Compute</Filter>
-    </ClCompile>
     <ClCompile Include="BoneFile.cpp">
       <Filter>소스 파일\File\Extended</Filter>
     </ClCompile>
@@ -819,9 +813,6 @@
     </FxCompile>
     <FxCompile Include="BasicVS.hlsl">
       <Filter>Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="SpotLightDepthBlurCS.hlsl">
-      <Filter>Shader\Filter</Filter>
     </FxCompile>
     <FxCompile Include="PBRModelDS.hlsl">
       <Filter>Shader\PBRModel</Filter>
