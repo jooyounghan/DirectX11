@@ -30,9 +30,10 @@ void ModelRenderHullShader::DisapplyShader()
 	DirectXDevice::pDeviceContext->HSSetShader(nullptr, NULL, NULL);
 }
 
-void ModelRenderHullShader::SetShader(IMovable& viewPosition)
+void ModelRenderHullShader::SetShader(void* pBindingSet)
 {
-	DirectXDevice::pDeviceContext->HSSetConstantBuffers(0, 1, viewPosition.GetPositionBuffer());
+	ModelHSBindingSet* pBinding = (ModelHSBindingSet*)pBindingSet;
+	DirectXDevice::pDeviceContext->HSSetConstantBuffers(0, 1, pBinding->pMovable->GetPositionBuffer());
 }
 
 void ModelRenderHullShader::ResetShader()

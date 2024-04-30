@@ -4,6 +4,13 @@
 class SkeletalModel;
 class Viewable;
 
+struct SkeletalVSBindingSet
+{
+	SkeletalModel* pSkeletal;
+	Viewable* pViewable;
+};
+
+
 class SkeletalVertexShader : public IVertexShader
 {
 private:
@@ -32,10 +39,8 @@ private:
 public:
 	virtual void ApplyShader() override;
 	virtual void DisapplyShader() override;
-
-public:
-	void SetShader(class SkeletalModel& skeletalModel, class Viewable& viewable);
-	void ResetShader();
+	virtual void SetShader(void* pBindingSet) override;
+	virtual void ResetShader() override;
 
 public:
 	virtual void SetIAStage(const size_t& meshIdx, IMesh& mesh) override;

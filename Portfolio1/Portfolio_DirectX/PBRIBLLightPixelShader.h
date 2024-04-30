@@ -2,6 +2,18 @@
 
 #include "IPixelShader.h"
 
+class AIBLMesh;
+class PBRStaticMesh;
+class Viewable;
+
+struct IBLLightPSBindingSet
+{
+	AIBLMesh* pIblMesh;
+	size_t meshIdx;
+	PBRStaticMesh* pPbrStaticMesh;
+	Viewable* pViewable;
+};
+
 class PBRIBLLightPixelShader : public IPixelShader
 {
 private:
@@ -23,13 +35,6 @@ public:
 public:
 	virtual void ApplyShader() override;
 	virtual void DisapplyShader() override;
-
-public:
-	void SetShader(
-		class AIBLMesh& iblMesh, 
-		const size_t& meshIdx, 
-		class PBRStaticMesh& pbrStaticMesh, 
-		class Viewable& viewable
-	);
-	void ResetShader();
+	virtual void SetShader(void* pBindingSet) override;
+	virtual void ResetShader() override;
 };

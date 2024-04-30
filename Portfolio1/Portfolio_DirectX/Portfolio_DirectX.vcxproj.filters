@@ -93,12 +93,6 @@
     <Filter Include="소스 파일\Shader\Extended\Geometry">
       <UniqueIdentifier>{895457cb-e3db-4805-abe5-6cd86c667622}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Shader\Extended\Domain">
-      <UniqueIdentifier>{cbc0f798-8c1c-4fb1-b2a8-cf195b6f9e8d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\Shader\Extended\Hull">
-      <UniqueIdentifier>{b71972af-2380-435b-bfc1-8dc8d68c2d05}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\Shader\Extended\Compute">
       <UniqueIdentifier>{e55f5f62-d3b4-4e88-8d7b-0053926ccd32}</UniqueIdentifier>
     </Filter>
@@ -213,6 +207,12 @@
     </Filter>
     <Filter Include="Shader\Skeletal">
       <UniqueIdentifier>{732000d0-b198-48cf-9211-4cbf255f8090}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Shader\Extended\Domain">
+      <UniqueIdentifier>{cbc0f798-8c1c-4fb1-b2a8-cf195b6f9e8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Shader\Extended\Hull">
+      <UniqueIdentifier>{b71972af-2380-435b-bfc1-8dc8d68c2d05}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -686,9 +686,6 @@
     <ClCompile Include="ModelRenderHullShader.cpp">
       <Filter>소스 파일\Shader\Extended\Hull</Filter>
     </ClCompile>
-    <ClCompile Include="IDomainShader.cpp">
-      <Filter>소스 파일\Shader</Filter>
-    </ClCompile>
     <ClCompile Include="IHullShader.cpp">
       <Filter>소스 파일\Shader</Filter>
     </ClCompile>
@@ -769,6 +766,9 @@
     </ClCompile>
     <ClCompile Include="InputMergeComputeShader.cpp">
       <Filter>소스 파일\Shader\Extended\Compute</Filter>
+    </ClCompile>
+    <ClCompile Include="IDomainShader.cpp">
+      <Filter>소스 파일\Shader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -30,7 +30,7 @@ void NormalVectorPixelShader::DisapplyShader()
 	DirectXDevice::pDeviceContext->PSSetShader(nullptr, NULL, NULL);
 }
 
-void NormalVectorPixelShader::SetShader()
+void NormalVectorPixelShader::SetShader(void* pBindingSet)
 {
 }
 

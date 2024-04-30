@@ -55,11 +55,21 @@ void NormalVectorRenderer::RenderNormal(PBRStaticMesh& pbrStaticMesh)
 {
 	const size_t meshNums = pbrStaticMesh.GetMeshNums();
 
-	normalVectorVS->SetShader(pbrStaticMesh);
+	NormalVectorVSBindingSet sVSBinding;
+	sVSBinding.pTransformable = &pbrStaticMesh;
+
+	NormalVectorGSBindingSet sGSBinding;
+	sGSBinding.pMesh = &pbrStaticMesh;
+	sGSBinding.pViewableCamera = pCamera;
+	sGSBinding.bIsMirror = false;
+
+	normalVectorVS->SetShader(&sVSBinding);
 	for (size_t meshIdx = 0; meshIdx < meshNums; ++meshIdx)
 	{
+		sGSBinding.meshIdx = meshIdx;
+
 		normalVectorVS->SetIAStage(meshIdx, pbrStaticMesh);
-		normalVectorGS->SetShader(meshIdx, pbrStaticMesh, *pCamera);
+		normalVectorGS->SetShader(&sGSBinding);
 		pbrStaticMesh.Draw(meshIdx);
 		normalVectorVS->ResetIAStage();
 		normalVectorGS->ResetShader();
@@ -77,11 +87,21 @@ void NormalVectorRenderer::RenderNormal(MirrorModel& mirrorModel)
 {
 	const size_t meshNums = mirrorModel.GetMeshNums();
 
-	normalVectorVS->SetShader(mirrorModel);
+	NormalVectorVSBindingSet sBinding;
+	sBinding.pTransformable = &mirrorModel;
+
+	NormalVectorGSBindingSet sGSBinding;
+	sGSBinding.pMesh = &mirrorModel;
+	sGSBinding.pViewableCamera = pCamera;
+	sGSBinding.bIsMirror = true;
+
+	normalVectorVS->SetShader(&sBinding);
 	for (size_t meshIdx = 0; meshIdx < meshNums; ++meshIdx)
 	{
+		sGSBinding.meshIdx = meshIdx;
+
 		normalVectorVS->SetIAStage(meshIdx, mirrorModel);
-		normalVectorGS->SetShader(meshIdx, mirrorModel, *pCamera);
+		normalVectorGS->SetShader(&sGSBinding);
 		mirrorModel.Draw(meshIdx);
 		normalVectorVS->ResetIAStage();
 		normalVectorGS->ResetShader();

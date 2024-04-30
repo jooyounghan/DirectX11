@@ -72,6 +72,6 @@ struct PBRModelDomainOutput
 
 struct PBRModelPixelOutput
 {
-    float4  pixelColor  : SV_Target0;
-    uint    modelID     : SV_Target1;
+    float4  f4PixelColor  : SV_Target0;
+    uint    uiModelID     : SV_Target1;
 };

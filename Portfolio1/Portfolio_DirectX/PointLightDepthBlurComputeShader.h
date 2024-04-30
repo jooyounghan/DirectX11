@@ -2,6 +2,13 @@
 
 #include "IComputeShader.h"
 
+struct PointDepthBlurCSBindingSet
+{
+	ID3D11ShaderResourceView** ppInputSRV;
+	ID3D11UnorderedAccessView** ppOutputUAV;
+	size_t	uiIndex;
+};
+
 class PointLightDepthBlurComputeShader : public IComputeShader
 {
 private:
@@ -23,11 +30,10 @@ public:
 public:
 	virtual void ApplyShader() override;
 	virtual void DisapplyShader() override;
+	virtual void SetShader(void* pBindingSet) override;
+	virtual void ResetShader() override;
 
 protected:
 	static ID3D11ShaderResourceView* pNullSRVs[6];
 	static ID3D11UnorderedAccessView* pNullUAVs[6];
-public:
-	void SetShader(ID3D11ShaderResourceView** ppSRV, ID3D11UnorderedAccessView** ppUAV, size_t uiCount);
-	void ResetShader();
 };

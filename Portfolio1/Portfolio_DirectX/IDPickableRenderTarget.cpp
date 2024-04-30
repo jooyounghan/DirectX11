@@ -48,8 +48,12 @@ void IDPickableRenderTarget::SetMousePos(const int& iMouseXIn, const int& iMouse
 
 void IDPickableRenderTarget::Apply(ID3D11ShaderResourceView** ppInputSRV)
 {
+	SingleSourceCSBindingSet sBinding;
+	sBinding.ppInputSRV = ppInputSRV;
+	sBinding.ppOutputUAV = IDPickableRenderTarget::cpUAV.GetAddressOf();
+
 	pModelIDResolveCS->ApplyShader();
-	pModelIDResolveCS->SetShader(ppInputSRV, IDPickableRenderTarget::cpUAV.GetAddressOf());
+	pModelIDResolveCS->SetShader(&sBinding);
 	DirectXDevice::pDeviceContext->Dispatch(
 		uiWidth % uiThreadGroupCntX ? uiWidth / uiThreadGroupCntX + 1 : uiWidth / uiThreadGroupCntX,
 		uiHeight % uiThreadGroupCntY ? uiHeight / uiThreadGroupCntY + 1 : uiHeight / uiThreadGroupCntY,

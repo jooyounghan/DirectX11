@@ -23,13 +23,7 @@ public:
 public:
 	virtual void ApplyShader() override;
 	virtual void DisapplyShader() override;
-
-public:
-	void SetShader(
-		ID3D11ShaderResourceView** ppInputSRV1, 
-		ID3D11ShaderResourceView** ppInputSRV2,
-		ID3D11UnorderedAccessView** ppOutputUAV
-	);
-	void ResetShader();
+	virtual void SetShader(void* pBindingSet) override;
+	virtual void ResetShader() override;
 };
 

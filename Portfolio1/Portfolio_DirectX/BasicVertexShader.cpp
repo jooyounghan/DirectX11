@@ -52,10 +52,11 @@ void BasicVertexShader::DisapplyShader()
 	DirectXDevice::pDeviceContext->IASetInputLayout(nullptr);
 }
 
-void BasicVertexShader::SetShader(ATransformerable& transformable, Viewable& viewable)
+void BasicVertexShader::SetShader(void* pBindingSet)
 {
-	DirectXDevice::pDeviceContext->VSSetConstantBuffers(0, 1, transformable.GetTransformationBuffer());
-	DirectXDevice::pDeviceContext->VSSetConstantBuffers(1, 1, viewable.GetViewProjBuffer());
+	BasicVSBindingSet* pBinding = (BasicVSBindingSet*)pBindingSet;
+	DirectXDevice::pDeviceContext->VSSetConstantBuffers(0, 1, pBinding->pTransformable->GetTransformationBuffer());
+	DirectXDevice::pDeviceContext->VSSetConstantBuffers(1, 1, pBinding->pViewable->GetViewProjBuffer());
 }
 
 void BasicVertexShader::ResetShader()

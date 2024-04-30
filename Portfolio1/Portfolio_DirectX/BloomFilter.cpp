@@ -38,8 +38,13 @@ void BloomFilter::AcceptFilterList(CameraManipulator* pCameraManipulator)
 
 void BloomFilter::Apply(ID3D11ShaderResourceView** ppInputSRV)
 {
+	DoubleSourceCSBindingSet sBinding;
+	sBinding.ppInputSRV1 = ppPresetInputSRV;
+	sBinding.ppInputSRV2 = ppInputSRV;
+	sBinding.ppOutputUAV = cpUAV.GetAddressOf();
+
 	pBloomCS->ApplyShader();
-	pBloomCS->SetShader(ppPresetInputSRV, ppInputSRV, cpUAV.GetAddressOf());
+	pBloomCS->SetShader(&sBinding);
 
 	DirectXDevice::pDeviceContext->Dispatch(
 		uiWidth % uiThreadGroupCntX ? uiWidth / uiThreadGroupCntX + 1 : uiWidth / uiThreadGroupCntX,

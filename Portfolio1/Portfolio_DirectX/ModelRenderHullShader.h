@@ -2,6 +2,13 @@
 
 #include "IHullShader.h"
 
+class IMovable;
+
+struct ModelHSBindingSet
+{
+	IMovable* pMovable;
+};
+
 class ModelRenderHullShader : public IHullShader
 {
 private:
@@ -23,9 +30,7 @@ public:
 public:
 	virtual void ApplyShader() override;
 	virtual void DisapplyShader() override;
-
-public:
-	void SetShader(class IMovable& viewPosition);
-	void ResetShader();
+	virtual void SetShader(void* pBindingSet) override;
+	virtual void ResetShader() override;
 };
 

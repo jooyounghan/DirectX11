@@ -28,10 +28,14 @@ void PointLightDepthBlurComputeShader::DisapplyShader()
 	DirectXDevice::pDeviceContext->CSSetShader(nullptr, NULL, NULL);
 }
 
-void PointLightDepthBlurComputeShader::SetShader(ID3D11ShaderResourceView** ppSRV, ID3D11UnorderedAccessView** ppUAV, size_t uiCount)
+void PointLightDepthBlurComputeShader::SetShader(void* pBindingSet)
 {
-	DirectXDevice::pDeviceContext->CSSetShaderResources(0, uiCount, ppSRV);
-	DirectXDevice::pDeviceContext->CSSetUnorderedAccessViews(0, uiCount, ppUAV, nullptr);
+	PointDepthBlurCSBindingSet* pBinding = (PointDepthBlurCSBindingSet*)pBindingSet;
+
+	const size_t& uiCount = pBinding->uiIndex;
+
+	DirectXDevice::pDeviceContext->CSSetShaderResources(0, uiCount, pBinding->ppInputSRV);
+	DirectXDevice::pDeviceContext->CSSetUnorderedAccessViews(0, uiCount, pBinding->ppOutputUAV, nullptr);
 	DirectXDevice::pDeviceContext->CSSetSamplers(0, 1, DirectXDevice::ppWrapSampler);
 }
 

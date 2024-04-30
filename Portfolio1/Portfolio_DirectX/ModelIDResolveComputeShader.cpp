@@ -26,10 +26,11 @@ void ModelIDResolveComputeShader::DisapplyShader()
 	DirectXDevice::pDeviceContext->CSSetShader(nullptr, NULL, NULL);
 }
 
-void ModelIDResolveComputeShader::SetShader(ID3D11ShaderResourceView** ppSRV, ID3D11UnorderedAccessView** ppUAV)
+void ModelIDResolveComputeShader::SetShader(void* pBindingSet)
 {
-	DirectXDevice::pDeviceContext->CSSetShaderResources(0, 1, ppSRV);
-	DirectXDevice::pDeviceContext->CSSetUnorderedAccessViews(0, 1, ppUAV, nullptr);
+	SingleSourceCSBindingSet* pBinding = (SingleSourceCSBindingSet*)pBindingSet;
+	DirectXDevice::pDeviceContext->CSSetShaderResources(0, 1, pBinding->ppInputSRV);
+	DirectXDevice::pDeviceContext->CSSetUnorderedAccessViews(0, 1, pBinding->ppOutputUAV, nullptr);
 }
 
 void ModelIDResolveComputeShader::ResetShader()

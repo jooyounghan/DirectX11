@@ -52,9 +52,10 @@ void NormalVectorVertexShader::DisapplyShader()
 	DirectXDevice::pDeviceContext->IASetInputLayout(nullptr);
 }
 
-void NormalVectorVertexShader::SetShader(class ATransformerable& transformable)
+void NormalVectorVertexShader::SetShader(void* pBindingSet)
 {
-	DirectXDevice::pDeviceContext->VSSetConstantBuffers(0, 1, transformable.GetTransformationBuffer());
+	NormalVectorVSBindingSet* pBinding = (NormalVectorVSBindingSet*)pBindingSet;
+	DirectXDevice::pDeviceContext->VSSetConstantBuffers(0, 1, pBinding->pTransformable->GetTransformationBuffer());
 }
 
 void NormalVectorVertexShader::ResetShader()

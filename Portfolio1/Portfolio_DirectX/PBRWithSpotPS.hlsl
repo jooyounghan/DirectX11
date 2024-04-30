@@ -142,7 +142,7 @@ PBRModelPixelOutput main(PBRModelDomainOutput input)
     }
     float3 fDirectColor = (diffuseBrdf + specularBrdf) * NDotL * f3LightColor * fLightPowerSaturated * fShadowFactor;
            
-    result.pixelColor = float4(fDirectColor, 1.f);
-    result.modelID = uIMeshId;
+    result.f4PixelColor = float4(fDirectColor, 1.f);
+    result.uiModelID = uIMeshId;
     return result;
 }

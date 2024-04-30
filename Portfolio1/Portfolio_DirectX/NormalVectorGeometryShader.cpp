@@ -38,42 +38,46 @@ void NormalVectorGeometryShader::DisapplyShader()
 	DirectXDevice::pDeviceContext->GSSetShader(nullptr, NULL, NULL);
 }
 
-void NormalVectorGeometryShader::SetShader(
-	const size_t& meshIdx,
-	PBRStaticMesh& pbrStaticMesh,
-	Viewable& viewableCamera
-)
+void NormalVectorGeometryShader::SetShader(void* pBindingSet)
 {
-	MeshFile* pMeshFile = pbrStaticMesh.GetMeshFile();
-	if (pMeshFile != nullptr && pbrStaticMesh.GetMeshNums() > meshIdx)
+	NormalVectorGSBindingSet* pPBRBinding = (NormalVectorGSBindingSet*)pBindingSet;
+	if (pPBRBinding->bIsMirror)
 	{
-		MaterialFile* pMaterialFile = pbrStaticMesh.GetMaterialFile(meshIdx);
+		MirrorModel* pMirror = (MirrorModel*)pPBRBinding->pMesh;
+		DirectXDevice::pDeviceContext->GSSetConstantBuffers(1, 1, pMirror->GetViewProjBuffer());
+		DirectXDevice::pDeviceContext->GSSetSamplers(0, 1, DirectXDevice::ppClampSampler);
+	}
+	else
+	{
+		PBRStaticMesh* pPBRStaticMesh = (PBRStaticMesh*)pPBRBinding->pMesh;
+		size_t meshIdx = pPBRBinding->meshIdx;
+		Viewable* pViewable = pPBRBinding->pViewableCamera;
 
-		if (pMaterialFile != nullptr)
+		MeshFile* pMeshFile = pPBRStaticMesh->GetMeshFile();
+		if (pMeshFile != nullptr && pPBRStaticMesh->GetMeshNums() > meshIdx)
 		{
-			DirectXDevice::pDeviceContext->GSSetConstantBuffers(0, 1, pbrStaticMesh.GetPBRConstantBuffer());
-			DirectXDevice::pDeviceContext->GSSetConstantBuffers(1, 1, viewableCamera.GetViewProjBuffer());
-			DirectXDevice::pDeviceContext->GSSetConstantBuffers(2, 1, pbrStaticMesh.GetMaterialFile(meshIdx)->GetPBRTextureFlagBuffer());
+			MaterialFile* pMaterialFile = pPBRStaticMesh->GetMaterialFile(meshIdx);
 
-			shared_ptr<IImageFile>& normalImage = pMaterialFile->GetTextureImageFileRef(NORMAL_TEXTURE_MAP);
-			shared_ptr<IImageFile>& heightImage = pMaterialFile->GetTextureImageFileRef(HEIGHT_TEXTURE_MAP);
+			if (pMaterialFile != nullptr)
+			{
+				DirectXDevice::pDeviceContext->GSSetConstantBuffers(0, 1, pPBRStaticMesh->GetPBRConstantBuffer());
+				DirectXDevice::pDeviceContext->GSSetConstantBuffers(1, 1, pViewable->GetViewProjBuffer());
+				DirectXDevice::pDeviceContext->GSSetConstantBuffers(2, 1, pPBRStaticMesh->GetMaterialFile(meshIdx)->GetPBRTextureFlagBuffer());
 
-			DirectXDevice::pDeviceContext->GSSetShaderResources(0, 1,
-				normalImage.get() != nullptr ?
-				normalImage->GetAddressOfSRV() : &pNullSRV);
-			DirectXDevice::pDeviceContext->GSSetShaderResources(1, 1,
-				heightImage.get() != nullptr ?
-				heightImage->GetAddressOfSRV() : &pNullSRV);
+				shared_ptr<IImageFile>& normalImage = pMaterialFile->GetTextureImageFileRef(NORMAL_TEXTURE_MAP);
+				shared_ptr<IImageFile>& heightImage = pMaterialFile->GetTextureImageFileRef(HEIGHT_TEXTURE_MAP);
 
-			DirectXDevice::pDeviceContext->GSSetSamplers(0, 1, DirectXDevice::ppClampSampler);
+				DirectXDevice::pDeviceContext->GSSetShaderResources(0, 1,
+					normalImage.get() != nullptr ?
+					normalImage->GetAddressOfSRV() : &pNullSRV);
+				DirectXDevice::pDeviceContext->GSSetShaderResources(1, 1,
+					heightImage.get() != nullptr ?
+					heightImage->GetAddressOfSRV() : &pNullSRV);
+
+				DirectXDevice::pDeviceContext->GSSetSamplers(0, 1, DirectXDevice::ppClampSampler);
+			}
 		}
 	}
-}
-
-void NormalVectorGeometryShader::SetShader(const size_t& meshIdx, MirrorModel& mirrorModel, Viewable& viewableCamera)
-{
-	DirectXDevice::pDeviceContext->GSSetConstantBuffers(1, 1, viewableCamera.GetViewProjBuffer());
-	DirectXDevice::pDeviceContext->GSSetSamplers(0, 1, DirectXDevice::ppClampSampler);
 }
 
 void NormalVectorGeometryShader::ResetShader()

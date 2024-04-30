@@ -76,7 +76,12 @@ void PointLight::UpdateLight()
 		uavs.push_back(cpUAVs[idx].Get());
 	}
 
-	pBlurCS->SetShader(srvs.data(), uavs.data(), EDirections::DirectionNum);
+	PointDepthBlurCSBindingSet pBinding;
+	pBinding.ppInputSRV = srvs.data();
+	pBinding.ppOutputUAV = uavs.data();
+	pBinding.uiIndex = EDirections::DirectionNum;
+
+	pBlurCS->SetShader(&pBinding);
 
 	const UINT xNumThread = 26;
 	const UINT yNumThread = 26;

@@ -18,5 +18,7 @@ protected:
 public:
 	virtual void ApplyShader() = 0;
 	virtual void DisapplyShader() = 0;
+	virtual void SetShader(void* pBindingSet) = 0;
+	virtual void ResetShader() = 0;
 };
 

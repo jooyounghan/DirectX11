@@ -19,8 +19,8 @@ SamplerState WrapSampler : register(s0);
 PBRModelPixelOutput main(BasicVertexOutput input)
 {
     PBRModelPixelOutput result;
-    result.pixelColor = Alpha * float4(1.f, 1.f, 1.f, 0.f) + (1 - Alpha) *
-        MirrorResult.SampleLevel(WrapSampler, input.f2TexCoord, 0.f);
-    result.modelID = uIMeshId;
+    result.f4PixelColor = Alpha * float4(1.f, 1.f, 1.f, 0.f) + (1 - Alpha) *
+        MirrorResult.SampleLevel(WrapSampler, float2(1.f - input.f2TexCoord.x, input.f2TexCoord.y), 0.f);
+    result.uiModelID = uIMeshId;
     return result;
 }

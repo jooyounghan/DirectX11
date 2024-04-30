@@ -84,18 +84,39 @@ void ModelRenderer::RenderModel(PBRStaticMesh& pbrStaticMesh)
 	modelRenderDS->ApplyShader();
 
 	const size_t meshNums = pbrStaticMesh.GetMeshNums();
+
+	ModelVSBindingSet sVSBinding;
+	sVSBinding.pTransformable = &pbrStaticMesh;
+	sVSBinding.pViewable = pViewableRT;
+
+	ModelHSBindingSet sHSBinding;
+	sHSBinding.pMovable = pViewableRT;
+
+	ModelDSBindingSet sDSBinding;
+	sDSBinding.pPbrStaticMesh = &pbrStaticMesh;
+	sDSBinding.pViewable = pViewableRT;
+
+	IBLLightPSBindingSet sIBLPSBinding;
+	sIBLPSBinding.pIblMesh = spIBLModel.get();
+	sIBLPSBinding.pPbrStaticMesh = &pbrStaticMesh;
+	sIBLPSBinding.pViewable = pViewableRT;
+
 	for (size_t meshIdx = 0; meshIdx < meshNums; ++meshIdx)
 	{
+		sDSBinding.meshIdx = meshIdx;
+
 		Mesh& meshData = pbrStaticMesh.GetMeshFile()->GetMeshData(meshIdx);
 
 		modelRenderVS->SetIAStage(meshIdx, pbrStaticMesh);
-		modelRenderVS->SetShader(pbrStaticMesh, *pViewableRT);
-		modelRenderHS->SetShader(*pViewableRT);
-		modelRenderDS->SetShader(meshIdx, pbrStaticMesh, *pViewableRT);
+		modelRenderVS->SetShader(&sVSBinding);
+		modelRenderHS->SetShader(&sHSBinding);
+		modelRenderDS->SetShader(&sDSBinding);
 
 		// IBL을 활용한 렌더링
+		sIBLPSBinding.meshIdx = meshIdx;
+
 		pbrIBLPS->ApplyShader();
-		pbrIBLPS->SetShader(*spIBLModel.get(), meshIdx, pbrStaticMesh, *pViewableRT);
+		pbrIBLPS->SetShader(&sIBLPSBinding);
 		pbrStaticMesh.Draw(meshIdx);
 		pbrIBLPS->ResetShader();
 		pbrIBLPS->DisapplyShader();
@@ -122,12 +143,20 @@ void ModelRenderer::RenderModel(AIBLMesh& iblMesh)
 	modelRenderVS->ApplyShader();
 	iblRenderPS->ApplyShader();
 
+	ModelVSBindingSet sVSBinding;
+	sVSBinding.pTransformable = &iblMesh;
+	sVSBinding.pViewable = pViewableRT;
+
+	IBLPSBindingSet sPSBinding;
+	sPSBinding.pIblMesh = &iblMesh;
+	sPSBinding.pViewable = pViewableRT;
+
 	const size_t meshNums = iblMesh.GetMeshNums();
 	for (size_t meshIdx = 0; meshIdx < meshNums; ++meshIdx)
 	{
 		modelRenderVS->SetIAStage(meshIdx, iblMesh);
-		modelRenderVS->SetShader(iblMesh, *pViewableRT);
-		iblRenderPS->SetShader(iblMesh, *pViewableRT);
+		modelRenderVS->SetShader(&sVSBinding);
+		iblRenderPS->SetShader(&sPSBinding);
 
 		iblMesh.Draw(meshIdx);
 
@@ -173,12 +202,19 @@ void ModelRenderer::RenderModel(MirrorModel& mirrorModel)
 	basicVS->ApplyShader();
 	mirrorModelPS->ApplyShader();
 
+	BasicVSBindingSet sVSBinding;
+	sVSBinding.pTransformable = &mirrorModel;
+	sVSBinding.pViewable = pViewableRT;
+
+	MirrorPSBindingSet sPSBinding;
+	sPSBinding.pMirror = &mirrorModel;
+
 	const size_t meshNums = mirrorModel.GetMeshNums();
 	for (size_t meshIdx = 0; meshIdx < meshNums; ++meshIdx)
 	{
 		basicVS->SetIAStage(meshIdx, mirrorModel);
-		basicVS->SetShader(mirrorModel, *pViewableRT);
-		mirrorModelPS->SetShader(mirrorModel);
+		basicVS->SetShader(&sVSBinding);
+		mirrorModelPS->SetShader(&sPSBinding);
 
 		mirrorModel.Draw(meshIdx);
 
@@ -199,19 +235,38 @@ void ModelRenderer::RenderModel(SkeletalModel& skeletalModel)
 	modelRenderHS->ApplyShader();
 	modelRenderDS->ApplyShader();
 
+	SkeletalVSBindingSet sVSBinding;
+	sVSBinding.pSkeletal = &skeletalModel;
+	sVSBinding.pViewable = pViewableRT;
+
+	ModelHSBindingSet sHSBinding;
+	sHSBinding.pMovable = pViewableRT;
+
+	ModelDSBindingSet sDSBinding;
+	sDSBinding.pPbrStaticMesh = &skeletalModel;
+	sDSBinding.pViewable = pViewableRT;
+
+	IBLLightPSBindingSet sIBLPSBinding;
+	sIBLPSBinding.pIblMesh = spIBLModel.get();
+	sIBLPSBinding.pPbrStaticMesh = &skeletalModel;
+	sIBLPSBinding.pViewable = pViewableRT;
+
 	const size_t meshNums = skeletalModel.GetMeshNums();
 	for (size_t meshIdx = 0; meshIdx < meshNums; ++meshIdx)
 	{
+		sDSBinding.meshIdx = meshIdx;
+		sIBLPSBinding.meshIdx = meshIdx;
+
 		Mesh& meshData = skeletalModel.GetMeshFile()->GetMeshData(meshIdx);
 
 		skeletalVS->SetIAStage(meshIdx, skeletalModel);
-		skeletalVS->SetShader(skeletalModel, *pViewableRT);
-		modelRenderHS->SetShader(*pViewableRT);
-		modelRenderDS->SetShader(meshIdx, skeletalModel, *pViewableRT);
+		skeletalVS->SetShader(&sVSBinding);
+		modelRenderHS->SetShader(&sHSBinding);
+		modelRenderDS->SetShader(&sDSBinding);
 
 		// IBL을 활용한 렌더링
 		pbrIBLPS->ApplyShader();
-		pbrIBLPS->SetShader(*spIBLModel.get(), meshIdx, skeletalModel, *pViewableRT);
+		pbrIBLPS->SetShader(&sIBLPSBinding);
 		skeletalModel.Draw(meshIdx);
 		pbrIBLPS->ResetShader();
 		pbrIBLPS->DisapplyShader();
@@ -235,12 +290,19 @@ void ModelRenderer::RenderModel(SkeletalModel& skeletalModel)
 
 void ModelRenderer::RenderWithLight(PointLight& pointLight)
 {
+	PointLightPSBindingSet sPSBinding;
+	sPSBinding.pPointLight = &pointLight;
+	sPSBinding.pPbrStaticMesh = pPBRStaticMesh;
+	sPSBinding.pViewable = pViewableRT;
+
 	pointLightPS->ApplyShader();
 
 	const size_t meshNums = pPBRStaticMesh->GetMeshNums();
 	for (size_t meshIdx = 0; meshIdx < meshNums; ++meshIdx)
 	{
-		pointLightPS->SetShader(pointLight, meshIdx, *pPBRStaticMesh, *pViewableRT);
+		sPSBinding.meshIdx = meshIdx;
+
+		pointLightPS->SetShader(&sPSBinding);
 		pPBRStaticMesh->Draw(meshIdx);
 		pointLightPS->ResetShader();
 	}
@@ -249,12 +311,18 @@ void ModelRenderer::RenderWithLight(PointLight& pointLight)
 
 void ModelRenderer::RenderWithLight(SpotLight& spotLight)
 {
+	SpotLightPSBindingSet sPSBinding;
+	sPSBinding.pSpotLight = &spotLight;
+	sPSBinding.pPbrStaticMesh = pPBRStaticMesh;
+	sPSBinding.pViewable = pViewableRT;
+
 	spotLightPS->ApplyShader();
 
 	const size_t meshNums = pPBRStaticMesh->GetMeshNums();
 	for (size_t meshIdx = 0; meshIdx < meshNums; ++meshIdx)
 	{
-		spotLightPS->SetShader(spotLight, meshIdx, *pPBRStaticMesh, *pViewableRT);
+		sPSBinding.meshIdx = meshIdx;
+		spotLightPS->SetShader(&sPSBinding);
 		pPBRStaticMesh->Draw(meshIdx);
 		spotLightPS->ResetShader();
 	}

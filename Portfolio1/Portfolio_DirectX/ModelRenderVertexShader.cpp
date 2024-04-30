@@ -56,10 +56,12 @@ void ModelRenderVertexShader::DisapplyShader()
 	DirectXDevice::pDeviceContext->IASetInputLayout(nullptr);
 }
 
-void ModelRenderVertexShader::SetShader(class ATransformerable& transformable, class Viewable& viewable)
+void ModelRenderVertexShader::SetShader(void* pBindingSet)
 {
-	DirectXDevice::pDeviceContext->VSSetConstantBuffers(0, 1, transformable.GetTransformationBuffer());
-	DirectXDevice::pDeviceContext->VSSetConstantBuffers(1, 1, viewable.GetViewProjBuffer());
+	ModelVSBindingSet* pBinding = (ModelVSBindingSet*)pBindingSet;
+
+	DirectXDevice::pDeviceContext->VSSetConstantBuffers(0, 1, pBinding->pTransformable->GetTransformationBuffer());
+	DirectXDevice::pDeviceContext->VSSetConstantBuffers(1, 1, pBinding->pViewable->GetViewProjBuffer());
 }
 
 void ModelRenderVertexShader::ResetShader()
@@ -67,6 +69,7 @@ void ModelRenderVertexShader::ResetShader()
 	DirectXDevice::pDeviceContext->VSSetConstantBuffers(0, 1, &pNullBuffer);
 	DirectXDevice::pDeviceContext->VSSetConstantBuffers(1, 1, &pNullBuffer);
 }
+
 
 void ModelRenderVertexShader::SetIAStage(const size_t& meshIdx, IMesh& mesh)
 {

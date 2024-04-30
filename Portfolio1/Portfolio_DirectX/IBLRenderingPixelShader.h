@@ -2,6 +2,15 @@
 
 #include "IPixelShader.h"
 
+class AIBLMesh;
+class Viewable;
+
+struct IBLPSBindingSet
+{
+	AIBLMesh* pIblMesh;
+	Viewable* pViewable;
+};
+
 class IBLRenderingPixelShader : public IPixelShader
 {
 private:
@@ -23,9 +32,7 @@ public:
 public:
 	virtual void ApplyShader() override;
 	virtual void DisapplyShader() override;
-
-public:
-	void SetShader(class AIBLMesh& iblMesh, class Viewable& viewable);
-	void ResetShader();
+	virtual void SetShader(void* pBindingSet) override;
+	virtual void ResetShader() override;
 };
 

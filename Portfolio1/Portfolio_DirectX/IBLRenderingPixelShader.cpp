@@ -35,14 +35,15 @@ void IBLRenderingPixelShader::DisapplyShader()
 	DirectXDevice::pDeviceContext->PSSetShader(nullptr, NULL, NULL);
 }
 
-void IBLRenderingPixelShader::SetShader(class AIBLMesh& iblMesh, class Viewable& viewable)
+void IBLRenderingPixelShader::SetShader(void* pBindingSet)
 {
-	DirectXDevice::pDeviceContext->PSSetConstantBuffers(0, 1, iblMesh.GetObjectBuffer());
+	IBLPSBindingSet* pBinding = (IBLPSBindingSet*)pBindingSet;
 
-	IImageFile* pImageFile = iblMesh.GetIBLTextureFile().get();
+	IImageFile* pImageFile = pBinding->pIblMesh->GetIBLTextureFile().get();
 	ID3D11ShaderResourceView* pSRV = pImageFile != nullptr ? pImageFile->GetSRV() : nullptr;
-	DirectXDevice::pDeviceContext->PSSetShaderResources(0, 1, &pSRV);
 
+	DirectXDevice::pDeviceContext->PSSetConstantBuffers(0, 1, pBinding->pIblMesh->GetObjectBuffer());
+	DirectXDevice::pDeviceContext->PSSetShaderResources(0, 1, &pSRV);
 	DirectXDevice::pDeviceContext->PSSetSamplers(0, 1, DirectXDevice::ppClampSampler);
 }
 

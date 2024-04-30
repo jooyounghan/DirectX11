@@ -105,73 +105,7 @@ PBRModelPixelOutput main(PBRModelDomainOutput input)
     
     fAmbientColor += EmissionTexture.Sample(WrapSampler, input.f2TexCoord).rgb;
     
-    result.pixelColor = float4(fAmbientColor, 1.f);
-    result.modelID = uIMeshId;
+    result.f4PixelColor = float4(fAmbientColor, 1.f);
+    result.uiModelID = uIMeshId;
     return result;
 }
-
-
-//// HLSL Pixel Shader
-
-//Texture2D DiffuseTexture : register(t0); // 디퓨즈 텍스쳐
-//Texture2D SpecularTexture : register(t1); // 스페큘러 텍스쳐
-//SamplerState Sampler : register(s0); // 텍스쳐 샘플러
-
-//// 조명 및 카메라 정보
-//struct Light
-//{
-//    float3 Position;
-//    float3 Intensity;
-//};
-
-//cbuffer LightBuffer : register(b0)
-//{
-//    Light light;
-//    float3 camPosition;
-//};
-
-//// 정점 셰이더에서 전달된 값
-//struct PixelInputType
-//{
-//    float4 position : SV_POSITION;
-//    float2 tex : TEXCOORD0;
-//    float3 normal : NORMAL;
-//};
-
-//// 조명 계산 함수
-//float4 CalculateLighting(float3 normal, float3 lightDirection, float3 viewDirection, float2 texCoords)
-//{
-//    // 디퓨즈 반사 계산
-//    float diffuseFactor = max(dot(normal, lightDirection), 0.0);
-//    float4 diffuseColor = diffuseFactor * DiffuseTexture.Sample(Sampler, texCoords);
-
-//    // 스페큘러 반사 계산
-//    float3 halfwayDir = normalize(lightDirection + viewDirection);
-//    float specularFactor = pow(max(dot(normal, halfwayDir), 0.0), 16.0); // 16은 스페큘러 하이라이트의 강도를 조절하는 shininess 값
-//    float4 specularColor = specularFactor * SpecularTexture.Sample(Sampler, texCoords);
-
-//    // 조명 적용
-//    float3 lighting = diffuseColor.rgb * light.Intensity + specularColor.rgb * light.Intensity;
-//    return float4(lighting, 1.0);
-//}
-
-//// 픽셀 셰이더 메인 함수
-//float4 MainPS(PixelInputType input) : SV_TARGET
-//{
-//    float3 normal = normalize(input.normal);
-//    float3 lightDir = normalize(light.Position - input.position.xyz);
-//    float3 viewDir = normalize(camPosition - input.position.xyz);
-
-//    float4 color = CalculateLighting(normal, lightDir, viewDir, input.tex);
-//    return color;
-//}
-
-//technique10 Tech
-//{
-//    pass Pass0
-//    {
-//        SetVertexShader(CompileShader(vs_4_0, VS()));
-//        SetGeometryShader(NULL);
-//        SetPixelShader(CompileShader(ps_4_0, MainPS()));
-//    }
-//}

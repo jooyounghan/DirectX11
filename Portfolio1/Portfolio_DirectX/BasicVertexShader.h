@@ -6,6 +6,12 @@ class IMesh;
 class ATransformerable;
 class Viewable;
 
+struct BasicVSBindingSet
+{
+	ATransformerable* pTransformable;
+	Viewable* pViewable;
+};
+
 class BasicVertexShader : public IVertexShader
 {
 	friend IVertexShader;
@@ -36,10 +42,10 @@ private:
 public:
 	virtual void ApplyShader() override;
 	virtual void DisapplyShader() override;
+	virtual void SetShader(void* pBindingSet) override;
+	virtual void ResetShader() override;
 
 public:
-	void SetShader(ATransformerable& transformable, Viewable& viewable);
-	void ResetShader();
 
 public:
 	virtual void SetIAStage(const size_t& meshIdx, IMesh& mesh) override;

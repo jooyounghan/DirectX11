@@ -23,5 +23,5 @@ struct NormalVectorGSOutput
 
 struct NormalVectorPSOutput
 {
-    float4 pixelColor : SV_Target0;
+    float4 f4PixelColor : SV_Target0;
 };

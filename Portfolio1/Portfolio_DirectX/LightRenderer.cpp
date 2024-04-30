@@ -94,12 +94,25 @@ void LightRenderer::RenderLightMap(SkeletalModel& skeletalModel)
 	MeshFile* pMeshFile = skeletalModel.GetMeshFile();
 	if (pMeshFile != nullptr)
 	{
-		skeletalVS->SetShader(skeletalModel, *pViewable);
-		modelRenderHS->SetShader(*pLight);
+		SkeletalVSBindingSet sVSBinding;
+		sVSBinding.pSkeletal = &skeletalModel;
+		sVSBinding.pViewable = pViewable;
+
+		ModelHSBindingSet sHSBinding;
+		sHSBinding.pMovable = pLight;
+
+		skeletalVS->SetShader(&sVSBinding);
+		modelRenderHS->SetShader(&sHSBinding);
+
+		ModelDSBindingSet sDSBinding;
+		sDSBinding.pPbrStaticMesh = &skeletalModel;
+		sDSBinding.pViewable = pViewable;
 
 		for (size_t meshIdx = 0; meshIdx < meshNums; ++meshIdx)
 		{
-			modelRenderDS->SetShader(meshIdx, skeletalModel, *pViewable);
+			sDSBinding.meshIdx = meshIdx;
+
+			modelRenderDS->SetShader(&sDSBinding);
 			skeletalVS->SetIAStage(meshIdx, skeletalModel);
 
 			skeletalModel.Draw(meshIdx);
@@ -121,12 +134,25 @@ void LightRenderer::RenderLightMap(PBRStaticMesh& pbrStaticMesh)
 	MeshFile* pMeshFile = pbrStaticMesh.GetMeshFile();
 	if (pMeshFile != nullptr)
 	{
-		modelRenderVS->SetShader(pbrStaticMesh, *pViewable);
-		modelRenderHS->SetShader(*pLight);
+		ModelVSBindingSet sBinding;
+		sBinding.pTransformable = &pbrStaticMesh;
+		sBinding.pViewable = pViewable;
+
+		ModelHSBindingSet sHSBinding;
+		sHSBinding.pMovable = pLight;
+
+		modelRenderVS->SetShader(&sBinding);
+		modelRenderHS->SetShader(&sHSBinding);
+
+		ModelDSBindingSet sDSBinding;
+		sDSBinding.pPbrStaticMesh = &pbrStaticMesh;
+		sDSBinding.pViewable = pViewable;
 
 		for (size_t meshIdx = 0; meshIdx < meshNums; ++meshIdx)
 		{
-			modelRenderDS->SetShader(meshIdx, pbrStaticMesh, *pViewable);
+			sDSBinding.meshIdx = meshIdx;
+
+			modelRenderDS->SetShader(&sDSBinding);
 			modelRenderVS->SetIAStage(meshIdx, pbrStaticMesh);
 
 			pbrStaticMesh.Draw(meshIdx);
@@ -153,9 +179,20 @@ void LightRenderer::RenderLightMap(MirrorModel& mirrorModel)
 
 	const size_t meshNums = mirrorModel.GetMeshNums();
 
-	modelRenderVS->SetShader(mirrorModel, *pViewable);
-	modelRenderHS->SetShader(*pLight);
-	modelRenderDS->SetShader(*pViewable);
+	ModelVSBindingSet sVSBinding;
+	sVSBinding.pTransformable = &mirrorModel;
+	sVSBinding.pViewable = pViewable;
+
+	ModelHSBindingSet sHSBinding;
+	sHSBinding.pMovable = pLight;
+
+	ModelDSBindingSet sDSBinding;
+	sDSBinding.pPbrStaticMesh = nullptr;
+	sDSBinding.pViewable = pViewable;
+
+	modelRenderVS->SetShader(&sVSBinding);
+	modelRenderHS->SetShader(&sHSBinding);
+	modelRenderDS->SetShader(&sDSBinding);
 
 	for (size_t meshIdx = 0; meshIdx < meshNums; ++meshIdx)
 	{

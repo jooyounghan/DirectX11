@@ -3,6 +3,13 @@
 #include "IVertexShader.h"
 #include <vector>
 
+class ATransformerable;
+
+struct NormalVectorVSBindingSet
+{
+	ATransformerable* pTransformable;
+};
+
 class NormalVectorVertexShader : public IVertexShader
 {
 private:
@@ -31,13 +38,10 @@ private:
 public:
 	virtual void ApplyShader() override;
 	virtual void DisapplyShader() override;
-
-public:
-	void SetShader(class ATransformerable& transformable);
-	void ResetShader();
+	virtual void SetShader(void* pBindingSet) override;
+	virtual void ResetShader() override;
 
 public:
 	virtual void SetIAStage(const size_t& meshIdx, IMesh& mesh) override;
 	virtual void ResetIAStage() override;
 };
-

@@ -2,6 +2,16 @@
 
 #include "IDomainShader.h"
 
+class PBRStaticMesh;
+class Viewable;
+
+struct ModelDSBindingSet
+{
+	size_t meshIdx;
+	PBRStaticMesh* pPbrStaticMesh;
+	Viewable* pViewable;
+};
+
 class ModelRendererDomainShader : public IDomainShader
 {
 private:
@@ -24,15 +34,7 @@ public:
 public:
 	virtual void ApplyShader() override;
 	virtual void DisapplyShader() override;
-
-public:
-	void SetShader(
-		const size_t& meshIdx, 
-		class PBRStaticMesh& pbrStaticMesh, 
-		class Viewable& viewable
-	);
-	void SetShader(class Viewable& viewable);
-	void ResetShader();
-
+	virtual void SetShader(void* pBindingSet) override;
+	virtual void ResetShader() override;
 };
 

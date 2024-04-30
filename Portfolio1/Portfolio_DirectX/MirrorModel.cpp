@@ -90,6 +90,7 @@ void MirrorModel::ResetAsRenderTarget()
 
 void MirrorModel::UpdateModel(const float& fDelta)
 {
+	UpdatePosition();
 	UpdateTranformationMatrix();
 	Viewable::UpdateViewToPerspective();
 	ID3D11Helper::UpdateBuffer(

@@ -126,11 +126,15 @@ void ACamera::Apply(ID3D11ShaderResourceView** ppInputSRV)
 		D3D11_TEXTURE2D_DESC desc;
 		DirectXDevice::pBackBuffer->GetDesc(&desc);
 
+		SingleSourceCSBindingSet sBinding;
+		sBinding.ppInputSRV = ppInputSRV;
+		sBinding.ppOutputUAV = AFilter::cpUAV.GetAddressOf();
+
 		const bool bIsMSToSS = desc.SampleDesc.Quality != RenderTarget::uiNumQualityLevels;
 		if (bIsMSToSS)
 		{
 			pMS16ToSS8CS->ApplyShader();
-			pMS16ToSS8CS->SetShader(ppInputSRV, AFilter::cpUAV.GetAddressOf());
+			pMS16ToSS8CS->SetShader(&sBinding);
 			DirectXDevice::pDeviceContext->Dispatch(
 				uiWidth % uiThreadGroupCntX ? uiWidth / uiThreadGroupCntX + 1 : uiWidth / uiThreadGroupCntX,
 				uiHeight % uiThreadGroupCntY ? uiHeight / uiThreadGroupCntY + 1 : uiHeight / uiThreadGroupCntY,
@@ -146,7 +150,7 @@ void ACamera::Apply(ID3D11ShaderResourceView** ppInputSRV)
 			if (bIsFormatResolve)
 			{
 				pTypeResolveCS->ApplyShader();
-				pTypeResolveCS->SetShader(ppInputSRV, AFilter::cpUAV.GetAddressOf());
+				pTypeResolveCS->SetShader(&sBinding);
 				DirectXDevice::pDeviceContext->Dispatch(
 					uiWidth % uiThreadGroupCntX ? uiWidth / uiThreadGroupCntX + 1 : uiWidth / uiThreadGroupCntX,
 					uiHeight % uiThreadGroupCntY ? uiHeight / uiThreadGroupCntY + 1 : uiHeight / uiThreadGroupCntY,

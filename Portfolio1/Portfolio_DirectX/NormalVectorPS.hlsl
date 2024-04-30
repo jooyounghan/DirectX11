@@ -3,6 +3,6 @@
 NormalVectorPSOutput main(NormalVectorGSOutput input) : SV_TARGET
 {
     NormalVectorPSOutput result;
-    result.pixelColor = float4(1.f, 1.f - input.f2TexCoord.x, 0.f, 1.f);
+    result.f4PixelColor = float4(1.f, 1.f - input.f2TexCoord.x, 0.f, 1.f);
     return result;
 }

@@ -13,7 +13,7 @@ SamplerState ClampSampler : register(s0);
 PBRModelPixelOutput main(PBRModelVertexOutput input)
 {
     PBRModelPixelOutput result;
-    result.pixelColor = IBLImageTexture.Sample(ClampSampler, input.f2TexCoord.xy);
-    result.modelID = uIMeshId;
+    result.f4PixelColor = IBLImageTexture.Sample(ClampSampler, input.f2TexCoord.xy);
+    result.uiModelID = uIMeshId;
     return result;
 }

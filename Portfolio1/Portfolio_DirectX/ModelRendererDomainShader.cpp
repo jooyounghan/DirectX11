@@ -34,38 +34,37 @@ void ModelRendererDomainShader::DisapplyShader()
 	DirectXDevice::pDeviceContext->DSSetShader(nullptr, NULL, NULL);
 }
 
-void ModelRendererDomainShader::SetShader(
-	const size_t& meshIdx,
-	class PBRStaticMesh& pbrStaticMesh,
-	class Viewable& viewable
-)
+void ModelRendererDomainShader::SetShader(void* pBindingSet)
 {
-	MeshFile* pMeshFile = pbrStaticMesh.GetMeshFile();
-	if (pMeshFile != nullptr && pbrStaticMesh.GetMeshNums() > meshIdx)
+	ModelDSBindingSet* pBinding = (ModelDSBindingSet*)pBindingSet;
+
+	PBRStaticMesh* pPBRStaticMesh = pBinding->pPbrStaticMesh;
+	size_t meshIdx = pBinding->meshIdx;
+	Viewable* pViewable = pBinding->pViewable;
+	
+	if (pPBRStaticMesh != nullptr)
 	{
-		MaterialFile* pMaterialFile = pbrStaticMesh.GetMaterialFile(meshIdx);
-
-		if (pMaterialFile != nullptr)
+		MeshFile* pMeshFile = pPBRStaticMesh->GetMeshFile();
+		if (pMeshFile != nullptr && pPBRStaticMesh->GetMeshNums() > meshIdx)
 		{
-			DirectXDevice::pDeviceContext->DSSetConstantBuffers(0, 1, pbrStaticMesh.GetPBRConstantBuffer());
-			DirectXDevice::pDeviceContext->DSSetConstantBuffers(1, 1, viewable.GetViewProjBuffer());
-			DirectXDevice::pDeviceContext->DSSetConstantBuffers(2, 1, pMaterialFile->GetPBRTextureFlagBuffer());
+			MaterialFile* pMaterialFile = pPBRStaticMesh->GetMaterialFile(meshIdx);
 
-			shared_ptr<IImageFile>& heightFile = pMaterialFile->GetTextureImageFileRef(HEIGHT_TEXTURE_MAP);
+			if (pMaterialFile != nullptr)
+			{
+				DirectXDevice::pDeviceContext->DSSetConstantBuffers(0, 1, pPBRStaticMesh->GetPBRConstantBuffer());
+				DirectXDevice::pDeviceContext->DSSetConstantBuffers(2, 1, pMaterialFile->GetPBRTextureFlagBuffer());
 
-			DirectXDevice::pDeviceContext->DSSetShaderResources(0, 1,
-				heightFile.get() != nullptr ?
-				heightFile->GetAddressOfSRV() : &pNullSRV
-			);
+				shared_ptr<IImageFile>& heightFile = pMaterialFile->GetTextureImageFileRef(HEIGHT_TEXTURE_MAP);
 
-			DirectXDevice::pDeviceContext->DSSetSamplers(0, 1, DirectXDevice::ppClampSampler);
+				DirectXDevice::pDeviceContext->DSSetShaderResources(0, 1,
+					heightFile.get() != nullptr ?
+					heightFile->GetAddressOfSRV() : &pNullSRV
+				);
+
+			}
 		}
 	}
-}
-
-void ModelRendererDomainShader::SetShader(Viewable& viewable)
-{
-	DirectXDevice::pDeviceContext->DSSetConstantBuffers(1, 1, viewable.GetViewProjBuffer());
+	DirectXDevice::pDeviceContext->DSSetConstantBuffers(1, 1, pViewable->GetViewProjBuffer());
 	DirectXDevice::pDeviceContext->DSSetSamplers(0, 1, DirectXDevice::ppClampSampler);
 }
 

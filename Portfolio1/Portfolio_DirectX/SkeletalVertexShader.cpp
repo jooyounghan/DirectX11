@@ -55,11 +55,13 @@ void SkeletalVertexShader::DisapplyShader()
 	DirectXDevice::pDeviceContext->IASetInputLayout(nullptr);
 }
 
-void SkeletalVertexShader::SetShader(SkeletalModel& skeletalModel, Viewable& viewable)
+void SkeletalVertexShader::SetShader(void* pBindingSet)
 {
-	DirectXDevice::pDeviceContext->VSSetConstantBuffers(0, 1, skeletalModel.GetTransformationBuffer());
-	DirectXDevice::pDeviceContext->VSSetConstantBuffers(1, 1, viewable.GetViewProjBuffer());
-	DirectXDevice::pDeviceContext->VSSetShaderResources(0, 1, skeletalModel.GetBoneTransformationBuffer());
+	SkeletalVSBindingSet* pBinding = (SkeletalVSBindingSet*)pBindingSet;
+	DirectXDevice::pDeviceContext->VSSetConstantBuffers(0, 1, pBinding->pSkeletal->GetTransformationBuffer());
+	DirectXDevice::pDeviceContext->VSSetConstantBuffers(1, 1, pBinding->pViewable->GetViewProjBuffer());
+	DirectXDevice::pDeviceContext->VSSetShaderResources(0, 1, pBinding->pSkeletal->GetBoneTransformationBuffer());
+
 }
 
 void SkeletalVertexShader::ResetShader()
@@ -68,6 +70,7 @@ void SkeletalVertexShader::ResetShader()
 	DirectXDevice::pDeviceContext->VSSetConstantBuffers(1, 1, &pNullBuffer);
 	DirectXDevice::pDeviceContext->VSSetShaderResources(0, 1, &pNullSRV);
 }
+
 
 void SkeletalVertexShader::SetIAStage(const size_t& meshIdx, IMesh& mesh)
 {

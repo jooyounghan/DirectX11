@@ -26,11 +26,12 @@ void InputMergeComputeShader::DisapplyShader()
 	DirectXDevice::pDeviceContext->CSSetShader(nullptr, NULL, NULL);
 }
 
-void InputMergeComputeShader::SetShader(ID3D11ShaderResourceView** ppInputSRV1, ID3D11ShaderResourceView** ppInputSRV2, ID3D11UnorderedAccessView** ppOutputUAV)
+void InputMergeComputeShader::SetShader(void* pBindingSet)
 {
-	DirectXDevice::pDeviceContext->CSSetShaderResources(0, 1, ppInputSRV1);
-	DirectXDevice::pDeviceContext->CSSetShaderResources(1, 1, ppInputSRV2);
-	DirectXDevice::pDeviceContext->CSSetUnorderedAccessViews(0, 1, ppOutputUAV, nullptr);
+	DoubleSourceCSBindingSet* pBinding = (DoubleSourceCSBindingSet*)pBindingSet;
+	DirectXDevice::pDeviceContext->CSSetShaderResources(0, 1, pBinding->ppInputSRV1);
+	DirectXDevice::pDeviceContext->CSSetShaderResources(1, 1, pBinding->ppInputSRV2);
+	DirectXDevice::pDeviceContext->CSSetUnorderedAccessViews(0, 1, pBinding->ppOutputUAV, nullptr);
 	DirectXDevice::pDeviceContext->CSSetSamplers(0, 1, DirectXDevice::ppWrapSampler);
 }
 

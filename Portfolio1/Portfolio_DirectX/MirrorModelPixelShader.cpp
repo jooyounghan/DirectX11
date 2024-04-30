@@ -32,12 +32,13 @@ void MirrorModelPixelShader::DisapplyShader()
 	DirectXDevice::pDeviceContext->PSSetShader(nullptr, NULL, NULL);
 }
 
-void MirrorModelPixelShader::SetShader(MirrorModel& mirrorModel)
+void MirrorModelPixelShader::SetShader(void* pBindingSet)
 {
-	DirectXDevice::pDeviceContext->PSSetConstantBuffers(0, 1, mirrorModel.GetObjectBuffer());
-	DirectXDevice::pDeviceContext->PSSetConstantBuffers(1, 1, mirrorModel.GetMirrorPropertiesBuffer());
+	MirrorPSBindingSet* pBinding = (MirrorPSBindingSet*)pBindingSet;
+	DirectXDevice::pDeviceContext->PSSetConstantBuffers(0, 1, pBinding->pMirror->GetObjectBuffer());
+	DirectXDevice::pDeviceContext->PSSetConstantBuffers(1, 1, pBinding->pMirror->GetMirrorPropertiesBuffer());
 
-	DirectXDevice::pDeviceContext->PSSetShaderResources(0, 1, mirrorModel.GetAddressOfSRV());
+	DirectXDevice::pDeviceContext->PSSetShaderResources(0, 1, pBinding->pMirror->GetAddressOfSRV());
 	DirectXDevice::pDeviceContext->PSSetSamplers(0, 1, DirectXDevice::ppWrapSampler);
 }
 

@@ -4,6 +4,11 @@
 
 class MirrorModel;
 
+struct MirrorPSBindingSet
+{
+	MirrorModel* pMirror;
+};
+
 class MirrorModelPixelShader : public IPixelShader
 {
 private:
@@ -25,9 +30,7 @@ public:
 public:
 	virtual void ApplyShader() override;
 	virtual void DisapplyShader() override;
-
-public:
-	void SetShader(class MirrorModel& mirrorModel);
-	void ResetShader();
+	virtual void SetShader(void* pBindingSet) override;
+	virtual void ResetShader() override;
 };
 

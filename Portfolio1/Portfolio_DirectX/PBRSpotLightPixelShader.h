@@ -2,6 +2,19 @@
 
 #include "IPixelShader.h"
 
+class SpotLight;
+class PBRStaticMesh;
+class Viewable;
+
+struct SpotLightPSBindingSet
+{
+	SpotLight* pSpotLight;
+	size_t meshIdx;
+	PBRStaticMesh* pPbrStaticMesh;
+	Viewable* pViewable;
+};
+
+
 class PBRSpotLightPixelShader : public IPixelShader
 {
 private:
@@ -24,14 +37,7 @@ public:
 public:
 	virtual void ApplyShader() override;
 	virtual void DisapplyShader() override;
-
-public:
-	void SetShader(
-		class SpotLight& spotLight, 
-		const size_t meshIdx,
-		class PBRStaticMesh& pbrStaticMesh, 
-		class Viewable& viewable
-	);
-	void ResetShader();
+	virtual void SetShader(void* pBindingSet) override;
+	virtual void ResetShader() override;
 };
 

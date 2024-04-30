@@ -30,7 +30,7 @@ void DepthOnlyPixelShader::DisapplyShader()
 	DirectXDevice::pDeviceContext->PSSetShader(nullptr, NULL, NULL);
 }
 
-void DepthOnlyPixelShader::SetShader()
+void DepthOnlyPixelShader::SetShader(void* pBindingSet)
 {
 }
 

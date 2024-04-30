@@ -26,10 +26,12 @@ void ColorBlurComputeShader::DisapplyShader()
 	DirectXDevice::pDeviceContext->CSSetShader(nullptr, NULL, NULL);
 }
 
-void ColorBlurComputeShader::SetShader(ID3D11ShaderResourceView** ppSRV, ID3D11UnorderedAccessView** ppUAV)
+void ColorBlurComputeShader::SetShader(void* pBindingSet)
 {
-	DirectXDevice::pDeviceContext->CSSetShaderResources(0, 1, ppSRV);
-	DirectXDevice::pDeviceContext->CSSetUnorderedAccessViews(0, 1, ppUAV, nullptr);
+	SingleSourceCSBindingSet* pBinding = (SingleSourceCSBindingSet*)pBindingSet;
+
+	DirectXDevice::pDeviceContext->CSSetShaderResources(0, 1, pBinding->ppInputSRV);
+	DirectXDevice::pDeviceContext->CSSetUnorderedAccessViews(0, 1, pBinding->ppOutputUAV, nullptr);
 	DirectXDevice::pDeviceContext->CSSetSamplers(0, 1, DirectXDevice::ppWrapSampler);
 }
 

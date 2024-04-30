@@ -40,8 +40,12 @@ void BlurFilter::AcceptFilterList(CameraManipulator* pCameraManipulator)
 
 void BlurFilter::Apply(ID3D11ShaderResourceView** ppInputSRV)
 {
+	SingleSourceCSBindingSet sBinding;
+	sBinding.ppInputSRV = ppInputSRV;
+	sBinding.ppOutputUAV = cpUAV.GetAddressOf();
+
 	pBlurCS->ApplyShader();
-	pBlurCS->SetShader(ppInputSRV, cpUAV.GetAddressOf());
+	pBlurCS->SetShader(&sBinding);
 
 	DirectXDevice::pDeviceContext->Dispatch(
 		uiWidth % uiThreadGroupCntX ? uiWidth / uiThreadGroupCntX + 1 : uiWidth / uiThreadGroupCntX,

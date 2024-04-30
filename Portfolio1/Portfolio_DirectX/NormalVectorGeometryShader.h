@@ -1,6 +1,17 @@
 #pragma once
 #include "IGeometryShader.h"
 
+class IMesh;
+class Viewable;
+
+struct NormalVectorGSBindingSet
+{
+	size_t meshIdx;
+	IMesh* pMesh;
+	Viewable* pViewableCamera;
+	bool bIsMirror;
+};
+
 class NormalVectorGeometryShader : public IGeometryShader
 {
 private:
@@ -22,18 +33,7 @@ public:
 public:
 	virtual void ApplyShader() override;
 	virtual void DisapplyShader() override;
-
-public:
-	void SetShader(
-		const size_t& meshIdx, 
-		class PBRStaticMesh& pbrStaticMesh, 
-		class Viewable& viewableCamera
-	);
-	void SetShader(
-		const size_t& meshIdx, 
-		class MirrorModel& mirrorModel,
-		class Viewable& viewableCamera
-	);
-	void ResetShader();
+	virtual void SetShader(void* pBindingSet) override;
+	virtual void ResetShader() override;
 };
 
