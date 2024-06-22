@@ -101,7 +101,7 @@ PBRModelPixelOutput main(PBRModelDomainOutput input)
     specularIBL += SpecularTexture.Sample(WrapSampler, input.f2TexCoord).rgb;
     specularIBL *= f3SpecularSampled;
     
-    float3 fAmbientColor = (diffuseIBL + specularIBL) * f3AmbientOcclusion * 0.25f;
+    float3 fAmbientColor = (diffuseIBL + specularIBL) * f3AmbientOcclusion * 0.5f;
     
     fAmbientColor += EmissionTexture.Sample(WrapSampler, input.f2TexCoord).rgb;
     

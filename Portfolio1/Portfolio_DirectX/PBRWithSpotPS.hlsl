@@ -134,7 +134,7 @@ PBRModelPixelOutput main(PBRModelDomainOutput input)
     uint uiWidth, uiHeight, uiNumLevels;
     ShadowMap.GetDimensions(0, uiWidth, uiHeight, uiNumLevels);
 
-    float fShadowFactor = GetShadowFactorByPCF(ShadowMap, f2LightTex, CompareClampSampler, f4LightProjPos.z - 1E-6, 5.f / uiWidth);
+    float fShadowFactor = GetShadowFactorByPCF(ShadowMap, f2LightTex, CompareClampSampler, f4LightProjPos.z - 1E-5, 5.f / uiWidth);
     
     if (f4LightProjPos.z < 0.f)
     {

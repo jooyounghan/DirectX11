@@ -23,7 +23,6 @@
 #include <DirectXTexEXR.h>
 #include <directxtk/DDSTextureLoader.h>
 #include <fp16.h>
-#include <atlconv.h>
 
 #include <assimp\Importer.hpp>
 #include <assimp\postprocess.h>

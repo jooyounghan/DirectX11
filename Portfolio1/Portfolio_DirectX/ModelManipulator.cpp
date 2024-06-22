@@ -10,7 +10,6 @@
 #include "NormalImageFile.h"
 #include "DDSImageFile.h"
 
-// TODO : Áö¿ì±â
 #include "CubeModel.h"
 #include "CubeMapModel.h"
 #include "MirrorModel.h"
@@ -21,9 +20,7 @@ using namespace ImGui;
 ModelManipulator::ModelManipulator()
 	: bIsDrawingNormal(false), uiSelectedModelIdx(0)
 {
-	AddObject(make_shared<CubeModel>(0.f, 0.f, 0.f, 1.f, false));
-	AddObject(make_shared<MirrorModel>(5.f, 5.f, 0.f, 0.f, 3.f, 0.f, 0.f, 0.f));
-	AddObject(make_shared<MirrorModel>(5.f, 5.f, 0.f, -2.f, 0.f, 270.f, 0.f, 0.f));
+	AddObject(make_shared<CubeModel>(0.f, 0.f, 0.f, 10.f, true));
 	spIBLModel = make_shared<CubeMapModel>(500.f);
 	AddObject(spIBLModel);
 }
